@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudFront CachePolicy (AWS::CloudFront::CachePolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CookiesConfigSchema = z.object({
+const CookiesConfigSchema = z.object({
   CookieBehavior: z.string().regex(
     new RegExp("^(none|whitelist|allExcept|all)$"),
   ).describe(
@@ -22,7 +31,7 @@ export const CookiesConfigSchema = z.object({
     .optional(),
 });
 
-export const HeadersConfigSchema = z.object({
+const HeadersConfigSchema = z.object({
   HeaderBehavior: z.string().regex(new RegExp("^(none|whitelist)$")).describe(
     "Determines whether any HTTP headers are included in the cache key and in requests that CloudFront sends to the origin. Valid values are: none – No HTTP headers are included in the cache key or in requests that CloudFront sends to the origin. Even when this field is set to none, any headers that are listed in an OriginRequestPolicy *are* included in origin requests. whitelist – Only the HTTP headers that are listed in the Headers type are included in the cache key and in requests that CloudFront sends to the origin.",
   ),
@@ -30,7 +39,7 @@ export const HeadersConfigSchema = z.object({
     .optional(),
 });
 
-export const QueryStringsConfigSchema = z.object({
+const QueryStringsConfigSchema = z.object({
   QueryStringBehavior: z.string().regex(
     new RegExp("^(none|whitelist|allExcept|all)$"),
   ).describe(
@@ -41,7 +50,7 @@ export const QueryStringsConfigSchema = z.object({
   ).optional(),
 });
 
-export const ParametersInCacheKeyAndForwardedToOriginSchema = z.object({
+const ParametersInCacheKeyAndForwardedToOriginSchema = z.object({
   CookiesConfig: CookiesConfigSchema.describe(
     "An object that determines whether any cookies in viewer requests (and if so, which cookies) are included in the cache key and in requests that CloudFront sends to the origin.",
   ),
@@ -124,9 +133,10 @@ const InputsSchema = z.object({
   }).describe("The cache policy configuration.").optional(),
 });
 
+/** Swamp extension model for CloudFront CachePolicy. Registered at `@swamp/aws/cloudfront/cache-policy`. */
 export const model = {
   type: "@swamp/aws/cloudfront/cache-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -140,6 +150,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

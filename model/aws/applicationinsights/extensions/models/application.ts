@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ApplicationInsights Application (AWS::ApplicationInsights::Application).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -21,7 +30,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const CustomComponentSchema = z.object({
+const CustomComponentSchema = z.object({
   ComponentName: z.string().min(1).max(128).regex(
     new RegExp("^[\\d\\w\\-_.+]*$"),
   ).describe("The name of the component."),
@@ -34,26 +43,26 @@ export const CustomComponentSchema = z.object({
   ).describe("The list of resource ARNs that belong to the component."),
 });
 
-export const LogPatternSchema = z.object({
+const LogPatternSchema = z.object({
   PatternName: z.string().min(1).max(50).regex(new RegExp("[a-zA-Z0-9.-_]*"))
     .describe("The name of the log pattern."),
   Pattern: z.string().min(1).max(50).describe("The log pattern."),
   Rank: z.number().int().describe("Rank of the log pattern."),
 });
 
-export const LogPatternSetSchema = z.object({
+const LogPatternSetSchema = z.object({
   PatternSetName: z.string().min(1).max(30).regex(new RegExp("[a-zA-Z0-9.-_]*"))
     .describe("The name of the log pattern set."),
   LogPatterns: z.array(LogPatternSchema).describe("The log patterns of a set."),
 });
 
-export const AlarmMetricSchema = z.object({
+const AlarmMetricSchema = z.object({
   AlarmMetricName: z.string().describe(
     "The name of the metric to be monitored for the component.",
   ),
 });
 
-export const LogSchema = z.object({
+const LogSchema = z.object({
   LogGroupName: z.string().min(1).max(512).regex(
     new RegExp("[\\.\\-_/#A-Za-z0-9]+"),
   ).describe(
@@ -72,7 +81,7 @@ export const LogSchema = z.object({
     .describe("The name of the log pattern set.").optional(),
 });
 
-export const WindowsEventSchema = z.object({
+const WindowsEventSchema = z.object({
   LogGroupName: z.string().min(1).max(512).regex(
     new RegExp("[\\.\\-_/#A-Za-z0-9]+"),
   ).describe(
@@ -88,7 +97,7 @@ export const WindowsEventSchema = z.object({
     .describe("The name of the log pattern set.").optional(),
 });
 
-export const ProcessSchema = z.object({
+const ProcessSchema = z.object({
   ProcessName: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9_,-]+$"))
     .describe("The name of the process to be monitored for the component."),
   AlarmMetrics: z.array(AlarmMetricSchema).describe(
@@ -96,7 +105,7 @@ export const ProcessSchema = z.object({
   ),
 });
 
-export const AlarmSchema = z.object({
+const AlarmSchema = z.object({
   AlarmName: z.string().min(1).max(255).describe(
     "The name of the CloudWatch alarm to be monitored for the component.",
   ),
@@ -105,13 +114,13 @@ export const AlarmSchema = z.object({
   ).optional(),
 });
 
-export const JMXPrometheusExporterSchema = z.object({
+const JMXPrometheusExporterSchema = z.object({
   JMXURL: z.string().describe("JMX service URL.").optional(),
   HostPort: z.string().describe("Java agent host port").optional(),
   PrometheusPort: z.string().describe("Prometheus exporter port.").optional(),
 });
 
-export const HANAPrometheusExporterSchema = z.object({
+const HANAPrometheusExporterSchema = z.object({
   HANASID: z.string().describe("HANA DB SID."),
   HANAPort: z.string().describe("The HANA DB port."),
   HANASecretName: z.string().describe(
@@ -123,11 +132,11 @@ export const HANAPrometheusExporterSchema = z.object({
   PrometheusPort: z.string().describe("Prometheus exporter port.").optional(),
 });
 
-export const HAClusterPrometheusExporterSchema = z.object({
+const HAClusterPrometheusExporterSchema = z.object({
   PrometheusPort: z.string().describe("Prometheus exporter port.").optional(),
 });
 
-export const NetWeaverPrometheusExporterSchema = z.object({
+const NetWeaverPrometheusExporterSchema = z.object({
   SAPSID: z.string().describe("SAP NetWeaver SID."),
   InstanceNumbers: z.array(
     z.string().min(1).max(2).regex(new RegExp("\\b([0-9]|[0-9][0-9])\\b")),
@@ -135,14 +144,14 @@ export const NetWeaverPrometheusExporterSchema = z.object({
   PrometheusPort: z.string().describe("Prometheus exporter port.").optional(),
 });
 
-export const SQLServerPrometheusExporterSchema = z.object({
+const SQLServerPrometheusExporterSchema = z.object({
   PrometheusPort: z.string().describe("Prometheus exporter port."),
   SQLSecretName: z.string().describe(
     'Secret name which managers SQL exporter connection. e.g. {"data_source_name": "sqlserver://:@localhost:1433"}',
   ),
 });
 
-export const ConfigurationDetailsSchema = z.object({
+const ConfigurationDetailsSchema = z.object({
   AlarmMetrics: z.array(AlarmMetricSchema).describe(
     "A list of metrics to monitor for the component.",
   ).optional(),
@@ -175,7 +184,7 @@ export const ConfigurationDetailsSchema = z.object({
   ).optional(),
 });
 
-export const SubComponentConfigurationDetailsSchema = z.object({
+const SubComponentConfigurationDetailsSchema = z.object({
   AlarmMetrics: z.array(AlarmMetricSchema).describe(
     "A list of metrics to monitor for the component.",
   ).optional(),
@@ -190,7 +199,7 @@ export const SubComponentConfigurationDetailsSchema = z.object({
   ).optional(),
 });
 
-export const SubComponentTypeConfigurationSchema = z.object({
+const SubComponentTypeConfigurationSchema = z.object({
   SubComponentType: z.enum(["AWS::EC2::Instance", "AWS::EC2::Volume"]).describe(
     "The sub component type.",
   ),
@@ -198,7 +207,7 @@ export const SubComponentTypeConfigurationSchema = z.object({
     .describe("The configuration settings of sub components."),
 });
 
-export const ComponentConfigurationSchema = z.object({
+const ComponentConfigurationSchema = z.object({
   ConfigurationDetails: ConfigurationDetailsSchema.describe(
     "The configuration settings",
   ).optional(),
@@ -206,7 +215,7 @@ export const ComponentConfigurationSchema = z.object({
     .describe("Sub component configurations of the component.").optional(),
 });
 
-export const ComponentMonitoringSettingSchema = z.object({
+const ComponentMonitoringSettingSchema = z.object({
   ComponentName: z.string().min(1).max(128).regex(
     new RegExp("^[\\d\\w\\-_.+]*$"),
   ).describe("The name of the component.").optional(),
@@ -344,9 +353,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ApplicationInsights Application. Registered at `@swamp/aws/applicationinsights/application`. */
 export const model = {
   type: "@swamp/aws/applicationinsights/application",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -360,6 +370,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

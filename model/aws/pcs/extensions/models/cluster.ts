@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for PCS Cluster (AWS::PCS::Cluster).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AccountingSchema = z.object({
+const AccountingSchema = z.object({
   DefaultPurgeTimeInDays: z.number().int().min(-1).max(10000).describe(
     "The default value for all purge settings for `slurmdbd.conf`. For more information, see the [slurmdbd.conf documentation at SchedMD](https://slurm.schedmd.com/slurmdbd.conf.html). The default value is `-1`. A value of `-1` means there is no purge time and records persist as long as the cluster exists.",
   ).optional(),
@@ -21,31 +30,31 @@ export const AccountingSchema = z.object({
   ),
 });
 
-export const SlurmRestSchema = z.object({
+const SlurmRestSchema = z.object({
   Mode: z.enum(["STANDARD", "NONE"]).describe(
     "The default value is `NONE`. A value of `STANDARD` means that Slurm Rest is enabled.",
   ),
 });
 
-export const AuthKeySchema = z.object({
+const AuthKeySchema = z.object({
   SecretArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the the shared Slurm key.",
   ),
   SecretVersion: z.string().describe("The version of the shared Slurm key."),
 });
 
-export const JwtKeySchema = z.object({
+const JwtKeySchema = z.object({
   SecretArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the JWT key secret.",
   ),
   SecretVersion: z.string().describe("The version of the JWT key secret."),
 });
 
-export const JwtAuthSchema = z.object({
+const JwtAuthSchema = z.object({
   JwtKey: JwtKeySchema.describe("JWT key configuration.").optional(),
 });
 
-export const SlurmCustomSettingSchema = z.object({
+const SlurmCustomSettingSchema = z.object({
   ParameterName: z.string().describe(
     "AWS PCS supports configuration of the following Slurm parameters for clusters: Prolog, Epilog, and SelectTypeParameters.",
   ),
@@ -54,14 +63,14 @@ export const SlurmCustomSettingSchema = z.object({
   ),
 });
 
-export const CgroupCustomSettingSchema = z.object({
+const CgroupCustomSettingSchema = z.object({
   ParameterName: z.string().describe("The cgroup.conf parameter name."),
   ParameterValue: z.string().describe(
     "The value for the cgroup.conf parameter.",
   ),
 });
 
-export const SlurmdbdCustomSettingSchema = z.object({
+const SlurmdbdCustomSettingSchema = z.object({
   ParameterName: z.string().describe("The slurmdbd.conf parameter name."),
   ParameterValue: z.string().describe(
     "The value for the slurmdbd.conf parameter.",
@@ -221,9 +230,10 @@ const InputsSchema = z.object({
   }).describe("Additional options related to the Slurm scheduler.").optional(),
 });
 
+/** Swamp extension model for PCS Cluster. Registered at `@swamp/aws/pcs/cluster`. */
 export const model = {
   type: "@swamp/aws/pcs/cluster",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -237,6 +247,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

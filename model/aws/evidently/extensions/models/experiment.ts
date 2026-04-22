@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Evidently Experiment (AWS::Evidently::Experiment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TreatmentObjectSchema = z.object({
+const TreatmentObjectSchema = z.object({
   TreatmentName: z.string().min(1).max(127).regex(
     new RegExp("[-a-zA-Z0-9._]*"),
   ),
@@ -23,7 +32,7 @@ export const TreatmentObjectSchema = z.object({
   Variation: z.string().min(1).max(255).regex(new RegExp("[-a-zA-Z0-9._]*")),
 });
 
-export const MetricGoalObjectSchema = z.object({
+const MetricGoalObjectSchema = z.object({
   MetricName: z.string().min(1).max(255).regex(new RegExp("^[\\S]+$")),
   EntityIdKey: z.string().describe(
     "The JSON path to reference the entity id in the event.",
@@ -38,12 +47,12 @@ export const MetricGoalObjectSchema = z.object({
   DesiredChange: z.enum(["INCREASE", "DECREASE"]),
 });
 
-export const TreatmentToWeightSchema = z.object({
+const TreatmentToWeightSchema = z.object({
   Treatment: z.string().min(1).max(127).regex(new RegExp("[-a-zA-Z0-9._]*")),
   SplitWeight: z.number().int().min(0).max(100000),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -175,9 +184,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Evidently Experiment. Registered at `@swamp/aws/evidently/experiment`. */
 export const model = {
   type: "@swamp/aws/evidently/experiment",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -191,6 +201,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

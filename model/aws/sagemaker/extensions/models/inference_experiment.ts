@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker InferenceExperiment (AWS::SageMaker::InferenceExperiment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CaptureContentTypeHeaderSchema = z.object({
+const CaptureContentTypeHeaderSchema = z.object({
   CsvContentTypes: z.array(
     z.string().min(1).max(256).regex(
       new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*/[a-zA-Z0-9](-*[a-zA-Z0-9.])*"),
@@ -29,7 +38,7 @@ export const CaptureContentTypeHeaderSchema = z.object({
   ).optional(),
 });
 
-export const RealTimeInferenceConfigSchema = z.object({
+const RealTimeInferenceConfigSchema = z.object({
   InstanceType: z.string().describe(
     "The instance type the model is deployed to.",
   ),
@@ -38,7 +47,7 @@ export const RealTimeInferenceConfigSchema = z.object({
   ),
 });
 
-export const ModelInfrastructureConfigSchema = z.object({
+const ModelInfrastructureConfigSchema = z.object({
   InfrastructureType: z.enum(["RealTimeInference"]).describe(
     "The type of the inference experiment that you want to run.",
   ),
@@ -47,7 +56,7 @@ export const ModelInfrastructureConfigSchema = z.object({
   ),
 });
 
-export const ModelVariantConfigSchema = z.object({
+const ModelVariantConfigSchema = z.object({
   ModelName: z.string().max(63).regex(
     new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*"),
   ).describe("The name of the Amazon SageMaker Model entity."),
@@ -59,7 +68,7 @@ export const ModelVariantConfigSchema = z.object({
   ),
 });
 
-export const ShadowModelVariantConfigSchema = z.object({
+const ShadowModelVariantConfigSchema = z.object({
   ShadowModelVariantName: z.string().max(63).regex(
     new RegExp("^[a-zA-Z0-9]([\\-a-zA-Z0-9]*[a-zA-Z0-9])?"),
   ).describe("The name of the shadow variant."),
@@ -68,7 +77,7 @@ export const ShadowModelVariantConfigSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$", "u"),
   ).describe(
@@ -310,9 +319,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker InferenceExperiment. Registered at `@swamp/aws/sagemaker/inference-experiment`. */
 export const model = {
   type: "@swamp/aws/sagemaker/inference-experiment",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -326,6 +336,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

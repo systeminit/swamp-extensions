@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Pinpoint InAppTemplate (AWS::Pinpoint::InAppTemplate).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,24 +21,24 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const BodyConfigSchema = z.object({
+const BodyConfigSchema = z.object({
   Alignment: z.enum(["LEFT", "CENTER", "RIGHT"]).optional(),
   Body: z.string().optional(),
   TextColor: z.string().optional(),
 });
 
-export const HeaderConfigSchema = z.object({
+const HeaderConfigSchema = z.object({
   Alignment: z.enum(["LEFT", "CENTER", "RIGHT"]).optional(),
   Header: z.string().optional(),
   TextColor: z.string().optional(),
 });
 
-export const OverrideButtonConfigurationSchema = z.object({
+const OverrideButtonConfigurationSchema = z.object({
   ButtonAction: z.enum(["LINK", "DEEP_LINK", "CLOSE"]).optional(),
   Link: z.string().optional(),
 });
 
-export const DefaultButtonConfigurationSchema = z.object({
+const DefaultButtonConfigurationSchema = z.object({
   BackgroundColor: z.string().optional(),
   BorderRadius: z.number().int().optional(),
   ButtonAction: z.enum(["LINK", "DEEP_LINK", "CLOSE"]).optional(),
@@ -38,14 +47,14 @@ export const DefaultButtonConfigurationSchema = z.object({
   TextColor: z.string().optional(),
 });
 
-export const ButtonConfigSchema = z.object({
+const ButtonConfigSchema = z.object({
   Android: OverrideButtonConfigurationSchema.optional(),
   DefaultConfig: DefaultButtonConfigurationSchema.optional(),
   IOS: OverrideButtonConfigurationSchema.optional(),
   Web: OverrideButtonConfigurationSchema.optional(),
 });
 
-export const InAppMessageContentSchema = z.object({
+const InAppMessageContentSchema = z.object({
   BackgroundColor: z.string().optional(),
   BodyConfig: BodyConfigSchema.optional(),
   HeaderConfig: HeaderConfigSchema.optional(),
@@ -98,9 +107,10 @@ const InputsSchema = z.object({
   TemplateName: z.string().optional(),
 });
 
+/** Swamp extension model for Pinpoint InAppTemplate. Registered at `@swamp/aws/pinpoint/in-app-template`. */
 export const model = {
   type: "@swamp/aws/pinpoint/in-app-template",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -114,6 +124,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

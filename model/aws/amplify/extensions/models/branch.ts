@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Amplify Branch (AWS::Amplify::Branch).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EnvironmentVariableSchema = z.object({
+const EnvironmentVariableSchema = z.object({
   Name: z.string().max(255).regex(new RegExp(".*", "s")),
   Value: z.string().max(5500).regex(new RegExp(".*", "s")),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
@@ -127,9 +136,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for Amplify Branch. Registered at `@swamp/aws/amplify/branch`. */
 export const model = {
   type: "@swamp/aws/amplify/branch",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -143,6 +153,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for QBusiness Plugin (AWS::QBusiness::Plugin).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const BasicAuthConfigurationSchema = z.object({
+const BasicAuthConfigurationSchema = z.object({
   SecretArn: z.string().min(0).max(1284).regex(
     new RegExp(
       "^arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
@@ -25,7 +34,7 @@ export const BasicAuthConfigurationSchema = z.object({
   ),
 });
 
-export const OAuth2ClientCredentialConfigurationSchema = z.object({
+const OAuth2ClientCredentialConfigurationSchema = z.object({
   SecretArn: z.string().min(0).max(1284).regex(
     new RegExp(
       "^arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
@@ -44,14 +53,14 @@ export const OAuth2ClientCredentialConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const S3Schema = z.object({
+const S3Schema = z.object({
   Bucket: z.string().min(1).max(63).regex(
     new RegExp("^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"),
   ),
   Key: z.string().min(1).max(1024),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -184,9 +193,10 @@ const InputsSchema = z.object({
   ]).optional(),
 });
 
+/** Swamp extension model for QBusiness Plugin. Registered at `@swamp/aws/qbusiness/plugin`. */
 export const model = {
   type: "@swamp/aws/qbusiness/plugin",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -200,6 +210,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

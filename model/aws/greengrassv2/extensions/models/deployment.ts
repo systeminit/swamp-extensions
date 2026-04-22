@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GreengrassV2 Deployment (AWS::GreengrassV2::Deployment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,61 +21,61 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ComponentConfigurationUpdateSchema = z.object({
+const ComponentConfigurationUpdateSchema = z.object({
   Merge: z.string().min(1).max(10485760).optional(),
   Reset: z.array(z.string().min(0).max(256)).optional(),
 });
 
-export const SystemResourceLimitsSchema = z.object({
+const SystemResourceLimitsSchema = z.object({
   Memory: z.number().int().min(0).max(9223372036854772000).optional(),
   Cpus: z.number().min(0).optional(),
 });
 
-export const ComponentRunWithSchema = z.object({
+const ComponentRunWithSchema = z.object({
   PosixUser: z.string().min(1).optional(),
   SystemResourceLimits: SystemResourceLimitsSchema.optional(),
   WindowsUser: z.string().min(1).optional(),
 });
 
-export const ComponentDeploymentSpecificationSchema = z.object({
+const ComponentDeploymentSpecificationSchema = z.object({
   ComponentVersion: z.string().min(1).max(64).optional(),
   ConfigurationUpdate: ComponentConfigurationUpdateSchema.optional(),
   RunWith: ComponentRunWithSchema.optional(),
 });
 
-export const IoTJobExponentialRolloutRateSchema = z.object({
+const IoTJobExponentialRolloutRateSchema = z.object({
   BaseRatePerMinute: z.number().int().min(1).max(1000),
   IncrementFactor: z.number().min(1).max(5),
   RateIncreaseCriteria: z.string(),
 });
 
-export const IoTJobExecutionsRolloutConfigSchema = z.object({
+const IoTJobExecutionsRolloutConfigSchema = z.object({
   ExponentialRate: IoTJobExponentialRolloutRateSchema.optional(),
   MaximumPerMinute: z.number().int().min(1).max(1000).optional(),
 });
 
-export const IoTJobAbortCriteriaSchema = z.object({
+const IoTJobAbortCriteriaSchema = z.object({
   FailureType: z.enum(["FAILED", "REJECTED", "TIMED_OUT", "ALL"]),
   Action: z.enum(["CANCEL"]),
   ThresholdPercentage: z.number().min(0).max(100),
   MinNumberOfExecutedThings: z.number().int().min(1).max(2147483647),
 });
 
-export const IoTJobAbortConfigSchema = z.object({
+const IoTJobAbortConfigSchema = z.object({
   CriteriaList: z.array(IoTJobAbortCriteriaSchema),
 });
 
-export const IoTJobTimeoutConfigSchema = z.object({
+const IoTJobTimeoutConfigSchema = z.object({
   InProgressTimeoutInMinutes: z.number().int().min(0).max(2147483647)
     .optional(),
 });
 
-export const DeploymentComponentUpdatePolicySchema = z.object({
+const DeploymentComponentUpdatePolicySchema = z.object({
   TimeoutInSeconds: z.number().int().min(1).max(2147483647).optional(),
   Action: z.enum(["NOTIFY_COMPONENTS", "SKIP_NOTIFY_COMPONENTS"]).optional(),
 });
 
-export const DeploymentConfigurationValidationPolicySchema = z.object({
+const DeploymentConfigurationValidationPolicySchema = z.object({
   TimeoutInSeconds: z.number().int().min(1).max(2147483647).optional(),
 });
 
@@ -144,9 +153,10 @@ const InputsSchema = z.object({
   Tags: z.record(z.string(), z.string().max(256)).optional(),
 });
 
+/** Swamp extension model for GreengrassV2 Deployment. Registered at `@swamp/aws/greengrassv2/deployment`. */
 export const model = {
   type: "@swamp/aws/greengrassv2/deployment",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -160,6 +170,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

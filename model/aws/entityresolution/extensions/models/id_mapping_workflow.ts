@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EntityResolution IdMappingWorkflow (AWS::EntityResolution::IdMappingWorkflow).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IdMappingWorkflowInputSourceSchema = z.object({
+const IdMappingWorkflowInputSourceSchema = z.object({
   Type: z.enum(["SOURCE", "TARGET"]).optional(),
   InputSourceARN: z.string().regex(
     new RegExp(
@@ -28,7 +37,7 @@ export const IdMappingWorkflowInputSourceSchema = z.object({
   ).describe("The SchemaMapping arn associated with the Schema").optional(),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   MatchingKeys: z.array(
     z.string().min(0).max(255).regex(new RegExp("^[a-zA-Z_0-9- \\t]*$")),
   ),
@@ -37,7 +46,7 @@ export const RuleSchema = z.object({
   ),
 });
 
-export const IdMappingRuleBasedPropertiesSchema = z.object({
+const IdMappingRuleBasedPropertiesSchema = z.object({
   AttributeMatchingModel: z.enum(["ONE_TO_ONE", "MANY_TO_MANY"]),
   RuleDefinitionType: z.enum(["SOURCE", "TARGET"]).optional(),
   Rules: z.array(RuleSchema).optional(),
@@ -47,13 +56,13 @@ export const IdMappingRuleBasedPropertiesSchema = z.object({
   ]),
 });
 
-export const IntermediateSourceConfigurationSchema = z.object({
+const IntermediateSourceConfigurationSchema = z.object({
   IntermediateS3Path: z.string().describe(
     "The s3 path that would be used to stage the intermediate data being generated during workflow execution.",
   ),
 });
 
-export const ProviderPropertiesSchema = z.object({
+const ProviderPropertiesSchema = z.object({
   IntermediateSourceConfiguration: IntermediateSourceConfigurationSchema
     .optional(),
   ProviderServiceArn: z.string().regex(
@@ -66,7 +75,7 @@ export const ProviderPropertiesSchema = z.object({
   ).optional(),
 });
 
-export const IdMappingWorkflowOutputSourceSchema = z.object({
+const IdMappingWorkflowOutputSourceSchema = z.object({
   KMSArn: z.string().regex(
     new RegExp("^arn:(aws|aws-us-gov|aws-cn):kms:.*:[0-9]+:.*$"),
   ).optional(),
@@ -76,7 +85,7 @@ export const IdMappingWorkflowOutputSourceSchema = z.object({
     ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(0).max(256).describe(
     "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -158,9 +167,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for EntityResolution IdMappingWorkflow. Registered at `@swamp/aws/entityresolution/id-mapping-workflow`. */
 export const model = {
   type: "@swamp/aws/entityresolution/id-mapping-workflow",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -174,6 +184,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

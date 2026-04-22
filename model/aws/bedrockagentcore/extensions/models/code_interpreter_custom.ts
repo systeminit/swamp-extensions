@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore CodeInterpreterCustom (AWS::BedrockAgentCore::CodeInterpreterCustom).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const VpcConfigSchema = z.object({
+const VpcConfigSchema = z.object({
   SecurityGroups: z.array(
     z.string().regex(new RegExp("^sg-[0-9a-zA-Z]{8,17}$")),
   ).describe("Security groups for VPC"),
@@ -91,9 +100,10 @@ const InputsSchema = z.object({
   ).describe("A map of tag keys and values").optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore CodeInterpreterCustom. Registered at `@swamp/aws/bedrockagentcore/code-interpreter-custom`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/code-interpreter-custom",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -112,6 +122,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

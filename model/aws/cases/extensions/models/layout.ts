@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Cases Layout (AWS::Cases::Layout).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,11 +21,11 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FieldItemSchema = z.object({
+const FieldItemSchema = z.object({
   Id: z.string().min(1).max(500).describe("The unique identifier of a field."),
 });
 
-export const FieldGroupSchema = z.object({
+const FieldGroupSchema = z.object({
   Name: z.string().max(100).describe(
     "A descriptive name for the field group. Helps organize related fields together in the layout interface.",
   ).optional(),
@@ -25,7 +34,7 @@ export const FieldGroupSchema = z.object({
   ),
 });
 
-export const LayoutSectionsSchema = z.object({
+const LayoutSectionsSchema = z.object({
   Sections: z.array(z.object({
     FieldGroup: FieldGroupSchema.describe(
       "Consists of a group of fields and associated properties.",
@@ -35,7 +44,7 @@ export const LayoutSectionsSchema = z.object({
   ).optional(),
 });
 
-export const BasicLayoutSchema = z.object({
+const BasicLayoutSchema = z.object({
   TopPanel: LayoutSectionsSchema.describe(
     "Sections within a panel or tab of the page layout.",
   ).optional(),
@@ -44,7 +53,7 @@ export const BasicLayoutSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -110,9 +119,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for Cases Layout. Registered at `@swamp/aws/cases/layout`. */
 export const model = {
   type: "@swamp/aws/cases/layout",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -126,6 +136,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

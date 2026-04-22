@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SecretsManager Secret (AWS::SecretsManager::Secret).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ReplicaRegionSchema = z.object({
+const ReplicaRegionSchema = z.object({
   KmsKeyId: z.string().describe(
     "The ARN, key ID, or alias of the KMS key to encrypt the secret. If you don't include this field, Secrets Manager uses aws/secretsmanager.",
   ).optional(),
@@ -21,7 +30,7 @@ export const ReplicaRegionSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe(
     "The string value associated with the key of the tag.",
   ),
@@ -169,9 +178,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SecretsManager Secret. Registered at `@swamp/aws/secretsmanager/secret`. */
 export const model = {
   type: "@swamp/aws/secretsmanager/secret",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -185,6 +195,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

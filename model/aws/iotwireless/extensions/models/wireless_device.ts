@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTWireless WirelessDevice (AWS::IoTWireless::WirelessDevice).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,40 +21,40 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const OtaaV11Schema = z.object({
+const OtaaV11Schema = z.object({
   AppKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
   NwkKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
   JoinEui: z.string().regex(new RegExp("[a-fA-F0-9]{16}")),
 });
 
-export const OtaaV10xSchema = z.object({
+const OtaaV10xSchema = z.object({
   AppKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
   AppEui: z.string().regex(new RegExp("[a-fA-F0-9]{16}")),
 });
 
-export const SessionKeysAbpV11Schema = z.object({
+const SessionKeysAbpV11Schema = z.object({
   FNwkSIntKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
   SNwkSIntKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
   NwkSEncKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
   AppSKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
 });
 
-export const AbpV11Schema = z.object({
+const AbpV11Schema = z.object({
   DevAddr: z.string().regex(new RegExp("[a-fA-F0-9]{8}")),
   SessionKeys: SessionKeysAbpV11Schema,
 });
 
-export const SessionKeysAbpV10xSchema = z.object({
+const SessionKeysAbpV10xSchema = z.object({
   NwkSKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
   AppSKey: z.string().regex(new RegExp("[a-fA-F0-9]{32}")),
 });
 
-export const AbpV10xSchema = z.object({
+const AbpV10xSchema = z.object({
   DevAddr: z.string().regex(new RegExp("[a-fA-F0-9]{8}")),
   SessionKeys: SessionKeysAbpV10xSchema,
 });
 
-export const ApplicationSchema = z.object({
+const ApplicationSchema = z.object({
   DestinationName: z.string().max(128).regex(new RegExp("[a-zA-Z0-9-_]+"))
     .describe(
       "The name of the position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
@@ -62,13 +71,13 @@ export const ApplicationSchema = z.object({
   ).optional(),
 });
 
-export const FPortsSchema = z.object({
+const FPortsSchema = z.object({
   Applications: z.array(ApplicationSchema).describe(
     "A list of optional LoRaWAN application information, which can be used for geolocation.",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).optional(),
   Value: z.string().min(0).max(256).optional(),
 });
@@ -175,9 +184,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoTWireless WirelessDevice. Registered at `@swamp/aws/iotwireless/wireless-device`. */
 export const model = {
   type: "@swamp/aws/iotwireless/wireless-device",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -191,6 +201,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

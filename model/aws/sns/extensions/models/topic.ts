@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SNS Topic (AWS::SNS::Topic).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SubscriptionSchema = z.object({
+const SubscriptionSchema = z.object({
   Endpoint: z.string().describe(
     "The endpoint that receives notifications from the SNS topic. The endpoint value depends on the protocol that you specify. For more information, see the Endpoint parameter of the Subscribe action in the *API Reference*.",
   ),
@@ -21,12 +30,12 @@ export const SubscriptionSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe("The required key portion of the tag."),
   Value: z.string().describe("The optional value portion of the tag."),
 });
 
-export const LoggingConfigSchema = z.object({
+const LoggingConfigSchema = z.object({
   Protocol: z.enum(["http/s", "sqs", "lambda", "firehose", "application"])
     .describe(
       "Indicates one of the supported protocols for the Amazon SNS topic. At least one of the other three LoggingConfig properties is recommend along with Protocol.",
@@ -143,9 +152,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SNS Topic. Registered at `@swamp/aws/sns/topic`. */
 export const model = {
   type: "@swamp/aws/sns/topic",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -159,6 +169,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

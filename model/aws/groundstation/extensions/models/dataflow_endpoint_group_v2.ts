@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GroundStation DataflowEndpointGroupV2 (AWS::GroundStation::DataflowEndpointGroupV2).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,31 +21,31 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SocketAddressSchema = z.object({
+const SocketAddressSchema = z.object({
   Name: z.string().describe("IPv4 socket address."),
   Port: z.number().int().describe("Port of a socket address."),
 });
 
-export const ConnectionDetailsSchema = z.object({
+const ConnectionDetailsSchema = z.object({
   SocketAddress: SocketAddressSchema,
   Mtu: z.number().int().min(1400).max(1500).describe(
     "Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.",
   ).optional(),
 });
 
-export const IntegerRangeSchema = z.object({
+const IntegerRangeSchema = z.object({
   Minimum: z.number().int().describe("A minimum value."),
   Maximum: z.number().int().describe("A maximum value."),
 });
 
-export const RangedSocketAddressSchema = z.object({
+const RangedSocketAddressSchema = z.object({
   Name: z.string().regex(
     new RegExp("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"),
   ).describe("IPv4 socket address."),
   PortRange: IntegerRangeSchema.describe("Port range of a socket address."),
 });
 
-export const RangedConnectionDetailsSchema = z.object({
+const RangedConnectionDetailsSchema = z.object({
   SocketAddress: RangedSocketAddressSchema.describe(
     "A socket address with a port range.",
   ),
@@ -45,7 +54,7 @@ export const RangedConnectionDetailsSchema = z.object({
   ).optional(),
 });
 
-export const UplinkConnectionDetailsSchema = z.object({
+const UplinkConnectionDetailsSchema = z.object({
   IngressAddressAndPort: ConnectionDetailsSchema.describe(
     "Socket address of an uplink or downlink agent endpoint with an optional mtu.",
   ),
@@ -54,20 +63,20 @@ export const UplinkConnectionDetailsSchema = z.object({
   ),
 });
 
-export const UplinkDataflowDetailsSchema = z.object({
+const UplinkDataflowDetailsSchema = z.object({
   AgentConnectionDetails: UplinkConnectionDetailsSchema.describe(
     "Connection details for uplink, from ground station to agent, and customer to agent",
   ).optional(),
 });
 
-export const UplinkAwsGroundStationAgentEndpointSchema = z.object({
+const UplinkAwsGroundStationAgentEndpointSchema = z.object({
   Name: z.string().regex(new RegExp("^[ a-zA-Z0-9_:-]{1,256}$")),
   DataflowDetails: UplinkDataflowDetailsSchema.describe(
     "Dataflow details for uplink",
   ),
 });
 
-export const DownlinkConnectionDetailsSchema = z.object({
+const DownlinkConnectionDetailsSchema = z.object({
   EgressAddressAndPort: ConnectionDetailsSchema.describe(
     "Socket address of an uplink or downlink agent endpoint with an optional mtu.",
   ),
@@ -76,20 +85,20 @@ export const DownlinkConnectionDetailsSchema = z.object({
   ),
 });
 
-export const DownlinkDataflowDetailsSchema = z.object({
+const DownlinkDataflowDetailsSchema = z.object({
   AgentConnectionDetails: DownlinkConnectionDetailsSchema.describe(
     "Connection details for downlink, from ground station to agent, and customer to agent",
   ).optional(),
 });
 
-export const DownlinkAwsGroundStationAgentEndpointSchema = z.object({
+const DownlinkAwsGroundStationAgentEndpointSchema = z.object({
   Name: z.string().regex(new RegExp("^[ a-zA-Z0-9_:-]{1,256}$")),
   DataflowDetails: DownlinkDataflowDetailsSchema.describe(
     "Dataflow details for downlink",
   ),
 });
 
-export const CreateEndpointDetailsSchema = z.object({
+const CreateEndpointDetailsSchema = z.object({
   UplinkAwsGroundStationAgentEndpoint: UplinkAwsGroundStationAgentEndpointSchema
     .describe(
       "Information about UplinkAwsGroundStationAgentEndpoint used for create",
@@ -100,7 +109,7 @@ export const CreateEndpointDetailsSchema = z.object({
     ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().regex(new RegExp("^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$")),
   Value: z.string().regex(new RegExp("^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$")),
 });
@@ -156,9 +165,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for GroundStation DataflowEndpointGroupV2. Registered at `@swamp/aws/groundstation/dataflow-endpoint-group-v2`. */
 export const model = {
   type: "@swamp/aws/groundstation/dataflow-endpoint-group-v2",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -172,6 +182,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

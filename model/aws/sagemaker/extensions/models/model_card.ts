@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker ModelCard (AWS::SageMaker::ModelCard).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ModelOverviewSchema = z.object({
+const ModelOverviewSchema = z.object({
   ModelDescription: z.string().max(1024).describe("description of model.")
     .optional(),
   ModelOwner: z.string().max(1024).describe("Owner of model.").optional(),
@@ -38,7 +47,7 @@ export const ModelOverviewSchema = z.object({
   }).describe("Overview about the inference.").optional(),
 });
 
-export const SourceAlgorithmSchema = z.object({
+const SourceAlgorithmSchema = z.object({
   AlgorithmName: z.string().max(170).describe(
     "The name of an algorithm that was used to create the model package. The algorithm must be either an algorithm resource in your SageMaker account or an algorithm in AWS Marketplace that you are subscribed to.",
   ),
@@ -47,7 +56,7 @@ export const SourceAlgorithmSchema = z.object({
   ).optional(),
 });
 
-export const ContainerSchema = z.object({
+const ContainerSchema = z.object({
   ModelDataUrl: z.string().max(1024).describe(
     "The Amazon S3 path where the model artifacts, which result from model training, are stored.",
   ).optional(),
@@ -59,13 +68,13 @@ export const ContainerSchema = z.object({
   ).optional(),
 });
 
-export const InferenceSpecificationSchema = z.object({
+const InferenceSpecificationSchema = z.object({
   Containers: z.array(ContainerSchema).describe(
     "Contains inference related information which were used to create model package.",
   ),
 });
 
-export const ModelPackageDetailsSchema = z.object({
+const ModelPackageDetailsSchema = z.object({
   ModelPackageDescription: z.string().max(1024).describe(
     "A brief summary of the model package",
   ).optional(),
@@ -107,7 +116,7 @@ export const ModelPackageDetailsSchema = z.object({
   ).optional(),
 });
 
-export const IntendedUsesSchema = z.object({
+const IntendedUsesSchema = z.object({
   PurposeOfModel: z.string().max(2048).describe("Why the model was developed?")
     .optional(),
   IntendedUses: z.string().max(2048).describe("intended use cases.").optional(),
@@ -118,7 +127,7 @@ export const IntendedUsesSchema = z.object({
   ExplanationsForRiskRating: z.string().max(2048).optional(),
 });
 
-export const BusinessDetailsSchema = z.object({
+const BusinessDetailsSchema = z.object({
   BusinessProblem: z.string().max(2048).describe(
     "What business problem does the model solve?",
   ).optional(),
@@ -127,7 +136,7 @@ export const BusinessDetailsSchema = z.object({
   LineOfBusiness: z.string().max(2048).describe("Line of business.").optional(),
 });
 
-export const ObjectiveFunctionSchema = z.object({
+const ObjectiveFunctionSchema = z.object({
   Function: z.object({
     Function: z.enum(["Maximize", "Minimize"]).optional(),
     Facet: z.string().max(63).optional(),
@@ -137,18 +146,18 @@ export const ObjectiveFunctionSchema = z.object({
   Notes: z.string().max(1024).optional(),
 });
 
-export const TrainingMetricSchema = z.object({
+const TrainingMetricSchema = z.object({
   Name: z.string().regex(new RegExp(".{1,255}")),
   Notes: z.string().max(1024).optional(),
   Value: z.number(),
 });
 
-export const TrainingHyperParameterSchema = z.object({
+const TrainingHyperParameterSchema = z.object({
   Name: z.string().regex(new RegExp(".{1,255}")),
   Value: z.string().regex(new RegExp(".{1,255}")),
 });
 
-export const TrainingDetailsSchema = z.object({
+const TrainingDetailsSchema = z.object({
   ObjectiveFunction: ObjectiveFunctionSchema.describe(
     "the objective function the model will optimize for.",
   ).optional(),
@@ -172,7 +181,7 @@ export const TrainingDetailsSchema = z.object({
   }).optional(),
 });
 
-export const MetricGroupSchema = z.object({
+const MetricGroupSchema = z.object({
   Name: z.string().regex(new RegExp(".{1,63}")),
   MetricData: z.array(z.object({
     SimpleMetric: z.unknown().optional(),
@@ -182,7 +191,7 @@ export const MetricGroupSchema = z.object({
   })),
 });
 
-export const EvaluationDetailSchema = z.object({
+const EvaluationDetailSchema = z.object({
   Name: z.string().regex(new RegExp(".{1,63}")),
   EvaluationObservation: z.string().max(2096).optional(),
   EvaluationJobArn: z.string().max(256).optional(),
@@ -193,7 +202,7 @@ export const EvaluationDetailSchema = z.object({
   MetricGroups: z.array(MetricGroupSchema).optional(),
 });
 
-export const AdditionalInformationSchema = z.object({
+const AdditionalInformationSchema = z.object({
   EthicalConsiderations: z.string().max(2048).describe(
     "Any ethical considerations that the author wants to provide.",
   ).optional(),
@@ -205,7 +214,7 @@ export const AdditionalInformationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The tag key. Tag keys must be unique per resource.",
   ),
@@ -319,9 +328,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker ModelCard. Registered at `@swamp/aws/sagemaker/model-card`. */
 export const model = {
   type: "@swamp/aws/sagemaker/model-card",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -335,6 +345,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Logs Transformer (AWS::Logs::Transformer).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,27 +21,27 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ParseCloudfrontSchema = z.object({
+const ParseCloudfrontSchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")).optional(),
 });
 
-export const ParseVPCSchema = z.object({
+const ParseVPCSchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")).optional(),
 });
 
-export const ParseWAFSchema = z.object({
+const ParseWAFSchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")).optional(),
 });
 
-export const ParseRoute53Schema = z.object({
+const ParseRoute53Schema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")).optional(),
 });
 
-export const ParsePostgresSchema = z.object({
+const ParsePostgresSchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")).optional(),
 });
 
-export const ParseToOCSFSchema = z.object({
+const ParseToOCSFSchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")).optional(),
   EventSource: z.enum([
     "CloudTrail",
@@ -47,47 +56,47 @@ export const ParseToOCSFSchema = z.object({
   ).optional(),
 });
 
-export const CopyValueEntrySchema = z.object({
+const CopyValueEntrySchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   Target: z.string().max(128).regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   OverwriteIfExists: z.boolean().optional(),
 });
 
-export const AddKeyEntrySchema = z.object({
+const AddKeyEntrySchema = z.object({
   Key: z.string().max(128).regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   Value: z.string().min(1).max(256),
   OverwriteIfExists: z.boolean().optional(),
 });
 
-export const MoveKeyEntrySchema = z.object({
+const MoveKeyEntrySchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   Target: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   OverwriteIfExists: z.boolean().optional(),
 });
 
-export const RenameKeyEntrySchema = z.object({
+const RenameKeyEntrySchema = z.object({
   Key: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   RenameTo: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   OverwriteIfExists: z.boolean().optional(),
 });
 
-export const SplitStringEntrySchema = z.object({
+const SplitStringEntrySchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   Delimiter: z.string().max(128),
 });
 
-export const SubstituteStringEntrySchema = z.object({
+const SubstituteStringEntrySchema = z.object({
   Source: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   From: z.string().max(128),
   To: z.string().max(128),
 });
 
-export const TypeConverterEntrySchema = z.object({
+const TypeConverterEntrySchema = z.object({
   Key: z.string().regex(new RegExp("^.*[a-zA-Z0-9]+.*$")),
   Type: z.enum(["boolean", "integer", "double", "string"]),
 });
 
-export const ProcessorSchema = z.object({
+const ProcessorSchema = z.object({
   ParseCloudfront: ParseCloudfrontSchema.optional(),
   ParseVPC: ParseVPCSchema.optional(),
   ParseWAF: ParseWAFSchema.optional(),
@@ -203,9 +212,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Logs Transformer. Registered at `@swamp/aws/logs/transformer`. */
 export const model = {
   type: "@swamp/aws/logs/transformer",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -219,6 +229,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

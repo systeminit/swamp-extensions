@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore GatewayTarget (AWS::BedrockAgentCore::GatewayTarget).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const OAuthCredentialProviderSchema = z.object({
+const OAuthCredentialProviderSchema = z.object({
   ProviderArn: z.string().regex(
     new RegExp("^arn:([^:]*):([^:]*):([^:]*):([0-9]{12})?:(.+)$"),
   ),
@@ -25,7 +34,7 @@ export const OAuthCredentialProviderSchema = z.object({
   ).describe("Return URL for OAuth callback.").optional(),
 });
 
-export const ApiKeyCredentialProviderSchema = z.object({
+const ApiKeyCredentialProviderSchema = z.object({
   ProviderArn: z.string().regex(
     new RegExp("^arn:([^:]*):([^:]*):([^:]*):([0-9]{12})?:(.+)$"),
   ),
@@ -34,13 +43,13 @@ export const ApiKeyCredentialProviderSchema = z.object({
   CredentialLocation: z.enum(["HEADER", "QUERY_PARAMETER"]).optional(),
 });
 
-export const IamCredentialProviderSchema = z.object({
+const IamCredentialProviderSchema = z.object({
   Service: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9._-]+$")),
   Region: z.string().min(1).max(32).regex(new RegExp("^[a-zA-Z0-9-]+$"))
     .optional(),
 });
 
-export const CredentialProviderConfigurationSchema = z.object({
+const CredentialProviderConfigurationSchema = z.object({
   CredentialProviderType: z.enum(["GATEWAY_IAM_ROLE", "OAUTH", "API_KEY"]),
   CredentialProvider: z.object({
     OauthCredentialProvider: OAuthCredentialProviderSchema.optional(),
@@ -108,9 +117,10 @@ const InputsSchema = z.object({
   Name: z.string().regex(new RegExp("^([0-9a-zA-Z][-]?){1,100}$")).optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore GatewayTarget. Registered at `@swamp/aws/bedrockagentcore/gateway-target`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/gateway-target",
-  version: "2026.04.11.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -129,6 +139,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.11.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SES ConfigurationSetEventDestination (AWS::SES::ConfigurationSetEventDestination).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DimensionConfigurationSchema = z.object({
+const DimensionConfigurationSchema = z.object({
   DimensionValueSource: z.string().describe(
     "The place where Amazon SES finds the value of a dimension to publish to Amazon CloudWatch. To use the message tags that you specify using an X-SES-MESSAGE-TAGS header or a parameter to the SendEmail/SendRawEmail API, specify messageTag. To use your own email headers, specify emailHeader. To put a custom tag on any link included in your email, specify linkTag.",
   ),
@@ -28,13 +37,13 @@ export const DimensionConfigurationSchema = z.object({
   ),
 });
 
-export const CloudWatchDestinationSchema = z.object({
+const CloudWatchDestinationSchema = z.object({
   DimensionConfigurations: z.array(DimensionConfigurationSchema).describe(
     "A list of dimensions upon which to categorize your emails when you publish email sending events to Amazon CloudWatch.",
   ).optional(),
 });
 
-export const KinesisFirehoseDestinationSchema = z.object({
+const KinesisFirehoseDestinationSchema = z.object({
   IAMRoleARN: z.string().describe(
     "The ARN of the IAM role under which Amazon SES publishes email sending events to the Amazon Kinesis Firehose stream.",
   ),
@@ -43,13 +52,13 @@ export const KinesisFirehoseDestinationSchema = z.object({
   ),
 });
 
-export const SnsDestinationSchema = z.object({
+const SnsDestinationSchema = z.object({
   TopicARN: z.string().min(36).max(1024).regex(
     new RegExp("^arn:aws[a-z0-9-]*:sns:[a-z0-9-]+:\\d{12}:[^:]+$"),
   ),
 });
 
-export const EventBridgeDestinationSchema = z.object({
+const EventBridgeDestinationSchema = z.object({
   EventBusArn: z.string().min(36).max(1024).regex(
     new RegExp("^arn:aws[a-z0-9-]*:events:[a-z0-9-]+:\\d{12}:event-bus/[^:]+$"),
   ),
@@ -133,9 +142,10 @@ const InputsSchema = z.object({
   }).describe("The event destination object.").optional(),
 });
 
+/** Swamp extension model for SES ConfigurationSetEventDestination. Registered at `@swamp/aws/ses/configuration-set-event-destination`. */
 export const model = {
   type: "@swamp/aws/ses/configuration-set-event-destination",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -149,6 +159,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

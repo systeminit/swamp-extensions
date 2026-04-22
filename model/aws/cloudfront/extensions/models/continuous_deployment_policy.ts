@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudFront ContinuousDeploymentPolicy (AWS::CloudFront::ContinuousDeploymentPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SessionStickinessConfigSchema = z.object({
+const SessionStickinessConfigSchema = z.object({
   IdleTTL: z.number().int().min(300).max(3600).describe(
     "The amount of time after which you want sessions to cease if no requests are received. Allowed values are 300–3600 seconds (5–60 minutes).",
   ),
@@ -21,14 +30,14 @@ export const SessionStickinessConfigSchema = z.object({
   ),
 });
 
-export const SingleHeaderConfigSchema = z.object({
+const SingleHeaderConfigSchema = z.object({
   Header: z.string().min(1).max(256).describe(
     "The request header name that you want CloudFront to send to your staging distribution. The header must contain the prefix aws-cf-cd-.",
   ),
   Value: z.string().min(1).max(1783).describe("The request header value."),
 });
 
-export const SingleWeightConfigSchema = z.object({
+const SingleWeightConfigSchema = z.object({
   SessionStickinessConfig: SessionStickinessConfigSchema.describe(
     "Session stickiness provides the ability to define multiple requests from a single viewer as a single session. This prevents the potentially inconsistent experience of sending some of a given user's requests to your staging distribution, while others are sent to your primary distribution. Define the session duration using TTL values.",
   ).optional(),
@@ -37,7 +46,7 @@ export const SingleWeightConfigSchema = z.object({
   ),
 });
 
-export const TrafficConfigSchema = z.object({
+const TrafficConfigSchema = z.object({
   SingleHeaderConfig: SingleHeaderConfigSchema.describe(
     "Determines which HTTP requests are sent to the staging distribution.",
   ).optional(),
@@ -137,9 +146,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for CloudFront ContinuousDeploymentPolicy. Registered at `@swamp/aws/cloudfront/continuous-deployment-policy`. */
 export const model = {
   type: "@swamp/aws/cloudfront/continuous-deployment-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -153,6 +163,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

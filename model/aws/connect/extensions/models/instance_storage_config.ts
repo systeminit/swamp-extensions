@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Connect InstanceStorageConfig (AWS::Connect::InstanceStorageConfig).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EncryptionConfigSchema = z.object({
+const EncryptionConfigSchema = z.object({
   EncryptionType: z.enum(["KMS"]).describe(
     "Specifies default encryption using AWS KMS-Managed Keys",
   ),
@@ -158,9 +167,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for Connect InstanceStorageConfig. Registered at `@swamp/aws/connect/instance-storage-config`. */
 export const model = {
   type: "@swamp/aws/connect/instance-storage-config",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -174,6 +184,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EC2 SpotFleet (AWS::EC2::SpotFleet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EbsBlockDeviceSchema = z.object({
+const EbsBlockDeviceSchema = z.object({
   DeleteOnTermination: z.boolean().optional(),
   Encrypted: z.boolean().optional(),
   Iops: z.number().int().optional(),
@@ -22,31 +31,31 @@ export const EbsBlockDeviceSchema = z.object({
     .optional(),
 });
 
-export const BlockDeviceMappingSchema = z.object({
+const BlockDeviceMappingSchema = z.object({
   DeviceName: z.string(),
   Ebs: EbsBlockDeviceSchema.optional(),
   NoDevice: z.string().optional(),
   VirtualName: z.string().optional(),
 });
 
-export const IamInstanceProfileSpecificationSchema = z.object({
+const IamInstanceProfileSpecificationSchema = z.object({
   Arn: z.string().optional(),
 });
 
-export const SpotFleetMonitoringSchema = z.object({
+const SpotFleetMonitoringSchema = z.object({
   Enabled: z.boolean().optional(),
 });
 
-export const InstanceIpv6AddressSchema = z.object({
+const InstanceIpv6AddressSchema = z.object({
   Ipv6Address: z.string(),
 });
 
-export const PrivateIpAddressSpecificationSchema = z.object({
+const PrivateIpAddressSpecificationSchema = z.object({
   Primary: z.boolean().optional(),
   PrivateIpAddress: z.string(),
 });
 
-export const InstanceNetworkInterfaceSpecificationSchema = z.object({
+const InstanceNetworkInterfaceSpecificationSchema = z.object({
   AssociatePublicIpAddress: z.boolean().optional(),
   DeleteOnTermination: z.boolean().optional(),
   Description: z.string().optional(),
@@ -60,23 +69,23 @@ export const InstanceNetworkInterfaceSpecificationSchema = z.object({
   SubnetId: z.string().optional(),
 });
 
-export const SpotPlacementSchema = z.object({
+const SpotPlacementSchema = z.object({
   AvailabilityZone: z.string().optional(),
   AvailabilityZoneId: z.string().optional(),
   GroupName: z.string().optional(),
   Tenancy: z.enum(["dedicated", "default", "host"]).optional(),
 });
 
-export const GroupIdentifierSchema = z.object({
+const GroupIdentifierSchema = z.object({
   GroupId: z.string(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
 
-export const SpotFleetTagSpecificationSchema = z.object({
+const SpotFleetTagSpecificationSchema = z.object({
   ResourceType: z.enum([
     "client-vpn-endpoint",
     "customer-gateway",
@@ -129,64 +138,64 @@ export const SpotFleetTagSpecificationSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
-export const VCpuCountRangeRequestSchema = z.object({
+const VCpuCountRangeRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const MemoryMiBRequestSchema = z.object({
+const MemoryMiBRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const MemoryGiBPerVCpuRequestSchema = z.object({
+const MemoryGiBPerVCpuRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const NetworkBandwidthGbpsRequestSchema = z.object({
+const NetworkBandwidthGbpsRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const NetworkInterfaceCountRequestSchema = z.object({
+const NetworkInterfaceCountRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const TotalLocalStorageGBRequestSchema = z.object({
+const TotalLocalStorageGBRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const BaselineEbsBandwidthMbpsRequestSchema = z.object({
+const BaselineEbsBandwidthMbpsRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const AcceleratorCountRequestSchema = z.object({
+const AcceleratorCountRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const AcceleratorTotalMemoryMiBRequestSchema = z.object({
+const AcceleratorTotalMemoryMiBRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const PerformanceFactorReferenceRequestSchema = z.object({
+const PerformanceFactorReferenceRequestSchema = z.object({
   InstanceFamily: z.string().optional(),
 });
 
-export const CpuPerformanceFactorRequestSchema = z.object({
+const CpuPerformanceFactorRequestSchema = z.object({
   References: z.array(PerformanceFactorReferenceRequestSchema).optional(),
 });
 
-export const BaselinePerformanceFactorsRequestSchema = z.object({
+const BaselinePerformanceFactorsRequestSchema = z.object({
   Cpu: CpuPerformanceFactorRequestSchema.optional(),
 });
 
-export const InstanceRequirementsRequestSchema = z.object({
+const InstanceRequirementsRequestSchema = z.object({
   VCpuCount: VCpuCountRangeRequestSchema.optional(),
   MemoryMiB: MemoryMiBRequestSchema.optional(),
   CpuManufacturers: z.array(
@@ -247,7 +256,7 @@ export const InstanceRequirementsRequestSchema = z.object({
   RequireEncryptionInTransit: z.boolean().optional(),
 });
 
-export const SpotFleetLaunchSpecificationSchema = z.object({
+const SpotFleetLaunchSpecificationSchema = z.object({
   BlockDeviceMappings: z.array(BlockDeviceMappingSchema).optional(),
   EbsOptimized: z.boolean().optional(),
   IamInstanceProfile: IamInstanceProfileSpecificationSchema.optional(),
@@ -269,7 +278,7 @@ export const SpotFleetLaunchSpecificationSchema = z.object({
   InstanceRequirements: InstanceRequirementsRequestSchema.optional(),
 });
 
-export const FleetLaunchTemplateSpecificationSchema = z.object({
+const FleetLaunchTemplateSpecificationSchema = z.object({
   LaunchTemplateId: z.string().optional(),
   LaunchTemplateName: z.string().min(3).max(128).regex(
     new RegExp("[a-zA-Z0-9\\(\\)\\.\\-/_]+"),
@@ -277,7 +286,7 @@ export const FleetLaunchTemplateSpecificationSchema = z.object({
   Version: z.string(),
 });
 
-export const LaunchTemplateOverridesSchema = z.object({
+const LaunchTemplateOverridesSchema = z.object({
   AvailabilityZone: z.string().optional(),
   AvailabilityZoneId: z.string().optional(),
   InstanceType: z.string().optional(),
@@ -288,39 +297,39 @@ export const LaunchTemplateOverridesSchema = z.object({
   Priority: z.number().optional(),
 });
 
-export const LaunchTemplateConfigSchema = z.object({
+const LaunchTemplateConfigSchema = z.object({
   LaunchTemplateSpecification: FleetLaunchTemplateSpecificationSchema
     .optional(),
   Overrides: z.array(LaunchTemplateOverridesSchema).optional(),
 });
 
-export const ClassicLoadBalancerSchema = z.object({
+const ClassicLoadBalancerSchema = z.object({
   Name: z.string(),
 });
 
-export const ClassicLoadBalancersConfigSchema = z.object({
+const ClassicLoadBalancersConfigSchema = z.object({
   ClassicLoadBalancers: z.array(ClassicLoadBalancerSchema),
 });
 
-export const TargetGroupSchema = z.object({
+const TargetGroupSchema = z.object({
   Arn: z.string(),
 });
 
-export const TargetGroupsConfigSchema = z.object({
+const TargetGroupsConfigSchema = z.object({
   TargetGroups: z.array(TargetGroupSchema),
 });
 
-export const LoadBalancersConfigSchema = z.object({
+const LoadBalancersConfigSchema = z.object({
   ClassicLoadBalancersConfig: ClassicLoadBalancersConfigSchema.optional(),
   TargetGroupsConfig: TargetGroupsConfigSchema.optional(),
 });
 
-export const SpotCapacityRebalanceSchema = z.object({
+const SpotCapacityRebalanceSchema = z.object({
   ReplacementStrategy: z.enum(["launch", "launch-before-terminate"]).optional(),
   TerminationDelay: z.number().int().optional(),
 });
 
-export const SpotMaintenanceStrategiesSchema = z.object({
+const SpotMaintenanceStrategiesSchema = z.object({
   CapacityRebalance: SpotCapacityRebalanceSchema.optional(),
 });
 
@@ -448,9 +457,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EC2 SpotFleet. Registered at `@swamp/aws/ec2/spot-fleet`. */
 export const model = {
   type: "@swamp/aws/ec2/spot-fleet",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -464,6 +474,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

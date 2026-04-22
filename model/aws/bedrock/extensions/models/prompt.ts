@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Bedrock Prompt (AWS::Bedrock::Prompt).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TextS3LocationSchema = z.object({
+const TextS3LocationSchema = z.object({
   Bucket: z.string().min(3).max(63).regex(
     new RegExp("^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"),
   ).describe("A bucket in S3"),
@@ -22,17 +31,17 @@ export const TextS3LocationSchema = z.object({
   ).optional(),
 });
 
-export const PromptInputVariableSchema = z.object({
+const PromptInputVariableSchema = z.object({
   Name: z.string().regex(new RegExp("^([0-9a-zA-Z][_-]?){1,100}$")).describe(
     "Name for an input variable",
   ).optional(),
 });
 
-export const CachePointBlockSchema = z.object({
+const CachePointBlockSchema = z.object({
   Type: z.enum(["default"]).describe("CachePoint types for CachePointBlock"),
 });
 
-export const TextPromptTemplateConfigurationSchema = z.object({
+const TextPromptTemplateConfigurationSchema = z.object({
   Text: z.string().min(1).max(200000).describe(
     "Prompt content for String prompt template",
   ).optional(),
@@ -45,7 +54,7 @@ export const TextPromptTemplateConfigurationSchema = z.object({
   CachePoint: CachePointBlockSchema.describe("CachePointBlock").optional(),
 });
 
-export const MessageSchema = z.object({
+const MessageSchema = z.object({
   Role: z.enum(["user", "assistant"]).describe(
     "Conversation roles for the chat prompt",
   ),
@@ -56,7 +65,7 @@ export const MessageSchema = z.object({
   })).describe("List of Content Blocks"),
 });
 
-export const ToolSpecificationSchema = z.object({
+const ToolSpecificationSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$"))
     .describe("Tool name"),
   Description: z.string().min(1).optional(),
@@ -65,12 +74,12 @@ export const ToolSpecificationSchema = z.object({
   }).describe("Tool input schema"),
 });
 
-export const SpecificToolChoiceSchema = z.object({
+const SpecificToolChoiceSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$"))
     .describe("Tool name"),
 });
 
-export const ToolConfigurationSchema = z.object({
+const ToolConfigurationSchema = z.object({
   Tools: z.array(z.object({
     ToolSpec: ToolSpecificationSchema.describe("Tool specification").optional(),
     CachePoint: CachePointBlockSchema.describe("CachePointBlock").optional(),
@@ -82,7 +91,7 @@ export const ToolConfigurationSchema = z.object({
   }).describe("Tool choice").optional(),
 });
 
-export const ChatPromptTemplateConfigurationSchema = z.object({
+const ChatPromptTemplateConfigurationSchema = z.object({
   Messages: z.array(MessageSchema).describe(
     "List of messages for chat prompt template",
   ),
@@ -98,7 +107,7 @@ export const ChatPromptTemplateConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const PromptModelInferenceConfigurationSchema = z.object({
+const PromptModelInferenceConfigurationSchema = z.object({
   Temperature: z.number().min(0).max(1).describe(
     "Controls randomness, higher values increase diversity",
   ).optional(),
@@ -111,7 +120,7 @@ export const PromptModelInferenceConfigurationSchema = z.object({
     .optional(),
 });
 
-export const PromptAgentResourceSchema = z.object({
+const PromptAgentResourceSchema = z.object({
   AgentIdentifier: z.string().max(2048).regex(
     new RegExp(
       "^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:agent-alias/[0-9a-zA-Z]{10}/[0-9a-zA-Z]{10}$",
@@ -119,7 +128,7 @@ export const PromptAgentResourceSchema = z.object({
   ).describe("Arn representation of the Agent Alias."),
 });
 
-export const PromptMetadataEntrySchema = z.object({
+const PromptMetadataEntrySchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$"))
     .describe("The key of a metadata tag for a prompt variant."),
   Value: z.string().min(1).max(1024).regex(
@@ -127,7 +136,7 @@ export const PromptMetadataEntrySchema = z.object({
   ).describe("The value of a metadata tag for a prompt variant."),
 });
 
-export const PromptVariantSchema = z.object({
+const PromptVariantSchema = z.object({
   Name: z.string().regex(new RegExp("^([0-9a-zA-Z][_-]?){1,100}$")).describe(
     "Name for a variant.",
   ),
@@ -229,9 +238,10 @@ const InputsSchema = z.object({
   ).describe("A KMS key ARN").optional(),
 });
 
+/** Swamp extension model for Bedrock Prompt. Registered at `@swamp/aws/bedrock/prompt`. */
 export const model = {
   type: "@swamp/aws/bedrock/prompt",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -245,6 +255,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

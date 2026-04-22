@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Kendra DataSource (AWS::Kendra::DataSource).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,15 +21,15 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DocumentsMetadataConfigurationSchema = z.object({
+const DocumentsMetadataConfigurationSchema = z.object({
   S3Prefix: z.string().min(1).max(1024).optional(),
 });
 
-export const AccessControlListConfigurationSchema = z.object({
+const AccessControlListConfigurationSchema = z.object({
   KeyPath: z.string().min(1).max(1024).optional(),
 });
 
-export const S3DataSourceConfigurationSchema = z.object({
+const S3DataSourceConfigurationSchema = z.object({
   BucketName: z.string().min(3).max(63).regex(
     new RegExp("[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"),
   ),
@@ -33,7 +42,7 @@ export const S3DataSourceConfigurationSchema = z.object({
     .optional(),
 });
 
-export const DataSourceVpcConfigurationSchema = z.object({
+const DataSourceVpcConfigurationSchema = z.object({
   SubnetIds: z.array(
     z.string().min(1).max(200).regex(new RegExp("[\\-0-9a-zA-Z]+")),
   ),
@@ -42,20 +51,20 @@ export const DataSourceVpcConfigurationSchema = z.object({
   ),
 });
 
-export const DataSourceToIndexFieldMappingSchema = z.object({
+const DataSourceToIndexFieldMappingSchema = z.object({
   DataSourceFieldName: z.string().min(1).max(100),
   DateFieldFormat: z.string().min(4).max(40).optional(),
   IndexFieldName: z.string().min(1).max(30),
 });
 
-export const S3PathSchema = z.object({
+const S3PathSchema = z.object({
   Bucket: z.string().min(3).max(63).regex(
     new RegExp("[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"),
   ),
   Key: z.string().min(1).max(1024),
 });
 
-export const SharePointConfigurationSchema = z.object({
+const SharePointConfigurationSchema = z.object({
   SharePointVersion: z.enum([
     "SHAREPOINT_ONLINE",
     "SHAREPOINT_2013",
@@ -82,7 +91,7 @@ export const SharePointConfigurationSchema = z.object({
   SslCertificateS3Path: S3PathSchema.optional(),
 });
 
-export const SalesforceStandardObjectConfigurationSchema = z.object({
+const SalesforceStandardObjectConfigurationSchema = z.object({
   Name: z.enum([
     "ACCOUNT",
     "CAMPAIGN",
@@ -107,23 +116,20 @@ export const SalesforceStandardObjectConfigurationSchema = z.object({
   FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
 });
 
-export const SalesforceStandardKnowledgeArticleTypeConfigurationSchema = z
-  .object({
-    DocumentDataFieldName: z.string().min(1).max(100),
-    DocumentTitleFieldName: z.string().min(1).max(100).optional(),
-    FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
-  });
+const SalesforceStandardKnowledgeArticleTypeConfigurationSchema = z.object({
+  DocumentDataFieldName: z.string().min(1).max(100),
+  DocumentTitleFieldName: z.string().min(1).max(100).optional(),
+  FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
+});
 
-export const SalesforceCustomKnowledgeArticleTypeConfigurationSchema = z.object(
-  {
-    Name: z.string().min(1).max(100),
-    DocumentDataFieldName: z.string().min(1).max(100),
-    DocumentTitleFieldName: z.string().min(1).max(100).optional(),
-    FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
-  },
-);
+const SalesforceCustomKnowledgeArticleTypeConfigurationSchema = z.object({
+  Name: z.string().min(1).max(100),
+  DocumentDataFieldName: z.string().min(1).max(100),
+  DocumentTitleFieldName: z.string().min(1).max(100).optional(),
+  FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
+});
 
-export const SalesforceKnowledgeArticleConfigurationSchema = z.object({
+const SalesforceKnowledgeArticleConfigurationSchema = z.object({
   IncludedStates: z.array(z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"])),
   StandardKnowledgeArticleTypeConfiguration:
     SalesforceStandardKnowledgeArticleTypeConfigurationSchema.optional(),
@@ -132,7 +138,7 @@ export const SalesforceKnowledgeArticleConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SalesforceChatterFeedConfigurationSchema = z.object({
+const SalesforceChatterFeedConfigurationSchema = z.object({
   DocumentDataFieldName: z.string().min(1).max(100),
   DocumentTitleFieldName: z.string().min(1).max(100).optional(),
   FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
@@ -140,12 +146,12 @@ export const SalesforceChatterFeedConfigurationSchema = z.object({
     .optional(),
 });
 
-export const SalesforceStandardObjectAttachmentConfigurationSchema = z.object({
+const SalesforceStandardObjectAttachmentConfigurationSchema = z.object({
   DocumentTitleFieldName: z.string().min(1).max(100).optional(),
   FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
 });
 
-export const SalesforceConfigurationSchema = z.object({
+const SalesforceConfigurationSchema = z.object({
   ServerUrl: z.string().min(1).max(2048).regex(
     new RegExp("^(https?|ftp|file)://([^\\s]*)"),
   ),
@@ -167,7 +173,7 @@ export const SalesforceConfigurationSchema = z.object({
   ExcludeAttachmentFilePatterns: z.array(z.string().min(1).max(50)).optional(),
 });
 
-export const OneDriveUsersSchema = z.object({
+const OneDriveUsersSchema = z.object({
   OneDriveUserList: z.array(
     z.string().min(1).max(256).regex(
       new RegExp("^(?!\\s).+@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"),
@@ -176,7 +182,7 @@ export const OneDriveUsersSchema = z.object({
   OneDriveUserS3Path: S3PathSchema.optional(),
 });
 
-export const OneDriveConfigurationSchema = z.object({
+const OneDriveConfigurationSchema = z.object({
   TenantDomain: z.string().min(1).max(256).regex(
     new RegExp("^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*\\.)+[a-z]{2,}$"),
   ),
@@ -192,7 +198,7 @@ export const OneDriveConfigurationSchema = z.object({
   DisableLocalGroups: z.boolean().optional(),
 });
 
-export const ServiceNowKnowledgeArticleConfigurationSchema = z.object({
+const ServiceNowKnowledgeArticleConfigurationSchema = z.object({
   CrawlAttachments: z.boolean().optional(),
   IncludeAttachmentFilePatterns: z.array(z.string().min(1).max(50)).optional(),
   ExcludeAttachmentFilePatterns: z.array(z.string().min(1).max(50)).optional(),
@@ -202,7 +208,7 @@ export const ServiceNowKnowledgeArticleConfigurationSchema = z.object({
   FilterQuery: z.string().min(1).max(2048).optional(),
 });
 
-export const ServiceNowServiceCatalogConfigurationSchema = z.object({
+const ServiceNowServiceCatalogConfigurationSchema = z.object({
   CrawlAttachments: z.boolean().optional(),
   IncludeAttachmentFilePatterns: z.array(z.string().min(1).max(50)).optional(),
   ExcludeAttachmentFilePatterns: z.array(z.string().min(1).max(50)).optional(),
@@ -211,7 +217,7 @@ export const ServiceNowServiceCatalogConfigurationSchema = z.object({
   FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
 });
 
-export const ServiceNowConfigurationSchema = z.object({
+const ServiceNowConfigurationSchema = z.object({
   HostUrl: z.string().min(1).max(2048).regex(
     new RegExp(
       "^(?!(^(https?|ftp|file):\\/\\/))[a-z0-9-]+(\\.service-now\\.com)$",
@@ -230,7 +236,7 @@ export const ServiceNowConfigurationSchema = z.object({
     .optional(),
 });
 
-export const ConnectionConfigurationSchema = z.object({
+const ConnectionConfigurationSchema = z.object({
   DatabaseHost: z.string().min(1).max(253),
   DatabasePort: z.number().int().min(1).max(65535),
   DatabaseName: z.string().min(1).max(100),
@@ -242,7 +248,7 @@ export const ConnectionConfigurationSchema = z.object({
   ),
 });
 
-export const ColumnConfigurationSchema = z.object({
+const ColumnConfigurationSchema = z.object({
   DocumentIdColumnName: z.string().min(1).max(100),
   DocumentDataColumnName: z.string().min(1).max(100),
   DocumentTitleColumnName: z.string().min(1).max(100).optional(),
@@ -250,15 +256,15 @@ export const ColumnConfigurationSchema = z.object({
   ChangeDetectingColumns: z.array(z.string().min(1).max(100)),
 });
 
-export const AclConfigurationSchema = z.object({
+const AclConfigurationSchema = z.object({
   AllowedGroupsColumnName: z.string().min(1).max(100),
 });
 
-export const SqlConfigurationSchema = z.object({
+const SqlConfigurationSchema = z.object({
   QueryIdentifiersEnclosingOption: z.enum(["DOUBLE_QUOTES", "NONE"]).optional(),
 });
 
-export const DatabaseConfigurationSchema = z.object({
+const DatabaseConfigurationSchema = z.object({
   DatabaseEngineType: z.enum([
     "RDS_AURORA_MYSQL",
     "RDS_AURORA_POSTGRESQL",
@@ -272,13 +278,13 @@ export const DatabaseConfigurationSchema = z.object({
   SqlConfiguration: SqlConfigurationSchema.optional(),
 });
 
-export const ConfluenceSpaceToIndexFieldMappingSchema = z.object({
+const ConfluenceSpaceToIndexFieldMappingSchema = z.object({
   DataSourceFieldName: z.enum(["DISPLAY_URL", "ITEM_TYPE", "SPACE_KEY", "URL"]),
   DateFieldFormat: z.string().min(4).max(40).optional(),
   IndexFieldName: z.string().min(1).max(30),
 });
 
-export const ConfluenceSpaceConfigurationSchema = z.object({
+const ConfluenceSpaceConfigurationSchema = z.object({
   CrawlPersonalSpaces: z.boolean().optional(),
   CrawlArchivedSpaces: z.boolean().optional(),
   IncludeSpaces: z.array(z.string().min(1).max(255)).optional(),
@@ -287,7 +293,7 @@ export const ConfluenceSpaceConfigurationSchema = z.object({
     .optional(),
 });
 
-export const ConfluencePageToIndexFieldMappingSchema = z.object({
+const ConfluencePageToIndexFieldMappingSchema = z.object({
   DataSourceFieldName: z.enum([
     "AUTHOR",
     "CONTENT_STATUS",
@@ -306,12 +312,12 @@ export const ConfluencePageToIndexFieldMappingSchema = z.object({
   IndexFieldName: z.string().min(1).max(30),
 });
 
-export const ConfluencePageConfigurationSchema = z.object({
+const ConfluencePageConfigurationSchema = z.object({
   PageFieldMappings: z.array(ConfluencePageToIndexFieldMappingSchema)
     .optional(),
 });
 
-export const ConfluenceBlogToIndexFieldMappingSchema = z.object({
+const ConfluenceBlogToIndexFieldMappingSchema = z.object({
   DataSourceFieldName: z.enum([
     "AUTHOR",
     "DISPLAY_URL",
@@ -327,12 +333,12 @@ export const ConfluenceBlogToIndexFieldMappingSchema = z.object({
   IndexFieldName: z.string().min(1).max(30),
 });
 
-export const ConfluenceBlogConfigurationSchema = z.object({
+const ConfluenceBlogConfigurationSchema = z.object({
   BlogFieldMappings: z.array(ConfluenceBlogToIndexFieldMappingSchema)
     .optional(),
 });
 
-export const ConfluenceAttachmentToIndexFieldMappingSchema = z.object({
+const ConfluenceAttachmentToIndexFieldMappingSchema = z.object({
   DataSourceFieldName: z.enum([
     "AUTHOR",
     "CONTENT_TYPE",
@@ -350,14 +356,14 @@ export const ConfluenceAttachmentToIndexFieldMappingSchema = z.object({
   IndexFieldName: z.string().min(1).max(30),
 });
 
-export const ConfluenceAttachmentConfigurationSchema = z.object({
+const ConfluenceAttachmentConfigurationSchema = z.object({
   CrawlAttachments: z.boolean().optional(),
   AttachmentFieldMappings: z.array(
     ConfluenceAttachmentToIndexFieldMappingSchema,
   ).optional(),
 });
 
-export const ConfluenceConfigurationSchema = z.object({
+const ConfluenceConfigurationSchema = z.object({
   ServerUrl: z.string().min(1).max(2048).regex(
     new RegExp("^(https?|ftp|file)://([^\\s]*)"),
   ),
@@ -376,7 +382,7 @@ export const ConfluenceConfigurationSchema = z.object({
   ExclusionPatterns: z.array(z.string().min(1).max(50)).optional(),
 });
 
-export const GoogleDriveConfigurationSchema = z.object({
+const GoogleDriveConfigurationSchema = z.object({
   SecretArn: z.string().min(1).max(1284).regex(
     new RegExp(
       "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}",
@@ -390,25 +396,25 @@ export const GoogleDriveConfigurationSchema = z.object({
   ExcludeSharedDrives: z.array(z.string().min(1).max(256)).optional(),
 });
 
-export const WebCrawlerSeedUrlConfigurationSchema = z.object({
+const WebCrawlerSeedUrlConfigurationSchema = z.object({
   SeedUrls: z.array(
     z.string().min(1).max(2048).regex(new RegExp("^(https?)://([^\\s]*)")),
   ),
   WebCrawlerMode: z.enum(["HOST_ONLY", "SUBDOMAINS", "EVERYTHING"]).optional(),
 });
 
-export const WebCrawlerSiteMapsConfigurationSchema = z.object({
+const WebCrawlerSiteMapsConfigurationSchema = z.object({
   SiteMaps: z.array(
     z.string().min(1).max(2048).regex(new RegExp("^(https?):\\/\\/([^\\s]*)")),
   ),
 });
 
-export const WebCrawlerUrlsSchema = z.object({
+const WebCrawlerUrlsSchema = z.object({
   SeedUrlConfiguration: WebCrawlerSeedUrlConfigurationSchema.optional(),
   SiteMapsConfiguration: WebCrawlerSiteMapsConfigurationSchema.optional(),
 });
 
-export const ProxyConfigurationSchema = z.object({
+const ProxyConfigurationSchema = z.object({
   Host: z.string().min(1).max(253).regex(new RegExp("([^\\s]*)")),
   Port: z.number().int().min(1).max(65535),
   Credentials: z.string().min(1).max(1284).regex(
@@ -418,7 +424,7 @@ export const ProxyConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const WebCrawlerBasicAuthenticationSchema = z.object({
+const WebCrawlerBasicAuthenticationSchema = z.object({
   Host: z.string().min(1).max(253).regex(new RegExp("([^\\s]*)")),
   Port: z.number().int().min(1).max(65535),
   Credentials: z.string().min(1).max(1284).regex(
@@ -428,11 +434,11 @@ export const WebCrawlerBasicAuthenticationSchema = z.object({
   ),
 });
 
-export const WebCrawlerAuthenticationConfigurationSchema = z.object({
+const WebCrawlerAuthenticationConfigurationSchema = z.object({
   BasicAuthentication: z.array(WebCrawlerBasicAuthenticationSchema).optional(),
 });
 
-export const WebCrawlerConfigurationSchema = z.object({
+const WebCrawlerConfigurationSchema = z.object({
   Urls: WebCrawlerUrlsSchema,
   CrawlDepth: z.number().int().min(1).max(10).optional(),
   MaxLinksPerPage: z.number().int().min(1).max(1000).optional(),
@@ -445,7 +451,7 @@ export const WebCrawlerConfigurationSchema = z.object({
     .optional(),
 });
 
-export const WorkDocsConfigurationSchema = z.object({
+const WorkDocsConfigurationSchema = z.object({
   OrganizationId: z.string().min(12).max(12).regex(
     new RegExp("d-[0-9a-fA-F]{10}"),
   ),
@@ -456,11 +462,11 @@ export const WorkDocsConfigurationSchema = z.object({
   FieldMappings: z.array(DataSourceToIndexFieldMappingSchema).optional(),
 });
 
-export const TemplateConfigurationSchema = z.object({
+const TemplateConfigurationSchema = z.object({
   Template: z.string(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "A string used to identify this tag",
   ),
@@ -469,14 +475,14 @@ export const TagSchema = z.object({
   ),
 });
 
-export const DocumentAttributeValueSchema = z.object({
+const DocumentAttributeValueSchema = z.object({
   StringValue: z.string().min(1).max(2048).optional(),
   StringListValue: z.array(z.string()).optional(),
   LongValue: z.number().int().optional(),
   DateValue: z.string().optional(),
 });
 
-export const DocumentAttributeConditionSchema = z.object({
+const DocumentAttributeConditionSchema = z.object({
   ConditionDocumentAttributeKey: z.string().min(1).max(200).regex(
     new RegExp("[a-zA-Z0-9_][a-zA-Z0-9_-]*"),
   ),
@@ -496,7 +502,7 @@ export const DocumentAttributeConditionSchema = z.object({
   ConditionOnValue: DocumentAttributeValueSchema.optional(),
 });
 
-export const DocumentAttributeTargetSchema = z.object({
+const DocumentAttributeTargetSchema = z.object({
   TargetDocumentAttributeKey: z.string().min(1).max(200).regex(
     new RegExp("[a-zA-Z0-9_][a-zA-Z0-9_-]*"),
   ),
@@ -504,13 +510,13 @@ export const DocumentAttributeTargetSchema = z.object({
   TargetDocumentAttributeValue: DocumentAttributeValueSchema.optional(),
 });
 
-export const InlineCustomDocumentEnrichmentConfigurationSchema = z.object({
+const InlineCustomDocumentEnrichmentConfigurationSchema = z.object({
   Condition: DocumentAttributeConditionSchema.optional(),
   Target: DocumentAttributeTargetSchema.optional(),
   DocumentContentDeletion: z.boolean().optional(),
 });
 
-export const HookConfigurationSchema = z.object({
+const HookConfigurationSchema = z.object({
   InvocationCondition: DocumentAttributeConditionSchema.optional(),
   LambdaArn: z.string().min(1).max(2048),
   S3Bucket: z.string().min(3).max(63).regex(
@@ -682,9 +688,10 @@ const InputsSchema = z.object({
     .describe("The code for a language.").optional(),
 });
 
+/** Swamp extension model for Kendra DataSource. Registered at `@swamp/aws/kendra/data-source`. */
 export const model = {
   type: "@swamp/aws/kendra/data-source",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -698,6 +705,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Bedrock AutomatedReasoningPolicy (AWS::Bedrock::AutomatedReasoningPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PolicyDefinitionTypeValueSchema = z.object({
+const PolicyDefinitionTypeValueSchema = z.object({
   Value: z.string().min(1).max(64).regex(new RegExp("^[A-Za-z][A-Za-z0-9_]+$"))
     .describe("The value of the type value."),
   Description: z.string().max(1024).regex(new RegExp("^[\\s\\S]+$")).describe(
@@ -20,7 +29,7 @@ export const PolicyDefinitionTypeValueSchema = z.object({
   ).optional(),
 });
 
-export const PolicyDefinitionTypeSchema = z.object({
+const PolicyDefinitionTypeSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[A-Za-z][A-Za-z0-9_]+$"))
     .describe("A name for this type."),
   Description: z.string().max(1024).regex(new RegExp("^[\\s\\S]+$")).describe(
@@ -31,7 +40,7 @@ export const PolicyDefinitionTypeSchema = z.object({
   ),
 });
 
-export const PolicyDefinitionRuleSchema = z.object({
+const PolicyDefinitionRuleSchema = z.object({
   Id: z.string().min(12).max(12).regex(new RegExp("^[A-Z][0-9A-Z]{11}$"))
     .describe("A unique id within the PolicyDefinition"),
   Expression: z.string().max(2048).regex(new RegExp("^[\\s\\S]+$")).describe(
@@ -41,7 +50,7 @@ export const PolicyDefinitionRuleSchema = z.object({
     .describe("An alternate expression for this rule").optional(),
 });
 
-export const PolicyDefinitionVariableSchema = z.object({
+const PolicyDefinitionVariableSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[A-Za-z][A-Za-z0-9_]+$"))
     .describe("A name from this variable."),
   Type: z.string().min(1).max(64).regex(new RegExp("^[A-Za-z][A-Za-z0-9_]+$"))
@@ -51,7 +60,7 @@ export const PolicyDefinitionVariableSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$"))
     .describe("Tag Key"),
   Value: z.string().min(0).max(256).regex(
@@ -141,9 +150,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Bedrock AutomatedReasoningPolicy. Registered at `@swamp/aws/bedrock/automated-reasoning-policy`. */
 export const model = {
   type: "@swamp/aws/bedrock/automated-reasoning-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -157,6 +167,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

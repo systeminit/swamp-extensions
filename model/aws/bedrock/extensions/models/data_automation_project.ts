@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Bedrock DataAutomationProject (AWS::Bedrock::DataAutomationProject).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const BlueprintItemSchema = z.object({
+const BlueprintItemSchema = z.object({
   BlueprintArn: z.string().max(128).regex(
     new RegExp(
       "^arn:aws(|-cn|-us-gov|-iso|-iso-[a-z]):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):blueprint/(bedrock-data-automation-public-[a-zA-Z0-9-_]{1,30}|[a-zA-Z0-9-]{12,36})$",
@@ -25,15 +34,15 @@ export const BlueprintItemSchema = z.object({
   ).optional(),
 });
 
-export const SplitterConfigurationSchema = z.object({
+const SplitterConfigurationSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const ModalityProcessingConfigurationSchema = z.object({
+const ModalityProcessingConfigurationSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const PIIEntitiesConfigurationSchema = z.object({
+const PIIEntitiesConfigurationSchema = z.object({
   PiiEntityTypes: z.array(
     z.enum([
       "ALL",
@@ -73,19 +82,19 @@ export const PIIEntitiesConfigurationSchema = z.object({
   RedactionMaskMode: z.enum(["PII", "ENTITY_TYPE"]).optional(),
 });
 
-export const SensitiveDataConfigurationSchema = z.object({
+const SensitiveDataConfigurationSchema = z.object({
   DetectionMode: z.enum(["DETECTION", "DETECTION_AND_REDACTION"]).optional(),
   DetectionScope: z.array(z.enum(["STANDARD", "CUSTOM"])).optional(),
   PiiEntitiesConfiguration: PIIEntitiesConfigurationSchema.optional(),
 });
 
-export const DocumentOverrideConfigurationSchema = z.object({
+const DocumentOverrideConfigurationSchema = z.object({
   Splitter: SplitterConfigurationSchema.optional(),
   ModalityProcessing: ModalityProcessingConfigurationSchema.optional(),
   SensitiveDataConfiguration: SensitiveDataConfigurationSchema.optional(),
 });
 
-export const AudioLanguageConfigurationSchema = z.object({
+const AudioLanguageConfigurationSchema = z.object({
   InputLanguages: z.array(
     z.enum(["EN", "DE", "ES", "FR", "IT", "PT", "JA", "KO", "CN", "TW", "HK"]),
   ).optional(),
@@ -93,136 +102,136 @@ export const AudioLanguageConfigurationSchema = z.object({
   IdentifyMultipleLanguages: z.boolean().optional(),
 });
 
-export const AudioOverrideConfigurationSchema = z.object({
+const AudioOverrideConfigurationSchema = z.object({
   ModalityProcessing: ModalityProcessingConfigurationSchema.optional(),
   LanguageConfiguration: AudioLanguageConfigurationSchema.optional(),
   SensitiveDataConfiguration: SensitiveDataConfigurationSchema.optional(),
 });
 
-export const VideoOverrideConfigurationSchema = z.object({
+const VideoOverrideConfigurationSchema = z.object({
   ModalityProcessing: ModalityProcessingConfigurationSchema.optional(),
   SensitiveDataConfiguration: SensitiveDataConfigurationSchema.optional(),
 });
 
-export const ImageOverrideConfigurationSchema = z.object({
+const ImageOverrideConfigurationSchema = z.object({
   ModalityProcessing: ModalityProcessingConfigurationSchema.optional(),
   SensitiveDataConfiguration: SensitiveDataConfigurationSchema.optional(),
 });
 
-export const ModalityRoutingConfigurationSchema = z.object({
+const ModalityRoutingConfigurationSchema = z.object({
   jpeg: z.enum(["DOCUMENT", "IMAGE", "VIDEO", "AUDIO"]).optional(),
   png: z.enum(["DOCUMENT", "IMAGE", "VIDEO", "AUDIO"]).optional(),
   mp4: z.enum(["DOCUMENT", "IMAGE", "VIDEO", "AUDIO"]).optional(),
   mov: z.enum(["DOCUMENT", "IMAGE", "VIDEO", "AUDIO"]).optional(),
 });
 
-export const DocumentExtractionGranularitySchema = z.object({
+const DocumentExtractionGranularitySchema = z.object({
   Types: z.array(z.enum(["DOCUMENT", "PAGE", "ELEMENT", "WORD", "LINE"]))
     .optional(),
 });
 
-export const DocumentBoundingBoxSchema = z.object({
+const DocumentBoundingBoxSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
 });
 
-export const DocumentStandardExtractionSchema = z.object({
+const DocumentStandardExtractionSchema = z.object({
   Granularity: DocumentExtractionGranularitySchema,
   BoundingBox: DocumentBoundingBoxSchema,
 });
 
-export const DocumentStandardGenerativeFieldSchema = z.object({
+const DocumentStandardGenerativeFieldSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
 });
 
-export const DocumentOutputTextFormatSchema = z.object({
+const DocumentOutputTextFormatSchema = z.object({
   Types: z.array(z.enum(["PLAIN_TEXT", "MARKDOWN", "HTML", "CSV"])).optional(),
 });
 
-export const DocumentOutputAdditionalFileFormatSchema = z.object({
+const DocumentOutputAdditionalFileFormatSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
 });
 
-export const DocumentOutputFormatSchema = z.object({
+const DocumentOutputFormatSchema = z.object({
   TextFormat: DocumentOutputTextFormatSchema,
   AdditionalFileFormat: DocumentOutputAdditionalFileFormatSchema,
 });
 
-export const DocumentStandardOutputConfigurationSchema = z.object({
+const DocumentStandardOutputConfigurationSchema = z.object({
   Extraction: DocumentStandardExtractionSchema.optional(),
   GenerativeField: DocumentStandardGenerativeFieldSchema.optional(),
   OutputFormat: DocumentOutputFormatSchema.optional(),
 });
 
-export const ImageExtractionCategorySchema = z.object({
+const ImageExtractionCategorySchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
   Types: z.array(z.enum(["CONTENT_MODERATION", "TEXT_DETECTION", "LOGOS"]))
     .optional(),
 });
 
-export const ImageBoundingBoxSchema = z.object({
+const ImageBoundingBoxSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
 });
 
-export const ImageStandardExtractionSchema = z.object({
+const ImageStandardExtractionSchema = z.object({
   Category: ImageExtractionCategorySchema,
   BoundingBox: ImageBoundingBoxSchema,
 });
 
-export const ImageStandardGenerativeFieldSchema = z.object({
+const ImageStandardGenerativeFieldSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
   Types: z.array(z.enum(["IMAGE_SUMMARY", "IAB"])).optional(),
 });
 
-export const ImageStandardOutputConfigurationSchema = z.object({
+const ImageStandardOutputConfigurationSchema = z.object({
   Extraction: ImageStandardExtractionSchema.optional(),
   GenerativeField: ImageStandardGenerativeFieldSchema.optional(),
 });
 
-export const VideoExtractionCategorySchema = z.object({
+const VideoExtractionCategorySchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
   Types: z.array(
     z.enum(["CONTENT_MODERATION", "TEXT_DETECTION", "TRANSCRIPT", "LOGOS"]),
   ).optional(),
 });
 
-export const VideoBoundingBoxSchema = z.object({
+const VideoBoundingBoxSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
 });
 
-export const VideoStandardExtractionSchema = z.object({
+const VideoStandardExtractionSchema = z.object({
   Category: VideoExtractionCategorySchema,
   BoundingBox: VideoBoundingBoxSchema,
 });
 
-export const VideoStandardGenerativeFieldSchema = z.object({
+const VideoStandardGenerativeFieldSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
   Types: z.array(z.enum(["VIDEO_SUMMARY", "IAB", "CHAPTER_SUMMARY"]))
     .optional(),
 });
 
-export const VideoStandardOutputConfigurationSchema = z.object({
+const VideoStandardOutputConfigurationSchema = z.object({
   Extraction: VideoStandardExtractionSchema.optional(),
   GenerativeField: VideoStandardGenerativeFieldSchema.optional(),
 });
 
-export const SpeakerLabelingConfigurationSchema = z.object({
+const SpeakerLabelingConfigurationSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
 });
 
-export const ChannelLabelingConfigurationSchema = z.object({
+const ChannelLabelingConfigurationSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
 });
 
-export const TranscriptConfigurationSchema = z.object({
+const TranscriptConfigurationSchema = z.object({
   SpeakerLabeling: SpeakerLabelingConfigurationSchema.optional(),
   ChannelLabeling: ChannelLabelingConfigurationSchema.optional(),
 });
 
-export const AudioExtractionCategoryTypeConfigurationSchema = z.object({
+const AudioExtractionCategoryTypeConfigurationSchema = z.object({
   Transcript: TranscriptConfigurationSchema.optional(),
 });
 
-export const AudioExtractionCategorySchema = z.object({
+const AudioExtractionCategorySchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
   Types: z.array(
     z.enum([
@@ -234,21 +243,21 @@ export const AudioExtractionCategorySchema = z.object({
   TypeConfiguration: AudioExtractionCategoryTypeConfigurationSchema.optional(),
 });
 
-export const AudioStandardExtractionSchema = z.object({
+const AudioStandardExtractionSchema = z.object({
   Category: AudioExtractionCategorySchema,
 });
 
-export const AudioStandardGenerativeFieldSchema = z.object({
+const AudioStandardGenerativeFieldSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]),
   Types: z.array(z.enum(["AUDIO_SUMMARY", "IAB", "TOPIC_SUMMARY"])).optional(),
 });
 
-export const AudioStandardOutputConfigurationSchema = z.object({
+const AudioStandardOutputConfigurationSchema = z.object({
   Extraction: AudioStandardExtractionSchema.optional(),
   GenerativeField: AudioStandardGenerativeFieldSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$"))
     .describe("Key for the tag"),
   Value: z.string().min(0).max(256).regex(
@@ -362,9 +371,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe("List of Tags").optional(),
 });
 
+/** Swamp extension model for Bedrock DataAutomationProject. Registered at `@swamp/aws/bedrock/data-automation-project`. */
 export const model = {
   type: "@swamp/aws/bedrock/data-automation-project",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -378,6 +388,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

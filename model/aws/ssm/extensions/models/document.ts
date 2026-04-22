@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SSM Document (AWS::SSM::Document).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DocumentRequiresSchema = z.object({
+const DocumentRequiresSchema = z.object({
   Version: z.string().max(8).regex(
     new RegExp("([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)"),
   ).describe("The document version required by the current document.")
@@ -23,7 +32,7 @@ export const DocumentRequiresSchema = z.object({
     ).optional(),
 });
 
-export const AttachmentsSourceSchema = z.object({
+const AttachmentsSourceSchema = z.object({
   Values: z.array(z.string().min(1).max(100000)).describe(
     "The value of a key-value pair that identifies the location of an attachment to a document. The format for Value depends on the type of key you specify.",
   ).optional(),
@@ -35,7 +44,7 @@ export const AttachmentsSourceSchema = z.object({
   ).describe("The name of the document attachment file.").optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(1).max(256).regex(
     new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$", "u"),
   ).describe("The value of the tag.").optional(),
@@ -155,9 +164,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SSM Document. Registered at `@swamp/aws/ssm/document`. */
 export const model = {
   type: "@swamp/aws/ssm/document",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -171,6 +181,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

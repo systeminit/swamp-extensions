@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker ModelPackage (AWS::SageMaker::ModelPackage).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$", "u"),
   ).describe(
@@ -25,13 +34,13 @@ export const TagSchema = z.object({
   ),
 });
 
-export const ModelAccessConfigSchema = z.object({
+const ModelAccessConfigSchema = z.object({
   AcceptEula: z.boolean().describe(
     "Specifies agreement to the model end-user license agreement (EULA).",
   ),
 });
 
-export const S3ModelDataSourceSchema = z.object({
+const S3ModelDataSourceSchema = z.object({
   S3DataType: z.enum(["S3Prefix", "S3Object"]).describe(
     "Specifies the type of ML model data to deploy.",
   ),
@@ -45,13 +54,13 @@ export const S3ModelDataSourceSchema = z.object({
   ).optional(),
 });
 
-export const ModelDataSourceSchema = z.object({
+const ModelDataSourceSchema = z.object({
   S3DataSource: S3ModelDataSourceSchema.describe(
     "Specifies the S3 location of ML model data to deploy.",
   ).optional(),
 });
 
-export const ModelPackageContainerDefinitionSchema = z.object({
+const ModelPackageContainerDefinitionSchema = z.object({
   ContainerHostname: z.string().max(63).regex(
     new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"),
   ).describe("The DNS host name for the Docker container.").optional(),
@@ -88,7 +97,7 @@ export const ModelPackageContainerDefinitionSchema = z.object({
   ).optional(),
 });
 
-export const AdditionalInferenceSpecificationDefinitionSchema = z.object({
+const AdditionalInferenceSpecificationDefinitionSchema = z.object({
   Containers: z.array(ModelPackageContainerDefinitionSchema).describe(
     "The Amazon ECR registry path of the Docker image that contains the inference code.",
   ),
@@ -113,7 +122,7 @@ export const AdditionalInferenceSpecificationDefinitionSchema = z.object({
   ).optional(),
 });
 
-export const MetricsSourceSchema = z.object({
+const MetricsSourceSchema = z.object({
   ContentDigest: z.string().max(72).regex(
     new RegExp("^[Ss][Hh][Aa]256:[0-9a-fA-F]{64}$"),
   ).describe("The digest of the metric source.").optional(),
@@ -124,7 +133,7 @@ export const MetricsSourceSchema = z.object({
     .describe("The Amazon S3 URI for the metric source."),
 });
 
-export const FileSourceSchema = z.object({
+const FileSourceSchema = z.object({
   ContentDigest: z.string().max(72).regex(
     new RegExp("^[Ss][Hh][Aa]256:[0-9a-fA-F]{64}$"),
   ).describe("The digest of the file source.").optional(),
@@ -135,7 +144,7 @@ export const FileSourceSchema = z.object({
     .describe("The Amazon S3 URI for the file source."),
 });
 
-export const DriftCheckBiasSchema = z.object({
+const DriftCheckBiasSchema = z.object({
   PostTrainingConstraints: MetricsSourceSchema.describe(
     "Represents a Metric Source Object.",
   ).optional(),
@@ -146,7 +155,7 @@ export const DriftCheckBiasSchema = z.object({
     .optional(),
 });
 
-export const DriftCheckExplainabilitySchema = z.object({
+const DriftCheckExplainabilitySchema = z.object({
   Constraints: MetricsSourceSchema.describe(
     "Represents a Metric Source Object.",
   ).optional(),
@@ -154,7 +163,7 @@ export const DriftCheckExplainabilitySchema = z.object({
     .optional(),
 });
 
-export const DriftCheckModelDataQualitySchema = z.object({
+const DriftCheckModelDataQualitySchema = z.object({
   Constraints: MetricsSourceSchema.describe(
     "Represents a Metric Source Object.",
   ).optional(),
@@ -162,7 +171,7 @@ export const DriftCheckModelDataQualitySchema = z.object({
     .optional(),
 });
 
-export const DriftCheckModelQualitySchema = z.object({
+const DriftCheckModelQualitySchema = z.object({
   Constraints: MetricsSourceSchema.describe(
     "Represents a Metric Source Object.",
   ).optional(),
@@ -170,7 +179,7 @@ export const DriftCheckModelQualitySchema = z.object({
     .optional(),
 });
 
-export const BiasSchema = z.object({
+const BiasSchema = z.object({
   Report: MetricsSourceSchema.describe("Represents a Metric Source Object.")
     .optional(),
   PreTrainingReport: MetricsSourceSchema.describe(
@@ -181,12 +190,12 @@ export const BiasSchema = z.object({
   ).optional(),
 });
 
-export const ExplainabilitySchema = z.object({
+const ExplainabilitySchema = z.object({
   Report: MetricsSourceSchema.describe("Represents a Metric Source Object.")
     .optional(),
 });
 
-export const ModelDataQualitySchema = z.object({
+const ModelDataQualitySchema = z.object({
   Constraints: MetricsSourceSchema.describe(
     "Represents a Metric Source Object.",
   ).optional(),
@@ -194,7 +203,7 @@ export const ModelDataQualitySchema = z.object({
     .optional(),
 });
 
-export const ModelQualitySchema = z.object({
+const ModelQualitySchema = z.object({
   Constraints: MetricsSourceSchema.describe(
     "Represents a Metric Source Object.",
   ).optional(),
@@ -202,7 +211,7 @@ export const ModelQualitySchema = z.object({
     .optional(),
 });
 
-export const SourceAlgorithmSchema = z.object({
+const SourceAlgorithmSchema = z.object({
   AlgorithmName: z.string().min(1).max(170).regex(
     new RegExp(
       "(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:[a-z\\-]*\\/)?([a-zA-Z0-9]([a-zA-Z0-9-]){0,62})(?<!-)$",
@@ -217,7 +226,7 @@ export const SourceAlgorithmSchema = z.object({
   ).optional(),
 });
 
-export const S3DataSourceSchema = z.object({
+const S3DataSourceSchema = z.object({
   S3DataType: z.enum(["ManifestFile", "S3Prefix", "AugmentedManifestFile"])
     .describe("The S3 Data Source Type"),
   S3Uri: z.string().max(1024).regex(new RegExp("^(https|s3)://([^/]+)/?(.*)$"))
@@ -226,11 +235,11 @@ export const S3DataSourceSchema = z.object({
     ),
 });
 
-export const DataSourceSchema = z.object({
+const DataSourceSchema = z.object({
   S3DataSource: S3DataSourceSchema.describe("Describes the S3 data source."),
 });
 
-export const TransformInputSchema = z.object({
+const TransformInputSchema = z.object({
   CompressionType: z.enum(["None", "Gzip"]).describe(
     "If your transform data is compressed, specify the compression type. Amazon SageMaker automatically decompresses the data for the transform job accordingly. The default value is None.",
   ).optional(),
@@ -245,7 +254,7 @@ export const TransformInputSchema = z.object({
   ).optional(),
 });
 
-export const TransformOutputSchema = z.object({
+const TransformOutputSchema = z.object({
   Accept: z.string().max(256).regex(new RegExp(".*")).describe(
     "The MIME type used to specify the output data. Amazon SageMaker uses the MIME type with each http call to transfer data from the transform job.",
   ).optional(),
@@ -262,7 +271,7 @@ export const TransformOutputSchema = z.object({
   ).optional(),
 });
 
-export const TransformResourcesSchema = z.object({
+const TransformResourcesSchema = z.object({
   InstanceCount: z.number().int().min(1).describe(
     "The number of ML compute instances to use in the transform job. For distributed transform jobs, specify a value greater than 1. The default value is 1.",
   ),
@@ -274,7 +283,7 @@ export const TransformResourcesSchema = z.object({
   ).optional(),
 });
 
-export const TransformJobDefinitionSchema = z.object({
+const TransformJobDefinitionSchema = z.object({
   Environment: z.record(z.string(), z.string().max(1024)).describe(
     "Sets the environment variables in the Docker container",
   ).optional(),
@@ -298,7 +307,7 @@ export const TransformJobDefinitionSchema = z.object({
   ),
 });
 
-export const ValidationProfileSchema = z.object({
+const ValidationProfileSchema = z.object({
   TransformJobDefinition: TransformJobDefinitionSchema.describe(
     "Defines the input needed to run a transform job using the inference specification specified in the algorithm.",
   ),
@@ -307,7 +316,7 @@ export const ValidationProfileSchema = z.object({
   ).describe("The name of the profile for the model package."),
 });
 
-export const ModelPackageStatusItemSchema = z.object({
+const ModelPackageStatusItemSchema = z.object({
   FailureReason: z.string().describe(
     "If the overall status is Failed, the reason for the failure.",
   ).optional(),
@@ -719,9 +728,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker ModelPackage. Registered at `@swamp/aws/sagemaker/model-package`. */
 export const model = {
   type: "@swamp/aws/sagemaker/model-package",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -735,6 +745,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

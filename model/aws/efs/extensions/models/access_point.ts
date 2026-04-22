@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EFS AccessPoint (AWS::EFS::AccessPoint).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AccessPointTagSchema = z.object({
+const AccessPointTagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The tag key (String). The key can't start with aws:.",
   ).optional(),
@@ -20,7 +29,7 @@ export const AccessPointTagSchema = z.object({
     .optional(),
 });
 
-export const CreationInfoSchema = z.object({
+const CreationInfoSchema = z.object({
   OwnerUid: z.string().describe(
     "Specifies the POSIX user ID to apply to the RootDirectory. Accepts values from 0 to 2^32 (4294967295).",
   ),
@@ -125,9 +134,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EFS AccessPoint. Registered at `@swamp/aws/efs/access-point`. */
 export const model = {
   type: "@swamp/aws/efs/access-point",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -141,6 +151,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaLive Network (AWS::MediaLive::Network).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,17 +21,17 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IpPoolSchema = z.object({
+const IpPoolSchema = z.object({
   Cidr: z.string().describe("IP address cidr pool").optional(),
 });
 
-export const RouteSchema = z.object({
+const RouteSchema = z.object({
   Cidr: z.string().describe("Ip address cidr").optional(),
   Gateway: z.string().describe("IP address for the route packet paths")
     .optional(),
 });
 
-export const TagsSchema = z.object({
+const TagsSchema = z.object({
   Key: z.string().optional(),
   Value: z.string().optional(),
 });
@@ -70,9 +79,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for MediaLive Network. Registered at `@swamp/aws/medialive/network`. */
 export const model = {
   type: "@swamp/aws/medialive/network",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -86,6 +96,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

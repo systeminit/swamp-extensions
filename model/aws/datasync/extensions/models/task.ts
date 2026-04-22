@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataSync Task (AWS::DataSync::Task).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FilterRuleSchema = z.object({
+const FilterRuleSchema = z.object({
   FilterType: z.enum(["SIMPLE_PATTERN"]).describe(
     "The type of filter rule to apply. AWS DataSync only supports the SIMPLE_PATTERN rule type.",
   ).optional(),
@@ -21,7 +30,7 @@ export const FilterRuleSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9\\s+=._:/-]+$"))
     .describe("The key for an AWS resource tag."),
   Value: z.string().min(1).max(256).regex(
@@ -29,7 +38,7 @@ export const TagSchema = z.object({
   ).describe("The value for an AWS resource tag."),
 });
 
-export const TaskReportConfigDestinationS3Schema = z.object({
+const TaskReportConfigDestinationS3Schema = z.object({
   Subdirectory: z.string().max(4096).regex(
     new RegExp("^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\p{Zs}]*$", "u"),
   ).describe("Specifies a bucket prefix for your report.").optional(),
@@ -49,7 +58,7 @@ export const TaskReportConfigDestinationS3Schema = z.object({
   ).optional(),
 });
 
-export const ManifestConfigSourceS3Schema = z.object({
+const ManifestConfigSourceS3Schema = z.object({
   ManifestObjectPath: z.string().max(1024).regex(
     new RegExp("^[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}\\p{C}]*$", "u"),
   ).describe("Specifies the Amazon S3 object key of your manifest.").optional(),
@@ -477,9 +486,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for DataSync Task. Registered at `@swamp/aws/datasync/task`. */
 export const model = {
   type: "@swamp/aws/datasync/task",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -493,6 +503,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

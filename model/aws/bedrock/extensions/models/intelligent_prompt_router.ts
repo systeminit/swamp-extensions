@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Bedrock IntelligentPromptRouter (AWS::Bedrock::IntelligentPromptRouter).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PromptRouterTargetModelSchema = z.object({
+const PromptRouterTargetModelSchema = z.object({
   ModelArn: z.string().min(1).max(2048).regex(
     new RegExp(
       "(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(^arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)$",
@@ -20,7 +29,7 @@ export const PromptRouterTargetModelSchema = z.object({
   ).describe("Arn of underlying model which are added in the Prompt Router."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$"))
     .describe("Tag Key"),
   Value: z.string().min(0).max(256).regex(
@@ -97,9 +106,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe("List of Tags").optional(),
 });
 
+/** Swamp extension model for Bedrock IntelligentPromptRouter. Registered at `@swamp/aws/bedrock/intelligent-prompt-router`. */
 export const model = {
   type: "@swamp/aws/bedrock/intelligent-prompt-router",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -113,6 +123,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

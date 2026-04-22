@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTFleetWise Campaign (AWS::IoTFleetWise::Campaign).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SignalInformationSchema = z.object({
+const SignalInformationSchema = z.object({
   MaxSampleCount: z.number().min(1).max(4294967295).optional(),
   Name: z.string().min(1).max(150).regex(
     new RegExp("^[\\w|*|-]+(\\.[\\w|*|-]+)*$"),
@@ -23,16 +32,16 @@ export const SignalInformationSchema = z.object({
   ).optional(),
 });
 
-export const TimeBasedSignalFetchConfigSchema = z.object({
+const TimeBasedSignalFetchConfigSchema = z.object({
   ExecutionFrequencyMs: z.number().min(1),
 });
 
-export const ConditionBasedSignalFetchConfigSchema = z.object({
+const ConditionBasedSignalFetchConfigSchema = z.object({
   ConditionExpression: z.string().min(1).max(2048),
   TriggerMode: z.enum(["ALWAYS", "RISING_EDGE"]),
 });
 
-export const SignalFetchInformationSchema = z.object({
+const SignalFetchInformationSchema = z.object({
   FullyQualifiedName: z.string().min(1).max(150).regex(
     new RegExp("^[a-zA-Z0-9_.]+$"),
   ),
@@ -44,7 +53,7 @@ export const SignalFetchInformationSchema = z.object({
   Actions: z.array(z.string().min(1).max(2048)),
 });
 
-export const S3ConfigSchema = z.object({
+const S3ConfigSchema = z.object({
   BucketArn: z.string().min(16).max(100).regex(
     new RegExp("^arn:(aws[a-zA-Z0-9-]*):s3:::.+$"),
   ),
@@ -55,7 +64,7 @@ export const S3ConfigSchema = z.object({
   ).optional(),
 });
 
-export const TimestreamConfigSchema = z.object({
+const TimestreamConfigSchema = z.object({
   TimestreamTableArn: z.string().min(20).max(2048).regex(
     new RegExp(
       "^arn:(aws[a-zA-Z0-9-]*):timestream:[a-zA-Z0-9-]+:[0-9]{12}:database\\/[a-zA-Z0-9_.-]+\\/table\\/[a-zA-Z0-9_.-]+$",
@@ -68,7 +77,7 @@ export const TimestreamConfigSchema = z.object({
   ),
 });
 
-export const MqttTopicConfigSchema = z.object({
+const MqttTopicConfigSchema = z.object({
   MqttTopicArn: z.string().min(20).max(2048).regex(new RegExp("^arn:.*")),
   ExecutionRoleArn: z.string().min(20).max(2048).regex(
     new RegExp(
@@ -77,45 +86,45 @@ export const MqttTopicConfigSchema = z.object({
   ),
 });
 
-export const TimeBasedCollectionSchemeSchema = z.object({
+const TimeBasedCollectionSchemeSchema = z.object({
   PeriodMs: z.number().min(10000).max(86400000),
 });
 
-export const ConditionBasedCollectionSchemeSchema = z.object({
+const ConditionBasedCollectionSchemeSchema = z.object({
   MinimumTriggerIntervalMs: z.number().min(0).max(4294967295).optional(),
   Expression: z.string().min(1).max(2048),
   TriggerMode: z.enum(["ALWAYS", "RISING_EDGE"]).optional(),
   ConditionLanguageVersion: z.number().int().min(1).optional(),
 });
 
-export const StorageMaximumSizeSchema = z.object({
+const StorageMaximumSizeSchema = z.object({
   Unit: z.enum(["MB", "GB", "TB"]),
   Value: z.number().int().min(1).max(1073741824),
 });
 
-export const StorageMinimumTimeToLiveSchema = z.object({
+const StorageMinimumTimeToLiveSchema = z.object({
   Unit: z.enum(["HOURS", "DAYS", "WEEKS"]),
   Value: z.number().int().min(1).max(10000),
 });
 
-export const DataPartitionStorageOptionsSchema = z.object({
+const DataPartitionStorageOptionsSchema = z.object({
   MaximumSize: StorageMaximumSizeSchema,
   MinimumTimeToLive: StorageMinimumTimeToLiveSchema,
   StorageLocation: z.string().min(1).max(4096),
 });
 
-export const DataPartitionUploadOptionsSchema = z.object({
+const DataPartitionUploadOptionsSchema = z.object({
   Expression: z.string().min(1).max(2048),
   ConditionLanguageVersion: z.number().int().min(1).optional(),
 });
 
-export const DataPartitionSchema = z.object({
+const DataPartitionSchema = z.object({
   Id: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9]+$")),
   StorageOptions: DataPartitionStorageOptionsSchema,
   UploadOptions: DataPartitionUploadOptionsSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -224,9 +233,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for IoTFleetWise Campaign. Registered at `@swamp/aws/iotfleetwise/campaign`. */
 export const model = {
   type: "@swamp/aws/iotfleetwise/campaign",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -240,6 +250,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

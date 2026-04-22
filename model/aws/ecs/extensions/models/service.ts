@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ECS Service (AWS::ECS::Service).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PlacementStrategySchema = z.object({
+const PlacementStrategySchema = z.object({
   Field: z.string().describe(
     "The field to apply the placement strategy against. For the spread placement strategy, valid values are instanceId (or host, which has the same effect), or any platform or custom attribute that's applied to a container instance, such as attribute:ecs.availability-zone. For the binpack placement strategy, valid values are cpu and memory. For the random placement strategy, this field is not used.",
   ).optional(),
@@ -21,7 +30,7 @@ export const PlacementStrategySchema = z.object({
   ),
 });
 
-export const ServiceRegistrySchema = z.object({
+const ServiceRegistrySchema = z.object({
   ContainerName: z.string().describe(
     "The container name value to be used for your service discovery service. It's already specified in the task definition. If the task definition that your service task specifies uses the bridge or host network mode, you must specify a containerName and containerPort combination from the task definition. If the task definition that your service task specifies uses the awsvpc network mode and a type SRV DNS record is used, you must specify either a containerName and containerPort combination or a port value. However, you can't specify both.",
   ).optional(),
@@ -36,7 +45,7 @@ export const ServiceRegistrySchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe(
     "The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).",
   ).optional(),
@@ -45,7 +54,7 @@ export const TagSchema = z.object({
   ).optional(),
 });
 
-export const EBSTagSpecificationSchema = z.object({
+const EBSTagSpecificationSchema = z.object({
   PropagateTags: z.enum(["SERVICE", "TASK_DEFINITION"]).describe(
     "Determines whether to propagate the tags from the task definition to the Amazon EBS volume. Tags can only propagate to a SERVICE specified in ServiceVolumeConfiguration. If no value is specified, the tags aren't propagated.",
   ).optional(),
@@ -55,7 +64,7 @@ export const EBSTagSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const ServiceManagedEBSVolumeConfigurationSchema = z.object({
+const ServiceManagedEBSVolumeConfigurationSchema = z.object({
   SnapshotId: z.string().describe(
     "The snapshot that Amazon ECS uses to create volumes for attachment to tasks maintained by the service. You must specify either snapshotId or sizeInGiB in your volume configuration. This parameter maps 1:1 with the SnapshotId parameter of the [CreateVolume API](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html) in the *Amazon EC2 API Reference*.",
   ).optional(),
@@ -91,7 +100,7 @@ export const ServiceManagedEBSVolumeConfigurationSchema = z.object({
   ),
 });
 
-export const ServiceVolumeConfigurationSchema = z.object({
+const ServiceVolumeConfigurationSchema = z.object({
   ManagedEBSVolume: ServiceManagedEBSVolumeConfigurationSchema.describe(
     "The configuration for the Amazon EBS volume that Amazon ECS creates and manages on your behalf. These settings are used to create each Amazon EBS volume, with one volume created for each task in the service. The Amazon EBS volumes are visible in your account in the Amazon EC2 console once they are created.",
   ).optional(),
@@ -100,7 +109,7 @@ export const ServiceVolumeConfigurationSchema = z.object({
   ),
 });
 
-export const CapacityProviderStrategyItemSchema = z.object({
+const CapacityProviderStrategyItemSchema = z.object({
   CapacityProvider: z.string().describe(
     "The short name of the capacity provider. This can be either an AWS managed capacity provider ( FARGATE or FARGATE_SPOT) or the name of a custom capacity provider that you created.",
   ).optional(),
@@ -112,7 +121,7 @@ export const CapacityProviderStrategyItemSchema = z.object({
   ).optional(),
 });
 
-export const AwsVpcConfigurationSchema = z.object({
+const AwsVpcConfigurationSchema = z.object({
   SecurityGroups: z.array(z.string()).describe(
     "The IDs of the security groups associated with the task or service. If you don't specify a security group, the default security group for the VPC is used. There's a limit of 5 security groups that can be specified. All specified security groups must be from the same VPC.",
   ).optional(),
@@ -124,7 +133,7 @@ export const AwsVpcConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const PlacementConstraintSchema = z.object({
+const PlacementConstraintSchema = z.object({
   Type: z.enum(["distinctInstance", "memberOf"]).describe(
     "The type of constraint. Use distinctInstance to ensure that each task in a particular group is running on a different container instance. Use memberOf to restrict the selection to a group of valid candidates.",
   ),
@@ -133,7 +142,7 @@ export const PlacementConstraintSchema = z.object({
   ).optional(),
 });
 
-export const AdvancedConfigurationSchema = z.object({
+const AdvancedConfigurationSchema = z.object({
   TestListenerRule: z.string().describe(
     "The Amazon Resource Name (ARN) that identifies) that identifies the test listener rule (in the case of an Application Load Balancer) or listener (in the case for an Network Load Balancer) for routing test traffic.",
   ).optional(),
@@ -148,7 +157,7 @@ export const AdvancedConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const LoadBalancerSchema = z.object({
+const LoadBalancerSchema = z.object({
   TargetGroupArn: z.string().describe(
     "The full Amazon Resource Name (ARN) of the Elastic Load Balancing target group or groups associated with a service or task set. A target group ARN is only specified when using an Application Load Balancer or Network Load Balancer. For services using the ECS deployment controller, you can specify one or multiple target groups. For more information, see [Registering multiple target groups with a service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/register-multiple-targetgroups.html) in the *Amazon Elastic Container Service Developer Guide*. For services using the CODE_DEPLOY deployment controller, you're required to define two target groups for the load balancer. For more information, see [Blue/green deployment with CodeDeploy](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html) in the *Amazon Elastic Container Service Developer Guide*. If your service's task definition uses the awsvpc network mode, you must choose ip as the target type, not instance. Do this when creating your target groups because tasks that use the awsvpc network mode are associated with an elastic network interface, not an Amazon EC2 instance. This network mode is required for the Fargate launch type.",
   ).optional(),
@@ -166,7 +175,7 @@ export const LoadBalancerSchema = z.object({
   ).optional(),
 });
 
-export const TimeoutConfigurationSchema = z.object({
+const TimeoutConfigurationSchema = z.object({
   PerRequestTimeoutSeconds: z.number().int().describe(
     "The amount of time waiting for the upstream to respond with a complete response per request. A value of 0 can be set to disable perRequestTimeout. perRequestTimeout can only be set if Service Connect appProtocol isn't TCP. Only idleTimeout is allowed for TCP appProtocol.",
   ).optional(),
@@ -175,22 +184,22 @@ export const TimeoutConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ServiceConnectTestTrafficRulesHeaderValueSchema = z.object({
+const ServiceConnectTestTrafficRulesHeaderValueSchema = z.object({
   Exact: z.string(),
 });
 
-export const ServiceConnectTestTrafficRulesHeaderSchema = z.object({
+const ServiceConnectTestTrafficRulesHeaderSchema = z.object({
   Value: ServiceConnectTestTrafficRulesHeaderValueSchema.optional(),
   Name: z.string(),
 });
 
-export const ServiceConnectTestTrafficRulesSchema = z.object({
+const ServiceConnectTestTrafficRulesSchema = z.object({
   Header: ServiceConnectTestTrafficRulesHeaderSchema.describe(
     "The HTTP header-based routing rules that determine which requests should be routed to the new service version during blue/green deployment testing. These rules provide fine-grained control over test traffic routing based on request headers.",
   ),
 });
 
-export const ServiceConnectClientAliasSchema = z.object({
+const ServiceConnectClientAliasSchema = z.object({
   DnsName: z.string().describe(
     "The dnsName is the name that you use in the applications of client tasks to connect to this service. The name must be a valid DNS name but doesn't need to be fully-qualified. The name can include up to 127 characters. The name can include lowercase letters, numbers, underscores (_), hyphens (-), and periods (.). The name can't start with a hyphen. If this parameter isn't specified, the default value of discoveryName.namespace is used. If the discoveryName isn't specified, the port mapping name from the task definition is used in portName.namespace. To avoid changing your applications in client Amazon ECS services, set this to the same name that the client application uses by default. For example, a few common names are database, db, or the lowercase name of a database, such as mysql or redis. For more information, see [Service Connect](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html) in the *Amazon Elastic Container Service Developer Guide*.",
   ).optional(),
@@ -202,13 +211,13 @@ export const ServiceConnectClientAliasSchema = z.object({
   ),
 });
 
-export const ServiceConnectTlsCertificateAuthoritySchema = z.object({
+const ServiceConnectTlsCertificateAuthoritySchema = z.object({
   AwsPcaAuthorityArn: z.string().describe(
     "The ARN of the AWS Private Certificate Authority certificate.",
   ).optional(),
 });
 
-export const ServiceConnectTlsConfigurationSchema = z.object({
+const ServiceConnectTlsConfigurationSchema = z.object({
   IssuerCertificateAuthority: ServiceConnectTlsCertificateAuthoritySchema
     .describe("The signer certificate authority."),
   KmsKey: z.string().describe("The AWS Key Management Service key.").optional(),
@@ -217,7 +226,7 @@ export const ServiceConnectTlsConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ServiceConnectServiceSchema = z.object({
+const ServiceConnectServiceSchema = z.object({
   Timeout: TimeoutConfigurationSchema.describe(
     "A reference to an object that represents the configured timeouts for Service Connect.",
   ).optional(),
@@ -238,7 +247,7 @@ export const ServiceConnectServiceSchema = z.object({
   ),
 });
 
-export const ServiceConnectAccessLogConfigurationSchema = z.object({
+const ServiceConnectAccessLogConfigurationSchema = z.object({
   Format: z.enum(["TEXT", "JSON"]).describe(
     "The format for Service Connect access log output. Choose TEXT for human-readable logs or JSON for structured data that integrates well with log analysis tools.",
   ),
@@ -247,14 +256,14 @@ export const ServiceConnectAccessLogConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SecretSchema = z.object({
+const SecretSchema = z.object({
   ValueFrom: z.string().describe(
     "The secret to expose to the container. The supported values are either the full ARN of the ASMlong secret or the full ARN of the parameter in the SSM Parameter Store. For information about the require IAMlong permissions, see [Required IAM permissions for Amazon ECS secrets](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data-secrets.html#secrets-iam) (for Secrets Manager) or [Required IAM permissions for Amazon ECS secrets](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data-parameters.html) (for Systems Manager Parameter store) in the *Amazon Elastic Container Service Developer Guide*. If the SSM Parameter Store parameter exists in the same Region as the task you're launching, then you can use either the full ARN or name of the parameter. If the parameter exists in a different Region, then the full ARN must be specified.",
   ),
   Name: z.string().describe("The name of the secret."),
 });
 
-export const LogConfigurationSchema = z.object({
+const LogConfigurationSchema = z.object({
   SecretOptions: z.array(SecretSchema).describe(
     "The secrets to pass to the log configuration. For more information, see [Specifying sensitive data](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html) in the *Amazon Elastic Container Service Developer Guide*.",
   ).optional(),
@@ -266,7 +275,7 @@ export const LogConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const VpcLatticeConfigurationSchema = z.object({
+const VpcLatticeConfigurationSchema = z.object({
   TargetGroupArn: z.string().describe(
     "The full Amazon Resource Name (ARN) of the target group or groups associated with the VPC Lattice configuration that the Amazon ECS tasks will be registered to.",
   ),
@@ -278,7 +287,7 @@ export const VpcLatticeConfigurationSchema = z.object({
   ),
 });
 
-export const CanaryConfigurationSchema = z.object({
+const CanaryConfigurationSchema = z.object({
   CanaryPercent: z.number().min(0.1).max(100).describe(
     "The percentage of production traffic to shift to the new service revision during the canary phase. Valid values are multiples of 0.1 from 0.1 to 100.0. The default value is 5.0.",
   ).optional(),
@@ -287,7 +296,7 @@ export const CanaryConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const DeploymentLifecycleHookSchema = z.object({
+const DeploymentLifecycleHookSchema = z.object({
   LifecycleStages: z.array(
     z.enum([
       "RECONCILE_SERVICE",
@@ -312,7 +321,7 @@ export const DeploymentLifecycleHookSchema = z.object({
   ),
 });
 
-export const DeploymentAlarmsSchema = z.object({
+const DeploymentAlarmsSchema = z.object({
   AlarmNames: z.array(z.string()).describe(
     'One or more CloudWatch alarm names. Use a "," to separate the alarms.',
   ),
@@ -324,7 +333,7 @@ export const DeploymentAlarmsSchema = z.object({
   ),
 });
 
-export const DeploymentCircuitBreakerSchema = z.object({
+const DeploymentCircuitBreakerSchema = z.object({
   Enable: z.boolean().describe(
     "Determines whether to use the deployment circuit breaker logic for the service.",
   ),
@@ -333,7 +342,7 @@ export const DeploymentCircuitBreakerSchema = z.object({
   ),
 });
 
-export const LinearConfigurationSchema = z.object({
+const LinearConfigurationSchema = z.object({
   StepBakeTimeInMinutes: z.number().int().min(0).max(1440).describe(
     "The amount of time in minutes to wait between each traffic shifting step during a linear deployment. Valid values are 0 to 1440 minutes (24 hours). The default value is 6. This bake time is not applied after reaching 100 percent traffic.",
   ).optional(),
@@ -681,9 +690,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ECS Service. Registered at `@swamp/aws/ecs/service`. */
 export const model = {
   type: "@swamp/aws/ecs/service",
-  version: "2026.04.11.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -702,6 +712,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.11.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

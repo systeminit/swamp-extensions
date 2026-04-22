@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for InspectorV2 CodeSecurityScanConfiguration (AWS::InspectorV2::CodeSecurityScanConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PeriodicScanConfigurationSchema = z.object({
+const PeriodicScanConfigurationSchema = z.object({
   frequency: z.enum(["WEEKLY", "MONTHLY", "NEVER"]).optional(),
   frequencyExpression: z.string().min(1).max(256).optional(),
 });
 
-export const ContinuousIntegrationScanConfigurationSchema = z.object({
+const ContinuousIntegrationScanConfigurationSchema = z.object({
   supportedEvents: z.array(z.enum(["PULL_REQUEST", "PUSH"])),
 });
 
@@ -79,9 +88,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for InspectorV2 CodeSecurityScanConfiguration. Registered at `@swamp/aws/inspectorv2/code-security-scan-configuration`. */
 export const model = {
   type: "@swamp/aws/inspectorv2/code-security-scan-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -95,6 +105,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -6,6 +6,17 @@ snapshot[`generateGcpExtensionModel - all handlers, natural naming 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for Google Cloud Compute Engine Instances.
+ *
+ * A compute engine instance
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource, updateResource } from "./_lib/gcp.ts";
 
@@ -128,6 +139,7 @@ const InputsSchema = z.object({
   machineType: z.string().describe("Machine type").optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine Instances. Registered at \`@swamp/gcp/compute/instances\`. */
 export const model = {
   type: "@swamp/gcp/compute/instances",
   version: "2026.01.01.1",
@@ -268,6 +280,17 @@ snapshot[`generateGcpExtensionModel - readiness polling 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for Google Cloud Compute Engine Instances.
+ *
+ * A compute engine instance
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource, updateResource } from "./_lib/gcp.ts";
 
@@ -386,6 +409,7 @@ const InputsSchema = z.object({
   zone: z.string().describe("Zone").optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine Instances. Registered at \`@swamp/gcp/compute/instances\`. */
 export const model = {
   type: "@swamp/gcp/compute/instances",
   version: "2026.01.01.1",
@@ -525,6 +549,17 @@ snapshot[`generateGcpExtensionModel - listOnly resource 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for Google Cloud Compute Engine Regions.
+ *
+ * A compute engine region
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, getProjectId, isResourceNotFoundError, readViaList } from "./_lib/gcp.ts";
 
@@ -576,6 +611,7 @@ const InputsSchema = z.object({
   name: z.string().describe("Region name").optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine Regions. Registered at \`@swamp/gcp/compute/regions\`. */
 export const model = {
   type: "@swamp/gcp/compute/regions",
   version: "2026.01.01.1",
@@ -660,6 +696,17 @@ snapshot[`generateGcpExtensionModel - full resource name pattern 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for Google Cloud Service Usage Services.
+ *
+ * A managed service
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource } from "./_lib/gcp.ts";
 
@@ -732,6 +779,7 @@ const InputsSchema = z.object({
   parent: z.string().describe("Parent resource").optional(),
 });
 
+/** Swamp extension model for Google Cloud Service Usage Services. Registered at \`@swamp/gcp/serviceusage/services\`. */
 export const model = {
   type: "@swamp/gcp/serviceusage/services",
   version: "2026.01.01.1",
@@ -837,6 +885,17 @@ snapshot[`generateGcpExtensionModel - action methods 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for Google Cloud Compute Engine Instances.
+ *
+ * A compute engine instance
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource } from "./_lib/gcp.ts";
 
@@ -930,6 +989,7 @@ const InputsSchema = z.object({
   zone: z.string().describe("Zone").optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine Instances. Registered at \`@swamp/gcp/compute/instances\`. */
 export const model = {
   type: "@swamp/gcp/compute/instances",
   version: "2026.01.01.1",
@@ -1077,6 +1137,17 @@ snapshot[`generateGcpExtensionModel - no update or delete handlers 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for Google Cloud Compute Engine Snapshots.
+ *
+ * A compute engine disk snapshot
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, getProjectId, isResourceNotFoundError, readResource } from "./_lib/gcp.ts";
 
@@ -1136,6 +1207,7 @@ const InputsSchema = z.object({
   sourceDisk: z.string().describe("Source disk").optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine Snapshots. Registered at \`@swamp/gcp/compute/snapshots\`. */
 export const model = {
   type: "@swamp/gcp/compute/snapshots",
   version: "2026.01.01.1",
@@ -1223,6 +1295,17 @@ snapshot[`generateGcpExtensionModel - with upgrades block 1`] = `
 // Do not edit manually. Re-generate with: deno task generate:gcp
 
 // deno-lint-ignore-file no-explicit-any
+
+/**
+ * Swamp extension model for Google Cloud Compute Engine Firewalls.
+ *
+ * A VPC firewall rule
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
 
 import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource, updateResource } from "./_lib/gcp.ts";
@@ -1322,6 +1405,7 @@ const InputsSchema = z.object({
   network: z.string().describe("Network").optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine Firewalls. Registered at \`@swamp/gcp/compute/firewalls\`. */
 export const model = {
   type: "@swamp/gcp/compute/firewalls",
   version: "2026.01.02.1",

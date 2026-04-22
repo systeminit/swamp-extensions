@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ConnectCampaigns Campaign (AWS::ConnectCampaigns::Campaign).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ProgressiveDialerConfigSchema = z.object({
+const ProgressiveDialerConfigSchema = z.object({
   BandwidthAllocation: z.number().min(0).max(1).describe(
     "The bandwidth allocation of a queue resource.",
   ),
@@ -21,7 +30,7 @@ export const ProgressiveDialerConfigSchema = z.object({
   ).optional(),
 });
 
-export const PredictiveDialerConfigSchema = z.object({
+const PredictiveDialerConfigSchema = z.object({
   BandwidthAllocation: z.number().min(0).max(1).describe(
     "The bandwidth allocation of a queue resource.",
   ),
@@ -30,13 +39,13 @@ export const PredictiveDialerConfigSchema = z.object({
   ).optional(),
 });
 
-export const AgentlessDialerConfigSchema = z.object({
+const AgentlessDialerConfigSchema = z.object({
   DialingCapacity: z.number().min(0.01).max(1).describe(
     "Allocates dialing capacity for this campaign between multiple active campaigns.",
   ).optional(),
 });
 
-export const AnswerMachineDetectionConfigSchema = z.object({
+const AnswerMachineDetectionConfigSchema = z.object({
   EnableAnswerMachineDetection: z.boolean().describe(
     "Flag to decided whether outbound calls should have answering machine detection enabled or not",
   ),
@@ -45,7 +54,7 @@ export const AnswerMachineDetectionConfigSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -164,9 +173,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe("One or more tags.").optional(),
 });
 
+/** Swamp extension model for ConnectCampaigns Campaign. Registered at `@swamp/aws/connectcampaigns/campaign`. */
 export const model = {
   type: "@swamp/aws/connectcampaigns/campaign",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -180,6 +190,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

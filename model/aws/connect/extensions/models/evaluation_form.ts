@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Connect EvaluationForm (AWS::Connect::EvaluationForm).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,20 +21,20 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EvaluationReviewNotificationRecipientValueSchema = z.object({
+const EvaluationReviewNotificationRecipientValueSchema = z.object({
   UserId: z.string().describe(
     "The user identifier for the notification recipient.",
   ).optional(),
 });
 
-export const EvaluationReviewNotificationRecipientSchema = z.object({
+const EvaluationReviewNotificationRecipientSchema = z.object({
   Type: z.enum(["USER_ID"]).describe("The type of notification recipient."),
   Value: EvaluationReviewNotificationRecipientValueSchema.describe(
     "The value associated with the notification recipient type.",
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -204,9 +213,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Connect EvaluationForm. Registered at `@swamp/aws/connect/evaluation-form`. */
 export const model = {
   type: "@swamp/aws/connect/evaluation-form",
-  version: "2026.04.21.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -225,6 +235,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.21.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

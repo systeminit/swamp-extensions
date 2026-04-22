@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SES MailManagerTrafficPolicy (AWS::SES::MailManagerTrafficPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IngressAnalysisSchema = z.object({
+const IngressAnalysisSchema = z.object({
   Analyzer: z.string().regex(new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$")),
   ResultField: z.string().min(1).max(256).regex(
     new RegExp("^(addon\\.)?[\\sa-zA-Z0-9_]+$"),
   ),
 });
 
-export const IngressStringExpressionSchema = z.object({
+const IngressStringExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum(["RECIPIENT"]).optional(),
     Analysis: IngressAnalysisSchema.optional(),
@@ -34,7 +43,7 @@ export const IngressStringExpressionSchema = z.object({
   Values: z.array(z.string()),
 });
 
-export const IngressIpv4ExpressionSchema = z.object({
+const IngressIpv4ExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum(["SENDER_IP"]).optional(),
   }),
@@ -48,7 +57,7 @@ export const IngressIpv4ExpressionSchema = z.object({
   ),
 });
 
-export const IngressIpv6ExpressionSchema = z.object({
+const IngressIpv6ExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum(["SENDER_IPV6"]).optional(),
   }),
@@ -62,7 +71,7 @@ export const IngressIpv6ExpressionSchema = z.object({
   ),
 });
 
-export const IngressTlsProtocolExpressionSchema = z.object({
+const IngressTlsProtocolExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum(["TLS_PROTOCOL"]).optional(),
   }),
@@ -70,12 +79,12 @@ export const IngressTlsProtocolExpressionSchema = z.object({
   Value: z.enum(["TLS1_2", "TLS1_3"]),
 });
 
-export const IngressIsInAddressListSchema = z.object({
+const IngressIsInAddressListSchema = z.object({
   Attribute: z.enum(["RECIPIENT"]),
   AddressLists: z.array(z.string()),
 });
 
-export const IngressBooleanExpressionSchema = z.object({
+const IngressBooleanExpressionSchema = z.object({
   Evaluate: z.object({
     Analysis: IngressAnalysisSchema.optional(),
     IsInAddressList: IngressIsInAddressListSchema.optional(),
@@ -83,7 +92,7 @@ export const IngressBooleanExpressionSchema = z.object({
   Operator: z.enum(["IS_TRUE", "IS_FALSE"]),
 });
 
-export const PolicyStatementSchema = z.object({
+const PolicyStatementSchema = z.object({
   Conditions: z.array(z.object({
     StringExpression: IngressStringExpressionSchema.optional(),
     IpExpression: IngressIpv4ExpressionSchema.optional(),
@@ -94,7 +103,7 @@ export const PolicyStatementSchema = z.object({
   Action: z.enum(["ALLOW", "DENY"]),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z0-9/_\\+=\\.:@\\-]+$"),
   ),
@@ -139,9 +148,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SES MailManagerTrafficPolicy. Registered at `@swamp/aws/ses/mail-manager-traffic-policy`. */
 export const model = {
   type: "@swamp/aws/ses/mail-manager-traffic-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -155,6 +165,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

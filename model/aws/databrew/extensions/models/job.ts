@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataBrew Job (AWS::DataBrew::Job).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,21 +21,21 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CsvOutputOptionsSchema = z.object({
+const CsvOutputOptionsSchema = z.object({
   Delimiter: z.string().min(1).max(1).optional(),
 });
 
-export const OutputFormatOptionsSchema = z.object({
+const OutputFormatOptionsSchema = z.object({
   Csv: CsvOutputOptionsSchema.describe("Output Csv options").optional(),
 });
 
-export const S3LocationSchema = z.object({
+const S3LocationSchema = z.object({
   Bucket: z.string(),
   Key: z.string().optional(),
   BucketOwner: z.string().min(12).max(12).optional(),
 });
 
-export const OutputSchema = z.object({
+const OutputSchema = z.object({
   CompressionFormat: z.enum([
     "GZIP",
     "LZ4",
@@ -57,16 +66,16 @@ export const OutputSchema = z.object({
   MaxOutputFiles: z.number().int().min(1).max(999).optional(),
 });
 
-export const S3TableOutputOptionsSchema = z.object({
+const S3TableOutputOptionsSchema = z.object({
   Location: S3LocationSchema.describe("S3 Output location"),
 });
 
-export const DatabaseTableOutputOptionsSchema = z.object({
+const DatabaseTableOutputOptionsSchema = z.object({
   TempDirectory: S3LocationSchema.describe("S3 Output location").optional(),
   TableName: z.string().min(1).max(255),
 });
 
-export const DataCatalogOutputSchema = z.object({
+const DataCatalogOutputSchema = z.object({
   CatalogId: z.string().min(1).max(255).optional(),
   DatabaseName: z.string().min(1).max(255),
   TableName: z.string().min(1).max(255),
@@ -75,54 +84,54 @@ export const DataCatalogOutputSchema = z.object({
   Overwrite: z.boolean().optional(),
 });
 
-export const DatabaseOutputSchema = z.object({
+const DatabaseOutputSchema = z.object({
   GlueConnectionName: z.string().describe("Glue connection name"),
   DatabaseOutputMode: z.enum(["NEW_TABLE"]).describe("Database table name")
     .optional(),
   DatabaseOptions: DatabaseTableOutputOptionsSchema,
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
 
-export const StatisticOverrideSchema = z.object({
+const StatisticOverrideSchema = z.object({
   Statistic: z.string().min(1).max(128).regex(new RegExp("^[A-Z\\_]+$")),
   Parameters: z.record(z.string(), z.string()),
 });
 
-export const StatisticsConfigurationSchema = z.object({
+const StatisticsConfigurationSchema = z.object({
   IncludedStatistics: z.array(
     z.string().min(1).max(128).regex(new RegExp("^[A-Z\\_]+$")),
   ).optional(),
   Overrides: z.array(StatisticOverrideSchema).optional(),
 });
 
-export const ColumnSelectorSchema = z.object({
+const ColumnSelectorSchema = z.object({
   Regex: z.string().min(1).max(255).optional(),
   Name: z.string().min(1).max(255).optional(),
 });
 
-export const ColumnStatisticsConfigurationSchema = z.object({
+const ColumnStatisticsConfigurationSchema = z.object({
   Selectors: z.array(ColumnSelectorSchema).optional(),
   Statistics: StatisticsConfigurationSchema,
 });
 
-export const AllowedStatisticsSchema = z.object({
+const AllowedStatisticsSchema = z.object({
   Statistics: z.array(
     z.string().min(1).max(128).regex(new RegExp("^[A-Z\\_]+$")),
   ),
 });
 
-export const EntityDetectorConfigurationSchema = z.object({
+const EntityDetectorConfigurationSchema = z.object({
   EntityTypes: z.array(
     z.string().min(1).max(128).regex(new RegExp("^[A-Z_][A-Z\\\\d_]*$")),
   ),
   AllowedStatistics: AllowedStatisticsSchema.optional(),
 });
 
-export const ValidationConfigurationSchema = z.object({
+const ValidationConfigurationSchema = z.object({
   RulesetArn: z.string().min(20).max(2048).describe("Arn of the Ruleset"),
   ValidationMode: z.enum(["CHECK_ALL"]).optional(),
 });
@@ -265,9 +274,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for DataBrew Job. Registered at `@swamp/aws/databrew/job`. */
 export const model = {
   type: "@swamp/aws/databrew/job",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -281,6 +291,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

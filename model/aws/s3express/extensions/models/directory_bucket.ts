@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for S3Express DirectoryBucket (AWS::S3Express::DirectoryBucket).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ServerSideEncryptionByDefaultSchema = z.object({
+const ServerSideEncryptionByDefaultSchema = z.object({
   KMSMasterKeyID: z.string().describe(
     "AWS Key Management Service (KMS) customer managed key ID to use for the default encryption. This parameter is allowed only if SSEAlgorithm is set to aws:kms. You can specify this parameter with the key ID or the Amazon Resource Name (ARN) of the KMS key",
   ).optional(),
   SSEAlgorithm: z.enum(["aws:kms", "AES256"]),
 });
 
-export const ServerSideEncryptionRuleSchema = z.object({
+const ServerSideEncryptionRuleSchema = z.object({
   BucketKeyEnabled: z.boolean().describe(
     "Specifies whether Amazon S3 should use an S3 Bucket Key with server-side encryption using KMS (SSE-KMS) for new objects in the bucket. Existing objects are not affected. Amazon S3 Express One Zone uses an S3 Bucket Key with SSE-KMS and S3 Bucket Key cannot be disabled. It's only allowed to set the BucketKeyEnabled element to true.",
   ).optional(),
@@ -28,13 +37,13 @@ export const ServerSideEncryptionRuleSchema = z.object({
   ).optional(),
 });
 
-export const AbortIncompleteMultipartUploadSchema = z.object({
+const AbortIncompleteMultipartUploadSchema = z.object({
   DaysAfterInitiation: z.number().int().min(0).describe(
     "Specifies the number of days after which Amazon S3 aborts an incomplete multipart upload.",
   ),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   AbortIncompleteMultipartUpload: AbortIncompleteMultipartUploadSchema.describe(
     "Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload.",
   ).optional(),
@@ -47,7 +56,7 @@ export const RuleSchema = z.object({
   ObjectSizeLessThan: z.string().max(20).regex(new RegExp("[0-9]+")).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:.*)([\\p{L}\\p{Z}\\p{N}_.:=+\\/\\-@%]*)$", "u"),
   ),
@@ -56,7 +65,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const MetricsConfigurationSchema = z.object({
+const MetricsConfigurationSchema = z.object({
   Id: z.string().describe("The ID used to identify the metrics configuration.")
     .optional(),
   Prefix: z.string().describe(
@@ -150,9 +159,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for S3Express DirectoryBucket. Registered at `@swamp/aws/s3express/directory-bucket`. */
 export const model = {
   type: "@swamp/aws/s3express/directory-bucket",
-  version: "2026.04.07.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -172,6 +182,16 @@ export const model = {
     {
       toVersion: "2026.04.07.1",
       description: "Added: MetricsConfigurations",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

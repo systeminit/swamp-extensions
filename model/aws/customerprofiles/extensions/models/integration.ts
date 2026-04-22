@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CustomerProfiles Integration (AWS::CustomerProfiles::Integration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ConnectorOperatorSchema = z.object({
+const ConnectorOperatorSchema = z.object({
   Marketo: z.enum([
     "PROJECTION",
     "LESS_THAN",
@@ -117,7 +126,7 @@ export const ConnectorOperatorSchema = z.object({
   ]).optional(),
 });
 
-export const TaskPropertiesMapSchema = z.object({
+const TaskPropertiesMapSchema = z.object({
   OperatorPropertyKey: z.enum([
     "VALUE",
     "VALUES",
@@ -137,7 +146,7 @@ export const TaskPropertiesMapSchema = z.object({
   Property: z.string().max(2048).regex(new RegExp(".+")),
 });
 
-export const TaskSchema = z.object({
+const TaskSchema = z.object({
   ConnectorOperator: ConnectorOperatorSchema.optional(),
   SourceFields: z.array(z.string().max(2048).regex(new RegExp(".*"))),
   DestinationField: z.string().max(256).regex(new RegExp(".*")).optional(),
@@ -153,7 +162,7 @@ export const TaskSchema = z.object({
   TaskProperties: z.array(TaskPropertiesMapSchema).optional(),
 });
 
-export const ScheduledTriggerPropertiesSchema = z.object({
+const ScheduledTriggerPropertiesSchema = z.object({
   ScheduleExpression: z.string().max(256).regex(new RegExp(".*")),
   DataPullMode: z.enum(["Incremental", "Complete"]).optional(),
   ScheduleStartTime: z.number().optional(),
@@ -163,43 +172,43 @@ export const ScheduledTriggerPropertiesSchema = z.object({
   FirstExecutionFrom: z.number().optional(),
 });
 
-export const TriggerPropertiesSchema = z.object({
+const TriggerPropertiesSchema = z.object({
   Scheduled: ScheduledTriggerPropertiesSchema.optional(),
 });
 
-export const TriggerConfigSchema = z.object({
+const TriggerConfigSchema = z.object({
   TriggerType: z.enum(["Scheduled", "Event", "OnDemand"]),
   TriggerProperties: TriggerPropertiesSchema.optional(),
 });
 
-export const IncrementalPullConfigSchema = z.object({
+const IncrementalPullConfigSchema = z.object({
   DatetimeTypeFieldName: z.string().max(256).optional(),
 });
 
-export const MarketoSourcePropertiesSchema = z.object({
+const MarketoSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const S3SourcePropertiesSchema = z.object({
+const S3SourcePropertiesSchema = z.object({
   BucketName: z.string().min(3).max(63).regex(new RegExp("\\S+")),
   BucketPrefix: z.string().max(512).regex(new RegExp(".*")).optional(),
 });
 
-export const SalesforceSourcePropertiesSchema = z.object({
+const SalesforceSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   EnableDynamicFieldUpdate: z.boolean().optional(),
   IncludeDeletedRecords: z.boolean().optional(),
 });
 
-export const ServiceNowSourcePropertiesSchema = z.object({
+const ServiceNowSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const ZendeskSourcePropertiesSchema = z.object({
+const ZendeskSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const SourceConnectorPropertiesSchema = z.object({
+const SourceConnectorPropertiesSchema = z.object({
   Marketo: MarketoSourcePropertiesSchema.optional(),
   S3: S3SourcePropertiesSchema.optional(),
   Salesforce: SalesforceSourcePropertiesSchema.optional(),
@@ -207,7 +216,7 @@ export const SourceConnectorPropertiesSchema = z.object({
   Zendesk: ZendeskSourcePropertiesSchema.optional(),
 });
 
-export const SourceFlowConfigSchema = z.object({
+const SourceFlowConfigSchema = z.object({
   ConnectorType: z.enum([
     "Salesforce",
     "Marketo",
@@ -221,14 +230,14 @@ export const SourceFlowConfigSchema = z.object({
   SourceConnectorProperties: SourceConnectorPropertiesSchema,
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
   Value: z.string().min(0).max(256),
 });
 
-export const ObjectTypeMappingSchema = z.object({
+const ObjectTypeMappingSchema = z.object({
   Key: z.string().min(1).max(255),
   Value: z.string().min(1).max(255).regex(
     new RegExp("^[a-zA-Z_][a-zA-Z_0-9-]*$"),
@@ -338,9 +347,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CustomerProfiles Integration. Registered at `@swamp/aws/customerprofiles/integration`. */
 export const model = {
   type: "@swamp/aws/customerprofiles/integration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -354,6 +364,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

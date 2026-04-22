@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for RTBFabric OutboundExternalLink (AWS::RTBFabric::OutboundExternalLink).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,8 +21,10 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
-  Key: z.string().min(1).max(128).describe(
+const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(resourceArn|internalId|[a-zA-Z0-9+\\-=._:/@]+)$"),
+  ).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
   Value: z.string().min(0).max(256).describe(
@@ -21,7 +32,7 @@ export const TagSchema = z.object({
   ).optional(),
 });
 
-export const ResponderErrorMaskingForHttpCodeSchema = z.object({
+const ResponderErrorMaskingForHttpCodeSchema = z.object({
   HttpCode: z.string().min(3).max(7).regex(
     new RegExp("^DEFAULT|4XX|5XX|\\d{3}$"),
   ),
@@ -102,9 +113,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for RTBFabric OutboundExternalLink. Registered at `@swamp/aws/rtbfabric/outbound-external-link`. */
 export const model = {
   type: "@swamp/aws/rtbfabric/outbound-external-link",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -118,6 +130,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

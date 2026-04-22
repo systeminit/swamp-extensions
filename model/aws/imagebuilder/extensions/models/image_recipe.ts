@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ImageBuilder ImageRecipe (AWS::ImageBuilder::ImageRecipe).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ComponentParameterSchema = z.object({
+const ComponentParameterSchema = z.object({
   Name: z.string().describe("The name of the component parameter to set."),
   Value: z.array(z.string()).describe(
     "Sets the value for the named component parameter.",
   ),
 });
 
-export const ComponentConfigurationSchema = z.object({
+const ComponentConfigurationSchema = z.object({
   ComponentArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the component.",
   ).optional(),
@@ -28,7 +37,7 @@ export const ComponentConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const EbsInstanceBlockDeviceSpecificationSchema = z.object({
+const EbsInstanceBlockDeviceSpecificationSchema = z.object({
   Encrypted: z.boolean().describe("Use to configure device encryption.")
     .optional(),
   DeleteOnTermination: z.boolean().describe(
@@ -51,7 +60,7 @@ export const EbsInstanceBlockDeviceSpecificationSchema = z.object({
     .describe("Use to override the device's volume type.").optional(),
 });
 
-export const InstanceBlockDeviceMappingSchema = z.object({
+const InstanceBlockDeviceMappingSchema = z.object({
   DeviceName: z.string().describe("The device to which these mappings apply.")
     .optional(),
   VirtualName: z.string().describe("Use to manage instance ephemeral devices.")
@@ -64,7 +73,7 @@ export const InstanceBlockDeviceMappingSchema = z.object({
   ).optional(),
 });
 
-export const SystemsManagerAgentSchema = z.object({
+const SystemsManagerAgentSchema = z.object({
   UninstallAfterBuild: z.boolean().describe(
     "Controls whether the SSM agent is removed from your final build image, prior to creating the new AMI. If this is set to true, then the agent is removed from the final image. If it's set to false, then the agent is left in, so that it is included in the new AMI. The default value is false.",
   ).optional(),
@@ -166,9 +175,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ImageBuilder ImageRecipe. Registered at `@swamp/aws/imagebuilder/image-recipe`. */
 export const model = {
   type: "@swamp/aws/imagebuilder/image-recipe",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -182,6 +192,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

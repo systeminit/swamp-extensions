@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AutoScaling LaunchConfiguration (AWS::AutoScaling::LaunchConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,7 +20,7 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const BlockDeviceSchema = z.object({
+const BlockDeviceSchema = z.object({
   SnapshotId: z.string().describe("The snapshot ID of the volume to use.")
     .optional(),
   VolumeType: z.string().describe("The volume type.").optional(),
@@ -30,7 +39,7 @@ export const BlockDeviceSchema = z.object({
   ).optional(),
 });
 
-export const BlockDeviceMappingSchema = z.object({
+const BlockDeviceMappingSchema = z.object({
   Ebs: BlockDeviceSchema.describe(
     "Parameters used to automatically set up EBS volumes when an instance is launched.",
   ).optional(),
@@ -204,9 +213,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for AutoScaling LaunchConfiguration. Registered at `@swamp/aws/autoscaling/launch-configuration`. */
 export const model = {
   type: "@swamp/aws/autoscaling/launch-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -220,6 +230,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

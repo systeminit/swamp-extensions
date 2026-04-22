@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoT Command (AWS::IoT::Command).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CommandParameterValueSchema = z.object({
+const CommandParameterValueSchema = z.object({
   S: z.string().min(1).optional(),
   B: z.boolean().optional(),
   I: z.number().int().optional(),
@@ -22,12 +31,12 @@ export const CommandParameterValueSchema = z.object({
   UL: z.string().min(1).max(20).regex(new RegExp("^[0-9]*$")).optional(),
 });
 
-export const CommandParameterValueNumberRangeSchema = z.object({
+const CommandParameterValueNumberRangeSchema = z.object({
   Min: z.string().min(1),
   Max: z.string().min(1),
 });
 
-export const CommandParameterValueComparisonOperandSchema = z.object({
+const CommandParameterValueComparisonOperandSchema = z.object({
   Number: z.string().optional(),
   Numbers: z.array(z.string()).optional(),
   String: z.string().optional(),
@@ -35,7 +44,7 @@ export const CommandParameterValueComparisonOperandSchema = z.object({
   NumberRange: CommandParameterValueNumberRangeSchema.optional(),
 });
 
-export const CommandParameterValueConditionSchema = z.object({
+const CommandParameterValueConditionSchema = z.object({
   ComparisonOperator: z.enum([
     "EQUALS",
     "NOT_EQUALS",
@@ -51,7 +60,7 @@ export const CommandParameterValueConditionSchema = z.object({
   Operand: CommandParameterValueComparisonOperandSchema,
 });
 
-export const CommandParameterSchema = z.object({
+const CommandParameterSchema = z.object({
   Name: z.string().min(1).max(192).regex(new RegExp("^[.$a-zA-Z0-9_-]+$")),
   Value: CommandParameterValueSchema.optional(),
   DefaultValue: CommandParameterValueSchema.optional(),
@@ -68,11 +77,11 @@ export const CommandParameterSchema = z.object({
   ValueConditions: z.array(CommandParameterValueConditionSchema).optional(),
 });
 
-export const AwsJsonSubstitutionCommandPreprocessorConfigSchema = z.object({
+const AwsJsonSubstitutionCommandPreprocessorConfigSchema = z.object({
   OutputFormat: z.enum(["JSON", "CBOR"]),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The tag's key."),
   Value: z.string().min(1).max(256).describe("The tag's value."),
 });
@@ -190,9 +199,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoT Command. Registered at `@swamp/aws/iot/command`. */
 export const model = {
   type: "@swamp/aws/iot/command",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -206,6 +216,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for WAFv2 WebACL (AWS::WAFv2::WebACL).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,24 +21,24 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CustomHTTPHeaderSchema = z.object({
+const CustomHTTPHeaderSchema = z.object({
   Name: z.string().min(1).max(64).describe("HTTP header name."),
   Value: z.string().min(1).max(255).describe("HTTP header value."),
 });
 
-export const CustomRequestHandlingSchema = z.object({
+const CustomRequestHandlingSchema = z.object({
   InsertHeaders: z.array(CustomHTTPHeaderSchema).describe(
     "Collection of HTTP headers.",
   ),
 });
 
-export const AllowActionSchema = z.object({
+const AllowActionSchema = z.object({
   CustomRequestHandling: CustomRequestHandlingSchema.describe(
     "Custom request handling.",
   ).optional(),
 });
 
-export const CustomResponseSchema = z.object({
+const CustomResponseSchema = z.object({
   ResponseCode: z.number().int().min(200).max(599).describe(
     "Custom response code.",
   ),
@@ -41,11 +50,11 @@ export const CustomResponseSchema = z.object({
   ).optional(),
 });
 
-export const BlockActionSchema = z.object({
+const BlockActionSchema = z.object({
   CustomResponse: CustomResponseSchema.describe("Custom response.").optional(),
 });
 
-export const FieldToProtectSchema = z.object({
+const FieldToProtectSchema = z.object({
   FieldType: z.enum([
     "SINGLE_HEADER",
     "SINGLE_COOKIE",
@@ -58,14 +67,14 @@ export const FieldToProtectSchema = z.object({
   ).optional(),
 });
 
-export const DataProtectSchema = z.object({
+const DataProtectSchema = z.object({
   Field: FieldToProtectSchema.describe("Field in log to protect."),
   Action: z.enum(["SUBSTITUTION", "HASH"]),
   ExcludeRuleMatchDetails: z.boolean().optional(),
   ExcludeRateBasedDetails: z.boolean().optional(),
 });
 
-export const ApplicationAttributeSchema = z.object({
+const ApplicationAttributeSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[\\w\\-]+$")).describe(
     "Specifies the attribute name.",
   ),
@@ -73,23 +82,23 @@ export const ApplicationAttributeSchema = z.object({
     .describe("Contains a list of values for that attribute"),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).optional(),
   Value: z.string().min(0).max(256).optional(),
 });
 
-export const CustomResponseBodySchema = z.object({
+const CustomResponseBodySchema = z.object({
   ContentType: z.enum(["TEXT_PLAIN", "TEXT_HTML", "APPLICATION_JSON"]).describe(
     "Valid values are TEXT_PLAIN, TEXT_HTML, and APPLICATION_JSON.",
   ),
   Content: z.string().min(1).max(10240).describe("Response content."),
 });
 
-export const ImmunityTimePropertySchema = z.object({
+const ImmunityTimePropertySchema = z.object({
   ImmunityTime: z.number().int().min(60).max(259200),
 });
 
-export const RequestBodyAssociatedResourceTypeConfigSchema = z.object({
+const RequestBodyAssociatedResourceTypeConfigSchema = z.object({
   DefaultSizeInspectionLimit: z.enum(["KB_16", "KB_32", "KB_48", "KB_64"]),
 });
 
@@ -268,9 +277,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for WAFv2 WebACL. Registered at `@swamp/aws/wafv2/web-acl`. */
 export const model = {
   type: "@swamp/aws/wafv2/web-acl",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -284,6 +294,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

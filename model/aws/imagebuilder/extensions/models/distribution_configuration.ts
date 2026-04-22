@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ImageBuilder DistributionConfiguration (AWS::ImageBuilder::DistributionConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const LaunchPermissionConfigurationSchema = z.object({
+const LaunchPermissionConfigurationSchema = z.object({
   UserIds: z.array(z.string()).describe("The AWS account ID.").optional(),
   UserGroups: z.array(z.string()).describe("The name of the group.").optional(),
   OrganizationArns: z.array(z.string()).describe(
@@ -23,7 +32,7 @@ export const LaunchPermissionConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const AmiDistributionConfigurationSchema = z.object({
+const AmiDistributionConfigurationSchema = z.object({
   Name: z.string().describe("The name of the AMI distribution configuration.")
     .optional(),
   KmsKeyId: z.string().describe(
@@ -43,7 +52,7 @@ export const AmiDistributionConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TargetContainerRepositorySchema = z.object({
+const TargetContainerRepositorySchema = z.object({
   Service: z.enum(["ECR"]).describe(
     "The service of target container repository.",
   ).optional(),
@@ -52,7 +61,7 @@ export const TargetContainerRepositorySchema = z.object({
   ).optional(),
 });
 
-export const ContainerDistributionConfigurationSchema = z.object({
+const ContainerDistributionConfigurationSchema = z.object({
   Description: z.string().describe(
     "The description of the container distribution configuration.",
   ).optional(),
@@ -64,7 +73,7 @@ export const ContainerDistributionConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const LaunchTemplateConfigurationSchema = z.object({
+const LaunchTemplateConfigurationSchema = z.object({
   LaunchTemplateId: z.string().describe(
     "Identifies the EC2 launch template to use.",
   ).optional(),
@@ -76,7 +85,7 @@ export const LaunchTemplateConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const FastLaunchLaunchTemplateSpecificationSchema = z.object({
+const FastLaunchLaunchTemplateSpecificationSchema = z.object({
   LaunchTemplateId: z.string().describe(
     "The ID of the launch template to use for faster launching for a Windows AMI.",
   ).optional(),
@@ -88,13 +97,13 @@ export const FastLaunchLaunchTemplateSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const FastLaunchSnapshotConfigurationSchema = z.object({
+const FastLaunchSnapshotConfigurationSchema = z.object({
   TargetResourceCount: z.number().int().describe(
     "The number of pre-provisioned snapshots to keep on hand for a fast-launch enabled Windows AMI.",
   ).optional(),
 });
 
-export const FastLaunchConfigurationSchema = z.object({
+const FastLaunchConfigurationSchema = z.object({
   AccountId: z.string().describe(
     "The owner account ID for the fast-launch enabled Windows AMI.",
   ).optional(),
@@ -112,7 +121,7 @@ export const FastLaunchConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SsmParameterConfigurationSchema = z.object({
+const SsmParameterConfigurationSchema = z.object({
   AmiAccountId: z.string().describe(
     "The account ID for the AMI to update the parameter with.",
   ).optional(),
@@ -122,7 +131,7 @@ export const SsmParameterConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const DistributionSchema = z.object({
+const DistributionSchema = z.object({
   Region: z.string().describe("region"),
   AmiDistributionConfiguration: AmiDistributionConfigurationSchema.describe(
     "The specific AMI settings (for example, launch permissions, AMI tags).",
@@ -187,9 +196,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ImageBuilder DistributionConfiguration. Registered at `@swamp/aws/imagebuilder/distribution-configuration`. */
 export const model = {
   type: "@swamp/aws/imagebuilder/distribution-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -203,6 +213,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

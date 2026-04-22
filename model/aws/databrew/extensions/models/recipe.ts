@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataBrew Recipe (AWS::DataBrew::Recipe).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   Operation: z.string().describe("Step action operation"),
   Parameters: z.object({
     RecipeParameters: z.unknown().optional(),
@@ -20,7 +29,7 @@ export const ActionSchema = z.object({
   }).optional(),
 });
 
-export const ConditionExpressionSchema = z.object({
+const ConditionExpressionSchema = z.object({
   Condition: z.string().describe(
     "Input condition to be applied to the target column",
   ),
@@ -28,14 +37,14 @@ export const ConditionExpressionSchema = z.object({
   TargetColumn: z.string().describe("Name of the target column"),
 });
 
-export const RecipeStepSchema = z.object({
+const RecipeStepSchema = z.object({
   Action: ActionSchema,
   ConditionExpressions: z.array(ConditionExpressionSchema).describe(
     "Condition expressions applied to the step action",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -65,9 +74,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for DataBrew Recipe. Registered at `@swamp/aws/databrew/recipe`. */
 export const model = {
   type: "@swamp/aws/databrew/recipe",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -81,6 +91,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

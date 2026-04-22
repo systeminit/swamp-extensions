@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for QBusiness Retriever (AWS::QBusiness::Retriever).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const NativeIndexConfigurationSchema = z.object({
+const NativeIndexConfigurationSchema = z.object({
   IndexId: z.string().min(36).max(36).regex(
     new RegExp("^[a-zA-Z0-9][a-zA-Z0-9-]{35}$"),
   ),
 });
 
-export const KendraIndexConfigurationSchema = z.object({
+const KendraIndexConfigurationSchema = z.object({
   IndexId: z.string().min(36).max(36).regex(
     new RegExp("^[a-zA-Z0-9][a-zA-Z0-9-]{35}$"),
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -92,9 +101,10 @@ const InputsSchema = z.object({
   Type: z.enum(["NATIVE_INDEX", "KENDRA_INDEX"]).optional(),
 });
 
+/** Swamp extension model for QBusiness Retriever. Registered at `@swamp/aws/qbusiness/retriever`. */
 export const model = {
   type: "@swamp/aws/qbusiness/retriever",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -108,6 +118,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

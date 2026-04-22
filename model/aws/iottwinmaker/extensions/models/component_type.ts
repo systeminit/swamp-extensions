@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTTwinMaker ComponentType (AWS::IoTTwinMaker::ComponentType).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const LambdaFunctionSchema = z.object({
+const LambdaFunctionSchema = z.object({
   Arn: z.string().min(1).max(128).regex(
     new RegExp(
       "arn:((aws)|(aws-cn)|(aws-us-gov)):lambda:[a-z0-9-]+:[0-9]{12}:function:[\\/a-zA-Z0-9_-]+",
@@ -20,7 +29,7 @@ export const LambdaFunctionSchema = z.object({
   ),
 });
 
-export const DataConnectorSchema = z.object({
+const DataConnectorSchema = z.object({
   IsNative: z.boolean().describe(
     "A Boolean value that specifies whether the data connector is native to IoT TwinMaker.",
   ).optional(),
@@ -29,7 +38,7 @@ export const DataConnectorSchema = z.object({
   ).optional(),
 });
 
-export const FunctionSchema = z.object({
+const FunctionSchema = z.object({
   ImplementedBy: DataConnectorSchema.describe("The data connector.").optional(),
   RequiredProperties: z.array(z.string().regex(new RegExp("[a-zA-Z_\\-0-9]+")))
     .describe("The required properties of the function.").optional(),
@@ -37,14 +46,14 @@ export const FunctionSchema = z.object({
     .optional(),
 });
 
-export const PropertyGroupSchema = z.object({
+const PropertyGroupSchema = z.object({
   GroupType: z.enum(["TABULAR"]).describe("The type of property group.")
     .optional(),
   PropertyNames: z.array(z.string().regex(new RegExp("[a-zA-Z_\\-0-9]+")))
     .describe("The list of property names in the property group.").optional(),
 });
 
-export const CompositeComponentTypeSchema = z.object({
+const CompositeComponentTypeSchema = z.object({
   ComponentTypeId: z.string().min(1).max(256).regex(
     new RegExp("[a-zA-Z_\\.\\-0-9:]+"),
   ).describe("The id of the composite component type.").optional(),
@@ -155,9 +164,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoTTwinMaker ComponentType. Registered at `@swamp/aws/iottwinmaker/component-type`. */
 export const model = {
   type: "@swamp/aws/iottwinmaker/component-type",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -171,6 +181,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Lex BotAlias (AWS::Lex::BotAlias).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const LambdaCodeHookSchema = z.object({
+const LambdaCodeHookSchema = z.object({
   CodeHookInterfaceVersion: z.string().min(1).max(5).describe(
     "The version of the request-response that you want Amazon Lex to use to invoke your Lambda function.",
   ),
@@ -21,20 +30,20 @@ export const LambdaCodeHookSchema = z.object({
   ),
 });
 
-export const CodeHookSpecificationSchema = z.object({
+const CodeHookSpecificationSchema = z.object({
   LambdaCodeHook: LambdaCodeHookSchema.describe(
     "Contains information about code hooks that Amazon Lex calls during a conversation.",
   ),
 });
 
-export const BotAliasLocaleSettingsSchema = z.object({
+const BotAliasLocaleSettingsSchema = z.object({
   CodeHookSpecification: CodeHookSpecificationSchema.describe(
     "Contains information about code hooks that Amazon Lex calls during a conversation.",
   ).optional(),
   Enabled: z.boolean().describe("Whether the Lambda code hook is enabled"),
 });
 
-export const BotAliasLocaleSettingsItemSchema = z.object({
+const BotAliasLocaleSettingsItemSchema = z.object({
   LocaleId: z.string().min(1).max(128).describe(
     "A string used to identify the locale",
   ),
@@ -43,7 +52,7 @@ export const BotAliasLocaleSettingsItemSchema = z.object({
   ),
 });
 
-export const S3BucketLogDestinationSchema = z.object({
+const S3BucketLogDestinationSchema = z.object({
   S3BucketArn: z.string().min(1).max(2048).regex(
     new RegExp("^arn:[\\w\\-]+:s3:::[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"),
   ).describe(
@@ -61,20 +70,20 @@ export const S3BucketLogDestinationSchema = z.object({
   ).optional(),
 });
 
-export const AudioLogDestinationSchema = z.object({
+const AudioLogDestinationSchema = z.object({
   S3Bucket: S3BucketLogDestinationSchema.describe(
     "Specifies an Amazon S3 bucket for logging audio conversations",
   ),
 });
 
-export const AudioLogSettingSchema = z.object({
+const AudioLogSettingSchema = z.object({
   Destination: AudioLogDestinationSchema.describe(
     "The location of audio log files collected when conversation logging is enabled for a bot.",
   ),
   Enabled: z.boolean(),
 });
 
-export const CloudWatchLogGroupLogDestinationSchema = z.object({
+const CloudWatchLogGroupLogDestinationSchema = z.object({
   CloudWatchLogGroupArn: z.string().min(1).max(2048).describe(
     "A string used to identify the groupArn for the Cloudwatch Log Group",
   ),
@@ -83,18 +92,18 @@ export const CloudWatchLogGroupLogDestinationSchema = z.object({
   ),
 });
 
-export const TextLogDestinationSchema = z.object({
+const TextLogDestinationSchema = z.object({
   CloudWatch: CloudWatchLogGroupLogDestinationSchema,
 });
 
-export const TextLogSettingSchema = z.object({
+const TextLogSettingSchema = z.object({
   Destination: TextLogDestinationSchema.describe(
     "Defines the Amazon CloudWatch Logs destination log group for conversation text logs.",
   ),
   Enabled: z.boolean(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "A string used to identify this tag",
   ),
@@ -200,9 +209,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Lex BotAlias. Registered at `@swamp/aws/lex/bot-alias`. */
 export const model = {
   type: "@swamp/aws/lex/bot-alias",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -216,6 +226,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

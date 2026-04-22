@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataSync LocationFSxONTAP (AWS::DataSync::LocationFSxONTAP).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,25 +21,25 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const NfsMountOptionsSchema = z.object({
+const NfsMountOptionsSchema = z.object({
   Version: z.enum(["AUTOMATIC", "NFS3", "NFS4_0", "NFS4_1"]).describe(
     "The specific NFS version that you want DataSync to use to mount your NFS share.",
   ).optional(),
 });
 
-export const NFSSchema = z.object({
+const NFSSchema = z.object({
   MountOptions: NfsMountOptionsSchema.describe(
     "The NFS mount options that DataSync can use to mount your NFS share.",
   ),
 });
 
-export const SmbMountOptionsSchema = z.object({
+const SmbMountOptionsSchema = z.object({
   Version: z.enum(["AUTOMATIC", "SMB2", "SMB3"]).describe(
     "The specific SMB version that you want DataSync to use to mount your SMB share.",
   ).optional(),
 });
 
-export const CmkSecretConfigSchema = z.object({
+const CmkSecretConfigSchema = z.object({
   KmsKeyArn: z.string().max(2048).regex(
     new RegExp(
       "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):kms:[a-z-0-9]+:[0-9]{12}:key/.*|)$",
@@ -40,7 +49,7 @@ export const CmkSecretConfigSchema = z.object({
   ).optional(),
 });
 
-export const CustomSecretConfigSchema = z.object({
+const CustomSecretConfigSchema = z.object({
   SecretAccessRoleArn: z.string().max(2048).regex(
     new RegExp(
       "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*|)$",
@@ -50,7 +59,7 @@ export const CustomSecretConfigSchema = z.object({
   ),
 });
 
-export const SMBSchema = z.object({
+const SMBSchema = z.object({
   MountOptions: SmbMountOptionsSchema.describe(
     "The mount options used by DataSync to access the SMB server.",
   ),
@@ -74,7 +83,7 @@ export const SMBSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9\\s+=._:/-]+$"))
     .describe("The key for an AWS resource tag."),
   Value: z.string().min(1).max(256).regex(
@@ -165,9 +174,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for DataSync LocationFSxONTAP. Registered at `@swamp/aws/datasync/location-fsx-ontap`. */
 export const model = {
   type: "@swamp/aws/datasync/location-fsx-ontap",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -181,6 +191,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

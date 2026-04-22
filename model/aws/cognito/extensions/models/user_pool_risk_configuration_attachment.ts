@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Cognito UserPoolRiskConfigurationAttachment (AWS::Cognito::UserPoolRiskConfigurationAttachment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,28 +21,28 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CompromisedCredentialsActionsTypeSchema = z.object({
+const CompromisedCredentialsActionsTypeSchema = z.object({
   EventAction: z.string(),
 });
 
-export const AccountTakeoverActionTypeSchema = z.object({
+const AccountTakeoverActionTypeSchema = z.object({
   EventAction: z.string(),
   Notify: z.boolean(),
 });
 
-export const AccountTakeoverActionsTypeSchema = z.object({
+const AccountTakeoverActionsTypeSchema = z.object({
   HighAction: AccountTakeoverActionTypeSchema.optional(),
   LowAction: AccountTakeoverActionTypeSchema.optional(),
   MediumAction: AccountTakeoverActionTypeSchema.optional(),
 });
 
-export const NotifyEmailTypeSchema = z.object({
+const NotifyEmailTypeSchema = z.object({
   HtmlBody: z.string().optional(),
   Subject: z.string(),
   TextBody: z.string().optional(),
 });
 
-export const NotifyConfigurationTypeSchema = z.object({
+const NotifyConfigurationTypeSchema = z.object({
   BlockEmail: NotifyEmailTypeSchema.optional(),
   MfaEmail: NotifyEmailTypeSchema.optional(),
   NoActionEmail: NotifyEmailTypeSchema.optional(),
@@ -99,9 +108,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for Cognito UserPoolRiskConfigurationAttachment. Registered at `@swamp/aws/cognito/user-pool-risk-configuration-attachment`. */
 export const model = {
   type: "@swamp/aws/cognito/user-pool-risk-configuration-attachment",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -115,6 +125,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

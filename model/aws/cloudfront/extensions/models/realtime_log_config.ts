@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudFront RealtimeLogConfig (AWS::CloudFront::RealtimeLogConfig).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const KinesisStreamConfigSchema = z.object({
+const KinesisStreamConfigSchema = z.object({
   RoleArn: z.string().describe(
     "The Amazon Resource Name (ARN) of an IAMlong (IAM) role that CloudFront can use to send real-time log data to your Kinesis data stream. For more information the IAM role, see [Real-time log configuration IAM role](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/real-time-logs.html#understand-real-time-log-config-iam-role) in the *Amazon CloudFront Developer Guide*.",
   ),
@@ -21,7 +30,7 @@ export const KinesisStreamConfigSchema = z.object({
   ),
 });
 
-export const EndPointSchema = z.object({
+const EndPointSchema = z.object({
   KinesisStreamConfig: KinesisStreamConfigSchema.describe(
     "Contains information about the Amazon Kinesis data stream where you are sending real-time log data in a real-time log configuration.",
   ),
@@ -74,9 +83,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CloudFront RealtimeLogConfig. Registered at `@swamp/aws/cloudfront/realtime-log-config`. */
 export const model = {
   type: "@swamp/aws/cloudfront/realtime-log-config",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -90,6 +100,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

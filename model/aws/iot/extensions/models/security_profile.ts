@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoT SecurityProfile (AWS::IoT::SecurityProfile).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MetricDimensionSchema = z.object({
+const MetricDimensionSchema = z.object({
   DimensionName: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9:_-]+"))
     .describe("A unique identifier for the dimension."),
   Operator: z.enum(["IN", "NOT_IN"]).describe(
@@ -20,7 +29,7 @@ export const MetricDimensionSchema = z.object({
   ).optional(),
 });
 
-export const MetricValueSchema = z.object({
+const MetricValueSchema = z.object({
   Count: z.string().describe(
     "If the ComparisonOperator calls for a numeric value, use this to specify that (integer) numeric value to be compared with the metric.",
   ).optional(),
@@ -37,7 +46,7 @@ export const MetricValueSchema = z.object({
     .optional(),
 });
 
-export const StatisticalThresholdSchema = z.object({
+const StatisticalThresholdSchema = z.object({
   Statistic: z.enum([
     "Average",
     "p0",
@@ -56,13 +65,13 @@ export const StatisticalThresholdSchema = z.object({
   ).optional(),
 });
 
-export const MachineLearningDetectionConfigSchema = z.object({
+const MachineLearningDetectionConfigSchema = z.object({
   ConfidenceLevel: z.enum(["LOW", "MEDIUM", "HIGH"]).describe(
     "The sensitivity of anomalous behavior evaluation. Can be Low, Medium, or High.",
   ).optional(),
 });
 
-export const BehaviorCriteriaSchema = z.object({
+const BehaviorCriteriaSchema = z.object({
   ComparisonOperator: z.enum([
     "less-than",
     "less-than-equals",
@@ -96,7 +105,7 @@ export const BehaviorCriteriaSchema = z.object({
   ).optional(),
 });
 
-export const BehaviorSchema = z.object({
+const BehaviorSchema = z.object({
   Name: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9:_-]+"))
     .describe("The name for the behavior."),
   Metric: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9:_-]+"))
@@ -114,7 +123,7 @@ export const BehaviorSchema = z.object({
   ).optional(),
 });
 
-export const AlertTargetSchema = z.object({
+const AlertTargetSchema = z.object({
   AlertTargetArn: z.string().max(2048).describe(
     "The ARN of the notification target to which alerts are sent.",
   ),
@@ -123,7 +132,7 @@ export const AlertTargetSchema = z.object({
   ),
 });
 
-export const MetricToRetainSchema = z.object({
+const MetricToRetainSchema = z.object({
   Metric: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9:_-]+"))
     .describe("What is measured by the behavior."),
   MetricDimension: MetricDimensionSchema.describe("The dimension of a metric.")
@@ -133,7 +142,7 @@ export const MetricToRetainSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The tag's key."),
   Value: z.string().min(1).max(256).describe("The tag's value."),
 });
@@ -221,9 +230,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoT SecurityProfile. Registered at `@swamp/aws/iot/security-profile`. */
 export const model = {
   type: "@swamp/aws/iot/security-profile",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -237,6 +247,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

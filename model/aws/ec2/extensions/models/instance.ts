@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EC2 Instance (AWS::EC2::Instance).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const VolumeSchema = z.object({
+const VolumeSchema = z.object({
   VolumeId: z.string().describe(
     "The ID of the EBS volume. The volume and instance must be within the same Availability Zone.",
   ),
@@ -21,25 +30,25 @@ export const VolumeSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string(),
   Key: z.string(),
 });
 
-export const LicenseSpecificationSchema = z.object({
+const LicenseSpecificationSchema = z.object({
   LicenseConfigurationArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the license configuration.",
   ),
 });
 
-export const AssociationParameterSchema = z.object({
+const AssociationParameterSchema = z.object({
   Value: z.array(z.string()).describe("The value of an input parameter."),
   Key: z.string().describe(
     "The name of an input parameter that is in the associated SSM document.",
   ),
 });
 
-export const SsmAssociationSchema = z.object({
+const SsmAssociationSchema = z.object({
   AssociationParameters: z.array(AssociationParameterSchema).describe(
     "The input parameter values to use with the associated SSM document.",
   ).optional(),
@@ -48,7 +57,7 @@ export const SsmAssociationSchema = z.object({
   ),
 });
 
-export const EbsSchema = z.object({
+const EbsSchema = z.object({
   SnapshotId: z.string().describe("The ID of the snapshot.").optional(),
   VolumeType: z.string().describe("The volume type.").optional(),
   KmsKeyId: z.string().describe(
@@ -68,7 +77,7 @@ export const EbsSchema = z.object({
   ).optional(),
 });
 
-export const BlockDeviceMappingSchema = z.object({
+const BlockDeviceMappingSchema = z.object({
   Ebs: EbsSchema.describe(
     "Parameters used to automatically set up EBS volumes when the instance is launched.",
   ).optional(),
@@ -79,17 +88,17 @@ export const BlockDeviceMappingSchema = z.object({
   ),
 });
 
-export const InstanceIpv6AddressSchema = z.object({
+const InstanceIpv6AddressSchema = z.object({
   Ipv6Address: z.string().describe("The IPv6 address."),
 });
 
-export const ElasticGpuSpecificationSchema = z.object({
+const ElasticGpuSpecificationSchema = z.object({
   Type: z.string().describe(
     "The type of Elastic Graphics accelerator. Amazon Elastic Graphics is no longer available.",
   ),
 });
 
-export const ElasticInferenceAcceleratorSchema = z.object({
+const ElasticInferenceAcceleratorSchema = z.object({
   Type: z.string().describe(
     "The type of elastic inference accelerator. Amazon Elastic Inference is no longer available.",
   ),
@@ -98,20 +107,20 @@ export const ElasticInferenceAcceleratorSchema = z.object({
   ).optional(),
 });
 
-export const PrivateIpAddressSpecificationSchema = z.object({
+const PrivateIpAddressSpecificationSchema = z.object({
   PrivateIpAddress: z.string().describe("The private IPv4 addresses."),
   Primary: z.boolean().describe(
     "Indicates whether the private IPv4 address is the primary private IPv4 address. Only one IPv4 address can be designated as primary.",
   ),
 });
 
-export const EnaSrdUdpSpecificationSchema = z.object({
+const EnaSrdUdpSpecificationSchema = z.object({
   EnaSrdUdpEnabled: z.boolean().describe(
     "Indicates whether UDP traffic uses ENA Express for your instance.",
   ).optional(),
 });
 
-export const EnaSrdSpecificationSchema = z.object({
+const EnaSrdSpecificationSchema = z.object({
   EnaSrdEnabled: z.boolean().describe(
     "Specifies whether ENA Express is enabled for the network interface when you launch an instance.",
   ).optional(),
@@ -120,7 +129,7 @@ export const EnaSrdSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const NetworkInterfaceSchema = z.object({
+const NetworkInterfaceSchema = z.object({
   Description: z.string().describe("The description of the network interface.")
     .optional(),
   PrivateIpAddress: z.string().describe(
@@ -571,9 +580,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EC2 Instance. Registered at `@swamp/aws/ec2/instance`. */
 export const model = {
   type: "@swamp/aws/ec2/instance",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -587,6 +597,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

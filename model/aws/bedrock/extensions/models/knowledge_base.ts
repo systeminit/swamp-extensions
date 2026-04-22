@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Bedrock KnowledgeBase (AWS::Bedrock::KnowledgeBase).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,31 +21,31 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AudioSegmentationConfigurationSchema = z.object({
+const AudioSegmentationConfigurationSchema = z.object({
   FixedLengthDuration: z.number().int().min(1).max(30).describe(
     "Duration in seconds to segment the multi modal media",
   ),
 });
 
-export const AudioConfigurationSchema = z.object({
+const AudioConfigurationSchema = z.object({
   SegmentationConfiguration: AudioSegmentationConfigurationSchema.describe(
     "Configure the audio segmentation configuration for multi modal ingestion.",
   ),
 });
 
-export const VideoSegmentationConfigurationSchema = z.object({
+const VideoSegmentationConfigurationSchema = z.object({
   FixedLengthDuration: z.number().int().min(1).max(30).describe(
     "Duration in seconds to segment the multi modal media",
   ),
 });
 
-export const VideoConfigurationSchema = z.object({
+const VideoConfigurationSchema = z.object({
   SegmentationConfiguration: VideoSegmentationConfigurationSchema.describe(
     "Configure the video segmentation configuration for multi modal ingestion.",
   ),
 });
 
-export const BedrockEmbeddingModelConfigurationSchema = z.object({
+const BedrockEmbeddingModelConfigurationSchema = z.object({
   Dimensions: z.number().int().min(0).max(4096).describe(
     "The dimensions details for the vector configuration used on the Bedrock embeddings model.",
   ).optional(),
@@ -51,32 +60,32 @@ export const BedrockEmbeddingModelConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const EmbeddingModelConfigurationSchema = z.object({
+const EmbeddingModelConfigurationSchema = z.object({
   BedrockEmbeddingModelConfiguration: BedrockEmbeddingModelConfigurationSchema
     .describe(
       "The vector configuration details for the Bedrock embeddings model.",
     ).optional(),
 });
 
-export const S3LocationSchema = z.object({
+const S3LocationSchema = z.object({
   URI: z.string().min(1).max(2048).regex(new RegExp("^s3://.{1,128}$"))
     .describe("The location's URI"),
 });
 
-export const SupplementalDataStorageLocationSchema = z.object({
+const SupplementalDataStorageLocationSchema = z.object({
   SupplementalDataStorageLocationType: z.enum(["S3"]).describe(
     "Supplemental data storage location type.",
   ),
   S3Location: S3LocationSchema.describe("An Amazon S3 location.").optional(),
 });
 
-export const SupplementalDataStorageConfigurationSchema = z.object({
+const SupplementalDataStorageConfigurationSchema = z.object({
   SupplementalDataStorageLocations: z.array(
     SupplementalDataStorageLocationSchema,
   ).describe("List of supplemental data storage locations."),
 });
 
-export const VectorKnowledgeBaseConfigurationSchema = z.object({
+const VectorKnowledgeBaseConfigurationSchema = z.object({
   EmbeddingModelArn: z.string().min(20).max(2048).regex(
     new RegExp(
       "^(arn:aws(-[^:]+)?:[a-z0-9-]+:[a-z0-9-]{1,20}:[0-9]{0,12}:[a-zA-Z0-9-:/._+]+)$",
@@ -93,7 +102,7 @@ export const VectorKnowledgeBaseConfigurationSchema = z.object({
     ).optional(),
 });
 
-export const KendraKnowledgeBaseConfigurationSchema = z.object({
+const KendraKnowledgeBaseConfigurationSchema = z.object({
   KendraIndexArn: z.string().regex(
     new RegExp(
       "^arn:aws(|-cn|-us-gov):kendra:[a-z0-9-]{1,20}:([0-9]{12}|):index/([a-zA-Z0-9][a-zA-Z0-9-]{35}|[a-zA-Z0-9][a-zA-Z0-9-]{35}-[a-zA-Z0-9][a-zA-Z0-9-]{35})$",
@@ -101,20 +110,18 @@ export const KendraKnowledgeBaseConfigurationSchema = z.object({
   ).describe("Arn of a Kendra index"),
 });
 
-export const RedshiftQueryEngineAwsDataCatalogStorageConfigurationSchema = z
-  .object({
-    TableNames: z.array(
-      z.string().min(1).max(200).regex(new RegExp("^.*\\.*$")),
-    ).describe(
+const RedshiftQueryEngineAwsDataCatalogStorageConfigurationSchema = z.object({
+  TableNames: z.array(z.string().min(1).max(200).regex(new RegExp("^.*\\.*$")))
+    .describe(
       "List of table names in AWS Data Catalog. Must follow two part notation",
     ),
-  });
+});
 
-export const RedshiftQueryEngineRedshiftStorageConfigurationSchema = z.object({
+const RedshiftQueryEngineRedshiftStorageConfigurationSchema = z.object({
   DatabaseName: z.string().min(1).max(200).describe("Redshift database name"),
 });
 
-export const RedshiftQueryEngineStorageConfigurationSchema = z.object({
+const RedshiftQueryEngineStorageConfigurationSchema = z.object({
   Type: z.enum(["REDSHIFT", "AWS_DATA_CATALOG"]).describe(
     "Redshift query engine storage type",
   ),
@@ -128,7 +135,7 @@ export const RedshiftQueryEngineStorageConfigurationSchema = z.object({
     ).optional(),
 });
 
-export const RedshiftServerlessAuthConfigurationSchema = z.object({
+const RedshiftServerlessAuthConfigurationSchema = z.object({
   Type: z.enum(["IAM", "USERNAME_PASSWORD"]).describe(
     "Serverless Redshift auth type",
   ),
@@ -139,7 +146,7 @@ export const RedshiftServerlessAuthConfigurationSchema = z.object({
   ).describe("Arn of a SecretsManager Secret").optional(),
 });
 
-export const RedshiftServerlessConfigurationSchema = z.object({
+const RedshiftServerlessConfigurationSchema = z.object({
   WorkgroupArn: z.string().regex(
     new RegExp(
       "^(arn:(aws(-[a-z]+)*):redshift-serverless:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:workgroup/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$",
@@ -150,7 +157,7 @@ export const RedshiftServerlessConfigurationSchema = z.object({
   ),
 });
 
-export const RedshiftProvisionedAuthConfigurationSchema = z.object({
+const RedshiftProvisionedAuthConfigurationSchema = z.object({
   Type: z.enum(["IAM", "USERNAME_PASSWORD", "USERNAME"]).describe(
     "Provisioned Redshift auth type",
   ),
@@ -162,7 +169,7 @@ export const RedshiftProvisionedAuthConfigurationSchema = z.object({
   ).describe("Arn of a SecretsManager Secret").optional(),
 });
 
-export const RedshiftProvisionedConfigurationSchema = z.object({
+const RedshiftProvisionedConfigurationSchema = z.object({
   ClusterIdentifier: z.string().min(1).max(63).describe(
     "Redshift cluster identifier",
   ),
@@ -171,7 +178,7 @@ export const RedshiftProvisionedConfigurationSchema = z.object({
   ),
 });
 
-export const RedshiftQueryEngineConfigurationSchema = z.object({
+const RedshiftQueryEngineConfigurationSchema = z.object({
   Type: z.enum(["SERVERLESS", "PROVISIONED"]).describe(
     "Redshift query engine type",
   ),
@@ -183,7 +190,7 @@ export const RedshiftQueryEngineConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const QueryGenerationColumnSchema = z.object({
+const QueryGenerationColumnSchema = z.object({
   Name: z.string().min(1).max(127).describe("Query generation column name")
     .optional(),
   Description: z.string().min(1).max(200).describe(
@@ -194,7 +201,7 @@ export const QueryGenerationColumnSchema = z.object({
   ).optional(),
 });
 
-export const QueryGenerationTableSchema = z.object({
+const QueryGenerationTableSchema = z.object({
   Name: z.string().regex(new RegExp("^.*\\..*\\..*$")).describe(
     "Query generation table name. Must follow three-part notation",
   ),
@@ -209,14 +216,14 @@ export const QueryGenerationTableSchema = z.object({
   ).optional(),
 });
 
-export const CuratedQuerySchema = z.object({
+const CuratedQuerySchema = z.object({
   NaturalLanguage: z.string().min(1).max(1000).describe(
     "Question for the curated query",
   ),
   Sql: z.string().min(1).max(1000).describe("Answer for the curated query"),
 });
 
-export const QueryGenerationContextSchema = z.object({
+const QueryGenerationContextSchema = z.object({
   Tables: z.array(QueryGenerationTableSchema).describe(
     "List of tables used for Redshift query generation context",
   ).optional(),
@@ -225,7 +232,7 @@ export const QueryGenerationContextSchema = z.object({
   ).optional(),
 });
 
-export const QueryGenerationConfigurationSchema = z.object({
+const QueryGenerationConfigurationSchema = z.object({
   ExecutionTimeoutSeconds: z.number().int().min(1).max(200).describe(
     "Max query execution timeout",
   ).optional(),
@@ -234,7 +241,7 @@ export const QueryGenerationConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const RedshiftConfigurationSchema = z.object({
+const RedshiftConfigurationSchema = z.object({
   StorageConfigurations: z.array(RedshiftQueryEngineStorageConfigurationSchema)
     .describe(
       "List of configurations for available Redshift query engine storage types",
@@ -247,14 +254,14 @@ export const RedshiftConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SqlKnowledgeBaseConfigurationSchema = z.object({
+const SqlKnowledgeBaseConfigurationSchema = z.object({
   Type: z.enum(["REDSHIFT"]).describe("SQL query engine type"),
   RedshiftConfiguration: RedshiftConfigurationSchema.describe(
     "Configurations for a Redshift knowledge base",
   ).optional(),
 });
 
-export const OpenSearchServerlessFieldMappingSchema = z.object({
+const OpenSearchServerlessFieldMappingSchema = z.object({
   VectorField: z.string().max(2048).regex(new RegExp("^.*$")).describe(
     "The name of the field in which Amazon Bedrock stores the vector embeddings for your data sources.",
   ),
@@ -266,7 +273,7 @@ export const OpenSearchServerlessFieldMappingSchema = z.object({
   ),
 });
 
-export const OpenSearchServerlessConfigurationSchema = z.object({
+const OpenSearchServerlessConfigurationSchema = z.object({
   CollectionArn: z.string().max(2048).regex(
     new RegExp(
       "^arn:aws(|-cn|-us-gov|-iso):aoss:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:collection/[a-z0-9-]{3,32}$",
@@ -280,7 +287,7 @@ export const OpenSearchServerlessConfigurationSchema = z.object({
   ),
 });
 
-export const PineconeFieldMappingSchema = z.object({
+const PineconeFieldMappingSchema = z.object({
   TextField: z.string().max(2048).regex(new RegExp("^.*$")).describe(
     "The name of the field in which Amazon Bedrock stores the raw text from your data. The text is split according to the chunking strategy you choose.",
   ),
@@ -289,7 +296,7 @@ export const PineconeFieldMappingSchema = z.object({
   ),
 });
 
-export const PineconeConfigurationSchema = z.object({
+const PineconeConfigurationSchema = z.object({
   ConnectionString: z.string().max(2048).regex(new RegExp("^.*$")).describe(
     "The endpoint URL for your index management page.",
   ),
@@ -308,7 +315,7 @@ export const PineconeConfigurationSchema = z.object({
   ),
 });
 
-export const RdsFieldMappingSchema = z.object({
+const RdsFieldMappingSchema = z.object({
   PrimaryKeyField: z.string().max(63).regex(new RegExp("^[a-zA-Z0-9_\\-]+$"))
     .describe(
       "The name of the field in which Amazon Bedrock stores the ID for each entry.",
@@ -332,7 +339,7 @@ export const RdsFieldMappingSchema = z.object({
   ).optional(),
 });
 
-export const RdsConfigurationSchema = z.object({
+const RdsConfigurationSchema = z.object({
   ResourceArn: z.string().regex(
     new RegExp(
       "^arn:aws(|-cn|-us-gov):rds:[a-zA-Z0-9-]*:[0-9]{12}:cluster:[a-zA-Z0-9-]{1,63}$",
@@ -354,7 +361,7 @@ export const RdsConfigurationSchema = z.object({
   ),
 });
 
-export const MongoDbAtlasFieldMappingSchema = z.object({
+const MongoDbAtlasFieldMappingSchema = z.object({
   VectorField: z.string().max(2048).regex(new RegExp("^.*$")).describe(
     "The name of the field in which Amazon Bedrock stores the vector embeddings for your data sources.",
   ),
@@ -366,7 +373,7 @@ export const MongoDbAtlasFieldMappingSchema = z.object({
   ),
 });
 
-export const MongoDbAtlasConfigurationSchema = z.object({
+const MongoDbAtlasConfigurationSchema = z.object({
   Endpoint: z.string().max(2048).regex(
     new RegExp("^[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.mongodb\\.net$"),
   ).describe("MongoDB Atlas endpoint."),
@@ -399,7 +406,7 @@ export const MongoDbAtlasConfigurationSchema = z.object({
   ),
 });
 
-export const NeptuneAnalyticsFieldMappingSchema = z.object({
+const NeptuneAnalyticsFieldMappingSchema = z.object({
   TextField: z.string().max(2048).regex(new RegExp("^.*$")).describe(
     "The name of the field in which Amazon Bedrock stores the raw text from your data. The text is split according to the chunking strategy you choose.",
   ),
@@ -408,7 +415,7 @@ export const NeptuneAnalyticsFieldMappingSchema = z.object({
   ),
 });
 
-export const NeptuneAnalyticsConfigurationSchema = z.object({
+const NeptuneAnalyticsConfigurationSchema = z.object({
   GraphArn: z.string().min(1).max(255).regex(
     new RegExp(
       "^arn:aws(|-cn|-us-gov):neptune-graph:[a-zA-Z0-9-]*:[0-9]{12}:graph\\/g-[a-zA-Z0-9]{10}$",
@@ -419,7 +426,7 @@ export const NeptuneAnalyticsConfigurationSchema = z.object({
   ),
 });
 
-export const S3VectorsConfigurationSchema = z.object({
+const S3VectorsConfigurationSchema = z.object({
   VectorBucketArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the S3 bucket where vector embeddings are stored. This bucket contains the vector data used by the knowledge base.",
   ).optional(),
@@ -431,7 +438,7 @@ export const S3VectorsConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const OpenSearchManagedClusterFieldMappingSchema = z.object({
+const OpenSearchManagedClusterFieldMappingSchema = z.object({
   VectorField: z.string().max(2048).regex(new RegExp("^.*$")).describe(
     "The name of the field in which Amazon Bedrock stores the vector embeddings for your data sources.",
   ),
@@ -443,7 +450,7 @@ export const OpenSearchManagedClusterFieldMappingSchema = z.object({
   ),
 });
 
-export const OpenSearchManagedClusterConfigurationSchema = z.object({
+const OpenSearchManagedClusterConfigurationSchema = z.object({
   DomainArn: z.string().max(2048).regex(
     new RegExp(
       "^arn:aws(-cn|-us-gov|-eusc|-iso(-[b-f])?)?:es:([a-z]{2,}-){2,}\\d:\\d{12}:domain/[a-z][a-z0-9-]{3,28}$",
@@ -633,9 +640,10 @@ const InputsSchema = z.object({
   ).describe("A map of tag keys and values").optional(),
 });
 
+/** Swamp extension model for Bedrock KnowledgeBase. Registered at `@swamp/aws/bedrock/knowledge-base`. */
 export const model = {
   type: "@swamp/aws/bedrock/knowledge-base",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -649,6 +657,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

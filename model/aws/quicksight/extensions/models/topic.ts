@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for QuickSight Topic (AWS::QuickSight::Topic).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DataAggregationSchema = z.object({
+const DataAggregationSchema = z.object({
   DatasetRowDateGranularity: z.enum([
     "SECOND",
     "MINUTE",
@@ -26,17 +35,17 @@ export const DataAggregationSchema = z.object({
   DefaultDateColumnName: z.string().min(0).max(256).optional(),
 });
 
-export const CollectiveConstantSchema = z.object({
+const CollectiveConstantSchema = z.object({
   ValueList: z.array(z.string()).optional(),
 });
 
-export const TopicCategoryFilterConstantSchema = z.object({
+const TopicCategoryFilterConstantSchema = z.object({
   ConstantType: z.enum(["SINGULAR", "RANGE", "COLLECTIVE"]).optional(),
   SingularConstant: z.string().min(0).max(256).optional(),
   CollectiveConstant: CollectiveConstantSchema.optional(),
 });
 
-export const TopicCategoryFilterSchema = z.object({
+const TopicCategoryFilterSchema = z.object({
   CategoryFilterFunction: z.enum(["EXACT", "CONTAINS"]).optional(),
   CategoryFilterType: z.enum([
     "CUSTOM_FILTER",
@@ -47,12 +56,12 @@ export const TopicCategoryFilterSchema = z.object({
   Inverse: z.boolean().optional(),
 });
 
-export const TopicSingularFilterConstantSchema = z.object({
+const TopicSingularFilterConstantSchema = z.object({
   ConstantType: z.enum(["SINGULAR", "RANGE", "COLLECTIVE"]).optional(),
   SingularConstant: z.string().min(0).max(256).optional(),
 });
 
-export const TopicNumericEqualityFilterSchema = z.object({
+const TopicNumericEqualityFilterSchema = z.object({
   Constant: TopicSingularFilterConstantSchema.optional(),
   Aggregation: z.enum([
     "NO_AGGREGATION",
@@ -70,17 +79,17 @@ export const TopicNumericEqualityFilterSchema = z.object({
   ]).optional(),
 });
 
-export const RangeConstantSchema = z.object({
+const RangeConstantSchema = z.object({
   Minimum: z.string().min(0).max(256).optional(),
   Maximum: z.string().min(0).max(256).optional(),
 });
 
-export const TopicRangeFilterConstantSchema = z.object({
+const TopicRangeFilterConstantSchema = z.object({
   ConstantType: z.enum(["SINGULAR", "RANGE", "COLLECTIVE"]).optional(),
   RangeConstant: RangeConstantSchema.optional(),
 });
 
-export const TopicNumericRangeFilterSchema = z.object({
+const TopicNumericRangeFilterSchema = z.object({
   Inclusive: z.boolean().optional(),
   Constant: TopicRangeFilterConstantSchema.optional(),
   Aggregation: z.enum([
@@ -99,12 +108,12 @@ export const TopicNumericRangeFilterSchema = z.object({
   ]).optional(),
 });
 
-export const TopicDateRangeFilterSchema = z.object({
+const TopicDateRangeFilterSchema = z.object({
   Inclusive: z.boolean().optional(),
   Constant: TopicRangeFilterConstantSchema.optional(),
 });
 
-export const TopicRelativeDateFilterSchema = z.object({
+const TopicRelativeDateFilterSchema = z.object({
   TimeGranularity: z.enum([
     "SECOND",
     "MINUTE",
@@ -125,7 +134,7 @@ export const TopicRelativeDateFilterSchema = z.object({
   Constant: TopicSingularFilterConstantSchema.optional(),
 });
 
-export const TopicFilterSchema = z.object({
+const TopicFilterSchema = z.object({
   FilterDescription: z.string().min(0).max(256).optional(),
   FilterClass: z.enum([
     "ENFORCED_VALUE_FILTER",
@@ -149,14 +158,14 @@ export const TopicFilterSchema = z.object({
   RelativeDateFilter: TopicRelativeDateFilterSchema.optional(),
 });
 
-export const ComparativeOrderSchema = z.object({
+const ComparativeOrderSchema = z.object({
   UseOrdering: z.enum(["GREATER_IS_BETTER", "LESSER_IS_BETTER", "SPECIFIED"])
     .optional(),
   SpecifedOrder: z.array(z.string()).optional(),
   TreatUndefinedSpecifiedValues: z.enum(["LEAST", "MOST"]).optional(),
 });
 
-export const SemanticTypeSchema = z.object({
+const SemanticTypeSchema = z.object({
   TypeName: z.string().min(0).max(256).optional(),
   SubTypeName: z.string().min(0).max(256).optional(),
   TypeParameters: z.record(z.string(), z.string().min(0).max(256)).optional(),
@@ -166,12 +175,12 @@ export const SemanticTypeSchema = z.object({
   FalseyCellValueSynonyms: z.array(z.string()).optional(),
 });
 
-export const NegativeFormatSchema = z.object({
+const NegativeFormatSchema = z.object({
   Prefix: z.string().min(0).max(256).optional(),
   Suffix: z.string().min(0).max(256).optional(),
 });
 
-export const DisplayFormatOptionsSchema = z.object({
+const DisplayFormatOptionsSchema = z.object({
   UseBlankCellFormat: z.boolean().optional(),
   BlankCellFormat: z.string().min(0).max(256).optional(),
   DateFormat: z.string().min(0).max(256).optional(),
@@ -195,7 +204,7 @@ export const DisplayFormatOptionsSchema = z.object({
   CurrencySymbol: z.string().min(0).max(256).optional(),
 });
 
-export const DefaultFormattingSchema = z.object({
+const DefaultFormattingSchema = z.object({
   DisplayFormat: z.enum([
     "AUTO",
     "PERCENT",
@@ -207,12 +216,12 @@ export const DefaultFormattingSchema = z.object({
   DisplayFormatOptions: DisplayFormatOptionsSchema.optional(),
 });
 
-export const CellValueSynonymSchema = z.object({
+const CellValueSynonymSchema = z.object({
   CellValue: z.string().min(0).max(256).optional(),
   Synonyms: z.array(z.string()).optional(),
 });
 
-export const TopicColumnSchema = z.object({
+const TopicColumnSchema = z.object({
   ColumnName: z.string().min(0).max(256),
   ColumnFriendlyName: z.string().min(0).max(256).optional(),
   ColumnDescription: z.string().min(0).max(256).optional(),
@@ -283,7 +292,7 @@ export const TopicColumnSchema = z.object({
   NonAdditive: z.boolean().optional(),
 });
 
-export const TopicCalculatedFieldSchema = z.object({
+const TopicCalculatedFieldSchema = z.object({
   CalculatedFieldName: z.string().min(0).max(256),
   CalculatedFieldDescription: z.string().min(0).max(256).optional(),
   Expression: z.string().min(1).max(4096),
@@ -354,13 +363,13 @@ export const TopicCalculatedFieldSchema = z.object({
   NonAdditive: z.boolean().optional(),
 });
 
-export const SemanticEntityTypeSchema = z.object({
+const SemanticEntityTypeSchema = z.object({
   TypeName: z.string().min(0).max(256).optional(),
   SubTypeName: z.string().min(0).max(256).optional(),
   TypeParameters: z.record(z.string(), z.string().min(0).max(256)).optional(),
 });
 
-export const NamedEntityDefinitionMetricSchema = z.object({
+const NamedEntityDefinitionMetricSchema = z.object({
   Aggregation: z.enum([
     "SUM",
     "MIN",
@@ -382,7 +391,7 @@ export const NamedEntityDefinitionMetricSchema = z.object({
   ).optional(),
 });
 
-export const NamedEntityDefinitionSchema = z.object({
+const NamedEntityDefinitionSchema = z.object({
   FieldName: z.string().min(0).max(256).optional(),
   PropertyName: z.string().min(0).max(256).optional(),
   PropertyRole: z.enum(["PRIMARY", "ID"]).optional(),
@@ -390,7 +399,7 @@ export const NamedEntityDefinitionSchema = z.object({
   Metric: NamedEntityDefinitionMetricSchema.optional(),
 });
 
-export const TopicNamedEntitySchema = z.object({
+const TopicNamedEntitySchema = z.object({
   EntityName: z.string().min(0).max(256),
   EntityDescription: z.string().min(0).max(256).optional(),
   EntitySynonyms: z.array(z.string().min(0).max(256)).optional(),
@@ -398,7 +407,7 @@ export const TopicNamedEntitySchema = z.object({
   Definition: z.array(NamedEntityDefinitionSchema).optional(),
 });
 
-export const DatasetMetadataSchema = z.object({
+const DatasetMetadataSchema = z.object({
   DatasetArn: z.string(),
   DatasetName: z.string().min(0).max(256).optional(),
   DatasetDescription: z.string().min(0).max(256).optional(),
@@ -409,7 +418,7 @@ export const DatasetMetadataSchema = z.object({
   NamedEntities: z.array(TopicNamedEntitySchema).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("Tag key."),
   Value: z.string().min(1).max(256).describe("Tag value."),
 });
@@ -478,9 +487,10 @@ const InputsSchema = z.object({
   UserExperienceVersion: z.enum(["LEGACY", "NEW_READER_EXPERIENCE"]).optional(),
 });
 
+/** Swamp extension model for QuickSight Topic. Registered at `@swamp/aws/quicksight/topic`. */
 export const model = {
   type: "@swamp/aws/quicksight/topic",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -494,6 +504,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

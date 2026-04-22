@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for VerifiedPermissions Policy (AWS::VerifiedPermissions::Policy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,17 +21,17 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const StaticPolicyDefinitionSchema = z.object({
+const StaticPolicyDefinitionSchema = z.object({
   Description: z.string().min(0).max(150).optional(),
   Statement: z.string().min(1).max(10000),
 });
 
-export const EntityIdentifierSchema = z.object({
+const EntityIdentifierSchema = z.object({
   EntityType: z.string().min(1).max(200).regex(new RegExp("^.*$")),
   EntityId: z.string().min(1).max(200).regex(new RegExp("^.*$")),
 });
 
-export const TemplateLinkedPolicyDefinitionSchema = z.object({
+const TemplateLinkedPolicyDefinitionSchema = z.object({
   PolicyTemplateId: z.string().min(1).max(200).regex(
     new RegExp("^[a-zA-Z0-9-]*$"),
   ),
@@ -65,9 +74,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for VerifiedPermissions Policy. Registered at `@swamp/aws/verifiedpermissions/policy`. */
 export const model = {
   type: "@swamp/aws/verifiedpermissions/policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -81,6 +91,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

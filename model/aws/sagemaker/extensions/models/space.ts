@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker Space (AWS::SageMaker::Space).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ResourceSpecSchema = z.object({
+const ResourceSpecSchema = z.object({
   InstanceType: z.enum([
     "system",
     "ml.t3.micro",
@@ -100,7 +109,7 @@ export const ResourceSpecSchema = z.object({
   ).optional(),
 });
 
-export const JupyterServerAppSettingsSchema = z.object({
+const JupyterServerAppSettingsSchema = z.object({
   DefaultResourceSpec: ResourceSpecSchema.optional(),
   LifecycleConfigArns: z.array(
     z.string().max(256).regex(
@@ -113,7 +122,7 @@ export const JupyterServerAppSettingsSchema = z.object({
   ).optional(),
 });
 
-export const CustomImageSchema = z.object({
+const CustomImageSchema = z.object({
   AppImageConfigName: z.string().max(63).regex(
     new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"),
   ).describe("The Name of the AppImageConfig."),
@@ -125,7 +134,7 @@ export const CustomImageSchema = z.object({
   ).optional(),
 });
 
-export const KernelGatewayAppSettingsSchema = z.object({
+const KernelGatewayAppSettingsSchema = z.object({
   CustomImages: z.array(CustomImageSchema).describe(
     "A list of custom SageMaker images that are configured to run as a KernelGateway app.",
   ).optional(),
@@ -143,17 +152,17 @@ export const KernelGatewayAppSettingsSchema = z.object({
   ).optional(),
 });
 
-export const SpaceIdleSettingsSchema = z.object({
+const SpaceIdleSettingsSchema = z.object({
   IdleTimeoutInMinutes: z.number().int().min(60).max(525600).describe(
     "The space idle timeout value set in minutes",
   ).optional(),
 });
 
-export const SpaceAppLifecycleManagementSchema = z.object({
+const SpaceAppLifecycleManagementSchema = z.object({
   IdleSettings: SpaceIdleSettingsSchema.optional(),
 });
 
-export const CodeRepositorySchema = z.object({
+const CodeRepositorySchema = z.object({
   RepositoryUrl: z.string().max(256).regex(
     new RegExp("^https://([.\\-_a-zA-Z0-9]+/?){3,1016}$"),
   ).describe(
@@ -161,7 +170,7 @@ export const CodeRepositorySchema = z.object({
   ),
 });
 
-export const SpaceJupyterLabAppSettingsSchema = z.object({
+const SpaceJupyterLabAppSettingsSchema = z.object({
   DefaultResourceSpec: ResourceSpecSchema.optional(),
   AppLifecycleManagement: SpaceAppLifecycleManagementSchema.optional(),
   CodeRepositories: z.array(CodeRepositorySchema).describe(
@@ -169,47 +178,47 @@ export const SpaceJupyterLabAppSettingsSchema = z.object({
   ).optional(),
 });
 
-export const SpaceCodeEditorAppSettingsSchema = z.object({
+const SpaceCodeEditorAppSettingsSchema = z.object({
   DefaultResourceSpec: ResourceSpecSchema.optional(),
   AppLifecycleManagement: SpaceAppLifecycleManagementSchema.optional(),
 });
 
-export const EbsStorageSettingsSchema = z.object({
+const EbsStorageSettingsSchema = z.object({
   EbsVolumeSizeInGb: z.number().int().min(5).max(16384).describe(
     "Size of the Amazon EBS volume in Gb",
   ),
 });
 
-export const SpaceStorageSettingsSchema = z.object({
+const SpaceStorageSettingsSchema = z.object({
   EbsStorageSettings: EbsStorageSettingsSchema.describe(
     "Properties related to the space's Amazon Elastic Block Store volume.",
   ).optional(),
 });
 
-export const EFSFileSystemSchema = z.object({
+const EFSFileSystemSchema = z.object({
   FileSystemId: z.string().min(11).max(21).regex(
     new RegExp("^(fs-[0-9a-f]{8,})$"),
   ),
 });
 
-export const FSxLustreFileSystemSchema = z.object({
+const FSxLustreFileSystemSchema = z.object({
   FileSystemId: z.string().min(11).max(21).regex(
     new RegExp("^(fs-[0-9a-f]{8,})$"),
   ),
 });
 
-export const S3FileSystemSchema = z.object({
+const S3FileSystemSchema = z.object({
   S3Uri: z.string().min(0).max(1024).regex(new RegExp("(s3)://([^/]+)/?(.*)"))
     .optional(),
 });
 
-export const CustomFileSystemSchema = z.object({
+const CustomFileSystemSchema = z.object({
   EFSFileSystem: EFSFileSystemSchema.optional(),
   FSxLustreFileSystem: FSxLustreFileSystemSchema.optional(),
   S3FileSystem: S3FileSystemSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(1).max(128),
   Key: z.string().min(1).max(128),
 });
@@ -351,9 +360,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for SageMaker Space. Registered at `@swamp/aws/sagemaker/space`. */
 export const model = {
   type: "@swamp/aws/sagemaker/space",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -367,6 +377,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

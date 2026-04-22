@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker Endpoint (AWS::SageMaker::Endpoint).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,17 +21,17 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AlarmSchema = z.object({
+const AlarmSchema = z.object({
   AlarmName: z.string().describe("The name of the CloudWatch alarm."),
 });
 
-export const AutoRollbackConfigSchema = z.object({
+const AutoRollbackConfigSchema = z.object({
   Alarms: z.array(AlarmSchema).describe(
     "List of CloudWatch alarms to monitor during the deployment. If any alarm goes off, the deployment is rolled back.",
   ),
 });
 
-export const CapacitySizeSchema = z.object({
+const CapacitySizeSchema = z.object({
   Type: z.string().describe(
     "Specifies whether the `Value` is an instance count or a capacity unit.",
   ),
@@ -31,7 +40,7 @@ export const CapacitySizeSchema = z.object({
   ),
 });
 
-export const TrafficRoutingConfigSchema = z.object({
+const TrafficRoutingConfigSchema = z.object({
   CanarySize: CapacitySizeSchema.describe(
     "Specifies the size of the canary traffic in a canary deployment.",
   ).optional(),
@@ -46,7 +55,7 @@ export const TrafficRoutingConfigSchema = z.object({
   ).optional(),
 });
 
-export const BlueGreenUpdatePolicySchema = z.object({
+const BlueGreenUpdatePolicySchema = z.object({
   MaximumExecutionTimeoutInSeconds: z.number().int().describe(
     "The maximum time allowed for the blue/green update, in seconds.",
   ).optional(),
@@ -58,7 +67,7 @@ export const BlueGreenUpdatePolicySchema = z.object({
   ),
 });
 
-export const RollingUpdatePolicySchema = z.object({
+const RollingUpdatePolicySchema = z.object({
   MaximumBatchSize: CapacitySizeSchema.describe(
     "Specifies the maximum batch size for each rolling update.",
   ),
@@ -73,13 +82,13 @@ export const RollingUpdatePolicySchema = z.object({
   ),
 });
 
-export const VariantPropertySchema = z.object({
+const VariantPropertySchema = z.object({
   VariantPropertyType: z.string().describe(
     "The type of variant property (e.g., 'DesiredInstanceCount', 'DesiredWeight', 'DataCaptureConfig').",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe("The key of the tag."),
   Value: z.string().describe("The value of the tag."),
 });
@@ -167,9 +176,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker Endpoint. Registered at `@swamp/aws/sagemaker/endpoint`. */
 export const model = {
   type: "@swamp/aws/sagemaker/endpoint",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -183,6 +193,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

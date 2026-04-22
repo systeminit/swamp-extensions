@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudWatch MetricStream (AWS::CloudWatch::MetricStream).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MetricStreamFilterSchema = z.object({
+const MetricStreamFilterSchema = z.object({
   Namespace: z.string().min(1).max(255).describe(
     "Only metrics with Namespace matching this value will be streamed.",
   ),
@@ -21,14 +30,14 @@ export const MetricStreamFilterSchema = z.object({
   ).optional(),
 });
 
-export const MetricStreamStatisticsMetricSchema = z.object({
+const MetricStreamStatisticsMetricSchema = z.object({
   MetricName: z.string().min(1).max(255).describe("The name of the metric."),
   Namespace: z.string().min(1).max(255).describe(
     "The namespace of the metric.",
   ),
 });
 
-export const MetricStreamStatisticsConfigurationSchema = z.object({
+const MetricStreamStatisticsConfigurationSchema = z.object({
   AdditionalStatistics: z.array(z.string()).describe(
     "The additional statistics to stream for the metrics listed in IncludeMetrics.",
   ),
@@ -37,7 +46,7 @@ export const MetricStreamStatisticsConfigurationSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("A unique identifier for the tag."),
   Value: z.string().min(0).max(256).describe(
     "String which you can use to describe or define the tag.",
@@ -123,9 +132,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CloudWatch MetricStream. Registered at `@swamp/aws/cloudwatch/metric-stream`. */
 export const model = {
   type: "@swamp/aws/cloudwatch/metric-stream",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -139,6 +149,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

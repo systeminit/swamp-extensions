@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Batch JobQueue (AWS::Batch::JobQueue).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,17 +21,17 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ComputeEnvironmentOrderSchema = z.object({
+const ComputeEnvironmentOrderSchema = z.object({
   ComputeEnvironment: z.string(),
   Order: z.number().int(),
 });
 
-export const ServiceEnvironmentOrderSchema = z.object({
+const ServiceEnvironmentOrderSchema = z.object({
   ServiceEnvironment: z.string(),
   Order: z.number().int(),
 });
 
-export const JobStateTimeLimitActionSchema = z.object({
+const JobStateTimeLimitActionSchema = z.object({
   Action: z.enum(["CANCEL", "TERMINATE"]),
   MaxTimeSeconds: z.number().int().min(600).max(86400),
   Reason: z.string(),
@@ -84,9 +93,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Batch JobQueue. Registered at `@swamp/aws/batch/job-queue`. */
 export const model = {
   type: "@swamp/aws/batch/job-queue",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -100,6 +110,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

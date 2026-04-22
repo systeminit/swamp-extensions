@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SSM PatchBaseline (AWS::SSM::PatchBaseline).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PatchFilterSchema = z.object({
+const PatchFilterSchema = z.object({
   Values: z.array(z.string().min(1).max(64)).optional(),
   Key: z.enum([
     "ADVISORY_ID",
@@ -37,11 +46,11 @@ export const PatchFilterSchema = z.object({
   ]).optional(),
 });
 
-export const PatchFilterGroupSchema = z.object({
+const PatchFilterGroupSchema = z.object({
   PatchFilters: z.array(PatchFilterSchema).optional(),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   ApproveUntilDate: z.string().min(0).max(10).optional(),
   EnableNonSecurity: z.boolean().optional(),
   PatchFilterGroup: PatchFilterGroupSchema.describe(
@@ -58,13 +67,13 @@ export const RuleSchema = z.object({
   ]).optional(),
 });
 
-export const PatchSourceSchema = z.object({
+const PatchSourceSchema = z.object({
   Products: z.array(z.string().min(1).max(128)).optional(),
   Configuration: z.string().min(1).max(1024).optional(),
   Name: z.string().regex(new RegExp("^[a-zA-Z0-9_\\-.]{3,50}$")).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
@@ -252,9 +261,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SSM PatchBaseline. Registered at `@swamp/aws/ssm/patch-baseline`. */
 export const model = {
   type: "@swamp/aws/ssm/patch-baseline",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -268,6 +278,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

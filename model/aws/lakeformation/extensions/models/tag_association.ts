@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for LakeFormation TagAssociation (AWS::LakeFormation::TagAssociation).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,26 +20,26 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const DatabaseResourceSchema = z.object({
+const DatabaseResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12),
   Name: z.string().min(1).max(255),
 });
 
-export const TableResourceSchema = z.object({
+const TableResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12),
   DatabaseName: z.string().min(1).max(255),
   Name: z.string().min(1).max(255).optional(),
   TableWildcard: z.string().optional(),
 });
 
-export const TableWithColumnsResourceSchema = z.object({
+const TableWithColumnsResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12),
   DatabaseName: z.string().min(1).max(255),
   Name: z.string().min(1).max(255),
   ColumnNames: z.array(z.string().min(1).max(255)),
 });
 
-export const LFTagPairSchema = z.object({
+const LFTagPairSchema = z.object({
   CatalogId: z.string().min(12).max(12),
   TagKey: z.string().min(1).max(128),
   TagValues: z.array(z.string().min(0).max(256)),
@@ -78,9 +87,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for LakeFormation TagAssociation. Registered at `@swamp/aws/lakeformation/tag-association`. */
 export const model = {
   type: "@swamp/aws/lakeformation/tag-association",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -94,6 +104,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

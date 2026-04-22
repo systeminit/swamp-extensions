@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for FSx S3AccessPointAttachment (AWS::FSx::S3AccessPointAttachment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,19 +20,19 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const OntapUnixFileSystemUserSchema = z.object({
+const OntapUnixFileSystemUserSchema = z.object({
   Name: z.string().min(1).max(256).regex(
     new RegExp("^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{1,256}$"),
   ).describe("The name of the UNIX user."),
 });
 
-export const OntapWindowsFileSystemUserSchema = z.object({
+const OntapWindowsFileSystemUserSchema = z.object({
   Name: z.string().min(1).max(256).regex(
     new RegExp("^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{1,256}$"),
   ).describe("The name of the Windows user."),
 });
 
-export const OntapFileSystemIdentitySchema = z.object({
+const OntapFileSystemIdentitySchema = z.object({
   Type: z.enum(["UNIX", "WINDOWS"]).describe(
     "Specifies the FSx for ONTAP user identity type, accepts either UNIX or WINDOWS.",
   ),
@@ -35,13 +44,13 @@ export const OntapFileSystemIdentitySchema = z.object({
   ).optional(),
 });
 
-export const FileSystemGIDSchema = z.object({
+const FileSystemGIDSchema = z.object({
   Gid: z.number().min(0).max(4294967295).describe(
     "The GID of the file system user.",
   ),
 });
 
-export const OpenZFSPosixFileSystemUserSchema = z.object({
+const OpenZFSPosixFileSystemUserSchema = z.object({
   Uid: z.number().min(0).max(4294967295).describe(
     "The UID of the file system user.",
   ),
@@ -53,7 +62,7 @@ export const OpenZFSPosixFileSystemUserSchema = z.object({
   ).optional(),
 });
 
-export const OpenZFSFileSystemIdentitySchema = z.object({
+const OpenZFSFileSystemIdentitySchema = z.object({
   Type: z.enum(["POSIX"]).describe(
     "Specifies the FSx for OpenZFS user identity type, accepts only POSIX.",
   ),
@@ -62,7 +71,7 @@ export const OpenZFSFileSystemIdentitySchema = z.object({
   ),
 });
 
-export const S3AccessPointVpcConfigurationSchema = z.object({
+const S3AccessPointVpcConfigurationSchema = z.object({
   VpcId: z.string().min(12).max(21).regex(new RegExp("^(vpc-[0-9a-f]{8,})$"))
     .describe(
       "Specifies the virtual private cloud (VPC) for the S3 access point VPC configuration, if one exists.",
@@ -173,9 +182,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for FSx S3AccessPointAttachment. Registered at `@swamp/aws/fsx/s3access-point-attachment`. */
 export const model = {
   type: "@swamp/aws/fsx/s3access-point-attachment",
-  version: "2026.04.08.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -194,6 +204,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.08.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

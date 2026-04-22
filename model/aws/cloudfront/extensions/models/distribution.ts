@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudFront Distribution (AWS::CloudFront::Distribution).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CookiesSchema = z.object({
+const CookiesSchema = z.object({
   Forward: z.string().describe(
     "This field is deprecated. We recommend that you use a cache policy or an origin request policy instead of this field. If you want to include cookies in the cache key, use a cache policy. For more information, see [Creating cache policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy) in the *Amazon CloudFront Developer Guide*. If you want to send cookies to the origin but not include them in the cache key, use origin request policy. For more information, see [Creating origin request policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy) in the *Amazon CloudFront Developer Guide*. Specifies which cookies to forward to the origin for this cache behavior: all, none, or the list of cookies specified in the WhitelistedNames complex type. Amazon S3 doesn't process cookies. When the cache behavior is forwarding requests to an Amazon S3 origin, specify none for the Forward element.",
   ),
@@ -21,7 +30,7 @@ export const CookiesSchema = z.object({
   ).optional(),
 });
 
-export const ForwardedValuesSchema = z.object({
+const ForwardedValuesSchema = z.object({
   Cookies: CookiesSchema.describe(
     "This field is deprecated. We recommend that you use a cache policy or an origin request policy instead of this field. If you want to include cookies in the cache key, use a cache policy. For more information, see [Creating cache policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy) in the *Amazon CloudFront Developer Guide*. If you want to send cookies to the origin but not include them in the cache key, use an origin request policy. For more information, see [Creating origin request policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy) in the *Amazon CloudFront Developer Guide*. A complex type that specifies whether you want CloudFront to forward cookies to the origin and, if so, which ones. For more information about forwarding cookies to the origin, see [How CloudFront Forwards, Caches, and Logs Cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Cookies.html) in the *Amazon CloudFront Developer Guide*.",
   ).optional(),
@@ -36,7 +45,7 @@ export const ForwardedValuesSchema = z.object({
   ).optional(),
 });
 
-export const FunctionAssociationSchema = z.object({
+const FunctionAssociationSchema = z.object({
   EventType: z.string().describe(
     "The event type of the function, either viewer-request or viewer-response. You cannot use origin-facing event types ( origin-request and origin-response) with a CloudFront function.",
   ).optional(),
@@ -45,13 +54,13 @@ export const FunctionAssociationSchema = z.object({
   ).optional(),
 });
 
-export const GrpcConfigSchema = z.object({
+const GrpcConfigSchema = z.object({
   Enabled: z.boolean().describe(
     "Enables your CloudFront distribution to receive gRPC requests and to proxy them directly to your origins.",
   ),
 });
 
-export const LambdaFunctionAssociationSchema = z.object({
+const LambdaFunctionAssociationSchema = z.object({
   EventType: z.string().describe(
     "Specifies the event type that triggers a Lambda@Edge function invocation. You can specify the following values: viewer-request: The function executes when CloudFront receives a request from a viewer and before it checks to see whether the requested object is in the edge cache. origin-request: The function executes only when CloudFront sends a request to your origin. When the requested object is in the edge cache, the function doesn't execute. origin-response: The function executes after CloudFront receives a response from the origin and before it caches the object in the response. When the requested object is in the edge cache, the function doesn't execute. viewer-response: The function executes before CloudFront returns the requested object to the viewer. The function executes regardless of whether the object was already in the edge cache. If the origin returns an HTTP status code other than HTTP 200 (OK), the function doesn't execute.",
   ).optional(),
@@ -63,7 +72,7 @@ export const LambdaFunctionAssociationSchema = z.object({
   ).optional(),
 });
 
-export const CacheBehaviorSchema = z.object({
+const CacheBehaviorSchema = z.object({
   AllowedMethods: z.array(z.string()).describe(
     "A complex type that controls which HTTP methods CloudFront processes and forwards to your Amazon S3 bucket or your custom origin. There are three choices: CloudFront forwards only GET and HEAD requests. CloudFront forwards only GET, HEAD, and OPTIONS requests. CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE requests. If you pick the third choice, you may need to restrict access to your Amazon S3 bucket or to your custom origin so users can't perform operations that you don't want them to. For example, you might not want users to have permissions to delete objects from your origin.",
   ).optional(),
@@ -129,7 +138,7 @@ export const CacheBehaviorSchema = z.object({
   ),
 });
 
-export const CustomErrorResponseSchema = z.object({
+const CustomErrorResponseSchema = z.object({
   ErrorCachingMinTTL: z.number().describe(
     "The minimum amount of time, in seconds, that you want CloudFront to cache the HTTP status code specified in ErrorCode. When this time period has elapsed, CloudFront queries your origin to see whether the problem that caused the error has been resolved and the requested object is now available. For more information, see [Customizing Error Responses](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html) in the *Amazon CloudFront Developer Guide*.",
   ).optional(),
@@ -144,7 +153,7 @@ export const CustomErrorResponseSchema = z.object({
   ).optional(),
 });
 
-export const LegacyCustomOriginSchema = z.object({
+const LegacyCustomOriginSchema = z.object({
   DNSName: z.string().describe(
     "The domain name assigned to your CF distribution.",
   ),
@@ -162,7 +171,7 @@ export const LegacyCustomOriginSchema = z.object({
   ),
 });
 
-export const DefaultCacheBehaviorSchema = z.object({
+const DefaultCacheBehaviorSchema = z.object({
   AllowedMethods: z.array(z.string()).describe(
     "A complex type that controls which HTTP methods CloudFront processes and forwards to your Amazon S3 bucket or your custom origin. There are three choices: CloudFront forwards only GET and HEAD requests. CloudFront forwards only GET, HEAD, and OPTIONS requests. CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE requests. If you pick the third choice, you may need to restrict access to your Amazon S3 bucket or to your custom origin so users can't perform operations that you don't want them to. For example, you might not want users to have permissions to delete objects from your origin.",
   ).optional(),
@@ -225,7 +234,7 @@ export const DefaultCacheBehaviorSchema = z.object({
   ),
 });
 
-export const LoggingSchema = z.object({
+const LoggingSchema = z.object({
   Bucket: z.string().describe(
     "The Amazon S3 bucket to store the access logs in, for example, amzn-s3-demo-bucket.s3.amazonaws.com.",
   ).optional(),
@@ -237,24 +246,24 @@ export const LoggingSchema = z.object({
   ).optional(),
 });
 
-export const StatusCodesSchema = z.object({
+const StatusCodesSchema = z.object({
   Items: z.array(z.number().int()).describe(
     "The items (status codes) for an origin group.",
   ),
   Quantity: z.number().int().describe("The number of status codes."),
 });
 
-export const OriginGroupFailoverCriteriaSchema = z.object({
+const OriginGroupFailoverCriteriaSchema = z.object({
   StatusCodes: StatusCodesSchema.describe(
     "The status codes that, when returned from the primary origin, will trigger CloudFront to failover to the second origin.",
   ),
 });
 
-export const OriginGroupMemberSchema = z.object({
+const OriginGroupMemberSchema = z.object({
   OriginId: z.string().describe("The ID for an origin in an origin group."),
 });
 
-export const OriginGroupMembersSchema = z.object({
+const OriginGroupMembersSchema = z.object({
   Items: z.array(OriginGroupMemberSchema).describe(
     "Items (origins) in an origin group.",
   ),
@@ -263,7 +272,7 @@ export const OriginGroupMembersSchema = z.object({
   ),
 });
 
-export const OriginGroupSchema = z.object({
+const OriginGroupSchema = z.object({
   FailoverCriteria: OriginGroupFailoverCriteriaSchema.describe(
     "A complex type that contains information about the failover criteria for an origin group.",
   ),
@@ -276,20 +285,20 @@ export const OriginGroupSchema = z.object({
   ).optional(),
 });
 
-export const OriginGroupsSchema = z.object({
+const OriginGroupsSchema = z.object({
   Items: z.array(OriginGroupSchema).describe(
     "The items (origin groups) in a distribution.",
   ).optional(),
   Quantity: z.number().int().describe("The number of origin groups."),
 });
 
-export const OriginMtlsConfigSchema = z.object({
+const OriginMtlsConfigSchema = z.object({
   ClientCertificateArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the client certificate stored in AWS Certificate Manager (ACM) that CloudFront uses to authenticate with your origin using Mutual TLS.",
   ),
 });
 
-export const CustomOriginConfigSchema = z.object({
+const CustomOriginConfigSchema = z.object({
   HTTPPort: z.number().int().describe(
     "The HTTP port that CloudFront uses to connect to the origin. Specify the HTTP port that the origin listens on.",
   ).optional(),
@@ -316,7 +325,7 @@ export const CustomOriginConfigSchema = z.object({
   ).optional(),
 });
 
-export const OriginCustomHeaderSchema = z.object({
+const OriginCustomHeaderSchema = z.object({
   HeaderName: z.string().describe(
     "The name of a header that you want CloudFront to send to your origin. For more information, see [Adding Custom Headers to Origin Requests](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/forward-custom-headers.html) in the *Amazon CloudFront Developer Guide*.",
   ),
@@ -325,7 +334,7 @@ export const OriginCustomHeaderSchema = z.object({
   ),
 });
 
-export const OriginShieldSchema = z.object({
+const OriginShieldSchema = z.object({
   Enabled: z.boolean().describe(
     "A flag that specifies whether Origin Shield is enabled. When it's enabled, CloudFront routes all requests through Origin Shield, which can help protect your origin. When it's disabled, CloudFront might send requests directly to your origin from multiple edge locations or regional edge caches.",
   ).optional(),
@@ -334,7 +343,7 @@ export const OriginShieldSchema = z.object({
   ).optional(),
 });
 
-export const S3OriginConfigSchema = z.object({
+const S3OriginConfigSchema = z.object({
   OriginAccessIdentity: z.string().describe(
     "If you're using origin access control (OAC) instead of origin access identity, specify an empty OriginAccessIdentity element. For more information, see [Restricting access to an](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-origin.html) in the *Amazon CloudFront Developer Guide*. The CloudFront origin access identity to associate with the origin. Use an origin access identity to configure the origin so that viewers can *only* access objects in an Amazon S3 bucket through CloudFront. The format of the value is: origin-access-identity/cloudfront/ID-of-origin-access-identity The ID-of-origin-access-identity is the value that CloudFront returned in the ID element when you created the origin access identity. If you want viewers to be able to access objects using either the CloudFront URL or the Amazon S3 URL, specify an empty OriginAccessIdentity element. To delete the origin access identity from an existing distribution, update the distribution configuration and include an empty OriginAccessIdentity element. To replace the origin access identity, update the distribution configuration and specify the new origin access identity. For more information about the origin access identity, see [Serving Private Content through CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html) in the *Amazon CloudFront Developer Guide*.",
   ).optional(),
@@ -343,7 +352,7 @@ export const S3OriginConfigSchema = z.object({
   ).optional(),
 });
 
-export const VpcOriginConfigSchema = z.object({
+const VpcOriginConfigSchema = z.object({
   OriginKeepaliveTimeout: z.number().int().describe(
     "Specifies how long, in seconds, CloudFront persists its connection to the origin. The minimum timeout is 1 second, the maximum is 120 seconds, and the default (if you don't specify otherwise) is 5 seconds. For more information, see [Keep-alive timeout (custom origins only)](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistValuesOrigin.html#DownloadDistValuesOriginKeepaliveTimeout) in the *Amazon CloudFront Developer Guide*.",
   ).optional(),
@@ -356,7 +365,7 @@ export const VpcOriginConfigSchema = z.object({
   VpcOriginId: z.string().describe("The VPC origin ID."),
 });
 
-export const OriginSchema = z.object({
+const OriginSchema = z.object({
   ConnectionAttempts: z.number().int().describe(
     "The number of times that CloudFront attempts to connect to the origin. The minimum number is 1, the maximum is 3, and the default (if you don't specify otherwise) is 3. For a custom origin (including an Amazon S3 bucket that's configured with static website hosting), this value also specifies the number of times that CloudFront attempts to get a response from the origin, in the case of an [Origin Response Timeout](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesOriginResponseTimeout). For more information, see [Origin Connection Attempts](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#origin-connection-attempts) in the *Amazon CloudFront Developer Guide*.",
   ).optional(),
@@ -395,7 +404,7 @@ export const OriginSchema = z.object({
   ).optional(),
 });
 
-export const GeoRestrictionSchema = z.object({
+const GeoRestrictionSchema = z.object({
   Locations: z.array(z.string()).describe(
     "A complex type that contains a Location element for each country in which you want CloudFront either to distribute your content ( whitelist) or not distribute your content ( blacklist). The Location element is a two-letter, uppercase country code for a country that you want to include in your blacklist or whitelist. Include one Location element for each country. CloudFront and MaxMind both use ISO 3166 country codes. For the current list of countries and the corresponding codes, see ISO 3166-1-alpha-2 code on the *International Organization for Standardization* website. You can also refer to the country list on the CloudFront console, which includes both country names and codes.",
   ).optional(),
@@ -404,13 +413,13 @@ export const GeoRestrictionSchema = z.object({
   ),
 });
 
-export const RestrictionsSchema = z.object({
+const RestrictionsSchema = z.object({
   GeoRestriction: GeoRestrictionSchema.describe(
     "A complex type that controls the countries in which your content is distributed. CF determines the location of your users using MaxMind GeoIP databases. To disable geo restriction, remove the [Restrictions](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloudfront-distribution-distributionconfig.html#cfn-cloudfront-distribution-distributionconfig-restrictions) property from your stack template.",
   ),
 });
 
-export const LegacyS3OriginSchema = z.object({
+const LegacyS3OriginSchema = z.object({
   DNSName: z.string().describe(
     "The domain name assigned to your CF distribution.",
   ),
@@ -419,7 +428,7 @@ export const LegacyS3OriginSchema = z.object({
   ).optional(),
 });
 
-export const ParameterDefinitionSchema = z.object({
+const ParameterDefinitionSchema = z.object({
   Name: z.string().describe("The name of the parameter."),
   Definition: z.object({
     StringSchema: z.object({
@@ -430,7 +439,7 @@ export const ParameterDefinitionSchema = z.object({
   }).describe("The value that you assigned to the parameter."),
 });
 
-export const TrustStoreConfigSchema = z.object({
+const TrustStoreConfigSchema = z.object({
   TrustStoreId: z.string().describe("The trust store ID."),
   AdvertiseTrustStoreCaNames: z.boolean().describe(
     "The configuration to use to advertise trust store CA names.",
@@ -440,7 +449,7 @@ export const TrustStoreConfigSchema = z.object({
   ).optional(),
 });
 
-export const ViewerMtlsConfigSchema = z.object({
+const ViewerMtlsConfigSchema = z.object({
   Mode: z.enum(["required", "optional"]).describe("The viewer mTLS mode.")
     .optional(),
   TrustStoreConfig: TrustStoreConfigSchema.describe(
@@ -448,7 +457,7 @@ export const ViewerMtlsConfigSchema = z.object({
   ).optional(),
 });
 
-export const ViewerCertificateSchema = z.object({
+const ViewerCertificateSchema = z.object({
   AcmCertificateArn: z.string().describe(
     "In CloudFormation, this field name is AcmCertificateArn. Note the different capitalization. If the distribution uses Aliases (alternate domain names or CNAMEs) and the SSL/TLS certificate is stored in [(ACM)](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html), provide the Amazon Resource Name (ARN) of the ACM certificate. CloudFront only supports ACM certificates in the US East (N. Virginia) Region ( us-east-1). If you specify an ACM certificate ARN, you must also specify values for MinimumProtocolVersion and SSLSupportMethod. (In CloudFormation, the field name is SslSupportMethod. Note the different capitalization.)",
   ).optional(),
@@ -466,7 +475,7 @@ export const ViewerCertificateSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe(
     "A string that contains Tag key. The string length should be between 1 and 128 characters. Valid characters include a-z, A-Z, 0-9, space, and the special characters _ -.: / = + @.",
   ),
@@ -689,9 +698,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CloudFront Distribution. Registered at `@swamp/aws/cloudfront/distribution`. */
 export const model = {
   type: "@swamp/aws/cloudfront/distribution",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -705,6 +715,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

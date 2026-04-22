@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MSK Cluster (AWS::MSK::Cluster).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,117 +21,117 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ProvisionedThroughputSchema = z.object({
+const ProvisionedThroughputSchema = z.object({
   Enabled: z.boolean().optional(),
   VolumeThroughput: z.number().int().optional(),
 });
 
-export const EBSStorageInfoSchema = z.object({
+const EBSStorageInfoSchema = z.object({
   VolumeSize: z.number().int().min(1).max(16384).optional(),
   ProvisionedThroughput: ProvisionedThroughputSchema.optional(),
 });
 
-export const StorageInfoSchema = z.object({
+const StorageInfoSchema = z.object({
   EBSStorageInfo: EBSStorageInfoSchema.optional(),
 });
 
-export const PublicAccessSchema = z.object({
+const PublicAccessSchema = z.object({
   Type: z.string().min(7).max(23).optional(),
 });
 
-export const VpcConnectivityTlsSchema = z.object({
+const VpcConnectivityTlsSchema = z.object({
   Enabled: z.boolean(),
 });
 
-export const VpcConnectivityScramSchema = z.object({
+const VpcConnectivityScramSchema = z.object({
   Enabled: z.boolean(),
 });
 
-export const VpcConnectivityIamSchema = z.object({
+const VpcConnectivityIamSchema = z.object({
   Enabled: z.boolean(),
 });
 
-export const VpcConnectivitySaslSchema = z.object({
+const VpcConnectivitySaslSchema = z.object({
   Scram: VpcConnectivityScramSchema.optional(),
   Iam: VpcConnectivityIamSchema.optional(),
 });
 
-export const VpcConnectivityClientAuthenticationSchema = z.object({
+const VpcConnectivityClientAuthenticationSchema = z.object({
   Tls: VpcConnectivityTlsSchema.optional(),
   Sasl: VpcConnectivitySaslSchema.optional(),
 });
 
-export const VpcConnectivitySchema = z.object({
+const VpcConnectivitySchema = z.object({
   ClientAuthentication: VpcConnectivityClientAuthenticationSchema.optional(),
 });
 
-export const ConnectivityInfoSchema = z.object({
+const ConnectivityInfoSchema = z.object({
   PublicAccess: PublicAccessSchema.optional(),
   VpcConnectivity: VpcConnectivitySchema.optional(),
   NetworkType: z.enum(["IPV4", "DUAL"]).optional(),
 });
 
-export const EncryptionAtRestSchema = z.object({
+const EncryptionAtRestSchema = z.object({
   DataVolumeKMSKeyId: z.string(),
 });
 
-export const EncryptionInTransitSchema = z.object({
+const EncryptionInTransitSchema = z.object({
   InCluster: z.boolean().optional(),
   ClientBroker: z.enum(["TLS", "TLS_PLAINTEXT", "PLAINTEXT"]).optional(),
 });
 
-export const JmxExporterSchema = z.object({
+const JmxExporterSchema = z.object({
   EnabledInBroker: z.boolean(),
 });
 
-export const NodeExporterSchema = z.object({
+const NodeExporterSchema = z.object({
   EnabledInBroker: z.boolean(),
 });
 
-export const PrometheusSchema = z.object({
+const PrometheusSchema = z.object({
   JmxExporter: JmxExporterSchema.optional(),
   NodeExporter: NodeExporterSchema.optional(),
 });
 
-export const TlsSchema = z.object({
+const TlsSchema = z.object({
   CertificateAuthorityArnList: z.array(z.string()).optional(),
   Enabled: z.boolean().optional(),
 });
 
-export const ScramSchema = z.object({
+const ScramSchema = z.object({
   Enabled: z.boolean(),
 });
 
-export const IamSchema = z.object({
+const IamSchema = z.object({
   Enabled: z.boolean(),
 });
 
-export const SaslSchema = z.object({
+const SaslSchema = z.object({
   Scram: ScramSchema.optional(),
   Iam: IamSchema.optional(),
 });
 
-export const UnauthenticatedSchema = z.object({
+const UnauthenticatedSchema = z.object({
   Enabled: z.boolean(),
 });
 
-export const S3Schema = z.object({
+const S3Schema = z.object({
   Enabled: z.boolean(),
   Prefix: z.string().optional(),
   Bucket: z.string().optional(),
 });
 
-export const CloudWatchLogsSchema = z.object({
+const CloudWatchLogsSchema = z.object({
   LogGroup: z.string().optional(),
   Enabled: z.boolean(),
 });
 
-export const FirehoseSchema = z.object({
+const FirehoseSchema = z.object({
   Enabled: z.boolean(),
   DeliveryStream: z.string().optional(),
 });
 
-export const BrokerLogsSchema = z.object({
+const BrokerLogsSchema = z.object({
   S3: S3Schema.optional(),
   CloudWatchLogs: CloudWatchLogsSchema.optional(),
   Firehose: FirehoseSchema.optional(),
@@ -265,9 +274,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for MSK Cluster. Registered at `@swamp/aws/msk/cluster`. */
 export const model = {
   type: "@swamp/aws/msk/cluster",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -281,6 +291,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

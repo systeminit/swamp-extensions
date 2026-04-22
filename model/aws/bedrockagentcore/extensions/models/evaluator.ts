@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore Evaluator (AWS::BedrockAgentCore::Evaluator).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const NumericalScaleDefinitionSchema = z.object({
+const NumericalScaleDefinitionSchema = z.object({
   Value: z.number().min(0).describe(
     "The numerical value for this rating scale option.",
   ),
@@ -24,7 +33,7 @@ export const NumericalScaleDefinitionSchema = z.object({
   ),
 });
 
-export const CategoricalScaleDefinitionSchema = z.object({
+const CategoricalScaleDefinitionSchema = z.object({
   Label: z.string().min(1).max(100).describe(
     "The label of this categorical rating option.",
   ),
@@ -33,12 +42,12 @@ export const CategoricalScaleDefinitionSchema = z.object({
   ),
 });
 
-export const RatingScaleSchema = z.object({
+const RatingScaleSchema = z.object({
   Numerical: z.array(NumericalScaleDefinitionSchema).optional(),
   Categorical: z.array(CategoricalScaleDefinitionSchema).optional(),
 });
 
-export const InferenceConfigurationSchema = z.object({
+const InferenceConfigurationSchema = z.object({
   MaxTokens: z.number().int().min(1).describe(
     "The maximum number of tokens to generate in the model response.",
   ).optional(),
@@ -50,7 +59,7 @@ export const InferenceConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const BedrockEvaluatorModelConfigSchema = z.object({
+const BedrockEvaluatorModelConfigSchema = z.object({
   ModelId: z.string().describe(
     "The identifier of the Amazon Bedrock model to use for evaluation.",
   ),
@@ -62,13 +71,13 @@ export const BedrockEvaluatorModelConfigSchema = z.object({
   ).optional(),
 });
 
-export const EvaluatorModelConfigSchema = z.object({
+const EvaluatorModelConfigSchema = z.object({
   BedrockEvaluatorModelConfig: BedrockEvaluatorModelConfigSchema.describe(
     "The configuration for using Amazon Bedrock models in evaluator assessments.",
   ),
 });
 
-export const LlmAsAJudgeEvaluatorConfigSchema = z.object({
+const LlmAsAJudgeEvaluatorConfigSchema = z.object({
   Instructions: z.string().describe(
     "The evaluation instructions that guide the language model in assessing agent performance.",
   ),
@@ -80,7 +89,7 @@ export const LlmAsAJudgeEvaluatorConfigSchema = z.object({
   ),
 });
 
-export const LambdaEvaluatorConfigSchema = z.object({
+const LambdaEvaluatorConfigSchema = z.object({
   LambdaArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$",
@@ -91,13 +100,13 @@ export const LambdaEvaluatorConfigSchema = z.object({
   ).optional(),
 });
 
-export const CodeBasedEvaluatorConfigSchema = z.object({
+const CodeBasedEvaluatorConfigSchema = z.object({
   LambdaConfig: LambdaEvaluatorConfigSchema.describe(
     "The Lambda function configuration for code-based evaluation.",
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -169,9 +178,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore Evaluator. Registered at `@swamp/aws/bedrockagentcore/evaluator`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/evaluator",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -190,6 +200,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

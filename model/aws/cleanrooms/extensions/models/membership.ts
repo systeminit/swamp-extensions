@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CleanRooms Membership (AWS::CleanRooms::Membership).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,55 +21,55 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
 
-export const ProtectedQueryS3OutputConfigurationSchema = z.object({
+const ProtectedQueryS3OutputConfigurationSchema = z.object({
   ResultFormat: z.enum(["CSV", "PARQUET"]),
   Bucket: z.string().min(3).max(63),
   KeyPrefix: z.string().optional(),
   SingleFileOutput: z.boolean().optional(),
 });
 
-export const MembershipProtectedQueryOutputConfigurationSchema = z.object({
+const MembershipProtectedQueryOutputConfigurationSchema = z.object({
   S3: ProtectedQueryS3OutputConfigurationSchema,
 });
 
-export const ProtectedJobS3OutputConfigurationInputSchema = z.object({
+const ProtectedJobS3OutputConfigurationInputSchema = z.object({
   Bucket: z.string().min(3).max(63),
   KeyPrefix: z.string().optional(),
 });
 
-export const MembershipProtectedJobOutputConfigurationSchema = z.object({
+const MembershipProtectedJobOutputConfigurationSchema = z.object({
   S3: ProtectedJobS3OutputConfigurationInputSchema,
 });
 
-export const MembershipQueryComputePaymentConfigSchema = z.object({
+const MembershipQueryComputePaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const MembershipModelTrainingPaymentConfigSchema = z.object({
+const MembershipModelTrainingPaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const MembershipModelInferencePaymentConfigSchema = z.object({
+const MembershipModelInferencePaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const MembershipSyntheticDataGenerationPaymentConfigSchema = z.object({
+const MembershipSyntheticDataGenerationPaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const MembershipMLPaymentConfigSchema = z.object({
+const MembershipMLPaymentConfigSchema = z.object({
   ModelTraining: MembershipModelTrainingPaymentConfigSchema.optional(),
   ModelInference: MembershipModelInferencePaymentConfigSchema.optional(),
   SyntheticDataGeneration: MembershipSyntheticDataGenerationPaymentConfigSchema
     .optional(),
 });
 
-export const MembershipJobComputePaymentConfigSchema = z.object({
+const MembershipJobComputePaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
@@ -147,9 +156,10 @@ const InputsSchema = z.object({
   IsMetricsEnabled: z.boolean().optional(),
 });
 
+/** Swamp extension model for CleanRooms Membership. Registered at `@swamp/aws/cleanrooms/membership`. */
 export const model = {
   type: "@swamp/aws/cleanrooms/membership",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -163,6 +173,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

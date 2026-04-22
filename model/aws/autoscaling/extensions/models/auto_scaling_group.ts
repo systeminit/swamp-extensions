@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AutoScaling AutoScalingGroup (AWS::AutoScaling::AutoScalingGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const LifecycleHookSpecificationSchema = z.object({
+const LifecycleHookSpecificationSchema = z.object({
   LifecycleHookName: z.string().describe("The name of the lifecycle hook."),
   LifecycleTransition: z.string().describe(
     "The lifecycle transition. For Auto Scaling groups, there are two major lifecycle transitions. To create a lifecycle hook for scale-out events, specify autoscaling:EC2_INSTANCE_LAUNCHING. To create a lifecycle hook for scale-in events, specify autoscaling:EC2_INSTANCE_TERMINATING.",
@@ -34,7 +43,7 @@ export const LifecycleHookSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const NotificationConfigurationSchema = z.object({
+const NotificationConfigurationSchema = z.object({
   TopicARN: z.array(z.string()).describe(
     "The Amazon Resource Name (ARN) of the Amazon SNS topic.",
   ),
@@ -43,13 +52,13 @@ export const NotificationConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const RetentionTriggersSchema = z.object({
+const RetentionTriggersSchema = z.object({
   TerminateHookAbandon: z.string().describe(
     "Specifies the action when a termination lifecycle hook is abandoned due to failure, timeout, or explicit abandonment (calling CompleteLifecycleAction). Set to retain to move instances to a retained state. Set to terminate for default termination behavior. Retained instances don't count toward desired capacity and remain until you call TerminateInstanceInAutoScalingGroup.",
   ).optional(),
 });
 
-export const InstancesDistributionSchema = z.object({
+const InstancesDistributionSchema = z.object({
   OnDemandAllocationStrategy: z.string().describe(
     "The allocation strategy to apply to your On-Demand Instances when they are launched. Possible instance types are determined by the launch template overrides that you specify. The following lists the valid values: lowest-price Uses price to determine which instance types are the highest priority, launching the lowest priced instance types within an Availability Zone first. This is the default value for Auto Scaling groups that specify InstanceRequirements. + prioritized You set the order of instance types for the launch template overrides from highest to lowest priority (from first to last in the list). Amazon EC2 Auto Scaling launches your highest priority instance types first. If all your On-Demand capacity cannot be fulfilled using your highest priority instance type, then Amazon EC2 Auto Scaling launches the remaining capacity using the second priority instance type, and so on. This is the default value for Auto Scaling groups that don't specify InstanceRequirements and cannot be used for groups that do.",
   ).optional(),
@@ -70,7 +79,7 @@ export const InstancesDistributionSchema = z.object({
   ).optional(),
 });
 
-export const LaunchTemplateSpecificationSchema = z.object({
+const LaunchTemplateSpecificationSchema = z.object({
   LaunchTemplateName: z.string().describe(
     "The name of the launch template. You must specify the LaunchTemplateName or the LaunchTemplateID, but not both.",
   ).optional(),
@@ -82,34 +91,34 @@ export const LaunchTemplateSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const MemoryGiBPerVCpuRequestSchema = z.object({
+const MemoryGiBPerVCpuRequestSchema = z.object({
   Min: z.number().describe("The memory minimum in GiB.").optional(),
   Max: z.number().describe("The memory maximum in GiB.").optional(),
 });
 
-export const VCpuCountRequestSchema = z.object({
+const VCpuCountRequestSchema = z.object({
   Min: z.number().int().describe("The minimum number of vCPUs.").optional(),
   Max: z.number().int().describe("The maximum number of vCPUs.").optional(),
 });
 
-export const MemoryMiBRequestSchema = z.object({
+const MemoryMiBRequestSchema = z.object({
   Min: z.number().int().describe("The memory minimum in MiB.").optional(),
   Max: z.number().int().describe("The memory maximum in MiB.").optional(),
 });
 
-export const NetworkInterfaceCountRequestSchema = z.object({
+const NetworkInterfaceCountRequestSchema = z.object({
   Min: z.number().int().describe("The minimum number of network interfaces.")
     .optional(),
   Max: z.number().int().describe("The maximum number of network interfaces.")
     .optional(),
 });
 
-export const AcceleratorCountRequestSchema = z.object({
+const AcceleratorCountRequestSchema = z.object({
   Min: z.number().int().describe("The minimum value.").optional(),
   Max: z.number().int().describe("The maximum value.").optional(),
 });
 
-export const NetworkBandwidthGbpsRequestSchema = z.object({
+const NetworkBandwidthGbpsRequestSchema = z.object({
   Min: z.number().describe(
     "The minimum amount of network bandwidth, in gigabits per second (Gbps).",
   ).optional(),
@@ -118,40 +127,40 @@ export const NetworkBandwidthGbpsRequestSchema = z.object({
   ).optional(),
 });
 
-export const PerformanceFactorReferenceRequestSchema = z.object({
+const PerformanceFactorReferenceRequestSchema = z.object({
   InstanceFamily: z.string().describe(
     "The instance family to use as a baseline reference. Make sure that you specify the correct value for the instance family. The instance family is everything before the period (.) in the instance type name. For example, in the instance c6i.large, the instance family is c6i, not c6. For more information, see [Amazon EC2 instance type naming conventions](https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-type-names.html) in *Amazon EC2 Instance Types*. The following instance types are *not supported* for performance protection. c1 g3| g3s hpc7g m1| m2 mac1 | mac2 | mac2-m1ultra | mac2-m2 | mac2-m2pro p3dn | p4d | p5 t1 u-12tb1 | u-18tb1 | u-24tb1 | u-3tb1 | u-6tb1 | u-9tb1 | u7i-12tb | u7in-16tb | u7in-24tb | u7in-32tb If you performance protection by specifying a supported instance family, the returned instance types will exclude the preceding unsupported instance families. If you specify an unsupported instance family as a value for baseline performance, the API returns an empty response.",
   ).optional(),
 });
 
-export const CpuPerformanceFactorRequestSchema = z.object({
+const CpuPerformanceFactorRequestSchema = z.object({
   References: z.array(PerformanceFactorReferenceRequestSchema).describe(
     "Specify an instance family to use as the baseline reference for CPU performance. All instance types that match your specified attributes will be compared against the CPU performance of the referenced instance family, regardless of CPU manufacturer or architecture differences. Currently only one instance family can be specified in the list.",
   ).optional(),
 });
 
-export const BaselinePerformanceFactorsRequestSchema = z.object({
+const BaselinePerformanceFactorsRequestSchema = z.object({
   Cpu: CpuPerformanceFactorRequestSchema.describe(
     "The CPU performance to consider, using an instance family as the baseline reference.",
   ).optional(),
 });
 
-export const BaselineEbsBandwidthMbpsRequestSchema = z.object({
+const BaselineEbsBandwidthMbpsRequestSchema = z.object({
   Min: z.number().int().describe("The minimum value in Mbps.").optional(),
   Max: z.number().int().describe("The maximum value in Mbps.").optional(),
 });
 
-export const AcceleratorTotalMemoryMiBRequestSchema = z.object({
+const AcceleratorTotalMemoryMiBRequestSchema = z.object({
   Min: z.number().int().describe("The memory minimum in MiB.").optional(),
   Max: z.number().int().describe("The memory maximum in MiB.").optional(),
 });
 
-export const TotalLocalStorageGBRequestSchema = z.object({
+const TotalLocalStorageGBRequestSchema = z.object({
   Min: z.number().describe("The storage minimum in GB.").optional(),
   Max: z.number().describe("The storage maximum in GB.").optional(),
 });
 
-export const InstanceRequirementsSchema = z.object({
+const InstanceRequirementsSchema = z.object({
   InstanceGenerations: z.array(z.string()).describe(
     "Indicates whether current or previous generation instance types are included. For current generation instance types, specify current. The current generation includes EC2 instance types currently recommended for use. This typically includes the latest two to three generations in each instance family. For more information, see [Instance types](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html) in the *Amazon EC2 User Guide*. For previous generation instance types, specify previous. Default: Any current or previous generation",
   ).optional(),
@@ -229,7 +238,7 @@ export const InstanceRequirementsSchema = z.object({
   ).optional(),
 });
 
-export const LaunchTemplateOverridesSchema = z.object({
+const LaunchTemplateOverridesSchema = z.object({
   LaunchTemplateSpecification: LaunchTemplateSpecificationSchema.describe(
     "Provides a launch template for the specified instance type or set of instance requirements. For example, some instance types might require a launch template with a different AMI. If not provided, Amazon EC2 Auto Scaling uses the launch template that's specified in the LaunchTemplate definition. For more information, see [Specifying a different launch template for an instance type](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups-launch-template-overrides.html) in the *Amazon EC2 Auto Scaling User Guide*. You can specify up to 20 launch templates per Auto Scaling group. The launch templates specified in the overrides and in the LaunchTemplate definition count towards this limit.",
   ).optional(),
@@ -247,7 +256,7 @@ export const LaunchTemplateOverridesSchema = z.object({
   ).optional(),
 });
 
-export const LaunchTemplateSchema = z.object({
+const LaunchTemplateSchema = z.object({
   LaunchTemplateSpecification: LaunchTemplateSpecificationSchema.describe(
     "The launch template.",
   ),
@@ -256,7 +265,7 @@ export const LaunchTemplateSchema = z.object({
   ).optional(),
 });
 
-export const TagPropertySchema = z.object({
+const TagPropertySchema = z.object({
   Value: z.string().describe("The tag value."),
   Key: z.string().describe("The tag key."),
   PropagateAtLaunch: z.boolean().describe(
@@ -264,7 +273,7 @@ export const TagPropertySchema = z.object({
   ),
 });
 
-export const MetricsCollectionSchema = z.object({
+const MetricsCollectionSchema = z.object({
   Metrics: z.array(z.string()).describe(
     "Identifies the metrics to enable. You can specify one or more of the following metrics: GroupMinSize GroupMaxSize GroupDesiredCapacity GroupInServiceInstances GroupPendingInstances GroupStandbyInstances GroupTerminatingInstances GroupTotalInstances GroupInServiceCapacity GroupPendingCapacity GroupStandbyCapacity GroupTerminatingCapacity GroupTotalCapacity WarmPoolDesiredCapacity WarmPoolWarmedCapacity WarmPoolPendingCapacity WarmPoolTerminatingCapacity WarmPoolTotalCapacity GroupAndWarmPoolDesiredCapacity GroupAndWarmPoolTotalCapacity If you specify Granularity and don't specify any metrics, all metrics are enabled. For more information, see [Amazon CloudWatch metrics for Amazon EC2 Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-metrics.html) in the *Amazon EC2 Auto Scaling User Guide*.",
   ).optional(),
@@ -273,7 +282,7 @@ export const MetricsCollectionSchema = z.object({
   ),
 });
 
-export const TrafficSourceIdentifierSchema = z.object({
+const TrafficSourceIdentifierSchema = z.object({
   Type: z.string().describe(
     "Provides additional context for the value of Identifier. The following lists the valid values: elb if Identifier is the name of a Classic Load Balancer. elbv2 if Identifier is the ARN of an Application Load Balancer, Gateway Load Balancer, or Network Load Balancer target group. vpc-lattice if Identifier is the ARN of a VPC Lattice target group. Required if the identifier is the name of a Classic Load Balancer.",
   ),
@@ -282,7 +291,7 @@ export const TrafficSourceIdentifierSchema = z.object({
   ),
 });
 
-export const CapacityReservationTargetSchema = z.object({
+const CapacityReservationTargetSchema = z.object({
   CapacityReservationIds: z.array(z.string()).describe(
     "The Capacity Reservation IDs to launch instances into.",
   ).optional(),
@@ -693,9 +702,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for AutoScaling AutoScalingGroup. Registered at `@swamp/aws/autoscaling/auto-scaling-group`. */
 export const model = {
   type: "@swamp/aws/autoscaling/auto-scaling-group",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -719,6 +729,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Grafana Workspace (AWS::Grafana::Workspace).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IdpMetadataSchema = z.object({
+const IdpMetadataSchema = z.object({
   Url: z.string().min(1).max(2048).describe("URL that vends the IdPs metadata.")
     .optional(),
   Xml: z.string().describe("XML blob of the IdPs metadata.").optional(),
 });
 
-export const AssertionAttributesSchema = z.object({
+const AssertionAttributesSchema = z.object({
   Name: z.string().min(1).max(256).describe(
     "Name of the attribute within the SAML assert to use as the users name in Grafana.",
   ).optional(),
@@ -39,7 +48,7 @@ export const AssertionAttributesSchema = z.object({
   ).optional(),
 });
 
-export const RoleValuesSchema = z.object({
+const RoleValuesSchema = z.object({
   Editor: z.array(z.string().min(1).max(256)).describe(
     "List of SAML roles which will be mapped into the Grafana Editor role.",
   ).optional(),
@@ -277,9 +286,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Grafana Workspace. Registered at `@swamp/aws/grafana/workspace`. */
 export const model = {
   type: "@swamp/aws/grafana/workspace",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -293,6 +303,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for InspectorV2 CodeSecurityIntegration (AWS::InspectorV2::CodeSecurityIntegration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,18 +21,18 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CreateGitLabSelfManagedIntegrationDetailSchema = z.object({
+const CreateGitLabSelfManagedIntegrationDetailSchema = z.object({
   instanceUrl: z.string().regex(
     new RegExp("^https://[-a-zA-Z0-9()@:%_+.~#?&//=]{1,1024}$"),
   ),
   accessToken: z.string(),
 });
 
-export const UpdateGitLabSelfManagedIntegrationDetailSchema = z.object({
+const UpdateGitLabSelfManagedIntegrationDetailSchema = z.object({
   authCode: z.string().min(1).max(1024),
 });
 
-export const UpdateGitHubIntegrationDetailSchema = z.object({
+const UpdateGitHubIntegrationDetailSchema = z.object({
   code: z.string().min(1).max(1024),
   installationId: z.string().min(1).max(1024),
 });
@@ -88,9 +97,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for InspectorV2 CodeSecurityIntegration. Registered at `@swamp/aws/inspectorv2/code-security-integration`. */
 export const model = {
   type: "@swamp/aws/inspectorv2/code-security-integration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -104,6 +114,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

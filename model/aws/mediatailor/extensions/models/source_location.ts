@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaTailor SourceLocation (AWS::MediaTailor::SourceLocation).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SecretsManagerAccessTokenConfigurationSchema = z.object({
+const SecretsManagerAccessTokenConfigurationSchema = z.object({
   HeaderName: z.string().describe(
     "The name of the HTTP header used to supply the access token in requests to the source location.",
   ).optional(),
@@ -24,7 +33,7 @@ export const SecretsManagerAccessTokenConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SegmentDeliveryConfigurationSchema = z.object({
+const SegmentDeliveryConfigurationSchema = z.object({
   BaseUrl: z.string().describe(
     "The base URL of the host or path of the segment delivery server that you're using to serve segments. This is typically a content delivery network (CDN). The URL can be absolute or relative. To use an absolute URL include the protocol, such as https://example.com/some/path. To use a relative URL specify the relative path, such as /some/path*.",
   ).optional(),
@@ -33,7 +42,7 @@ export const SegmentDeliveryConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -127,9 +136,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for MediaTailor SourceLocation. Registered at `@swamp/aws/mediatailor/source-location`. */
 export const model = {
   type: "@swamp/aws/mediatailor/source-location",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -143,6 +153,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

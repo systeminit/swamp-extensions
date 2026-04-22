@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Config ConfigRule (AWS::Config::ConfigRule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CustomPolicyDetailsSchema = z.object({
+const CustomPolicyDetailsSchema = z.object({
   EnableDebugLogDelivery: z.boolean().describe(
     "The boolean expression for enabling debug logging for your CC Custom Policy rule. The default value is false.",
   ).optional(),
@@ -24,7 +33,7 @@ export const CustomPolicyDetailsSchema = z.object({
   ).optional(),
 });
 
-export const SourceDetailSchema = z.object({
+const SourceDetailSchema = z.object({
   EventSource: z.string().describe(
     "The source of the event, such as an AWS service, that triggers CC to evaluate your AWS resources.",
   ),
@@ -36,7 +45,7 @@ export const SourceDetailSchema = z.object({
   ),
 });
 
-export const EvaluationModeConfigurationSchema = z.object({
+const EvaluationModeConfigurationSchema = z.object({
   Mode: z.string().describe(
     "The mode of an evaluation. The valid values are Detective or Proactive.",
   ).optional(),
@@ -169,9 +178,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Config ConfigRule. Registered at `@swamp/aws/config/config-rule`. */
 export const model = {
   type: "@swamp/aws/config/config-rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -185,6 +195,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

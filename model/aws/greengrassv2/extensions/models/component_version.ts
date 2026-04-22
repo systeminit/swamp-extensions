@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GreengrassV2 ComponentVersion (AWS::GreengrassV2::ComponentVersion).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,47 +21,47 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ComponentPlatformSchema = z.object({
+const ComponentPlatformSchema = z.object({
   Name: z.string().optional(),
   Attributes: z.record(z.string(), z.string()).optional(),
 });
 
-export const ComponentDependencyRequirementSchema = z.object({
+const ComponentDependencyRequirementSchema = z.object({
   VersionRequirement: z.string().optional(),
   DependencyType: z.enum(["SOFT", "HARD"]).optional(),
 });
 
-export const LambdaEventSourceSchema = z.object({
+const LambdaEventSourceSchema = z.object({
   Topic: z.string().optional(),
   Type: z.enum(["PUB_SUB", "IOT_CORE"]).optional(),
 });
 
-export const LambdaVolumeMountSchema = z.object({
+const LambdaVolumeMountSchema = z.object({
   SourcePath: z.string().optional(),
   DestinationPath: z.string().optional(),
   Permission: z.enum(["ro", "rw"]).optional(),
   AddGroupOwner: z.boolean().optional(),
 });
 
-export const LambdaDeviceMountSchema = z.object({
+const LambdaDeviceMountSchema = z.object({
   Path: z.string().optional(),
   Permission: z.enum(["ro", "rw"]).optional(),
   AddGroupOwner: z.boolean().optional(),
 });
 
-export const LambdaContainerParamsSchema = z.object({
+const LambdaContainerParamsSchema = z.object({
   MemorySizeInKB: z.number().int().optional(),
   MountROSysfs: z.boolean().optional(),
   Volumes: z.array(LambdaVolumeMountSchema).optional(),
   Devices: z.array(LambdaDeviceMountSchema).optional(),
 });
 
-export const LambdaLinuxProcessParamsSchema = z.object({
+const LambdaLinuxProcessParamsSchema = z.object({
   IsolationMode: z.enum(["GreengrassContainer", "NoContainer"]).optional(),
   ContainerParams: LambdaContainerParamsSchema.optional(),
 });
 
-export const LambdaExecutionParametersSchema = z.object({
+const LambdaExecutionParametersSchema = z.object({
   EventSources: z.array(LambdaEventSourceSchema).optional(),
   MaxQueueSize: z.number().int().optional(),
   MaxInstancesCount: z.number().int().optional(),
@@ -120,9 +129,10 @@ const InputsSchema = z.object({
   Tags: z.record(z.string(), z.string().max(256)).optional(),
 });
 
+/** Swamp extension model for GreengrassV2 ComponentVersion. Registered at `@swamp/aws/greengrassv2/component-version`. */
 export const model = {
   type: "@swamp/aws/greengrassv2/component-version",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -136,6 +146,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

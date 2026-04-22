@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ECR SigningConfiguration (AWS::ECR::SigningConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const RepositoryFilterSchema = z.object({
+const RepositoryFilterSchema = z.object({
   Filter: z.string().min(1).max(256).regex(
     new RegExp(
       "^(?:[a-z0-9*]+(?:[._-][a-z0-9*]+)*/)*[a-z0-9*]+(?:[._-][a-z0-9*]+)*$",
@@ -21,7 +30,7 @@ export const RepositoryFilterSchema = z.object({
   FilterType: z.enum(["WILDCARD_MATCH"]).describe("Type of repository filter"),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   SigningProfileArn: z.string().max(200).regex(
     new RegExp(
       "^arn:aws(-[a-z]+)*:signer:[a-z0-9-]+:[0-9]{12}:\\/signing-profiles\\/[a-zA-Z0-9_]{2,}$",
@@ -55,9 +64,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ECR SigningConfiguration. Registered at `@swamp/aws/ecr/signing-configuration`. */
 export const model = {
   type: "@swamp/aws/ecr/signing-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -71,6 +81,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

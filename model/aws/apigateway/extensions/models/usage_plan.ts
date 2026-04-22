@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ApiGateway UsagePlan (AWS::ApiGateway::UsagePlan).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,18 +21,18 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ThrottleSettingsSchema = z.object({
+const ThrottleSettingsSchema = z.object({
   BurstLimit: z.number().int().min(0).optional(),
   RateLimit: z.number().min(0).optional(),
 });
 
-export const ApiStageSchema = z.object({
+const ApiStageSchema = z.object({
   ApiId: z.string().optional(),
   Stage: z.string().optional(),
   Throttle: z.record(z.string(), ThrottleSettingsSchema).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "A string you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.",
   ),
@@ -84,9 +93,10 @@ const InputsSchema = z.object({
   UsagePlanName: z.string().optional(),
 });
 
+/** Swamp extension model for ApiGateway UsagePlan. Registered at `@swamp/aws/apigateway/usage-plan`. */
 export const model = {
   type: "@swamp/aws/apigateway/usage-plan",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -100,6 +110,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SSMIncidents ResponsePlan (AWS::SSMIncidents::ResponsePlan).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,25 +21,25 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SsmParameterSchema = z.object({
+const SsmParameterSchema = z.object({
   Key: z.string().min(1).max(50),
   Values: z.array(z.string().max(10000)),
 });
 
-export const DynamicSsmParameterValueSchema = z.object({
+const DynamicSsmParameterValueSchema = z.object({
   Variable: z.enum(["INCIDENT_RECORD_ARN", "INVOLVED_RESOURCES"]).describe(
     "The variable types used as dynamic parameter value when starting the SSM automation document.",
   ).optional(),
 });
 
-export const DynamicSsmParameterSchema = z.object({
+const DynamicSsmParameterSchema = z.object({
   Key: z.string().min(1).max(50),
   Value: DynamicSsmParameterValueSchema.describe(
     "Value of the dynamic parameter to set when starting the SSM automation document.",
   ),
 });
 
-export const SsmAutomationSchema = z.object({
+const SsmAutomationSchema = z.object({
   RoleArn: z.string().max(1000).regex(
     new RegExp(
       "^arn:aws(-(cn|us-gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
@@ -54,17 +63,17 @@ export const SsmAutomationSchema = z.object({
   ).optional(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   SsmAutomation: SsmAutomationSchema.describe(
     "The configuration to use when starting the SSM automation document.",
   ).optional(),
 });
 
-export const PagerDutyIncidentConfigurationSchema = z.object({
+const PagerDutyIncidentConfigurationSchema = z.object({
   ServiceId: z.string().min(1).max(200).describe("The pagerDuty serviceId."),
 });
 
-export const PagerDutyConfigurationSchema = z.object({
+const PagerDutyConfigurationSchema = z.object({
   Name: z.string().min(1).max(200).describe(
     "The name of the pagerDuty configuration.",
   ),
@@ -76,20 +85,20 @@ export const PagerDutyConfigurationSchema = z.object({
   ),
 });
 
-export const IntegrationSchema = z.object({
+const IntegrationSchema = z.object({
   PagerDutyConfiguration: PagerDutyConfigurationSchema.describe(
     "The pagerDuty configuration to use when starting the incident.",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
   Value: z.string().min(1).max(256),
 });
 
-export const NotificationTargetItemSchema = z.object({
+const NotificationTargetItemSchema = z.object({
   SnsTopicArn: z.string().max(1000).regex(
     new RegExp(
       "^arn:aws(-(cn|us-gov))?:sns:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
@@ -213,9 +222,10 @@ const InputsSchema = z.object({
   }).describe("The incident template configuration.").optional(),
 });
 
+/** Swamp extension model for SSMIncidents ResponsePlan. Registered at `@swamp/aws/ssmincidents/response-plan`. */
 export const model = {
   type: "@swamp/aws/ssmincidents/response-plan",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -229,6 +239,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

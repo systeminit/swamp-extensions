@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CustomerProfiles SegmentDefinition (AWS::CustomerProfiles::SegmentDefinition).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ProfileDimensionSchema = z.object({
+const ProfileDimensionSchema = z.object({
   DimensionType: z.enum([
     "INCLUSIVE",
     "EXCLUSIVE",
@@ -23,7 +32,7 @@ export const ProfileDimensionSchema = z.object({
   Values: z.array(z.string().min(1).max(255)),
 });
 
-export const ExtraLengthValueProfileDimensionSchema = z.object({
+const ExtraLengthValueProfileDimensionSchema = z.object({
   DimensionType: z.enum([
     "INCLUSIVE",
     "EXCLUSIVE",
@@ -34,13 +43,13 @@ export const ExtraLengthValueProfileDimensionSchema = z.object({
   Values: z.array(z.string().min(1).max(1000)),
 });
 
-export const DateDimensionSchema = z.object({
+const DateDimensionSchema = z.object({
   DimensionType: z.enum(["BEFORE", "AFTER", "BETWEEN", "NOT_BETWEEN", "ON"])
     .describe("The type of segment dimension to use for a date dimension."),
   Values: z.array(z.string()),
 });
 
-export const AddressDimensionSchema = z.object({
+const AddressDimensionSchema = z.object({
   City: ProfileDimensionSchema.describe(
     "Specifies profile based criteria for a segment.",
   ).optional(),
@@ -61,7 +70,7 @@ export const AddressDimensionSchema = z.object({
   ).optional(),
 });
 
-export const AttributeDimensionSchema = z.object({
+const AttributeDimensionSchema = z.object({
   DimensionType: z.enum([
     "INCLUSIVE",
     "EXCLUSIVE",
@@ -82,14 +91,14 @@ export const AttributeDimensionSchema = z.object({
   Values: z.array(z.string().min(1).max(255)),
 });
 
-export const ProfileTypeDimensionSchema = z.object({
+const ProfileTypeDimensionSchema = z.object({
   DimensionType: z.enum(["INCLUSIVE", "EXCLUSIVE"]).describe(
     "The type of segment dimension to use for a profile type dimension.",
   ),
   Values: z.array(z.enum(["ACCOUNT_PROFILE", "PROFILE"])),
 });
 
-export const ProfileAttributesSchema = z.object({
+const ProfileAttributesSchema = z.object({
   AccountNumber: ProfileDimensionSchema.describe(
     "Specifies profile based criteria for a segment.",
   ).optional(),
@@ -158,7 +167,7 @@ export const ProfileAttributesSchema = z.object({
   ).optional(),
 });
 
-export const RangeOverrideSchema = z.object({
+const RangeOverrideSchema = z.object({
   Start: z.number().int().min(-2147483648).max(2147483647).describe(
     "The starting point for this overridden range. Positive numbers indicate how many days in the past data should be included, and negative numbers indicate how many days in the future.",
   ),
@@ -168,13 +177,13 @@ export const RangeOverrideSchema = z.object({
   Unit: z.enum(["DAYS"]).describe("The unit to be applied to the range."),
 });
 
-export const ConditionOverridesSchema = z.object({
+const ConditionOverridesSchema = z.object({
   Range: RangeOverrideSchema.describe(
     "Defines the range to be applied to the calculated attribute definition.",
   ).optional(),
 });
 
-export const CalculatedAttributeDimensionSchema = z.object({
+const CalculatedAttributeDimensionSchema = z.object({
   DimensionType: z.enum([
     "INCLUSIVE",
     "EXCLUSIVE",
@@ -198,13 +207,13 @@ export const CalculatedAttributeDimensionSchema = z.object({
   ).optional(),
 });
 
-export const SourceSegmentSchema = z.object({
+const SourceSegmentSchema = z.object({
   SegmentDefinitionName: z.string().min(1).max(64).regex(
     new RegExp("^[a-zA-Z0-9_-]+$"),
   ).optional(),
 });
 
-export const GroupSchema = z.object({
+const GroupSchema = z.object({
   Dimensions: z.array(z.object({
     ProfileAttributes: ProfileAttributesSchema.describe(
       "Specifies the dimension settings within profile attributes for a segment.",
@@ -225,7 +234,7 @@ export const GroupSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -236,7 +245,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const SortAttributeSchema = z.object({
+const SortAttributeSchema = z.object({
   Name: z.string().min(1).max(255).describe(
     "The name of the attribute to sort by.",
   ),
@@ -344,9 +353,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for CustomerProfiles SegmentDefinition. Registered at `@swamp/aws/customerprofiles/segment-definition`. */
 export const model = {
   type: "@swamp/aws/customerprofiles/segment-definition",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -365,6 +375,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

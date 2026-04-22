@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ConnectCampaignsV2 Campaign (AWS::ConnectCampaignsV2::Campaign).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,25 +21,25 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ProgressiveConfigSchema = z.object({
+const ProgressiveConfigSchema = z.object({
   BandwidthAllocation: z.number().min(0).max(1).describe(
     "The bandwidth allocation of a queue resource.",
   ),
 });
 
-export const PredictiveConfigSchema = z.object({
+const PredictiveConfigSchema = z.object({
   BandwidthAllocation: z.number().min(0).max(1).describe(
     "The bandwidth allocation of a queue resource.",
   ),
 });
 
-export const TimeoutConfigSchema = z.object({
+const TimeoutConfigSchema = z.object({
   DurationInSeconds: z.number().int().min(10).max(300).describe(
     "Timeout duration for a preview contact in seconds",
   ).optional(),
 });
 
-export const PreviewConfigSchema = z.object({
+const PreviewConfigSchema = z.object({
   BandwidthAllocation: z.number().min(0).max(1).describe(
     "The bandwidth allocation of a queue resource.",
   ),
@@ -42,7 +51,7 @@ export const PreviewConfigSchema = z.object({
   ).optional(),
 });
 
-export const TelephonyOutboundModeSchema = z.object({
+const TelephonyOutboundModeSchema = z.object({
   ProgressiveConfig: ProgressiveConfigSchema.describe("Progressive config")
     .optional(),
   PredictiveConfig: PredictiveConfigSchema.describe("Predictive config")
@@ -51,7 +60,7 @@ export const TelephonyOutboundModeSchema = z.object({
   PreviewConfig: PreviewConfigSchema.describe("Preview config").optional(),
 });
 
-export const AnswerMachineDetectionConfigSchema = z.object({
+const AnswerMachineDetectionConfigSchema = z.object({
   EnableAnswerMachineDetection: z.boolean().describe(
     "Flag to decided whether outbound calls should have answering machine detection enabled or not",
   ),
@@ -60,7 +69,7 @@ export const AnswerMachineDetectionConfigSchema = z.object({
   ).optional(),
 });
 
-export const TelephonyOutboundConfigSchema = z.object({
+const TelephonyOutboundConfigSchema = z.object({
   ConnectContactFlowId: z.string().max(500).describe(
     "The identifier of the contact flow for the outbound call",
   ),
@@ -75,7 +84,7 @@ export const TelephonyOutboundConfigSchema = z.object({
   ).optional(),
 });
 
-export const TelephonyChannelSubtypeConfigSchema = z.object({
+const TelephonyChannelSubtypeConfigSchema = z.object({
   Capacity: z.number().min(0.01).max(1).describe(
     "Allocates outbound capacity for the specific channel of this campaign between multiple active campaigns",
   ).optional(),
@@ -87,11 +96,11 @@ export const TelephonyChannelSubtypeConfigSchema = z.object({
   ),
 });
 
-export const SmsOutboundModeSchema = z.object({
+const SmsOutboundModeSchema = z.object({
   AgentlessConfig: z.string().describe("Agentless config").optional(),
 });
 
-export const SmsOutboundConfigSchema = z.object({
+const SmsOutboundConfigSchema = z.object({
   ConnectSourcePhoneNumberArn: z.string().min(20).max(500).regex(
     new RegExp("^arn:.*$"),
   ).describe("Arn"),
@@ -99,7 +108,7 @@ export const SmsOutboundConfigSchema = z.object({
     .describe("Arn"),
 });
 
-export const SmsChannelSubtypeConfigSchema = z.object({
+const SmsChannelSubtypeConfigSchema = z.object({
   Capacity: z.number().min(0.01).max(1).describe(
     "Allocates outbound capacity for the specific channel of this campaign between multiple active campaigns",
   ).optional(),
@@ -109,11 +118,11 @@ export const SmsChannelSubtypeConfigSchema = z.object({
   ),
 });
 
-export const EmailOutboundModeSchema = z.object({
+const EmailOutboundModeSchema = z.object({
   AgentlessConfig: z.string().describe("Agentless config").optional(),
 });
 
-export const EmailOutboundConfigSchema = z.object({
+const EmailOutboundConfigSchema = z.object({
   ConnectSourceEmailAddress: z.string().min(1).max(255).regex(
     new RegExp("^[\\w-\\.\\+]+@([\\w-]+\\.)+[\\w-]{2,4}$"),
   ).describe("Email address used for Email messages"),
@@ -124,7 +133,7 @@ export const EmailOutboundConfigSchema = z.object({
     .describe("Arn"),
 });
 
-export const EmailChannelSubtypeConfigSchema = z.object({
+const EmailChannelSubtypeConfigSchema = z.object({
   Capacity: z.number().min(0.01).max(1).describe(
     "Allocates outbound capacity for the specific channel of this campaign between multiple active campaigns",
   ).optional(),
@@ -134,11 +143,11 @@ export const EmailChannelSubtypeConfigSchema = z.object({
   ),
 });
 
-export const WhatsAppOutboundModeSchema = z.object({
+const WhatsAppOutboundModeSchema = z.object({
   AgentlessConfig: z.string().describe("Agentless config").optional(),
 });
 
-export const WhatsAppOutboundConfigSchema = z.object({
+const WhatsAppOutboundConfigSchema = z.object({
   ConnectSourcePhoneNumberArn: z.string().min(20).max(500).regex(
     new RegExp("^arn:.*$"),
   ).describe("Arn"),
@@ -146,7 +155,7 @@ export const WhatsAppOutboundConfigSchema = z.object({
     .describe("Arn"),
 });
 
-export const WhatsAppChannelSubtypeConfigSchema = z.object({
+const WhatsAppChannelSubtypeConfigSchema = z.object({
   Capacity: z.number().min(0.01).max(1).describe(
     "Allocates outbound capacity for the specific channel of this campaign between multiple active campaigns",
   ).optional(),
@@ -156,13 +165,13 @@ export const WhatsAppChannelSubtypeConfigSchema = z.object({
   ),
 });
 
-export const EventTriggerSchema = z.object({
+const EventTriggerSchema = z.object({
   CustomerProfilesDomainArn: z.string().min(20).max(500).regex(
     new RegExp("^arn:.*$"),
   ).describe("Arn").optional(),
 });
 
-export const LocalTimeZoneConfigSchema = z.object({
+const LocalTimeZoneConfigSchema = z.object({
   DefaultTimeZone: z.string().describe("Time Zone Id in the IANA format")
     .optional(),
   LocalTimeZoneDetection: z.array(z.enum(["ZIP_CODE", "AREA_CODE"])).describe(
@@ -170,7 +179,7 @@ export const LocalTimeZoneConfigSchema = z.object({
   ).optional(),
 });
 
-export const TimeRangeSchema = z.object({
+const TimeRangeSchema = z.object({
   StartTime: z.string().regex(new RegExp("^T\\d{2}:\\d{2}$")).describe(
     "Time in ISO 8601 format, e.g. T23:11",
   ),
@@ -179,7 +188,7 @@ export const TimeRangeSchema = z.object({
   ),
 });
 
-export const DailyHourSchema = z.object({
+const DailyHourSchema = z.object({
   Key: z.enum([
     "MONDAY",
     "TUESDAY",
@@ -192,11 +201,11 @@ export const DailyHourSchema = z.object({
   Value: z.array(TimeRangeSchema).describe("List of time range").optional(),
 });
 
-export const OpenHoursSchema = z.object({
+const OpenHoursSchema = z.object({
   DailyHours: z.array(DailyHourSchema).describe("Daily Hours map"),
 });
 
-export const RestrictedPeriodSchema = z.object({
+const RestrictedPeriodSchema = z.object({
   Name: z.string().max(127).describe("The name of a restricted period")
     .optional(),
   StartDate: z.string().regex(new RegExp("^\\d{4}-\\d{2}-\\d{2}$")).describe(
@@ -207,32 +216,32 @@ export const RestrictedPeriodSchema = z.object({
   ),
 });
 
-export const RestrictedPeriodsSchema = z.object({
+const RestrictedPeriodsSchema = z.object({
   RestrictedPeriodList: z.array(RestrictedPeriodSchema).describe(
     "List of restricted period",
   ).optional(),
 });
 
-export const TimeWindowSchema = z.object({
+const TimeWindowSchema = z.object({
   OpenHours: OpenHoursSchema.describe("Open Hours config"),
   RestrictedPeriods: RestrictedPeriodsSchema.describe(
     "Restricted period config",
   ).optional(),
 });
 
-export const CommunicationLimitSchema = z.object({
+const CommunicationLimitSchema = z.object({
   MaxCountPerRecipient: z.number().int().min(1),
   Frequency: z.number().int().min(1),
   Unit: z.enum(["DAY"]).describe("The communication limit time unit"),
 });
 
-export const CommunicationLimitsSchema = z.object({
+const CommunicationLimitsSchema = z.object({
   CommunicationLimitList: z.array(CommunicationLimitSchema).describe(
     "List of communication limit",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe("The key name of the tag."),
   Value: z.string().describe("The value for the tag."),
 });
@@ -426,9 +435,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe("One or more tags.").optional(),
 });
 
+/** Swamp extension model for ConnectCampaignsV2 Campaign. Registered at `@swamp/aws/connectcampaignsv2/campaign`. */
 export const model = {
   type: "@swamp/aws/connectcampaignsv2/campaign",
-  version: "2026.04.09.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -448,6 +458,16 @@ export const model = {
     {
       toVersion: "2026.04.09.1",
       description: "Added: EntryLimitsConfig",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

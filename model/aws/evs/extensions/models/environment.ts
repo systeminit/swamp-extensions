@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EVS Environment (AWS::EVS::Environment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const InitialVlanInfoSchema = z.object({
+const InitialVlanInfoSchema = z.object({
   Cidr: z.string().regex(
     new RegExp(
       "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/(3[0-2]|[1-2][0-9]|[0-9])$",
@@ -20,7 +29,7 @@ export const InitialVlanInfoSchema = z.object({
   ),
 });
 
-export const HostInfoForCreateSchema = z.object({
+const HostInfoForCreateSchema = z.object({
   HostName: z.string().regex(new RegExp("^([a-zA-Z0-9\\-]*)$")),
   KeyName: z.string().min(1).max(255).regex(new RegExp("^[a-zA-Z0-9_-]+$")),
   InstanceType: z.enum(["i4i.metal"]),
@@ -32,7 +41,7 @@ export const HostInfoForCreateSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -247,9 +256,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EVS Environment. Registered at `@swamp/aws/evs/environment`. */
 export const model = {
   type: "@swamp/aws/evs/environment",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -263,6 +273,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

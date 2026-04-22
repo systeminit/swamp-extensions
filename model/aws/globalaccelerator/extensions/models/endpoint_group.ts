@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GlobalAccelerator EndpointGroup (AWS::GlobalAccelerator::EndpointGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EndpointConfigurationSchema = z.object({
+const EndpointConfigurationSchema = z.object({
   EndpointId: z.string().describe(
     "Id of the endpoint. For Network/Application Load Balancer this value is the ARN. For EIP, this value is the allocation ID. For EC2 instances, this is the EC2 instance ID",
   ),
@@ -27,7 +36,7 @@ export const EndpointConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const PortOverrideSchema = z.object({
+const PortOverrideSchema = z.object({
   ListenerPort: z.number().int().min(0).max(65535).describe(
     "A network port number",
   ),
@@ -114,9 +123,10 @@ const InputsSchema = z.object({
   PortOverrides: z.array(PortOverrideSchema).optional(),
 });
 
+/** Swamp extension model for GlobalAccelerator EndpointGroup. Registered at `@swamp/aws/globalaccelerator/endpoint-group`. */
 export const model = {
   type: "@swamp/aws/globalaccelerator/endpoint-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -130,6 +140,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

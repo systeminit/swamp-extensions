@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppSync GraphQLApi (AWS::AppSync::GraphQLApi).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const LambdaAuthorizerConfigSchema = z.object({
+const LambdaAuthorizerConfigSchema = z.object({
   IdentityValidationExpression: z.string().describe(
     "A regular expression for validation of tokens before the Lambda function is called.",
   ).optional(),
@@ -24,7 +33,7 @@ export const LambdaAuthorizerConfigSchema = z.object({
   ).optional(),
 });
 
-export const OpenIDConnectConfigSchema = z.object({
+const OpenIDConnectConfigSchema = z.object({
   ClientId: z.string().describe(
     "The client identifier of the Relying party at the OpenID identity provider.",
   ).optional(),
@@ -38,7 +47,7 @@ export const OpenIDConnectConfigSchema = z.object({
   ).optional(),
 });
 
-export const CognitoUserPoolConfigSchema = z.object({
+const CognitoUserPoolConfigSchema = z.object({
   AppIdClientRegex: z.string().describe(
     "A regular expression for validating the incoming Amazon Cognito user pool app client ID.",
   ).optional(),
@@ -48,7 +57,7 @@ export const CognitoUserPoolConfigSchema = z.object({
   ).optional(),
 });
 
-export const AdditionalAuthenticationProviderSchema = z.object({
+const AdditionalAuthenticationProviderSchema = z.object({
   LambdaAuthorizerConfig: LambdaAuthorizerConfigSchema.optional(),
   OpenIDConnectConfig: OpenIDConnectConfigSchema.optional(),
   UserPoolConfig: CognitoUserPoolConfigSchema.optional(),
@@ -57,7 +66,7 @@ export const AdditionalAuthenticationProviderSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string(),
   Key: z.string(),
 });
@@ -323,9 +332,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for AppSync GraphQLApi. Registered at `@swamp/aws/appsync/graph-qlapi`. */
 export const model = {
   type: "@swamp/aws/appsync/graph-qlapi",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -349,6 +359,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

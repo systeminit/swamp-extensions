@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SecurityHub AutomationRuleV2 (AWS::SecurityHub::AutomationRuleV2).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const StringFilterSchema = z.object({
+const StringFilterSchema = z.object({
   Value: z.string().min(1).max(4096).describe("The string filter value"),
   Comparison: z.enum([
     "EQUALS",
@@ -25,7 +34,7 @@ export const StringFilterSchema = z.object({
   ),
 });
 
-export const OcsfStringFilterSchema = z.object({
+const OcsfStringFilterSchema = z.object({
   FieldName: z.enum([
     "activity_name",
     "cloud.account.name",
@@ -63,12 +72,12 @@ export const OcsfStringFilterSchema = z.object({
   Filter: StringFilterSchema.describe("A string filter for filtering findings"),
 });
 
-export const DateRangeSchema = z.object({
+const DateRangeSchema = z.object({
   Unit: z.enum(["DAYS"]).describe("A date range unit for the date filter"),
   Value: z.number().describe("A date range value for the date filter"),
 });
 
-export const DateFilterSchema = z.object({
+const DateFilterSchema = z.object({
   DateRange: DateRangeSchema.describe("A date range for the date filter")
     .optional(),
   End: z.string().regex(
@@ -83,7 +92,7 @@ export const DateFilterSchema = z.object({
   ).describe("The timestamp formatted in ISO8601").optional(),
 });
 
-export const OcsfDateFilterSchema = z.object({
+const OcsfDateFilterSchema = z.object({
   FieldName: z.enum([
     "finding_info.created_time_dt",
     "finding_info.first_seen_time_dt",
@@ -93,11 +102,11 @@ export const OcsfDateFilterSchema = z.object({
   Filter: DateFilterSchema.describe("A date filter for querying findings"),
 });
 
-export const BooleanFilterSchema = z.object({
+const BooleanFilterSchema = z.object({
   Value: z.boolean().describe("The value of the boolean"),
 });
 
-export const OcsfBooleanFilterSchema = z.object({
+const OcsfBooleanFilterSchema = z.object({
   FieldName: z.enum([
     "compliance.assessments.meets_criteria",
     "vulnerabilities.is_exploit_available",
@@ -106,7 +115,7 @@ export const OcsfBooleanFilterSchema = z.object({
   Filter: BooleanFilterSchema.describe("Boolean filter for querying findings"),
 });
 
-export const NumberFilterSchema = z.object({
+const NumberFilterSchema = z.object({
   Eq: z.number().describe(
     "The equal-to condition to be applied to a single field when querying for findings",
   ).optional(),
@@ -118,7 +127,7 @@ export const NumberFilterSchema = z.object({
   ).optional(),
 });
 
-export const OcsfNumberFilterSchema = z.object({
+const OcsfNumberFilterSchema = z.object({
   FieldName: z.enum([
     "activity_id",
     "compliance.status_id",
@@ -129,7 +138,7 @@ export const OcsfNumberFilterSchema = z.object({
   Filter: NumberFilterSchema.describe("A number filter for querying findings"),
 });
 
-export const MapFilterSchema = z.object({
+const MapFilterSchema = z.object({
   Comparison: z.enum(["EQUALS", "NOT_EQUALS"]).describe(
     "The condition to apply to the key value when filtering findings with a map filter",
   ),
@@ -139,12 +148,12 @@ export const MapFilterSchema = z.object({
   ),
 });
 
-export const OcsfMapFilterSchema = z.object({
+const OcsfMapFilterSchema = z.object({
   FieldName: z.enum(["resources.tags"]).describe("The name of the field"),
   Filter: MapFilterSchema.describe("A map filter for filtering findings"),
 });
 
-export const CompositeFilterSchema = z.object({
+const CompositeFilterSchema = z.object({
   StringFilters: z.array(OcsfStringFilterSchema).describe(
     "Enables filtering based on string field values",
   ).optional(),
@@ -165,7 +174,7 @@ export const CompositeFilterSchema = z.object({
   ).optional(),
 });
 
-export const OcsfFindingFiltersSchema = z.object({
+const OcsfFindingFiltersSchema = z.object({
   CompositeFilters: z.array(CompositeFilterSchema).describe(
     "Enables the creation of complex filtering conditions by combining filter",
   ).optional(),
@@ -174,7 +183,7 @@ export const OcsfFindingFiltersSchema = z.object({
   ).optional(),
 });
 
-export const AutomationRulesFindingFieldsUpdateV2Schema = z.object({
+const AutomationRulesFindingFieldsUpdateV2Schema = z.object({
   SeverityId: z.number().int().describe(
     "The severity level to be assigned to findings that match the automation rule criteria",
   ).optional(),
@@ -186,13 +195,13 @@ export const AutomationRulesFindingFieldsUpdateV2Schema = z.object({
   ).optional(),
 });
 
-export const ExternalIntegrationConfigurationSchema = z.object({
+const ExternalIntegrationConfigurationSchema = z.object({
   ConnectorArn: z.string().regex(new RegExp(".*\\S.*")).describe(
     "The ARN of the connector that establishes the integration",
   ).optional(),
 });
 
-export const AutomationRulesActionV2Schema = z.object({
+const AutomationRulesActionV2Schema = z.object({
   Type: z.enum(["FINDING_FIELDS_UPDATE", "EXTERNAL_INTEGRATION"]).describe(
     "The category of action to be executed by the automation rule",
   ),
@@ -283,9 +292,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SecurityHub AutomationRuleV2. Registered at `@swamp/aws/securityhub/automation-rule-v2`. */
 export const model = {
   type: "@swamp/aws/securityhub/automation-rule-v2",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -299,6 +309,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

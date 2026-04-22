@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataPipeline Pipeline (AWS::DataPipeline::Pipeline).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,24 +21,24 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ParameterAttributeSchema = z.object({
+const ParameterAttributeSchema = z.object({
   Key: z.string().describe("The field identifier."),
   StringValue: z.string().describe("The field value, expressed as a String."),
 });
 
-export const ParameterObjectSchema = z.object({
+const ParameterObjectSchema = z.object({
   Attributes: z.array(ParameterAttributeSchema).describe(
     "The attributes of the parameter object.",
   ),
   Id: z.string().describe("The ID of the parameter object."),
 });
 
-export const ParameterValueSchema = z.object({
+const ParameterValueSchema = z.object({
   Id: z.string().describe("The ID of the parameter value."),
   StringValue: z.string().describe("The field value, expressed as a String."),
 });
 
-export const FieldSchema = z.object({
+const FieldSchema = z.object({
   Key: z.string().describe(
     "Specifies the name of a field for a particular object. To view valid values for a particular field, see Pipeline Object Reference in the AWS Data Pipeline Developer Guide.",
   ),
@@ -41,7 +50,7 @@ export const FieldSchema = z.object({
   ).optional(),
 });
 
-export const PipelineObjectSchema = z.object({
+const PipelineObjectSchema = z.object({
   Fields: z.array(FieldSchema).describe(
     "Key-value pairs that define the properties of the object.",
   ),
@@ -49,7 +58,7 @@ export const PipelineObjectSchema = z.object({
   Name: z.string().describe("The name of the object."),
 });
 
-export const PipelineTagSchema = z.object({
+const PipelineTagSchema = z.object({
   Key: z.string().describe("The key name of a tag."),
   Value: z.string().describe("The value to associate with the key name."),
 });
@@ -111,9 +120,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for DataPipeline Pipeline. Registered at `@swamp/aws/datapipeline/pipeline`. */
 export const model = {
   type: "@swamp/aws/datapipeline/pipeline",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -127,6 +137,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ElementalInference Feed (AWS::ElementalInference::Feed).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ClippingConfigSchema = z.object({
+const ClippingConfigSchema = z.object({
   CallbackMetadata: z.string().max(1024).regex(
     new RegExp("^[\\w \\-\\.',@:;]*$"),
   ).optional(),
 });
 
-export const GetOutputSchema = z.object({
+const GetOutputSchema = z.object({
   Name: z.string().regex(
     new RegExp("^[a-zA-Z0-9]([a-zA-Z0-9-_]{0,126}[a-zA-Z0-9])?$"),
   ),
@@ -62,9 +71,10 @@ const InputsSchema = z.object({
   Tags: z.record(z.string(), z.string().max(256)).optional(),
 });
 
+/** Swamp extension model for ElementalInference Feed. Registered at `@swamp/aws/elementalinference/feed`. */
 export const model = {
   type: "@swamp/aws/elementalinference/feed",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -78,6 +88,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppIntegrations Application (AWS::AppIntegrations::Application).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ExternalUrlConfigSchema = z.object({
+const ExternalUrlConfigSchema = z.object({
   AccessUrl: z.string().min(1).max(1000).regex(new RegExp("^\\w+\\:\\/\\/.*$")),
   ApprovedOrigins: z.array(
     z.string().min(1).max(1000).regex(new RegExp("^\\w+\\:\\/\\/.*$")),
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe("A key to identify the tag."),
@@ -28,7 +37,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const ContactHandlingSchema = z.object({
+const ContactHandlingSchema = z.object({
   Scope: z.enum(["CROSS_CONTACTS", "PER_CONTACT"]),
 });
 
@@ -141,9 +150,10 @@ const InputsSchema = z.object({
   }).describe("The iframe configuration").optional(),
 });
 
+/** Swamp extension model for AppIntegrations Application. Registered at `@swamp/aws/appintegrations/application`. */
 export const model = {
   type: "@swamp/aws/appintegrations/application",
-  version: "2026.04.09.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -163,6 +173,16 @@ export const model = {
     {
       toVersion: "2026.04.09.1",
       description: "Added: ApplicationType",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

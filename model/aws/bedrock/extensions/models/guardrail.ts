@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Bedrock Guardrail (AWS::Bedrock::Guardrail).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ContentFilterConfigSchema = z.object({
+const ContentFilterConfigSchema = z.object({
   Type: z.enum([
     "SEXUAL",
     "VIOLENCE",
@@ -39,7 +48,7 @@ export const ContentFilterConfigSchema = z.object({
   OutputEnabled: z.boolean().optional(),
 });
 
-export const ContextualGroundingFilterConfigSchema = z.object({
+const ContextualGroundingFilterConfigSchema = z.object({
   Type: z.enum(["GROUNDING", "RELEVANCE"]).describe(
     "Type of contextual grounding filter",
   ),
@@ -48,7 +57,7 @@ export const ContextualGroundingFilterConfigSchema = z.object({
   Enabled: z.boolean().optional(),
 });
 
-export const PiiEntityConfigSchema = z.object({
+const PiiEntityConfigSchema = z.object({
   Type: z.enum([
     "ADDRESS",
     "AGE",
@@ -95,7 +104,7 @@ export const PiiEntityConfigSchema = z.object({
   OutputEnabled: z.boolean().optional(),
 });
 
-export const RegexConfigSchema = z.object({
+const RegexConfigSchema = z.object({
   Name: z.string().min(1).max(100).describe("The regex name."),
   Description: z.string().min(1).max(1000).describe("The regex description.")
     .optional(),
@@ -113,7 +122,7 @@ export const RegexConfigSchema = z.object({
   OutputEnabled: z.boolean().optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$"))
     .describe("Tag Key"),
   Value: z.string().min(0).max(256).regex(
@@ -121,7 +130,7 @@ export const TagSchema = z.object({
   ).describe("Tag Value"),
 });
 
-export const TopicConfigSchema = z.object({
+const TopicConfigSchema = z.object({
   Name: z.string().min(1).max(100).regex(new RegExp("^[0-9a-zA-Z-_ !?.]+$"))
     .describe("Name of topic in topic policy"),
   Definition: z.string().min(1).max(1000).describe(
@@ -137,7 +146,7 @@ export const TopicConfigSchema = z.object({
   OutputEnabled: z.boolean().optional(),
 });
 
-export const WordConfigSchema = z.object({
+const WordConfigSchema = z.object({
   Text: z.string().min(1).describe("The custom word text."),
   InputAction: z.enum(["BLOCK", "NONE"]).optional(),
   OutputAction: z.enum(["BLOCK", "NONE"]).optional(),
@@ -145,7 +154,7 @@ export const WordConfigSchema = z.object({
   OutputEnabled: z.boolean().optional(),
 });
 
-export const ManagedWordsConfigSchema = z.object({
+const ManagedWordsConfigSchema = z.object({
   Type: z.enum(["PROFANITY"]).describe("Options for managed words."),
   InputAction: z.enum(["BLOCK", "NONE"]).optional(),
   OutputAction: z.enum(["BLOCK", "NONE"]).optional(),
@@ -381,9 +390,10 @@ const InputsSchema = z.object({
   }).describe("Word policy config for a guardrail.").optional(),
 });
 
+/** Swamp extension model for Bedrock Guardrail. Registered at `@swamp/aws/bedrock/guardrail`. */
 export const model = {
   type: "@swamp/aws/bedrock/guardrail",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -397,6 +407,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

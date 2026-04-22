@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DynamoDB GlobalTable (AWS::DynamoDB::GlobalTable).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,42 +21,42 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ReplicaSSESpecificationSchema = z.object({
+const ReplicaSSESpecificationSchema = z.object({
   KMSMasterKeyId: z.string(),
 });
 
-export const KinesisStreamSpecificationSchema = z.object({
+const KinesisStreamSpecificationSchema = z.object({
   ApproximateCreationDateTimePrecision: z.enum(["MICROSECOND", "MILLISECOND"])
     .optional(),
   StreamArn: z.string(),
 });
 
-export const ContributorInsightsSpecificationSchema = z.object({
+const ContributorInsightsSpecificationSchema = z.object({
   Mode: z.enum(["ACCESSED_AND_THROTTLED_KEYS", "THROTTLED_KEYS"]).optional(),
   Enabled: z.boolean(),
 });
 
-export const PointInTimeRecoverySpecificationSchema = z.object({
+const PointInTimeRecoverySpecificationSchema = z.object({
   PointInTimeRecoveryEnabled: z.boolean().optional(),
   RecoveryPeriodInDays: z.number().int().min(1).max(35).optional(),
 });
 
-export const ResourcePolicySchema = z.object({
+const ResourcePolicySchema = z.object({
   PolicyDocument: z.string(),
 });
 
-export const ReplicaStreamSpecificationSchema = z.object({
+const ReplicaStreamSpecificationSchema = z.object({
   ResourcePolicy: ResourcePolicySchema,
 });
 
-export const TargetTrackingScalingPolicyConfigurationSchema = z.object({
+const TargetTrackingScalingPolicyConfigurationSchema = z.object({
   ScaleOutCooldown: z.number().int().min(0).optional(),
   TargetValue: z.number(),
   DisableScaleIn: z.boolean().optional(),
   ScaleInCooldown: z.number().int().min(0).optional(),
 });
 
-export const CapacityAutoScalingSettingsSchema = z.object({
+const CapacityAutoScalingSettingsSchema = z.object({
   MinCapacity: z.number().int().min(1),
   SeedCapacity: z.number().int().min(1).optional(),
   TargetTrackingScalingPolicyConfiguration:
@@ -55,16 +64,16 @@ export const CapacityAutoScalingSettingsSchema = z.object({
   MaxCapacity: z.number().int().min(1),
 });
 
-export const ReadProvisionedThroughputSettingsSchema = z.object({
+const ReadProvisionedThroughputSettingsSchema = z.object({
   ReadCapacityUnits: z.number().int().min(1).optional(),
   ReadCapacityAutoScalingSettings: CapacityAutoScalingSettingsSchema.optional(),
 });
 
-export const ReadOnDemandThroughputSettingsSchema = z.object({
+const ReadOnDemandThroughputSettingsSchema = z.object({
   MaxReadRequestUnits: z.number().int().min(1).optional(),
 });
 
-export const ReplicaGlobalSecondaryIndexSpecificationSchema = z.object({
+const ReplicaGlobalSecondaryIndexSpecificationSchema = z.object({
   IndexName: z.string().min(3).max(255),
   ContributorInsightsSpecification: ContributorInsightsSpecificationSchema
     .optional(),
@@ -74,12 +83,12 @@ export const ReplicaGlobalSecondaryIndexSpecificationSchema = z.object({
     .optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string(),
   Key: z.string(),
 });
 
-export const ReplicaSpecificationSchema = z.object({
+const ReplicaSpecificationSchema = z.object({
   SSESpecification: ReplicaSSESpecificationSchema.optional(),
   KinesisStreamSpecification: KinesisStreamSpecificationSchema.optional(),
   ContributorInsightsSpecification: ContributorInsightsSpecificationSchema
@@ -103,44 +112,44 @@ export const ReplicaSpecificationSchema = z.object({
     .optional(),
 });
 
-export const GlobalTableWitnessSchema = z.object({
+const GlobalTableWitnessSchema = z.object({
   Region: z.string().optional(),
 });
 
-export const AttributeDefinitionSchema = z.object({
+const AttributeDefinitionSchema = z.object({
   AttributeType: z.string(),
   AttributeName: z.string().min(1).max(255),
 });
 
-export const ProjectionSchema = z.object({
+const ProjectionSchema = z.object({
   NonKeyAttributes: z.array(z.string()).optional(),
   ProjectionType: z.string().optional(),
 });
 
-export const KeySchemaSchema = z.object({
+const KeySchemaSchema = z.object({
   KeyType: z.string(),
   AttributeName: z.string().min(1).max(255),
 });
 
-export const WarmThroughputSchema = z.object({
+const WarmThroughputSchema = z.object({
   ReadUnitsPerSecond: z.number().int().min(1).optional(),
   WriteUnitsPerSecond: z.number().int().min(1).optional(),
 });
 
-export const GlobalReadProvisionedThroughputSettingsSchema = z.object({
+const GlobalReadProvisionedThroughputSettingsSchema = z.object({
   ReadCapacityUnits: z.number().int().min(1).optional(),
 });
 
-export const WriteProvisionedThroughputSettingsSchema = z.object({
+const WriteProvisionedThroughputSettingsSchema = z.object({
   WriteCapacityAutoScalingSettings: CapacityAutoScalingSettingsSchema
     .optional(),
 });
 
-export const WriteOnDemandThroughputSettingsSchema = z.object({
+const WriteOnDemandThroughputSettingsSchema = z.object({
   MaxWriteRequestUnits: z.number().int().min(1).optional(),
 });
 
-export const GlobalSecondaryIndexSchema = z.object({
+const GlobalSecondaryIndexSchema = z.object({
   IndexName: z.string().min(3).max(255),
   Projection: ProjectionSchema,
   KeySchema: z.array(KeySchemaSchema),
@@ -155,7 +164,7 @@ export const GlobalSecondaryIndexSchema = z.object({
     .optional(),
 });
 
-export const LocalSecondaryIndexSchema = z.object({
+const LocalSecondaryIndexSchema = z.object({
   IndexName: z.string().min(3).max(255),
   Projection: ProjectionSchema,
   KeySchema: z.array(KeySchemaSchema),
@@ -281,9 +290,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for DynamoDB GlobalTable. Registered at `@swamp/aws/dynamodb/global-table`. */
 export const model = {
   type: "@swamp/aws/dynamodb/global-table",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -297,6 +307,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

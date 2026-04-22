@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for B2BI Capability (AWS::B2BI::Capability).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const X12DetailsSchema = z.object({
+const X12DetailsSchema = z.object({
   TransactionSet: z.enum([
     "X12_100",
     "X12_101",
@@ -367,12 +376,12 @@ export const X12DetailsSchema = z.object({
   ]).optional(),
 });
 
-export const S3LocationSchema = z.object({
+const S3LocationSchema = z.object({
   BucketName: z.string().min(3).max(63).optional(),
   Key: z.string().min(0).max(1024).optional(),
 });
 
-export const EdiConfigurationSchema = z.object({
+const EdiConfigurationSchema = z.object({
   CapabilityDirection: z.enum(["INBOUND", "OUTBOUND"]).optional(),
   Type: z.object({
     X12Details: X12DetailsSchema.optional(),
@@ -384,7 +393,7 @@ export const EdiConfigurationSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -429,9 +438,10 @@ const InputsSchema = z.object({
   Type: z.enum(["edi"]).optional(),
 });
 
+/** Swamp extension model for B2BI Capability. Registered at `@swamp/aws/b2bi/capability`. */
 export const model = {
   type: "@swamp/aws/b2bi/capability",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -445,6 +455,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EntityResolution MatchingWorkflow (AWS::EntityResolution::MatchingWorkflow).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const InputSourceSchema = z.object({
+const InputSourceSchema = z.object({
   InputSourceARN: z.string().regex(
     new RegExp("arn:(aws|aws-us-gov|aws-cn):.*:.*:[0-9]+:.*$"),
   ).describe("An Glue table ARN for the input source table"),
@@ -24,12 +33,12 @@ export const InputSourceSchema = z.object({
   ApplyNormalization: z.boolean().optional(),
 });
 
-export const OutputAttributeSchema = z.object({
+const OutputAttributeSchema = z.object({
   Name: z.string().min(0).max(255).regex(new RegExp("^[a-zA-Z_0-9- \\t]*$")),
   Hashed: z.boolean().optional(),
 });
 
-export const CustomerProfilesIntegrationConfigSchema = z.object({
+const CustomerProfilesIntegrationConfigSchema = z.object({
   DomainArn: z.string().regex(
     new RegExp(
       "^arn:(aws|aws-us-gov|aws-cn):profile:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(domains/[a-zA-Z_0-9-]{1,255})$",
@@ -42,7 +51,7 @@ export const CustomerProfilesIntegrationConfigSchema = z.object({
   ),
 });
 
-export const OutputSourceSchema = z.object({
+const OutputSourceSchema = z.object({
   OutputS3Path: z.string().regex(new RegExp("^s3://([^/]+)/?(.*?([^/]+)/?)$"))
     .describe(
       "The S3 path to which Entity Resolution will write the output table",
@@ -56,7 +65,7 @@ export const OutputSourceSchema = z.object({
     .optional(),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   RuleName: z.string().min(0).max(255).regex(
     new RegExp("^[a-zA-Z_0-9- \\t]*$"),
   ),
@@ -65,29 +74,29 @@ export const RuleSchema = z.object({
   ),
 });
 
-export const RuleBasedPropertiesSchema = z.object({
+const RuleBasedPropertiesSchema = z.object({
   Rules: z.array(RuleSchema),
   AttributeMatchingModel: z.enum(["ONE_TO_ONE", "MANY_TO_MANY"]),
   MatchPurpose: z.enum(["IDENTIFIER_GENERATION", "INDEXING"]).optional(),
 });
 
-export const RuleConditionSchema = z.object({
+const RuleConditionSchema = z.object({
   RuleName: z.string().min(0).max(255).regex(new RegExp("^[a-zA-Z_0-9- \\t]*$"))
     .optional(),
   Condition: z.string().optional(),
 });
 
-export const RuleConditionPropertiesSchema = z.object({
+const RuleConditionPropertiesSchema = z.object({
   Rules: z.array(RuleConditionSchema),
 });
 
-export const IntermediateSourceConfigurationSchema = z.object({
+const IntermediateSourceConfigurationSchema = z.object({
   IntermediateS3Path: z.string().describe(
     "The s3 path that would be used to stage the intermediate data being generated during workflow execution.",
   ),
 });
 
-export const ProviderPropertiesSchema = z.object({
+const ProviderPropertiesSchema = z.object({
   ProviderServiceArn: z.string().describe(
     "Arn of the Provider service being used.",
   ),
@@ -98,7 +107,7 @@ export const ProviderPropertiesSchema = z.object({
     .optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -182,9 +191,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for EntityResolution MatchingWorkflow. Registered at `@swamp/aws/entityresolution/matching-workflow`. */
 export const model = {
   type: "@swamp/aws/entityresolution/matching-workflow",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -198,6 +208,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

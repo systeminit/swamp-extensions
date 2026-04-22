@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GameLift ContainerGroupDefinition (AWS::GameLift::ContainerGroupDefinition).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ContainerDependencySchema = z.object({
+const ContainerDependencySchema = z.object({
   ContainerName: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9-]+$"))
     .describe(
       "A descriptive label for the container definition. The container being defined depends on this container's condition.",
@@ -22,7 +31,7 @@ export const ContainerDependencySchema = z.object({
   ),
 });
 
-export const ContainerEnvironmentSchema = z.object({
+const ContainerEnvironmentSchema = z.object({
   Name: z.string().min(1).max(255).regex(new RegExp("^.*$")).describe(
     "The environment variable name.",
   ),
@@ -31,7 +40,7 @@ export const ContainerEnvironmentSchema = z.object({
   ),
 });
 
-export const ContainerPortRangeSchema = z.object({
+const ContainerPortRangeSchema = z.object({
   FromPort: z.number().int().min(1).max(60000).describe(
     "A starting value for the range of allowed port numbers.",
   ),
@@ -43,13 +52,13 @@ export const ContainerPortRangeSchema = z.object({
   ),
 });
 
-export const PortConfigurationSchema = z.object({
+const PortConfigurationSchema = z.object({
   ContainerPortRanges: z.array(ContainerPortRangeSchema).describe(
     "Specifies one or more ranges of ports on a container.",
   ),
 });
 
-export const ContainerMountPointSchema = z.object({
+const ContainerMountPointSchema = z.object({
   InstancePath: z.string().min(1).max(1024).regex(new RegExp("^\\/[\\s\\S]*$"))
     .describe("The path on the host that will be mounted in the container."),
   ContainerPath: z.string().min(1).max(1024).regex(
@@ -61,7 +70,7 @@ export const ContainerMountPointSchema = z.object({
   ).optional(),
 });
 
-export const ContainerHealthCheckSchema = z.object({
+const ContainerHealthCheckSchema = z.object({
   Command: z.array(z.string().min(1).max(255).regex(new RegExp("^.*$")))
     .describe(
       "A string array representing the command that the container runs to determine if it is healthy.",
@@ -80,7 +89,7 @@ export const ContainerHealthCheckSchema = z.object({
   ).optional(),
 });
 
-export const SupportContainerDefinitionSchema = z.object({
+const SupportContainerDefinitionSchema = z.object({
   ContainerName: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9-]+$"))
     .describe("A descriptive label for the container definition."),
   Vcpu: z.number().min(0.125).max(10).describe(
@@ -114,7 +123,7 @@ export const SupportContainerDefinitionSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^.*$")).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length.",
   ),
@@ -275,9 +284,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for GameLift ContainerGroupDefinition. Registered at `@swamp/aws/gamelift/container-group-definition`. */
 export const model = {
   type: "@swamp/aws/gamelift/container-group-definition",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -291,6 +301,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

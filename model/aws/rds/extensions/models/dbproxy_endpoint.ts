@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for RDS DBProxyEndpoint (AWS::RDS::DBProxyEndpoint).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagFormatSchema = z.object({
+const TagFormatSchema = z.object({
   Key: z.string().max(128).regex(new RegExp("(\\w|\\d|\\s|\\\\|-|\\.:=+-)*"))
     .optional(),
   Value: z.string().max(128).regex(new RegExp("(\\w|\\d|\\s|\\\\|-|\\.:=+-)*"))
@@ -83,9 +92,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for RDS DBProxyEndpoint. Registered at `@swamp/aws/rds/dbproxy-endpoint`. */
 export const model = {
   type: "@swamp/aws/rds/dbproxy-endpoint",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -99,6 +109,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

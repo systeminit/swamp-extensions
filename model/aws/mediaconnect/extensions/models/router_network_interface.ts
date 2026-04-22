@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaConnect RouterNetworkInterface (AWS::MediaConnect::RouterNetworkInterface).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PublicRouterNetworkInterfaceRuleSchema = z.object({
+const PublicRouterNetworkInterfaceRuleSchema = z.object({
   Cidr: z.string().describe(
     "The CIDR block that is allowed to access the public router network interface.",
   ),
 });
 
-export const PublicRouterNetworkInterfaceConfigurationSchema = z.object({
+const PublicRouterNetworkInterfaceConfigurationSchema = z.object({
   AllowRules: z.array(PublicRouterNetworkInterfaceRuleSchema).describe(
     "The list of allowed CIDR blocks for the public router network interface.",
   ),
 });
 
-export const VpcRouterNetworkInterfaceConfigurationSchema = z.object({
+const VpcRouterNetworkInterfaceConfigurationSchema = z.object({
   SecurityGroupIds: z.array(z.string()).describe(
     "The IDs of the security groups to associate with the router network interface within the VPC.",
   ),
@@ -33,7 +42,7 @@ export const VpcRouterNetworkInterfaceConfigurationSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -103,9 +112,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for MediaConnect RouterNetworkInterface. Registered at `@swamp/aws/mediaconnect/router-network-interface`. */
 export const model = {
   type: "@swamp/aws/mediaconnect/router-network-interface",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -119,6 +129,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

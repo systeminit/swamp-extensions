@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EC2 LaunchTemplate (AWS::EC2::LaunchTemplate).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe("The tag value."),
   Key: z.string().describe("The tag key."),
 });
 
-export const TagSpecificationSchema = z.object({
+const TagSpecificationSchema = z.object({
   ResourceType: z.string().describe(
     "The type of resource to tag. You can specify tags for the following resource types only: instance | volume | network-interface | spot-instances-request. If the instance does not include the resource type that you specify, the instance launch fails. For example, not all instance types include a volume. To tag a resource after it has been created, see [CreateTags](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateTags.html).",
   ).optional(),
@@ -25,13 +34,13 @@ export const TagSpecificationSchema = z.object({
     .optional(),
 });
 
-export const NetworkPerformanceOptionsSchema = z.object({
+const NetworkPerformanceOptionsSchema = z.object({
   BandwidthWeighting: z.string().describe(
     "Specify the bandwidth weighting option to boost the associated type of baseline bandwidth, as follows: default This option uses the standard bandwidth configuration for your instance type. + vpc-1 This option boosts your networking baseline bandwidth and reduces your EBS baseline bandwidth. + ebs-1 This option boosts your EBS baseline bandwidth and reduces your networking baseline bandwidth.",
   ).optional(),
 });
 
-export const EbsSchema = z.object({
+const EbsSchema = z.object({
   SnapshotId: z.string().describe("The ID of the snapshot.").optional(),
   VolumeType: z.string().describe(
     "The volume type. For more information, see [Amazon EBS volume types](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html) in the *Amazon EBS User Guide*.",
@@ -60,7 +69,7 @@ export const EbsSchema = z.object({
   ).optional(),
 });
 
-export const BlockDeviceMappingSchema = z.object({
+const BlockDeviceMappingSchema = z.object({
   Ebs: EbsSchema.describe(
     "Parameters used to automatically set up EBS volumes when the instance is launched.",
   ).optional(),
@@ -75,20 +84,20 @@ export const BlockDeviceMappingSchema = z.object({
   ).optional(),
 });
 
-export const MaintenanceOptionsSchema = z.object({
+const MaintenanceOptionsSchema = z.object({
   AutoRecovery: z.string().describe(
     "Disables the automatic recovery behavior of your instance or sets it to default.",
   ).optional(),
 });
 
-export const IamInstanceProfileSchema = z.object({
+const IamInstanceProfileSchema = z.object({
   Arn: z.string().describe(
     "The Amazon Resource Name (ARN) of the instance profile.",
   ).optional(),
   Name: z.string().describe("The name of the instance profile.").optional(),
 });
 
-export const PlacementSchema = z.object({
+const PlacementSchema = z.object({
   GroupName: z.string().describe(
     "The name of the placement group for the instance.",
   ).optional(),
@@ -115,36 +124,36 @@ export const PlacementSchema = z.object({
   ).optional(),
 });
 
-export const PrivateIpAddSchema = z.object({
+const PrivateIpAddSchema = z.object({
   PrivateIpAddress: z.string().describe("The private IPv4 address.").optional(),
   Primary: z.boolean().describe(
     "Indicates whether the private IPv4 address is the primary private IPv4 address. Only one IPv4 address can be designated as primary.",
   ).optional(),
 });
 
-export const Ipv4PrefixSpecificationSchema = z.object({
+const Ipv4PrefixSpecificationSchema = z.object({
   Ipv4Prefix: z.string().describe(
     "The IPv4 prefix. For information, see [Assigning prefixes to network interfaces](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-prefix-eni.html) in the *Amazon EC2 User Guide*.",
   ).optional(),
 });
 
-export const Ipv6PrefixSpecificationSchema = z.object({
+const Ipv6PrefixSpecificationSchema = z.object({
   Ipv6Prefix: z.string().describe("The IPv6 prefix.").optional(),
 });
 
-export const Ipv6AddSchema = z.object({
+const Ipv6AddSchema = z.object({
   Ipv6Address: z.string().describe(
     "One or more specific IPv6 addresses from the IPv6 CIDR block range of your subnet. You can't use this option if you're specifying a number of IPv6 addresses.",
   ).optional(),
 });
 
-export const EnaSrdUdpSpecificationSchema = z.object({
+const EnaSrdUdpSpecificationSchema = z.object({
   EnaSrdUdpEnabled: z.boolean().describe(
     "Indicates whether UDP traffic to and from the instance uses ENA Express. To specify this setting, you must first enable ENA Express.",
   ).optional(),
 });
 
-export const EnaSrdSpecificationSchema = z.object({
+const EnaSrdSpecificationSchema = z.object({
   EnaSrdEnabled: z.boolean().describe(
     "Indicates whether ENA Express is enabled for the network interface.",
   ).optional(),
@@ -153,7 +162,7 @@ export const EnaSrdSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const ConnectionTrackingSpecificationSchema = z.object({
+const ConnectionTrackingSpecificationSchema = z.object({
   UdpTimeout: z.number().int().describe(
     "Timeout (in seconds) for idle UDP flows that have seen traffic only in a single direction or a single request-response transaction. Min: 30 seconds. Max: 60 seconds. Default: 30 seconds.",
   ).optional(),
@@ -165,7 +174,7 @@ export const ConnectionTrackingSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const NetworkInterfaceSchema = z.object({
+const NetworkInterfaceSchema = z.object({
   Description: z.string().describe("A description for the network interface.")
     .optional(),
   PrivateIpAddress: z.string().describe(
@@ -235,25 +244,25 @@ export const NetworkInterfaceSchema = z.object({
     .optional(),
 });
 
-export const EnclaveOptionsSchema = z.object({
+const EnclaveOptionsSchema = z.object({
   Enabled: z.boolean().describe(
     "If this parameter is set to true, the instance is enabled for AWS Nitro Enclaves; otherwise, it is not enabled for AWS Nitro Enclaves.",
   ).optional(),
 });
 
-export const MonitoringSchema = z.object({
+const MonitoringSchema = z.object({
   Enabled: z.boolean().describe(
     "Specify true to enable detailed monitoring. Otherwise, basic monitoring is enabled.",
   ).optional(),
 });
 
-export const HibernationOptionsSchema = z.object({
+const HibernationOptionsSchema = z.object({
   Configured: z.boolean().describe(
     "If you set this parameter to true, the instance is enabled for hibernation. Default: false",
   ).optional(),
 });
 
-export const MetadataOptionsSchema = z.object({
+const MetadataOptionsSchema = z.object({
   HttpPutResponseHopLimit: z.number().int().describe(
     "The desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel. Default: 1 Possible values: Integers from 1 to 64",
   ).optional(),
@@ -271,13 +280,13 @@ export const MetadataOptionsSchema = z.object({
   ).optional(),
 });
 
-export const LicenseSpecificationSchema = z.object({
+const LicenseSpecificationSchema = z.object({
   LicenseConfigurationArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the license configuration.",
   ).optional(),
 });
 
-export const CpuOptionsSchema = z.object({
+const CpuOptionsSchema = z.object({
   ThreadsPerCore: z.number().int().describe(
     "The number of threads per CPU core. To disable multithreading for the instance, specify a value of 1. Otherwise, specify the default value of 2.",
   ).optional(),
@@ -289,7 +298,7 @@ export const CpuOptionsSchema = z.object({
   ).optional(),
 });
 
-export const PrivateDnsNameOptionsSchema = z.object({
+const PrivateDnsNameOptionsSchema = z.object({
   EnableResourceNameDnsARecord: z.boolean().describe(
     "Indicates whether to respond to DNS queries for instance hostnames with DNS A records.",
   ).optional(),
@@ -301,7 +310,7 @@ export const PrivateDnsNameOptionsSchema = z.object({
   ).optional(),
 });
 
-export const SpotOptionsSchema = z.object({
+const SpotOptionsSchema = z.object({
   SpotInstanceType: z.string().describe(
     "The Spot Instance request type. If you are using Spot Instances with an Auto Scaling group, use one-time requests, as the ASlong service handles requesting new Spot Instances whenever the group is below its desired capacity.",
   ).optional(),
@@ -317,13 +326,13 @@ export const SpotOptionsSchema = z.object({
   ).optional(),
 });
 
-export const InstanceMarketOptionsSchema = z.object({
+const InstanceMarketOptionsSchema = z.object({
   SpotOptions: SpotOptionsSchema.describe("The options for Spot Instances.")
     .optional(),
   MarketType: z.string().describe("The market type.").optional(),
 });
 
-export const MemoryGiBPerVCpuSchema = z.object({
+const MemoryGiBPerVCpuSchema = z.object({
   Min: z.number().describe(
     "The minimum amount of memory per vCPU, in GiB. To specify no minimum limit, omit this parameter.",
   ).optional(),
@@ -332,7 +341,7 @@ export const MemoryGiBPerVCpuSchema = z.object({
   ).optional(),
 });
 
-export const VCpuCountSchema = z.object({
+const VCpuCountSchema = z.object({
   Min: z.number().int().describe(
     "The minimum number of vCPUs. To specify no minimum limit, specify 0.",
   ).optional(),
@@ -341,7 +350,7 @@ export const VCpuCountSchema = z.object({
   ).optional(),
 });
 
-export const MemoryMiBSchema = z.object({
+const MemoryMiBSchema = z.object({
   Min: z.number().int().describe(
     "The minimum amount of memory, in MiB. To specify no minimum limit, specify 0.",
   ).optional(),
@@ -350,7 +359,7 @@ export const MemoryMiBSchema = z.object({
   ).optional(),
 });
 
-export const NetworkInterfaceCountSchema = z.object({
+const NetworkInterfaceCountSchema = z.object({
   Min: z.number().int().describe(
     "The minimum number of network interfaces. To specify no minimum limit, omit this parameter.",
   ).optional(),
@@ -359,7 +368,7 @@ export const NetworkInterfaceCountSchema = z.object({
   ).optional(),
 });
 
-export const AcceleratorCountSchema = z.object({
+const AcceleratorCountSchema = z.object({
   Min: z.number().int().describe(
     "The minimum number of accelerators. To specify no minimum limit, omit this parameter.",
   ).optional(),
@@ -368,7 +377,7 @@ export const AcceleratorCountSchema = z.object({
   ).optional(),
 });
 
-export const NetworkBandwidthGbpsSchema = z.object({
+const NetworkBandwidthGbpsSchema = z.object({
   Min: z.number().describe(
     "The minimum amount of network bandwidth, in Gbps. If this parameter is not specified, there is no minimum limit.",
   ).optional(),
@@ -377,25 +386,25 @@ export const NetworkBandwidthGbpsSchema = z.object({
   ).optional(),
 });
 
-export const ReferenceSchema = z.object({
+const ReferenceSchema = z.object({
   InstanceFamily: z.string().describe(
     "The instance family to use as a baseline reference. Ensure that you specify the correct value for the instance family. The instance family is everything before the period (.) in the instance type name. For example, in the instance type c6i.large, the instance family is c6i, not c6. For more information, see [Amazon EC2 instance type naming conventions](https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-type-names.html) in *Amazon EC2 Instance Types*. The following instance families are *not supported* for performance protection: c1 g3 | g3s hpc7g m1 | m2 mac1 | mac2 | mac2-m1ultra | mac2-m2 | mac2-m2pro p3dn | p4d | p5 t1 u-12tb1 | u-18tb1 | u-24tb1 | u-3tb1 | u-6tb1 | u-9tb1 | u7i-12tb | u7in-16tb | u7in-24tb | u7in-32tb If you enable performance protection by specifying a supported instance family, the returned instance types will exclude the above unsupported instance families.",
   ).optional(),
 });
 
-export const CpuSchema = z.object({
+const CpuSchema = z.object({
   References: z.array(ReferenceSchema).describe(
     "The instance family to use as the baseline reference for CPU performance. All instance types that match your specified attributes are compared against the CPU performance of the referenced instance family, regardless of CPU manufacturer or architecture differences.",
   ).optional(),
 });
 
-export const BaselinePerformanceFactorsSchema = z.object({
+const BaselinePerformanceFactorsSchema = z.object({
   Cpu: CpuSchema.describe(
     "The CPU performance to consider, using an instance family as the baseline reference.",
   ).optional(),
 });
 
-export const BaselineEbsBandwidthMbpsSchema = z.object({
+const BaselineEbsBandwidthMbpsSchema = z.object({
   Min: z.number().int().describe(
     "The minimum baseline bandwidth, in Mbps. To specify no minimum limit, omit this parameter.",
   ).optional(),
@@ -404,7 +413,7 @@ export const BaselineEbsBandwidthMbpsSchema = z.object({
   ).optional(),
 });
 
-export const AcceleratorTotalMemoryMiBSchema = z.object({
+const AcceleratorTotalMemoryMiBSchema = z.object({
   Min: z.number().int().describe(
     "The minimum amount of accelerator memory, in MiB. To specify no minimum limit, omit this parameter.",
   ).optional(),
@@ -413,7 +422,7 @@ export const AcceleratorTotalMemoryMiBSchema = z.object({
   ).optional(),
 });
 
-export const TotalLocalStorageGBSchema = z.object({
+const TotalLocalStorageGBSchema = z.object({
   Min: z.number().describe(
     "The minimum amount of total local storage, in GB. To specify no minimum limit, omit this parameter.",
   ).optional(),
@@ -422,7 +431,7 @@ export const TotalLocalStorageGBSchema = z.object({
   ).optional(),
 });
 
-export const InstanceRequirementsSchema = z.object({
+const InstanceRequirementsSchema = z.object({
   InstanceGenerations: z.array(z.string()).describe(
     "Indicates whether current or previous generation instance types are included. The current generation instance types are recommended for use. Current generation instance types are typically the latest two to three generations in each instance family. For more information, see [Instance types](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html) in the *Amazon EC2 User Guide*. For current generation instance types, specify current. For previous generation instance types, specify previous. Default: Current and previous generation instance types",
   ).optional(),
@@ -500,7 +509,7 @@ export const InstanceRequirementsSchema = z.object({
   ).optional(),
 });
 
-export const CapacityReservationTargetSchema = z.object({
+const CapacityReservationTargetSchema = z.object({
   CapacityReservationResourceGroupArn: z.string().describe(
     "The ARN of the Capacity Reservation resource group in which to run the instance.",
   ).optional(),
@@ -509,7 +518,7 @@ export const CapacityReservationTargetSchema = z.object({
   ).optional(),
 });
 
-export const CapacityReservationSpecificationSchema = z.object({
+const CapacityReservationSpecificationSchema = z.object({
   CapacityReservationPreference: z.string().describe(
     "Indicates the instance's Capacity Reservation preferences. Possible preferences include: capacity-reservations-only - The instance will only run in a Capacity Reservation or Capacity Reservation group. If capacity isn't available, the instance will fail to launch. open - The instance can run in any open Capacity Reservation that has matching attributes (instance type, platform, Availability Zone, tenancy). none - The instance avoids running in a Capacity Reservation even if one is available. The instance runs in On-Demand capacity.",
   ).optional(),
@@ -518,13 +527,13 @@ export const CapacityReservationSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const CreditSpecificationSchema = z.object({
+const CreditSpecificationSchema = z.object({
   CpuCredits: z.string().describe(
     "The credit option for CPU usage of a T instance. Valid values: standard | unlimited",
   ).optional(),
 });
 
-export const LaunchTemplateTagSpecificationSchema = z.object({
+const LaunchTemplateTagSpecificationSchema = z.object({
   ResourceType: z.string().describe(
     "The type of resource. To tag a launch template, ResourceType must be launch-template.",
   ).optional(),
@@ -782,9 +791,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EC2 LaunchTemplate. Registered at `@swamp/aws/ec2/launch-template`. */
 export const model = {
   type: "@swamp/aws/ec2/launch-template",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -798,6 +808,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

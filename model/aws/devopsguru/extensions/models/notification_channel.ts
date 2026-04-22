@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DevOpsGuru NotificationChannel (AWS::DevOpsGuru::NotificationChannel).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,13 +20,13 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const SnsChannelConfigSchema = z.object({
+const SnsChannelConfigSchema = z.object({
   TopicArn: z.string().min(36).max(1024).regex(
     new RegExp("^arn:aws[a-z0-9-]*:sns:[a-z0-9-]+:\\d{12}:[^:]+$"),
   ).optional(),
 });
 
-export const NotificationFilterConfigSchema = z.object({
+const NotificationFilterConfigSchema = z.object({
   Severities: z.array(z.enum(["LOW", "MEDIUM", "HIGH"])).describe(
     "DevOps Guru insight severities to filter for",
   ).optional(),
@@ -72,9 +81,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for DevOpsGuru NotificationChannel. Registered at `@swamp/aws/devopsguru/notification-channel`. */
 export const model = {
   type: "@swamp/aws/devopsguru/notification-channel",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -88,6 +98,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

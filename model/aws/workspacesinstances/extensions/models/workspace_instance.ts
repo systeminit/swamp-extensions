@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for WorkspacesInstances WorkspaceInstance (AWS::WorkspacesInstances::WorkspaceInstance).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EbsBlockDeviceSchema = z.object({
+const EbsBlockDeviceSchema = z.object({
   VolumeType: z.enum(["standard", "io1", "io2", "gp2", "sc1", "st1", "gp3"])
     .optional(),
   Encrypted: z.boolean().optional(),
@@ -22,7 +31,7 @@ export const EbsBlockDeviceSchema = z.object({
   VolumeSize: z.number().int().min(0).optional(),
 });
 
-export const BlockDeviceMappingSchema = z.object({
+const BlockDeviceMappingSchema = z.object({
   DeviceName: z.string().max(32).optional(),
   Ebs: EbsBlockDeviceSchema.optional(),
   NoDevice: z.string().max(32).optional(),
@@ -30,13 +39,13 @@ export const BlockDeviceMappingSchema = z.object({
     .optional(),
 });
 
-export const CapacityReservationTargetSchema = z.object({
+const CapacityReservationTargetSchema = z.object({
   CapacityReservationId: z.string().max(128).optional(),
   CapacityReservationResourceGroupArn: z.string().regex(new RegExp("^arn:.*"))
     .optional(),
 });
 
-export const CapacityReservationSpecificationSchema = z.object({
+const CapacityReservationSpecificationSchema = z.object({
   CapacityReservationPreference: z.enum([
     "capacity-reservations-only",
     "open",
@@ -45,37 +54,37 @@ export const CapacityReservationSpecificationSchema = z.object({
   CapacityReservationTarget: CapacityReservationTargetSchema.optional(),
 });
 
-export const CpuOptionsRequestSchema = z.object({
+const CpuOptionsRequestSchema = z.object({
   CoreCount: z.number().int().min(0).optional(),
   ThreadsPerCore: z.number().int().min(0).optional(),
 });
 
-export const CreditSpecificationRequestSchema = z.object({
+const CreditSpecificationRequestSchema = z.object({
   CpuCredits: z.enum(["standard", "unlimited"]).optional(),
 });
 
-export const EnclaveOptionsRequestSchema = z.object({
+const EnclaveOptionsRequestSchema = z.object({
   Enabled: z.boolean().optional(),
 });
 
-export const HibernationOptionsRequestSchema = z.object({
+const HibernationOptionsRequestSchema = z.object({
   Configured: z.boolean().optional(),
 });
 
-export const IamInstanceProfileSpecificationSchema = z.object({
+const IamInstanceProfileSpecificationSchema = z.object({
   Arn: z.string().max(2048).regex(new RegExp("^arn:.*")).optional(),
   Name: z.string().max(64).optional(),
 });
 
-export const LicenseConfigurationRequestSchema = z.object({
+const LicenseConfigurationRequestSchema = z.object({
   LicenseConfigurationArn: z.string().regex(new RegExp("^arn:.*")).optional(),
 });
 
-export const InstanceMaintenanceOptionsRequestSchema = z.object({
+const InstanceMaintenanceOptionsRequestSchema = z.object({
   AutoRecovery: z.enum(["disabled", "default"]).optional(),
 });
 
-export const InstanceMetadataOptionsRequestSchema = z.object({
+const InstanceMetadataOptionsRequestSchema = z.object({
   HttpEndpoint: z.enum(["enabled", "disabled"]).optional(),
   HttpProtocolIpv6: z.enum(["enabled", "disabled"]).optional(),
   HttpPutResponseHopLimit: z.number().int().min(1).max(64).optional(),
@@ -83,11 +92,11 @@ export const InstanceMetadataOptionsRequestSchema = z.object({
   InstanceMetadataTags: z.enum(["enabled", "disabled"]).optional(),
 });
 
-export const RunInstancesMonitoringEnabledSchema = z.object({
+const RunInstancesMonitoringEnabledSchema = z.object({
   Enabled: z.boolean().optional(),
 });
 
-export const InstanceNetworkInterfaceSpecificationSchema = z.object({
+const InstanceNetworkInterfaceSpecificationSchema = z.object({
   Description: z.string().max(1000).regex(new RegExp("^[\\S\\s]*$")).optional(),
   DeviceIndex: z.number().int().min(0).optional(),
   Groups: z.array(z.string().regex(new RegExp("^sg-[0-9a-zA-Z]{1,63}$")))
@@ -96,11 +105,11 @@ export const InstanceNetworkInterfaceSpecificationSchema = z.object({
     .optional(),
 });
 
-export const InstanceNetworkPerformanceOptionsRequestSchema = z.object({
+const InstanceNetworkPerformanceOptionsRequestSchema = z.object({
   BandwidthWeighting: z.enum(["default", "vpc-1", "ebs-1"]).optional(),
 });
 
-export const PlacementSchema = z.object({
+const PlacementSchema = z.object({
   AvailabilityZone: z.string().regex(
     new RegExp("^[a-z]{2}-[a-z]+-\\d[a-z](-[a-z0-9]+)?$"),
   ).optional(),
@@ -110,18 +119,18 @@ export const PlacementSchema = z.object({
   Tenancy: z.enum(["default", "dedicated", "host"]).optional(),
 });
 
-export const PrivateDnsNameOptionsRequestSchema = z.object({
+const PrivateDnsNameOptionsRequestSchema = z.object({
   HostnameType: z.enum(["ip-name", "resource-name"]).optional(),
   EnableResourceNameDnsARecord: z.boolean().optional(),
   EnableResourceNameDnsAAAARecord: z.boolean().optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().max(256).optional(),
 });
 
-export const TagSpecificationSchema = z.object({
+const TagSpecificationSchema = z.object({
   ResourceType: z.enum([
     "instance",
     "volume",
@@ -246,9 +255,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for WorkspacesInstances WorkspaceInstance. Registered at `@swamp/aws/workspacesinstances/workspace-instance`. */
 export const model = {
   type: "@swamp/aws/workspacesinstances/workspace-instance",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -262,6 +272,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for S3Outposts Bucket (AWS::S3Outposts::Bucket).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(1024).regex(
     new RegExp("^(?!aws:.*)([\\p{L}\\p{Z}\\p{N}_.:=+\\/\\-@%]*)$", "u"),
   ),
@@ -21,13 +30,13 @@ export const TagSchema = z.object({
   ),
 });
 
-export const AbortIncompleteMultipartUploadSchema = z.object({
+const AbortIncompleteMultipartUploadSchema = z.object({
   DaysAfterInitiation: z.number().int().min(0).describe(
     "Specifies the number of days after which Amazon S3Outposts aborts an incomplete multipart upload.",
   ),
 });
 
-export const FilterTagSchema = z.object({
+const FilterTagSchema = z.object({
   Key: z.string().min(1).max(1024).regex(
     new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:=+\\/\\-@%]*)$", "u"),
   ),
@@ -36,7 +45,7 @@ export const FilterTagSchema = z.object({
   ),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   Status: z.enum(["Enabled", "Disabled"]).optional(),
   Id: z.string().max(255).describe(
     "Unique identifier for the lifecycle rule. The value can't be longer than 255 characters.",
@@ -131,9 +140,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for S3Outposts Bucket. Registered at `@swamp/aws/s3outposts/bucket`. */
 export const model = {
   type: "@swamp/aws/s3outposts/bucket",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -147,6 +157,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EMRServerless Application (AWS::EMRServerless::Application).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const WorkerConfigurationSchema = z.object({
+const WorkerConfigurationSchema = z.object({
   Cpu: z.string().min(1).max(15).regex(
     new RegExp("^[1-9][0-9]*(\\s)?(vCPU|vcpu|VCPU)?$"),
   ).describe(
@@ -37,20 +46,20 @@ export const WorkerConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const InitialCapacityConfigSchema = z.object({
+const InitialCapacityConfigSchema = z.object({
   WorkerCount: z.number().int().min(1).max(1000000).describe(
     "Initial count of workers to be initialized when an Application is started. This count will be continued to be maintained until the Application is stopped",
   ),
   WorkerConfiguration: WorkerConfigurationSchema,
 });
 
-export const InitialCapacityConfigKeyValuePairSchema = z.object({
+const InitialCapacityConfigKeyValuePairSchema = z.object({
   Key: z.string().min(1).max(50).regex(new RegExp("^[a-zA-Z]+[-_]*[a-zA-Z]+$"))
     .describe("Worker type for an analytics framework."),
   Value: InitialCapacityConfigSchema,
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^[A-Za-z0-9 /_.:=+@-]+$"))
     .describe(
       "The value for the tag. You can specify a value that is 1 to 128 Unicode characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
@@ -61,7 +70,7 @@ export const TagSchema = z.object({
     ),
 });
 
-export const S3MonitoringConfigurationSchema = z.object({
+const S3MonitoringConfigurationSchema = z.object({
   LogUri: z.string().min(1).max(10280).regex(
     new RegExp(
       "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\r\\n\\t]*",
@@ -74,7 +83,7 @@ export const S3MonitoringConfigurationSchema = z.object({
   ).describe("KMS key ARN to encrypt the logs stored in given s3").optional(),
 });
 
-export const ManagedPersistenceMonitoringConfigurationSchema = z.object({
+const ManagedPersistenceMonitoringConfigurationSchema = z.object({
   Enabled: z.boolean().describe(
     "If set to false, managed logging will be turned off. Defaults to true.",
   ).optional(),
@@ -86,7 +95,7 @@ export const ManagedPersistenceMonitoringConfigurationSchema = z.object({
     .optional(),
 });
 
-export const LogTypeMapKeyValuePairSchema = z.object({
+const LogTypeMapKeyValuePairSchema = z.object({
   Key: z.string().min(1).max(50).regex(new RegExp("^[a-zA-Z]+[-_]*[a-zA-Z]+$")),
   Value: z.array(
     z.string().min(1).max(50).regex(new RegExp("^[a-zA-Z]+[-_]*[a-zA-Z]+$")),
@@ -95,7 +104,7 @@ export const LogTypeMapKeyValuePairSchema = z.object({
   ),
 });
 
-export const CloudWatchLoggingConfigurationSchema = z.object({
+const CloudWatchLoggingConfigurationSchema = z.object({
   Enabled: z.boolean().describe(
     "If set to false, CloudWatch logging will be turned off. Defaults to false.",
   ).optional(),
@@ -120,7 +129,7 @@ export const CloudWatchLoggingConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const PrometheusMonitoringConfigurationSchema = z.object({
+const PrometheusMonitoringConfigurationSchema = z.object({
   RemoteWriteUrl: z.string().min(1).max(10280).regex(
     new RegExp(
       "^https://aps-workspaces.([a-z]{2}-[a-z-]{1,20}-[1-9]).amazonaws(.[0-9A-Za-z]{2,4})+/workspaces/[-_.0-9A-Za-z]{1,100}/api/v1/remote_write$",
@@ -130,7 +139,7 @@ export const PrometheusMonitoringConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ImageConfigurationInputSchema = z.object({
+const ImageConfigurationInputSchema = z.object({
   ImageUri: z.string().min(1).max(1024).regex(
     new RegExp(
       "^([a-z0-9]+[a-z0-9-.]*)\\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(?:\\:([a-zA-Z0-9_][a-zA-Z0-9-._]{0,299})|@(sha256:[0-9a-f]{64}))$",
@@ -140,7 +149,7 @@ export const ImageConfigurationInputSchema = z.object({
   ).optional(),
 });
 
-export const WorkerTypeSpecificationInputSchema = z.object({
+const WorkerTypeSpecificationInputSchema = z.object({
   ImageConfiguration: ImageConfigurationInputSchema.describe(
     "The image configuration.",
   ).optional(),
@@ -435,9 +444,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EMRServerless Application. Registered at `@swamp/aws/emrserverless/application`. */
 export const model = {
   type: "@swamp/aws/emrserverless/application",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -451,6 +461,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

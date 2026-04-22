@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ApiGatewayV2 Integration (AWS::ApiGatewayV2::Integration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ResponseParameterSchema = z.object({
+const ResponseParameterSchema = z.object({
   Destination: z.string().optional(),
   Source: z.string().optional(),
 });
 
-export const ResponseParameterMapSchema = z.object({
+const ResponseParameterMapSchema = z.object({
   ResponseParameters: z.array(ResponseParameterSchema).describe(
     "list of response parameters",
   ).optional(),
@@ -173,9 +182,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ApiGatewayV2 Integration. Registered at `@swamp/aws/apigatewayv2/integration`. */
 export const model = {
   type: "@swamp/aws/apigatewayv2/integration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -189,6 +199,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

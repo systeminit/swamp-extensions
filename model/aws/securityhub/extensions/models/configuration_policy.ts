@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SecurityHub ConfigurationPolicy (AWS::SecurityHub::ConfigurationPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ParameterValueSchema = z.object({
+const ParameterValueSchema = z.object({
   Boolean: z.boolean().describe("A control parameter that is a boolean.")
     .optional(),
   Double: z.number().describe("A control parameter that is a double.")
@@ -34,7 +43,7 @@ export const ParameterValueSchema = z.object({
   ).optional(),
 });
 
-export const ParameterConfigurationSchema = z.object({
+const ParameterConfigurationSchema = z.object({
   ValueType: z.enum(["DEFAULT", "CUSTOM"]).describe(
     "Identifies whether a control parameter uses a custom user-defined value or subscribes to the default AWS Security Hub behavior.",
   ),
@@ -43,7 +52,7 @@ export const ParameterConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SecurityControlCustomParameterSchema = z.object({
+const SecurityControlCustomParameterSchema = z.object({
   Parameters: z.record(z.string(), ParameterConfigurationSchema).describe(
     "An object that specifies parameter values for a control in a configuration policy.",
   ).optional(),
@@ -52,7 +61,7 @@ export const SecurityControlCustomParameterSchema = z.object({
   ).optional(),
 });
 
-export const SecurityControlsConfigurationSchema = z.object({
+const SecurityControlsConfigurationSchema = z.object({
   DisabledSecurityControlIdentifiers: z.array(z.string().max(2048)).describe(
     "A list of security controls that are disabled in the configuration policy",
   ).optional(),
@@ -65,7 +74,7 @@ export const SecurityControlsConfigurationSchema = z.object({
     ).optional(),
 });
 
-export const SecurityHubPolicySchema = z.object({
+const SecurityHubPolicySchema = z.object({
   EnabledStandardIdentifiers: z.array(z.string().max(2048)).describe(
     "A list that defines which security standards are enabled in the configuration policy.",
   ).optional(),
@@ -129,9 +138,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SecurityHub ConfigurationPolicy. Registered at `@swamp/aws/securityhub/configuration-policy`. */
 export const model = {
   type: "@swamp/aws/securityhub/configuration-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -145,6 +155,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

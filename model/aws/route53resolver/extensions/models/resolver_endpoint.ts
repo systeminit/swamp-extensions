@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Route53Resolver ResolverEndpoint (AWS::Route53Resolver::ResolverEndpoint).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IpAddressRequestSchema = z.object({
+const IpAddressRequestSchema = z.object({
   Ip: z.string().describe(
     "The IPv4 address that you want to use for DNS queries.",
   ).optional(),
@@ -24,7 +33,7 @@ export const IpAddressRequestSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe(
     "The name for the tag. For example, if you want to associate Resolver resources with the account IDs of your customers for billing purposes, the value of Key might be account-id.",
   ),
@@ -127,9 +136,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Route53Resolver ResolverEndpoint. Registered at `@swamp/aws/route53resolver/resolver-endpoint`. */
 export const model = {
   type: "@swamp/aws/route53resolver/resolver-endpoint",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -143,6 +153,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

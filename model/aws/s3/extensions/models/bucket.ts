@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for S3 Bucket (AWS::S3::Bucket).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagFilterSchema = z.object({
+const TagFilterSchema = z.object({
   Value: z.string().describe("The tag value."),
   Key: z.string().describe("The tag key."),
 });
 
-export const DestinationSchema = z.object({
+const DestinationSchema = z.object({
   BucketArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the bucket to which data is exported.",
   ),
@@ -32,7 +41,7 @@ export const DestinationSchema = z.object({
   ).optional(),
 });
 
-export const DataExportSchema = z.object({
+const DataExportSchema = z.object({
   Destination: DestinationSchema.describe(
     "The place to store the data for an analysis.",
   ),
@@ -41,13 +50,13 @@ export const DataExportSchema = z.object({
   ),
 });
 
-export const StorageClassAnalysisSchema = z.object({
+const StorageClassAnalysisSchema = z.object({
   DataExport: DataExportSchema.describe(
     "Specifies how data related to the storage class analysis for an Amazon S3 bucket should be exported.",
   ).optional(),
 });
 
-export const AnalyticsConfigurationSchema = z.object({
+const AnalyticsConfigurationSchema = z.object({
   TagFilters: z.array(TagFilterSchema).describe(
     "The tags to use when evaluating an analytics filter. The analytics only includes objects that meet the filter's criteria. If no filter is specified, all of the contents of the bucket are included in the analysis.",
   ).optional(),
@@ -62,7 +71,7 @@ export const AnalyticsConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ServerSideEncryptionByDefaultSchema = z.object({
+const ServerSideEncryptionByDefaultSchema = z.object({
   KMSMasterKeyID: z.string().describe(
     "AWS Key Management Service (KMS) customer managed key ID to use for the default encryption. *General purpose buckets* - This parameter is allowed if and only if SSEAlgorithm is set to aws:kms or aws:kms:dsse. *Directory buckets* - This parameter is allowed if and only if SSEAlgorithm is set to aws:kms. You can specify the key ID, key alias, or the Amazon Resource Name (ARN) of the KMS key. Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab Key ARN: arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab Key Alias: alias/alias-name If you are using encryption with cross-account or AWS service operations, you must use a fully qualified KMS key ARN. For more information, see [Using encryption for cross-account operations](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html#bucket-encryption-update-bucket-policy). *General purpose buckets* - If you're specifying a customer managed KMS key, we recommend using a fully qualified KMS key ARN. If you use a KMS key alias instead, then KMS resolves the key within the requester’s account. This behavior can result in data that's encrypted with a KMS key that belongs to the requester, and not the bucket owner. Also, if you use a key ID, you can run into a LogDestination undeliverable error when creating a VPC flow log. *Directory buckets* - When you specify an [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) for encryption in your directory bucket, only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Amazon S3 only supports symmetric encryption KMS keys. For more information, see [Asymmetric keys in KMS](https://docs.aws.amazon.com//kms/latest/developerguide/symmetric-asymmetric.html) in the *Key Management Service Developer Guide*.",
   ).optional(),
@@ -71,13 +80,13 @@ export const ServerSideEncryptionByDefaultSchema = z.object({
   ),
 });
 
-export const BlockedEncryptionTypesSchema = z.object({
+const BlockedEncryptionTypesSchema = z.object({
   EncryptionType: z.array(z.enum(["NONE", "SSE-C"])).describe(
     "The object encryption type that you want to block or unblock for an Amazon S3 general purpose bucket. Currently, this parameter only supports blocking or unblocking server side encryption with customer-provided keys (SSE-C). For more information about SSE-C, see [Using server-side encryption with customer-provided keys (SSE-C)](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerSideEncryptionCustomerKeys.html).",
   ).optional(),
 });
 
-export const ServerSideEncryptionRuleSchema = z.object({
+const ServerSideEncryptionRuleSchema = z.object({
   BucketKeyEnabled: z.boolean().describe(
     "Specifies whether Amazon S3 should use an S3 Bucket Key with server-side encryption using KMS (SSE-KMS) for new objects in the bucket. Existing objects are not affected. Setting the BucketKeyEnabled element to true causes Amazon S3 to use an S3 Bucket Key. By default, S3 Bucket Key is not enabled. For more information, see [Amazon S3 Bucket Keys](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-key.html) in the *Amazon S3 User Guide*.",
   ).optional(),
@@ -89,7 +98,7 @@ export const ServerSideEncryptionRuleSchema = z.object({
   ).optional(),
 });
 
-export const CorsRuleSchema = z.object({
+const CorsRuleSchema = z.object({
   AllowedHeaders: z.array(z.string()).describe(
     "Headers that are specified in the Access-Control-Request-Headers header. These headers are allowed in a preflight OPTIONS request. In response to any preflight OPTIONS request, Amazon S3 returns any requested headers that are allowed.",
   ).optional(),
@@ -111,7 +120,7 @@ export const CorsRuleSchema = z.object({
   ).optional(),
 });
 
-export const TieringSchema = z.object({
+const TieringSchema = z.object({
   AccessTier: z.enum(["ARCHIVE_ACCESS", "DEEP_ARCHIVE_ACCESS"]).describe(
     "S3 Intelligent-Tiering access tier. See [Storage class for automatically optimizing frequently and infrequently accessed objects](https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access) for a list of access tiers in the S3 Intelligent-Tiering storage class.",
   ),
@@ -120,7 +129,7 @@ export const TieringSchema = z.object({
   ),
 });
 
-export const IntelligentTieringConfigurationSchema = z.object({
+const IntelligentTieringConfigurationSchema = z.object({
   Id: z.string().describe(
     "The ID used to identify the S3 Intelligent-Tiering configuration.",
   ),
@@ -138,7 +147,7 @@ export const IntelligentTieringConfigurationSchema = z.object({
   ),
 });
 
-export const InventoryConfigurationSchema = z.object({
+const InventoryConfigurationSchema = z.object({
   Destination: DestinationSchema.describe(
     "Contains information about where to publish the inventory results.",
   ),
@@ -180,13 +189,13 @@ export const InventoryConfigurationSchema = z.object({
   ),
 });
 
-export const AbortIncompleteMultipartUploadSchema = z.object({
+const AbortIncompleteMultipartUploadSchema = z.object({
   DaysAfterInitiation: z.number().int().min(0).describe(
     "Specifies the number of days after which Amazon S3 stops an incomplete multipart upload.",
   ),
 });
 
-export const NoncurrentVersionExpirationSchema = z.object({
+const NoncurrentVersionExpirationSchema = z.object({
   NoncurrentDays: z.number().int().describe(
     "Specifies the number of days an object is noncurrent before S3 can perform the associated action. For information about the noncurrent days calculations, see [How Amazon S3 Calculates When an Object Became Noncurrent](https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#non-current-days-calculations) in the *Amazon S3 User Guide*.",
   ),
@@ -195,7 +204,7 @@ export const NoncurrentVersionExpirationSchema = z.object({
   ).optional(),
 });
 
-export const NoncurrentVersionTransitionSchema = z.object({
+const NoncurrentVersionTransitionSchema = z.object({
   StorageClass: z.enum([
     "DEEP_ARCHIVE",
     "GLACIER",
@@ -213,7 +222,7 @@ export const NoncurrentVersionTransitionSchema = z.object({
   ).optional(),
 });
 
-export const TransitionSchema = z.object({
+const TransitionSchema = z.object({
   StorageClass: z.enum([
     "DEEP_ARCHIVE",
     "GLACIER",
@@ -235,7 +244,7 @@ export const TransitionSchema = z.object({
   ).optional(),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   AbortIncompleteMultipartUpload: AbortIncompleteMultipartUploadSchema.describe(
     "Specifies a lifecycle rule that stops incomplete multipart uploads to an Amazon S3 bucket.",
   ).optional(),
@@ -292,7 +301,7 @@ export const RuleSchema = z.object({
   ).optional(),
 });
 
-export const MetricsConfigurationSchema = z.object({
+const MetricsConfigurationSchema = z.object({
   AccessPointArn: z.string().describe(
     "The access point that was used while performing operations on the object. The metrics configuration only includes objects that meet the filter's criteria.",
   ).optional(),
@@ -307,13 +316,13 @@ export const MetricsConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const S3TablesDestinationSchema = z.object({
+const S3TablesDestinationSchema = z.object({
   TableBucketArn: z.string().describe(
     "The Amazon Resource Name (ARN) for the table bucket that's specified as the destination in the metadata table configuration. The destination table bucket must be in the same Region and AWS-account as the general purpose bucket.",
   ),
 });
 
-export const MetadataDestinationSchema = z.object({
+const MetadataDestinationSchema = z.object({
   TableBucketType: z.enum(["aws", "customer"]).describe(
     "The type of the table bucket where the metadata configuration is stored. The aws value indicates an AWS managed table bucket, and the customer value indicates a customer-managed table bucket. V2 metadata configurations are stored in AWS managed table buckets, and V1 metadata configurations are stored in customer-managed table buckets.",
   ),
@@ -322,7 +331,7 @@ export const MetadataDestinationSchema = z.object({
   ).optional(),
 });
 
-export const RecordExpirationSchema = z.object({
+const RecordExpirationSchema = z.object({
   Expiration: z.enum(["ENABLED", "DISABLED"]).describe(
     "Specifies whether journal table record expiration is enabled or disabled.",
   ),
@@ -331,7 +340,7 @@ export const RecordExpirationSchema = z.object({
   ).optional(),
 });
 
-export const MetadataTableEncryptionConfigurationSchema = z.object({
+const MetadataTableEncryptionConfigurationSchema = z.object({
   SseAlgorithm: z.enum(["aws:kms", "AES256"]).describe(
     "The encryption type specified for a metadata table. To specify server-side encryption with KMSlong (KMS) keys (SSE-KMS), use the aws:kms value. To specify server-side encryption with Amazon S3 managed keys (SSE-S3), use the AES256 value.",
   ),
@@ -340,7 +349,7 @@ export const MetadataTableEncryptionConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const JournalTableConfigurationSchema = z.object({
+const JournalTableConfigurationSchema = z.object({
   RecordExpiration: RecordExpirationSchema.describe(
     "The journal table record expiration settings for the journal table.",
   ),
@@ -349,7 +358,7 @@ export const JournalTableConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const InventoryTableConfigurationSchema = z.object({
+const InventoryTableConfigurationSchema = z.object({
   ConfigurationState: z.enum(["ENABLED", "DISABLED"]).describe(
     "The configuration state of the inventory table, indicating whether the inventory table is enabled or disabled.",
   ),
@@ -358,13 +367,13 @@ export const InventoryTableConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const EventBridgeConfigurationSchema = z.object({
+const EventBridgeConfigurationSchema = z.object({
   EventBridgeEnabled: z.boolean().describe(
     "Enables delivery of events to Amazon EventBridge.",
   ),
 });
 
-export const FilterRuleSchema = z.object({
+const FilterRuleSchema = z.object({
   Name: z.string().max(1024).describe(
     "The object key name prefix or suffix identifying one or more objects to which the filtering rule applies. The maximum length is 1,024 characters. Overlapping prefixes and suffixes are not supported. For more information, see [Configuring Event Notifications](https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the *Amazon S3 User Guide*.",
   ),
@@ -373,19 +382,19 @@ export const FilterRuleSchema = z.object({
   ),
 });
 
-export const S3KeyFilterSchema = z.object({
+const S3KeyFilterSchema = z.object({
   Rules: z.array(FilterRuleSchema).describe(
     "A list of containers for the key-value pair that defines the criteria for the filter rule.",
   ),
 });
 
-export const NotificationFilterSchema = z.object({
+const NotificationFilterSchema = z.object({
   S3Key: S3KeyFilterSchema.describe(
     "A container for object key name prefix and suffix filtering rules.",
   ),
 });
 
-export const LambdaConfigurationSchema = z.object({
+const LambdaConfigurationSchema = z.object({
   Event: z.string().describe(
     "The Amazon S3 bucket event for which to invoke the LAMlong function. For more information, see [Supported Event Types](https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the *Amazon S3 User Guide*.",
   ),
@@ -397,7 +406,7 @@ export const LambdaConfigurationSchema = z.object({
   ),
 });
 
-export const QueueConfigurationSchema = z.object({
+const QueueConfigurationSchema = z.object({
   Event: z.string().describe(
     "The Amazon S3 bucket event about which you want to publish messages to Amazon SQS. For more information, see [Supported Event Types](https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the *Amazon S3 User Guide*.",
   ),
@@ -409,7 +418,7 @@ export const QueueConfigurationSchema = z.object({
   ),
 });
 
-export const TopicConfigurationSchema = z.object({
+const TopicConfigurationSchema = z.object({
   Event: z.string().describe(
     "The Amazon S3 bucket event about which to send notifications. For more information, see [Supported Event Types](https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the *Amazon S3 User Guide*.",
   ),
@@ -421,7 +430,7 @@ export const TopicConfigurationSchema = z.object({
   ),
 });
 
-export const DefaultRetentionSchema = z.object({
+const DefaultRetentionSchema = z.object({
   Years: z.number().int().describe(
     "The number of years that you want to specify for the default retention period. If Object Lock is turned on, you must specify Mode and specify either Days or Years.",
   ).optional(),
@@ -433,13 +442,13 @@ export const DefaultRetentionSchema = z.object({
   ).optional(),
 });
 
-export const ObjectLockRuleSchema = z.object({
+const ObjectLockRuleSchema = z.object({
   DefaultRetention: DefaultRetentionSchema.describe(
     "The default Object Lock retention mode and period that you want to apply to new objects placed in the specified bucket. If Object Lock is turned on, bucket settings require both Mode and a period of either Days or Years. You cannot specify Days and Years at the same time. For more information about allowable values for mode and period, see [DefaultRetention](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket-defaultretention.html).",
   ).optional(),
 });
 
-export const OwnershipControlsRuleSchema = z.object({
+const OwnershipControlsRuleSchema = z.object({
   ObjectOwnership: z.enum([
     "ObjectWriter",
     "BucketOwnerPreferred",
@@ -447,31 +456,31 @@ export const OwnershipControlsRuleSchema = z.object({
   ]).describe("Specifies an object ownership rule.").optional(),
 });
 
-export const DeleteMarkerReplicationSchema = z.object({
+const DeleteMarkerReplicationSchema = z.object({
   Status: z.enum(["Disabled", "Enabled"]).describe(
     "Indicates whether to replicate delete markers.",
   ).optional(),
 });
 
-export const AccessControlTranslationSchema = z.object({
+const AccessControlTranslationSchema = z.object({
   Owner: z.string().describe(
     "Specifies the replica ownership. For default and valid values, see [PUT bucket replication](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html) in the *Amazon S3 API Reference*.",
   ),
 });
 
-export const EncryptionConfigurationSchema = z.object({
+const EncryptionConfigurationSchema = z.object({
   ReplicaKmsKeyID: z.string().describe(
     "Specifies the ID (Key ARN or Alias ARN) of the customer managed AWS KMS key stored in AWS Key Management Service (KMS) for the destination bucket. Amazon S3 uses this key to encrypt replica objects. Amazon S3 only supports symmetric encryption KMS keys. For more information, see [Asymmetric keys in KMS](https://docs.aws.amazon.com//kms/latest/developerguide/symmetric-asymmetric.html) in the *Key Management Service Developer Guide*.",
   ),
 });
 
-export const ReplicationTimeValueSchema = z.object({
+const ReplicationTimeValueSchema = z.object({
   Minutes: z.number().int().describe(
     "Contains an integer specifying time in minutes. Valid value: 15",
   ),
 });
 
-export const MetricsSchema = z.object({
+const MetricsSchema = z.object({
   EventThreshold: ReplicationTimeValueSchema.describe(
     "A container specifying the time threshold for emitting the s3:Replication:OperationMissedThreshold event.",
   ).optional(),
@@ -480,7 +489,7 @@ export const MetricsSchema = z.object({
   ),
 });
 
-export const ReplicationTimeSchema = z.object({
+const ReplicationTimeSchema = z.object({
   Status: z.enum(["Disabled", "Enabled"]).describe(
     "Specifies whether the replication time is enabled.",
   ),
@@ -489,7 +498,7 @@ export const ReplicationTimeSchema = z.object({
   ),
 });
 
-export const ReplicationDestinationSchema = z.object({
+const ReplicationDestinationSchema = z.object({
   AccessControlTranslation: AccessControlTranslationSchema.describe(
     "Specify this only in a cross-account scenario (where source and destination bucket owners are not the same), and you want to change replica ownership to the AWS-account that owns the destination bucket. If this is not specified in the replication configuration, the replicas are owned by same AWS-account that owns the source object.",
   ).optional(),
@@ -522,7 +531,7 @@ export const ReplicationDestinationSchema = z.object({
   ).optional(),
 });
 
-export const ReplicationRuleAndOperatorSchema = z.object({
+const ReplicationRuleAndOperatorSchema = z.object({
   Prefix: z.string().describe(
     "An object key name prefix that identifies the subset of objects to which the rule applies.",
   ).optional(),
@@ -531,7 +540,7 @@ export const ReplicationRuleAndOperatorSchema = z.object({
   ).optional(),
 });
 
-export const ReplicationRuleFilterSchema = z.object({
+const ReplicationRuleFilterSchema = z.object({
   And: ReplicationRuleAndOperatorSchema.describe(
     "A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. For example: If you specify both a Prefix and a TagFilter, wrap these filters in an And tag. If you specify a filter based on multiple tags, wrap the TagFilter elements in an And tag.",
   ).optional(),
@@ -543,19 +552,19 @@ export const ReplicationRuleFilterSchema = z.object({
   ).optional(),
 });
 
-export const ReplicaModificationsSchema = z.object({
+const ReplicaModificationsSchema = z.object({
   Status: z.enum(["Enabled", "Disabled"]).describe(
     "Specifies whether Amazon S3 replicates modifications on replicas. *Allowed values*: Enabled | Disabled",
   ),
 });
 
-export const SseKmsEncryptedObjectsSchema = z.object({
+const SseKmsEncryptedObjectsSchema = z.object({
   Status: z.enum(["Disabled", "Enabled"]).describe(
     "Specifies whether Amazon S3 replicates objects created with server-side encryption using an AWS KMS key stored in AWS Key Management Service.",
   ),
 });
 
-export const SourceSelectionCriteriaSchema = z.object({
+const SourceSelectionCriteriaSchema = z.object({
   ReplicaModifications: ReplicaModificationsSchema.describe(
     "A filter that you can specify for selection for modifications on replicas.",
   ).optional(),
@@ -564,7 +573,7 @@ export const SourceSelectionCriteriaSchema = z.object({
   ).optional(),
 });
 
-export const ReplicationRuleSchema = z.object({
+const ReplicationRuleSchema = z.object({
   DeleteMarkerReplication: DeleteMarkerReplicationSchema.describe(
     "Specifies whether Amazon S3 replicates delete markers. If you specify a Filter in your replication configuration, you must also include a DeleteMarkerReplication element. If your Filter includes a Tag element, the DeleteMarkerReplication Status must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see [Basic Rule Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config). For more information about delete marker replication, see [Basic Rule Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html). If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see [Backward Compatibility](https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).",
   ).optional(),
@@ -591,12 +600,12 @@ export const ReplicationRuleSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("Name of the object key."),
   Value: z.string().max(256).describe("Value of the tag."),
 });
 
-export const RedirectRuleSchema = z.object({
+const RedirectRuleSchema = z.object({
   HostName: z.string().describe("The host name to use in the redirect request.")
     .optional(),
   HttpRedirectCode: z.string().describe(
@@ -613,7 +622,7 @@ export const RedirectRuleSchema = z.object({
   ).optional(),
 });
 
-export const RoutingRuleConditionSchema = z.object({
+const RoutingRuleConditionSchema = z.object({
   KeyPrefixEquals: z.string().describe(
     "The object key name prefix when the redirect is applied. For example, to redirect requests for ExamplePage.html, the key prefix will be ExamplePage.html. To redirect request for all pages with the prefix docs/, the key prefix will be docs/, which identifies all objects in the docs/ folder. Required when the parent element Condition is specified and sibling HttpErrorCodeReturnedEquals is not specified. If both conditions are specified, both must be true for the redirect to be applied.",
   ).optional(),
@@ -622,7 +631,7 @@ export const RoutingRuleConditionSchema = z.object({
   ).optional(),
 });
 
-export const RoutingRuleSchema = z.object({
+const RoutingRuleSchema = z.object({
   RedirectRule: RedirectRuleSchema.describe(
     "Container for redirect information. You can redirect requests to another host, to another page, or with another protocol. In the event of an error, you can specify a different error code to return.",
   ),
@@ -631,7 +640,7 @@ export const RoutingRuleSchema = z.object({
   ).optional(),
 });
 
-export const RedirectAllRequestsToSchema = z.object({
+const RedirectAllRequestsToSchema = z.object({
   HostName: z.string().describe(
     "Name of the host where requests are redirected.",
   ),
@@ -1094,9 +1103,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for S3 Bucket. Registered at `@swamp/aws/s3/bucket`. */
 export const model = {
   type: "@swamp/aws/s3/bucket",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1110,6 +1120,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

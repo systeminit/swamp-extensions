@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ECS Daemon (AWS::ECS::Daemon).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DaemonAlarmConfigurationSchema = z.object({
+const DaemonAlarmConfigurationSchema = z.object({
   AlarmNames: z.array(z.string()).describe(
     "The CloudWatch alarm names to monitor during a daemon deployment.",
   ).optional(),
@@ -21,7 +30,7 @@ export const DaemonAlarmConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe(
     "The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).",
   ).optional(),
@@ -127,9 +136,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for ECS Daemon. Registered at `@swamp/aws/ecs/daemon`. */
 export const model = {
   type: "@swamp/aws/ecs/daemon",
-  version: "2026.04.21.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.03.2",
@@ -143,6 +153,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.21.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

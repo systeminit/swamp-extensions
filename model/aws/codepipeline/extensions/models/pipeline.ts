@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CodePipeline Pipeline (AWS::CodePipeline::Pipeline).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EncryptionKeySchema = z.object({
+const EncryptionKeySchema = z.object({
   Type: z.string().describe(
     "The type of encryption key, such as an AWS KMS key. When creating or updating a pipeline, the value must be set to 'KMS'.",
   ),
@@ -21,7 +30,7 @@ export const EncryptionKeySchema = z.object({
   ),
 });
 
-export const ArtifactStoreSchema = z.object({
+const ArtifactStoreSchema = z.object({
   Type: z.enum(["S3"]).describe("The type of the artifact store, such as S3."),
   EncryptionKey: EncryptionKeySchema.describe(
     "Represents information about the key used to encrypt data in the artifact store, such as an AWS Key Management Service (AWS KMS) key",
@@ -31,7 +40,7 @@ export const ArtifactStoreSchema = z.object({
   ),
 });
 
-export const ArtifactStoreMapSchema = z.object({
+const ArtifactStoreMapSchema = z.object({
   ArtifactStore: ArtifactStoreSchema.describe(
     "The S3 bucket where artifacts for the pipeline are stored.",
   ),
@@ -40,7 +49,7 @@ export const ArtifactStoreMapSchema = z.object({
   ),
 });
 
-export const StageTransitionSchema = z.object({
+const StageTransitionSchema = z.object({
   StageName: z.string().describe(
     "The name of the stage where you want to disable the inbound or outbound transition of artifacts.",
   ),
@@ -49,12 +58,12 @@ export const StageTransitionSchema = z.object({
   ),
 });
 
-export const BlockerDeclarationSchema = z.object({
+const BlockerDeclarationSchema = z.object({
   Name: z.string().describe("Reserved for future use."),
   Type: z.enum(["Schedule"]).describe("Reserved for future use."),
 });
 
-export const ActionTypeIdSchema = z.object({
+const ActionTypeIdSchema = z.object({
   Owner: z.string().describe(
     "The creator of the action being called. There are three valid values for the Owner field in the action category section within your pipeline structure: AWS, ThirdParty, and Custom.",
   ),
@@ -75,13 +84,13 @@ export const ActionTypeIdSchema = z.object({
   ),
 });
 
-export const InputArtifactSchema = z.object({
+const InputArtifactSchema = z.object({
   Name: z.string().describe(
     'The name of the artifact to be worked on (for example, "My App").',
   ),
 });
 
-export const OutputArtifactSchema = z.object({
+const OutputArtifactSchema = z.object({
   Name: z.string().describe(
     'The name of the output of an artifact, such as "My App".',
   ),
@@ -90,7 +99,7 @@ export const OutputArtifactSchema = z.object({
   ).optional(),
 });
 
-export const EnvironmentVariableSchema = z.object({
+const EnvironmentVariableSchema = z.object({
   Name: z.string().describe("The name of the environment variable."),
   Value: z.string().describe("The value of the environment variable."),
   Type: z.enum(["PLAINTEXT", "SECRETS_MANAGER"]).describe(
@@ -98,7 +107,7 @@ export const EnvironmentVariableSchema = z.object({
   ).optional(),
 });
 
-export const ActionDeclarationSchema = z.object({
+const ActionDeclarationSchema = z.object({
   ActionTypeId: ActionTypeIdSchema.describe(
     "Represents information about an action type.",
   ),
@@ -135,7 +144,7 @@ export const ActionDeclarationSchema = z.object({
   ).optional(),
 });
 
-export const RuleTypeIdSchema = z.object({
+const RuleTypeIdSchema = z.object({
   Owner: z.string().describe(
     "The creator of the rule being called. Only AWS is supported.",
   ).optional(),
@@ -149,7 +158,7 @@ export const RuleTypeIdSchema = z.object({
   ).optional(),
 });
 
-export const RuleDeclarationSchema = z.object({
+const RuleDeclarationSchema = z.object({
   RuleTypeId: RuleTypeIdSchema.describe(
     "Represents information about a rule type.",
   ).optional(),
@@ -171,14 +180,14 @@ export const RuleDeclarationSchema = z.object({
   Name: z.string().describe("The rule declaration's name.").optional(),
 });
 
-export const ConditionSchema = z.object({
+const ConditionSchema = z.object({
   Result: z.string().describe(
     "The specified result for when the failure conditions are met, such as rolling back the stage",
   ).optional(),
   Rules: z.array(RuleDeclarationSchema).optional(),
 });
 
-export const FailureConditionsSchema = z.object({
+const FailureConditionsSchema = z.object({
   Result: z.enum(["ROLLBACK", "RETRY"]).describe(
     "The specified result for when the failure conditions are met, such as rolling back the stage",
   ).optional(),
@@ -192,15 +201,15 @@ export const FailureConditionsSchema = z.object({
   Conditions: z.array(ConditionSchema).optional(),
 });
 
-export const SuccessConditionsSchema = z.object({
+const SuccessConditionsSchema = z.object({
   Conditions: z.array(ConditionSchema).optional(),
 });
 
-export const BeforeEntryConditionsSchema = z.object({
+const BeforeEntryConditionsSchema = z.object({
   Conditions: z.array(ConditionSchema).optional(),
 });
 
-export const StageDeclarationSchema = z.object({
+const StageDeclarationSchema = z.object({
   Blockers: z.array(BlockerDeclarationSchema).optional(),
   Actions: z.array(ActionDeclarationSchema),
   Name: z.string().describe("The name of the stage."),
@@ -215,7 +224,7 @@ export const StageDeclarationSchema = z.object({
   ).optional(),
 });
 
-export const GitFilePathFilterCriteriaSchema = z.object({
+const GitFilePathFilterCriteriaSchema = z.object({
   Includes: z.array(z.string()).describe(
     "The list of patterns of Git repository file paths that, when a commit is pushed, are to be included as criteria that starts the pipeline.",
   ).optional(),
@@ -224,7 +233,7 @@ export const GitFilePathFilterCriteriaSchema = z.object({
   ).optional(),
 });
 
-export const GitBranchFilterCriteriaSchema = z.object({
+const GitBranchFilterCriteriaSchema = z.object({
   Includes: z.array(z.string()).describe(
     "The list of patterns of Git branches that, when a commit is pushed, are to be included as criteria that starts the pipeline.",
   ).optional(),
@@ -233,7 +242,7 @@ export const GitBranchFilterCriteriaSchema = z.object({
   ).optional(),
 });
 
-export const GitTagFilterCriteriaSchema = z.object({
+const GitTagFilterCriteriaSchema = z.object({
   Includes: z.array(z.string()).describe(
     "The list of patterns of Git tags that, when pushed, are to be included as criteria that starts the pipeline.",
   ).optional(),
@@ -242,7 +251,7 @@ export const GitTagFilterCriteriaSchema = z.object({
   ).optional(),
 });
 
-export const GitPushFilterSchema = z.object({
+const GitPushFilterSchema = z.object({
   FilePaths: GitFilePathFilterCriteriaSchema.describe(
     "The Git repository file paths specified as filter criteria to start the pipeline.",
   ).optional(),
@@ -254,7 +263,7 @@ export const GitPushFilterSchema = z.object({
   ).optional(),
 });
 
-export const GitPullRequestFilterSchema = z.object({
+const GitPullRequestFilterSchema = z.object({
   FilePaths: GitFilePathFilterCriteriaSchema.describe(
     "The Git repository file paths specified as filter criteria to start the pipeline.",
   ).optional(),
@@ -266,7 +275,7 @@ export const GitPullRequestFilterSchema = z.object({
   ).optional(),
 });
 
-export const GitConfigurationSchema = z.object({
+const GitConfigurationSchema = z.object({
   Push: z.array(GitPushFilterSchema).describe(
     "The field where the repository event that will start the pipeline, such as pushing Git tags, is specified with details.",
   ).optional(),
@@ -278,7 +287,7 @@ export const GitConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const PipelineTriggerDeclarationSchema = z.object({
+const PipelineTriggerDeclarationSchema = z.object({
   GitConfiguration: GitConfigurationSchema.describe(
     "A type of trigger configuration for Git-based source actions.",
   ).optional(),
@@ -287,7 +296,7 @@ export const PipelineTriggerDeclarationSchema = z.object({
   ),
 });
 
-export const VariableDeclarationSchema = z.object({
+const VariableDeclarationSchema = z.object({
   DefaultValue: z.string().describe("The value of a pipeline-level variable.")
     .optional(),
   Description: z.string().describe(
@@ -296,7 +305,7 @@ export const VariableDeclarationSchema = z.object({
   Name: z.string().describe("The name of a pipeline-level variable."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe("The tag's value."),
   Key: z.string().describe("The tag's key."),
 });
@@ -414,9 +423,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CodePipeline Pipeline. Registered at `@swamp/aws/codepipeline/pipeline`. */
 export const model = {
   type: "@swamp/aws/codepipeline/pipeline",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -430,6 +440,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

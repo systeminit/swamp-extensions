@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/s3express"
-version: "2026.04.07.1"
+version: "2026.04.23.2"
 description: "AWS S3EXPRESS infrastructure models"
 labels:
   - aws
@@ -9,7 +9,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: directory_bucket
+  - Updated: access_point, bucket_policy, directory_bucket
 models:
   - access_point.ts
   - bucket_policy.ts

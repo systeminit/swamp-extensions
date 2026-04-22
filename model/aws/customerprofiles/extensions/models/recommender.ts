@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CustomerProfiles Recommender (AWS::CustomerProfiles::Recommender).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,26 +21,26 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EventParametersSchema = z.object({
+const EventParametersSchema = z.object({
   EventType: z.string().min(1).max(255).describe("The type of event"),
   EventValueThreshold: z.number().describe(
     "The threshold of the event type. Only events with a value greater or equal to this threshold will be considered for solution creation.",
   ).optional(),
 });
 
-export const EventsConfigSchema = z.object({
+const EventsConfigSchema = z.object({
   EventParametersList: z.array(EventParametersSchema).describe(
     "List of event parameters with their value thresholds",
   ),
 });
 
-export const RecommenderConfigSchema = z.object({
+const RecommenderConfigSchema = z.object({
   EventsConfig: EventsConfigSchema.describe(
     "Configuration for events used in the recommender",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
@@ -146,9 +155,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CustomerProfiles Recommender. Registered at `@swamp/aws/customerprofiles/recommender`. */
 export const model = {
   type: "@swamp/aws/customerprofiles/recommender",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -162,6 +172,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

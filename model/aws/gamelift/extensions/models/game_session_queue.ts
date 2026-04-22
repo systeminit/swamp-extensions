@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GameLift GameSessionQueue (AWS::GameLift::GameSessionQueue).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const GameSessionQueueDestinationSchema = z.object({
+const GameSessionQueueDestinationSchema = z.object({
   DestinationArn: z.string().min(1).max(256).regex(
     new RegExp("[a-zA-Z0-9:/-]+"),
   ).optional(),
 });
 
-export const PlayerLatencyPolicySchema = z.object({
+const PlayerLatencyPolicySchema = z.object({
   MaximumIndividualPlayerLatencyMilliseconds: z.number().int().min(0).describe(
     "The maximum latency value that is allowed for any player, in milliseconds. All policies must have a value set for this property.",
   ).optional(),
@@ -27,7 +36,7 @@ export const PlayerLatencyPolicySchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length.",
   ),
@@ -156,9 +165,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for GameLift GameSessionQueue. Registered at `@swamp/aws/gamelift/game-session-queue`. */
 export const model = {
   type: "@swamp/aws/gamelift/game-session-queue",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -172,6 +182,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

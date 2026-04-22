@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for PCAConnectorAD Template (AWS::PCAConnectorAD::Template).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,23 +21,23 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ValidityPeriodSchema = z.object({
+const ValidityPeriodSchema = z.object({
   PeriodType: z.enum(["HOURS", "DAYS", "WEEKS", "MONTHS", "YEARS"]),
   Period: z.number().min(1).max(8766000),
 });
 
-export const CertificateValiditySchema = z.object({
+const CertificateValiditySchema = z.object({
   ValidityPeriod: ValidityPeriodSchema,
   RenewalPeriod: ValidityPeriodSchema,
 });
 
-export const PrivateKeyAttributesV2Schema = z.object({
+const PrivateKeyAttributesV2Schema = z.object({
   MinimalKeyLength: z.number().min(1),
   KeySpec: z.enum(["KEY_EXCHANGE", "SIGNATURE"]),
   CryptoProviders: z.array(z.string().min(1).max(100)).optional(),
 });
 
-export const PrivateKeyFlagsV2Schema = z.object({
+const PrivateKeyFlagsV2Schema = z.object({
   ExportableKey: z.boolean().optional(),
   StrongKeyProtectionRequired: z.boolean().optional(),
   ClientVersion: z.enum([
@@ -41,7 +50,7 @@ export const PrivateKeyFlagsV2Schema = z.object({
   ]),
 });
 
-export const EnrollmentFlagsV2Schema = z.object({
+const EnrollmentFlagsV2Schema = z.object({
   IncludeSymmetricAlgorithms: z.boolean().optional(),
   UserInteractionRequired: z.boolean().optional(),
   RemoveInvalidCertificateFromPersonalStore: z.boolean().optional(),
@@ -49,7 +58,7 @@ export const EnrollmentFlagsV2Schema = z.object({
   EnableKeyReuseOnNtTokenKeysetStorageFull: z.boolean().optional(),
 });
 
-export const SubjectNameFlagsV2Schema = z.object({
+const SubjectNameFlagsV2Schema = z.object({
   SanRequireDomainDns: z.boolean().optional(),
   SanRequireSpn: z.boolean().optional(),
   SanRequireDirectoryGuid: z.boolean().optional(),
@@ -62,12 +71,12 @@ export const SubjectNameFlagsV2Schema = z.object({
   RequireDirectoryPath: z.boolean().optional(),
 });
 
-export const GeneralFlagsV2Schema = z.object({
+const GeneralFlagsV2Schema = z.object({
   AutoEnrollment: z.boolean().optional(),
   MachineType: z.boolean().optional(),
 });
 
-export const KeyUsageFlagsSchema = z.object({
+const KeyUsageFlagsSchema = z.object({
   DigitalSignature: z.boolean().optional(),
   NonRepudiation: z.boolean().optional(),
   KeyEncipherment: z.boolean().optional(),
@@ -75,12 +84,12 @@ export const KeyUsageFlagsSchema = z.object({
   KeyAgreement: z.boolean().optional(),
 });
 
-export const KeyUsageSchema = z.object({
+const KeyUsageSchema = z.object({
   Critical: z.boolean().optional(),
   UsageFlags: KeyUsageFlagsSchema,
 });
 
-export const ApplicationPoliciesSchema = z.object({
+const ApplicationPoliciesSchema = z.object({
   Critical: z.boolean().optional(),
   Policies: z.array(z.object({
     PolicyType: z.enum([
@@ -158,12 +167,12 @@ export const ApplicationPoliciesSchema = z.object({
   })),
 });
 
-export const ExtensionsV2Schema = z.object({
+const ExtensionsV2Schema = z.object({
   KeyUsage: KeyUsageSchema,
   ApplicationPolicies: ApplicationPoliciesSchema.optional(),
 });
 
-export const TemplateV2Schema = z.object({
+const TemplateV2Schema = z.object({
   CertificateValidity: CertificateValiditySchema,
   SupersededTemplates: z.array(
     z.string().min(1).max(64).regex(
@@ -178,13 +187,13 @@ export const TemplateV2Schema = z.object({
   Extensions: ExtensionsV2Schema,
 });
 
-export const KeyUsagePropertyFlagsSchema = z.object({
+const KeyUsagePropertyFlagsSchema = z.object({
   Decrypt: z.boolean().optional(),
   KeyAgreement: z.boolean().optional(),
   Sign: z.boolean().optional(),
 });
 
-export const PrivateKeyAttributesV3Schema = z.object({
+const PrivateKeyAttributesV3Schema = z.object({
   MinimalKeyLength: z.number().min(1),
   KeySpec: z.enum(["KEY_EXCHANGE", "SIGNATURE"]),
   CryptoProviders: z.array(z.string().min(1).max(100)).optional(),
@@ -195,7 +204,7 @@ export const PrivateKeyAttributesV3Schema = z.object({
   Algorithm: z.enum(["RSA", "ECDH_P256", "ECDH_P384", "ECDH_P521"]),
 });
 
-export const PrivateKeyFlagsV3Schema = z.object({
+const PrivateKeyFlagsV3Schema = z.object({
   ExportableKey: z.boolean().optional(),
   StrongKeyProtectionRequired: z.boolean().optional(),
   RequireAlternateSignatureAlgorithm: z.boolean().optional(),
@@ -208,7 +217,7 @@ export const PrivateKeyFlagsV3Schema = z.object({
   ]),
 });
 
-export const EnrollmentFlagsV3Schema = z.object({
+const EnrollmentFlagsV3Schema = z.object({
   IncludeSymmetricAlgorithms: z.boolean().optional(),
   UserInteractionRequired: z.boolean().optional(),
   RemoveInvalidCertificateFromPersonalStore: z.boolean().optional(),
@@ -216,7 +225,7 @@ export const EnrollmentFlagsV3Schema = z.object({
   EnableKeyReuseOnNtTokenKeysetStorageFull: z.boolean().optional(),
 });
 
-export const SubjectNameFlagsV3Schema = z.object({
+const SubjectNameFlagsV3Schema = z.object({
   SanRequireDomainDns: z.boolean().optional(),
   SanRequireSpn: z.boolean().optional(),
   SanRequireDirectoryGuid: z.boolean().optional(),
@@ -229,17 +238,17 @@ export const SubjectNameFlagsV3Schema = z.object({
   RequireDirectoryPath: z.boolean().optional(),
 });
 
-export const GeneralFlagsV3Schema = z.object({
+const GeneralFlagsV3Schema = z.object({
   AutoEnrollment: z.boolean().optional(),
   MachineType: z.boolean().optional(),
 });
 
-export const ExtensionsV3Schema = z.object({
+const ExtensionsV3Schema = z.object({
   KeyUsage: KeyUsageSchema,
   ApplicationPolicies: ApplicationPoliciesSchema.optional(),
 });
 
-export const TemplateV3Schema = z.object({
+const TemplateV3Schema = z.object({
   CertificateValidity: CertificateValiditySchema,
   SupersededTemplates: z.array(
     z.string().min(1).max(64).regex(
@@ -255,7 +264,7 @@ export const TemplateV3Schema = z.object({
   Extensions: ExtensionsV3Schema,
 });
 
-export const PrivateKeyAttributesV4Schema = z.object({
+const PrivateKeyAttributesV4Schema = z.object({
   MinimalKeyLength: z.number().min(1),
   KeySpec: z.enum(["KEY_EXCHANGE", "SIGNATURE"]),
   CryptoProviders: z.array(z.string().min(1).max(100)).optional(),
@@ -266,7 +275,7 @@ export const PrivateKeyAttributesV4Schema = z.object({
   Algorithm: z.enum(["RSA", "ECDH_P256", "ECDH_P384", "ECDH_P521"]).optional(),
 });
 
-export const PrivateKeyFlagsV4Schema = z.object({
+const PrivateKeyFlagsV4Schema = z.object({
   ExportableKey: z.boolean().optional(),
   StrongKeyProtectionRequired: z.boolean().optional(),
   RequireAlternateSignatureAlgorithm: z.boolean().optional(),
@@ -279,7 +288,7 @@ export const PrivateKeyFlagsV4Schema = z.object({
   ]),
 });
 
-export const EnrollmentFlagsV4Schema = z.object({
+const EnrollmentFlagsV4Schema = z.object({
   IncludeSymmetricAlgorithms: z.boolean().optional(),
   UserInteractionRequired: z.boolean().optional(),
   RemoveInvalidCertificateFromPersonalStore: z.boolean().optional(),
@@ -287,7 +296,7 @@ export const EnrollmentFlagsV4Schema = z.object({
   EnableKeyReuseOnNtTokenKeysetStorageFull: z.boolean().optional(),
 });
 
-export const SubjectNameFlagsV4Schema = z.object({
+const SubjectNameFlagsV4Schema = z.object({
   SanRequireDomainDns: z.boolean().optional(),
   SanRequireSpn: z.boolean().optional(),
   SanRequireDirectoryGuid: z.boolean().optional(),
@@ -300,17 +309,17 @@ export const SubjectNameFlagsV4Schema = z.object({
   RequireDirectoryPath: z.boolean().optional(),
 });
 
-export const GeneralFlagsV4Schema = z.object({
+const GeneralFlagsV4Schema = z.object({
   AutoEnrollment: z.boolean().optional(),
   MachineType: z.boolean().optional(),
 });
 
-export const ExtensionsV4Schema = z.object({
+const ExtensionsV4Schema = z.object({
   KeyUsage: KeyUsageSchema,
   ApplicationPolicies: ApplicationPoliciesSchema.optional(),
 });
 
-export const TemplateV4Schema = z.object({
+const TemplateV4Schema = z.object({
   CertificateValidity: CertificateValiditySchema,
   SupersededTemplates: z.array(
     z.string().min(1).max(64).regex(
@@ -381,9 +390,10 @@ const InputsSchema = z.object({
   Tags: z.record(z.string(), z.string()).optional(),
 });
 
+/** Swamp extension model for PCAConnectorAD Template. Registered at `@swamp/aws/pcaconnectorad/template`. */
 export const model = {
   type: "@swamp/aws/pcaconnectorad/template",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -397,6 +407,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

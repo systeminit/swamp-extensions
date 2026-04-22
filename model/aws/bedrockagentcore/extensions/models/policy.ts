@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore Policy (AWS::BedrockAgentCore::Policy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CedarPolicySchema = z.object({
+const CedarPolicySchema = z.object({
   Statement: z.string().min(35).max(153600).describe(
     "The Cedar policy statement that defines the authorization logic.",
   ),
@@ -89,9 +98,10 @@ const InputsSchema = z.object({
     ).optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore Policy. Registered at `@swamp/aws/bedrockagentcore/policy`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -105,6 +115,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CustomerProfiles ObjectType (AWS::CustomerProfiles::ObjectType).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ObjectTypeFieldSchema = z.object({
+const ObjectTypeFieldSchema = z.object({
   Source: z.string().min(1).max(1000).describe(
     'A field of a ProfileObject. For example: _source.FirstName, where "_source" is a ProfileObjectType of a Zendesk user and "FirstName" is a field in that ObjectType.',
   ).optional(),
@@ -30,7 +39,7 @@ export const ObjectTypeFieldSchema = z.object({
   ).optional(),
 });
 
-export const FieldMapSchema = z.object({
+const FieldMapSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9_-]+$"))
     .optional(),
   ObjectTypeField: ObjectTypeFieldSchema.describe(
@@ -38,7 +47,7 @@ export const FieldMapSchema = z.object({
   ).optional(),
 });
 
-export const ObjectTypeKeySchema = z.object({
+const ObjectTypeKeySchema = z.object({
   FieldNames: z.array(
     z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9_-]+$")),
   ).describe("The reference for the key name of the fields map.").optional(),
@@ -69,13 +78,13 @@ export const ObjectTypeKeySchema = z.object({
   ).optional(),
 });
 
-export const KeyMapSchema = z.object({
+const KeyMapSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9_-]+$"))
     .optional(),
   ObjectTypeKeyList: z.array(ObjectTypeKeySchema).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
@@ -187,9 +196,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CustomerProfiles ObjectType. Registered at `@swamp/aws/customerprofiles/object-type`. */
 export const model = {
   type: "@swamp/aws/customerprofiles/object-type",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -203,6 +213,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

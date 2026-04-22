@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ElasticBeanstalk Application (AWS::ElasticBeanstalk::Application).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MaxAgeRuleSchema = z.object({
+const MaxAgeRuleSchema = z.object({
   DeleteSourceFromS3: z.boolean().describe(
     "Set to true to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
   ).optional(),
@@ -24,7 +33,7 @@ export const MaxAgeRuleSchema = z.object({
   ).optional(),
 });
 
-export const MaxCountRuleSchema = z.object({
+const MaxCountRuleSchema = z.object({
   DeleteSourceFromS3: z.boolean().describe(
     "Set to true to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
   ).optional(),
@@ -36,7 +45,7 @@ export const MaxCountRuleSchema = z.object({
   ).optional(),
 });
 
-export const ApplicationVersionLifecycleConfigSchema = z.object({
+const ApplicationVersionLifecycleConfigSchema = z.object({
   MaxAgeRule: MaxAgeRuleSchema.describe(
     "Specify a max age rule to restrict the length of time that application versions are retained for an application.",
   ).optional(),
@@ -92,9 +101,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ElasticBeanstalk Application. Registered at `@swamp/aws/elasticbeanstalk/application`. */
 export const model = {
   type: "@swamp/aws/elasticbeanstalk/application",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -108,6 +118,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

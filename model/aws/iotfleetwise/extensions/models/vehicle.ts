@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTFleetWise Vehicle (AWS::IoTFleetWise::Vehicle).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,21 +21,21 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
 
-export const TimePeriodSchema = z.object({
+const TimePeriodSchema = z.object({
   Unit: z.enum(["MILLISECOND", "SECOND", "MINUTE", "HOUR"]),
   Value: z.number().min(1),
 });
 
-export const PeriodicStateTemplateUpdateStrategySchema = z.object({
+const PeriodicStateTemplateUpdateStrategySchema = z.object({
   StateTemplateUpdateRate: TimePeriodSchema,
 });
 
-export const StateTemplateAssociationSchema = z.object({
+const StateTemplateAssociationSchema = z.object({
   Identifier: z.string().min(1).max(100),
   StateTemplateUpdateStrategy: z.object({
     Periodic: PeriodicStateTemplateUpdateStrategySchema.optional(),
@@ -72,9 +81,10 @@ const InputsSchema = z.object({
   StateTemplates: z.array(StateTemplateAssociationSchema).optional(),
 });
 
+/** Swamp extension model for IoTFleetWise Vehicle. Registered at `@swamp/aws/iotfleetwise/vehicle`. */
 export const model = {
   type: "@swamp/aws/iotfleetwise/vehicle",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -88,6 +98,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BillingConductor CustomLineItem (AWS::BillingConductor::CustomLineItem).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,11 +21,11 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CustomLineItemFlatChargeDetailsSchema = z.object({
+const CustomLineItemFlatChargeDetailsSchema = z.object({
   ChargeValue: z.number().min(0).max(1000000),
 });
 
-export const CustomLineItemPercentageChargeDetailsSchema = z.object({
+const CustomLineItemPercentageChargeDetailsSchema = z.object({
   ChildAssociatedResources: z.array(
     z.string().regex(
       new RegExp(
@@ -27,7 +36,7 @@ export const CustomLineItemPercentageChargeDetailsSchema = z.object({
   PercentageValue: z.number().min(0).max(10000),
 });
 
-export const LineItemFilterSchema = z.object({
+const LineItemFilterSchema = z.object({
   Attribute: z.enum(["LINE_ITEM_TYPE", "SERVICE"]),
   MatchOption: z.enum(["NOT_EQUAL", "EQUAL"]),
   Values: z.array(z.enum(["SAVINGS_PLAN_NEGATION"])).optional(),
@@ -36,7 +45,7 @@ export const LineItemFilterSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
@@ -146,9 +155,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for BillingConductor CustomLineItem. Registered at `@swamp/aws/billingconductor/custom-line-item`. */
 export const model = {
   type: "@swamp/aws/billingconductor/custom-line-item",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -162,6 +172,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SecurityLake Subscriber (AWS::SecurityLake::Subscriber).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The name of the tag. This is a general label that acts as a category for a more specific tag value (value).",
   ),
@@ -21,7 +30,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const AwsLogSourceSchema = z.object({
+const AwsLogSourceSchema = z.object({
   SourceName: z.string().describe(
     "The name for a AWS source. This must be a Regionally unique value.",
   ).optional(),
@@ -31,7 +40,7 @@ export const AwsLogSourceSchema = z.object({
     ).optional(),
 });
 
-export const CustomLogSourceSchema = z.object({
+const CustomLogSourceSchema = z.object({
   SourceName: z.string().min(1).max(64).regex(new RegExp("^[\\\\\\w\\-_:/.]*$"))
     .describe(
       "The name for a third-party custom source. This must be a Regionally unique value.",
@@ -43,7 +52,7 @@ export const CustomLogSourceSchema = z.object({
   ).optional(),
 });
 
-export const SourceSchema = z.object({
+const SourceSchema = z.object({
   AwsLogSource: AwsLogSourceSchema.describe(
     "Amazon Security Lake supports log and event collection for natively supported AWS services.",
   ).optional(),
@@ -135,9 +144,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SecurityLake Subscriber. Registered at `@swamp/aws/securitylake/subscriber`. */
 export const model = {
   type: "@swamp/aws/securitylake/subscriber",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -151,6 +161,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

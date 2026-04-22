@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for S3 StorageLensGroup (AWS::S3::StorageLensGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
 
-export const MatchObjectSizeSchema = z.object({
+const MatchObjectSizeSchema = z.object({
   BytesGreaterThan: z.number().int().min(1).describe(
     "Minimum object size to which the rule applies.",
   ).optional(),
@@ -26,7 +35,7 @@ export const MatchObjectSizeSchema = z.object({
   ).optional(),
 });
 
-export const MatchObjectAgeSchema = z.object({
+const MatchObjectAgeSchema = z.object({
   DaysGreaterThan: z.number().int().min(1).describe(
     "Minimum object age to which the rule applies.",
   ).optional(),
@@ -35,7 +44,7 @@ export const MatchObjectAgeSchema = z.object({
   ).optional(),
 });
 
-export const AndSchema = z.object({
+const AndSchema = z.object({
   MatchAnyPrefix: z.array(z.string().max(1024)).describe(
     "Filter to match any of the specified prefixes.",
   ).optional(),
@@ -53,7 +62,7 @@ export const AndSchema = z.object({
   ).optional(),
 });
 
-export const OrSchema = z.object({
+const OrSchema = z.object({
   MatchAnyPrefix: z.array(z.string().max(1024)).describe(
     "Filter to match any of the specified prefixes.",
   ).optional(),
@@ -151,9 +160,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for S3 StorageLensGroup. Registered at `@swamp/aws/s3/storage-lens-group`. */
 export const model = {
   type: "@swamp/aws/s3/storage-lens-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -167,6 +177,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

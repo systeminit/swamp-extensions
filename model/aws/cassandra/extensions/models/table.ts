@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Cassandra Table (AWS::Cassandra::Table).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,41 +21,41 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ColumnSchema = z.object({
+const ColumnSchema = z.object({
   ColumnName: z.string().regex(new RegExp("^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$")),
   ColumnType: z.string(),
 });
 
-export const ClusteringKeyColumnSchema = z.object({
+const ClusteringKeyColumnSchema = z.object({
   Column: ColumnSchema,
   OrderBy: z.enum(["ASC", "DESC"]).optional(),
 });
 
-export const ProvisionedThroughputSchema = z.object({
+const ProvisionedThroughputSchema = z.object({
   ReadCapacityUnits: z.number().int().min(1),
   WriteCapacityUnits: z.number().int().min(1),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
 
-export const TargetTrackingScalingPolicyConfigurationSchema = z.object({
+const TargetTrackingScalingPolicyConfigurationSchema = z.object({
   DisableScaleIn: z.boolean().optional(),
   ScaleInCooldown: z.number().int().optional(),
   ScaleOutCooldown: z.number().int().optional(),
   TargetValue: z.number().int(),
 });
 
-export const ScalingPolicySchema = z.object({
+const ScalingPolicySchema = z.object({
   TargetTrackingScalingPolicyConfiguration:
     TargetTrackingScalingPolicyConfigurationSchema.describe(
       "Represents configuration for target tracking scaling policy.",
     ).optional(),
 });
 
-export const AutoScalingSettingSchema = z.object({
+const AutoScalingSettingSchema = z.object({
   AutoScalingDisabled: z.boolean().optional(),
   MinimumUnits: z.number().int().min(1).optional(),
   MaximumUnits: z.number().int().min(1).optional(),
@@ -54,7 +63,7 @@ export const AutoScalingSettingSchema = z.object({
     .optional(),
 });
 
-export const ReplicaSpecificationSchema = z.object({
+const ReplicaSpecificationSchema = z.object({
   Region: z.string().min(2).max(25),
   ReadCapacityUnits: z.number().int().optional(),
   ReadCapacityAutoScaling: AutoScalingSettingSchema.describe(
@@ -248,9 +257,10 @@ const InputsSchema = z.object({
   }).describe("Warm throughput configuration for the table").optional(),
 });
 
+/** Swamp extension model for Cassandra Table. Registered at `@swamp/aws/cassandra/table`. */
 export const model = {
   type: "@swamp/aws/cassandra/table",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -264,6 +274,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

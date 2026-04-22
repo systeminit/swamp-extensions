@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SES MailManagerRuleSet (AWS::SES::MailManagerRuleSet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AnalysisSchema = z.object({
+const AnalysisSchema = z.object({
   Analyzer: z.string().regex(new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$")),
   ResultField: z.string().min(1).max(256).regex(
     new RegExp("^(addon\\.)?[\\sa-zA-Z0-9_]+$"),
   ),
 });
 
-export const RuleIsInAddressListSchema = z.object({
+const RuleIsInAddressListSchema = z.object({
   Attribute: z.enum(["RECIPIENT", "MAIL_FROM", "SENDER", "FROM", "TO", "CC"]),
   AddressLists: z.array(z.string()),
 });
 
-export const RuleBooleanExpressionSchema = z.object({
+const RuleBooleanExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum(["READ_RECEIPT_REQUESTED", "TLS", "TLS_WRAPPED"])
       .optional(),
@@ -34,7 +43,7 @@ export const RuleBooleanExpressionSchema = z.object({
   Operator: z.enum(["IS_TRUE", "IS_FALSE"]),
 });
 
-export const RuleStringExpressionSchema = z.object({
+const RuleStringExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum([
       "MAIL_FROM",
@@ -70,7 +79,7 @@ export const RuleStringExpressionSchema = z.object({
   Values: z.array(z.string().min(1).max(4096)),
 });
 
-export const RuleNumberExpressionSchema = z.object({
+const RuleNumberExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum(["MESSAGE_SIZE"]).optional(),
   }),
@@ -85,7 +94,7 @@ export const RuleNumberExpressionSchema = z.object({
   Value: z.number(),
 });
 
-export const RuleIpExpressionSchema = z.object({
+const RuleIpExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum(["SOURCE_IP"]).optional(),
   }),
@@ -95,7 +104,7 @@ export const RuleIpExpressionSchema = z.object({
   ),
 });
 
-export const RuleVerdictExpressionSchema = z.object({
+const RuleVerdictExpressionSchema = z.object({
   Evaluate: z.object({
     Attribute: z.enum(["SPF", "DKIM"]).optional(),
     Analysis: AnalysisSchema.optional(),
@@ -104,12 +113,12 @@ export const RuleVerdictExpressionSchema = z.object({
   Values: z.array(z.enum(["PASS", "FAIL", "GRAY", "PROCESSING_FAILED"])),
 });
 
-export const RuleDmarcExpressionSchema = z.object({
+const RuleDmarcExpressionSchema = z.object({
   Operator: z.enum(["EQUALS", "NOT_EQUALS"]),
   Values: z.array(z.enum(["NONE", "QUARANTINE", "REJECT"])),
 });
 
-export const RelayActionSchema = z.object({
+const RelayActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   Relay: z.string().min(1).max(2048).regex(
     new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
@@ -117,14 +126,14 @@ export const RelayActionSchema = z.object({
   MailFrom: z.enum(["REPLACE", "PRESERVE"]).optional(),
 });
 
-export const ArchiveActionSchema = z.object({
+const ArchiveActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   TargetArchive: z.string().min(1).max(2048).regex(
     new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
   ),
 });
 
-export const S3ActionSchema = z.object({
+const S3ActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   RoleArn: z.string().min(20).max(2048).regex(
     new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
@@ -138,27 +147,27 @@ export const S3ActionSchema = z.object({
   ).optional(),
 });
 
-export const SendActionSchema = z.object({
+const SendActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   RoleArn: z.string().min(20).max(2048).regex(
     new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
   ),
 });
 
-export const AddHeaderActionSchema = z.object({
+const AddHeaderActionSchema = z.object({
   HeaderName: z.string().min(1).max(64).regex(
     new RegExp("^[xX]\\-[a-zA-Z0-9\\-]+$"),
   ),
   HeaderValue: z.string().min(1).max(128),
 });
 
-export const ReplaceRecipientActionSchema = z.object({
+const ReplaceRecipientActionSchema = z.object({
   ReplaceWith: z.array(
     z.string().min(0).max(254).regex(new RegExp("^[0-9A-Za-z@+.-]+$")),
   ).optional(),
 });
 
-export const DeliverToMailboxActionSchema = z.object({
+const DeliverToMailboxActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   MailboxArn: z.string().min(1).max(2048).regex(
     new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
@@ -168,7 +177,7 @@ export const DeliverToMailboxActionSchema = z.object({
   ),
 });
 
-export const DeliverToQBusinessActionSchema = z.object({
+const DeliverToQBusinessActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   ApplicationId: z.string().min(36).max(36).regex(new RegExp("^[a-z0-9-]+$")),
   IndexId: z.string().min(36).max(36).regex(new RegExp("^[a-z0-9-]+$")),
@@ -177,7 +186,7 @@ export const DeliverToQBusinessActionSchema = z.object({
   ),
 });
 
-export const SnsActionSchema = z.object({
+const SnsActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   TopicArn: z.string().min(20).max(2048).regex(
     new RegExp(
@@ -191,7 +200,7 @@ export const SnsActionSchema = z.object({
   PayloadType: z.enum(["CONTENT", "HEADERS"]).optional(),
 });
 
-export const BounceActionSchema = z.object({
+const BounceActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   RoleArn: z.string().min(20).max(2048).regex(
     new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
@@ -209,7 +218,7 @@ export const BounceActionSchema = z.object({
   ).optional(),
 });
 
-export const InvokeLambdaActionSchema = z.object({
+const InvokeLambdaActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   FunctionArn: z.string().min(20).max(2048).regex(
     new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
@@ -221,7 +230,7 @@ export const InvokeLambdaActionSchema = z.object({
   RetryTimeMinutes: z.number().int().min(0).max(2160).optional(),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   Name: z.string().min(1).max(32).regex(new RegExp("^[a-zA-Z0-9_.-]+$"))
     .optional(),
   Conditions: z.array(z.object({
@@ -256,7 +265,7 @@ export const RuleSchema = z.object({
   })),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z0-9/_\\+=\\.:@\\-]+$"),
   ),
@@ -293,9 +302,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for SES MailManagerRuleSet. Registered at `@swamp/aws/ses/mail-manager-rule-set`. */
 export const model = {
   type: "@swamp/aws/ses/mail-manager-rule-set",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -319,6 +329,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.19.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for FIS ExperimentTemplate (AWS::FIS::ExperimentTemplate).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ExperimentTemplateTargetFilterSchema = z.object({
+const ExperimentTemplateTargetFilterSchema = z.object({
   Path: z.string().max(256).describe("The attribute path for the filter."),
   Values: z.array(z.string().max(128)).describe(
     "The attribute values for the filter.",
   ),
 });
 
-export const ExperimentTemplateTargetSchema = z.object({
+const ExperimentTemplateTargetSchema = z.object({
   ResourceType: z.string().max(64).describe(
     "The AWS resource type. The resource type must be supported for the specified action.",
   ),
@@ -34,7 +43,7 @@ export const ExperimentTemplateTargetSchema = z.object({
   ),
 });
 
-export const ExperimentTemplateActionSchema = z.object({
+const ExperimentTemplateActionSchema = z.object({
   ActionId: z.string().max(64).describe("The ID of the action."),
   Description: z.string().max(512).describe("A description for the action.")
     .optional(),
@@ -49,12 +58,12 @@ export const ExperimentTemplateActionSchema = z.object({
   ).optional(),
 });
 
-export const ExperimentTemplateStopConditionSchema = z.object({
+const ExperimentTemplateStopConditionSchema = z.object({
   Source: z.string().max(64),
   Value: z.string().min(20).max(2048).optional(),
 });
 
-export const CloudWatchDashboardSchema = z.object({
+const CloudWatchDashboardSchema = z.object({
   DashboardIdentifier: z.string().min(1).max(512),
 });
 
@@ -201,9 +210,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for FIS ExperimentTemplate. Registered at `@swamp/aws/fis/experiment-template`. */
 export const model = {
   type: "@swamp/aws/fis/experiment-template",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -217,6 +227,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

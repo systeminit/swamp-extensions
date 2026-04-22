@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Transfer Workflow (AWS::Transfer::Workflow).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const S3InputFileLocationSchema = z.object({
+const S3InputFileLocationSchema = z.object({
   Bucket: z.string().min(3).max(63).regex(
     new RegExp("^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"),
   ).describe("Specifies the S3 bucket that contains the file.").optional(),
@@ -21,13 +30,13 @@ export const S3InputFileLocationSchema = z.object({
   ).optional(),
 });
 
-export const S3FileLocationSchema = z.object({
+const S3FileLocationSchema = z.object({
   S3FileLocation: S3InputFileLocationSchema.describe(
     "Specifies the details for a S3 file.",
   ).optional(),
 });
 
-export const EfsInputFileLocationSchema = z.object({
+const EfsInputFileLocationSchema = z.object({
   FileSystemId: z.string().min(0).max(128).regex(
     new RegExp(
       "^(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:(access-point/fsap|file-system/fs)-[0-9a-f]{8,40}|fs(ap)?-[0-9a-f]{8,40})$",
@@ -38,7 +47,7 @@ export const EfsInputFileLocationSchema = z.object({
   ).optional(),
 });
 
-export const InputFileLocationSchema = z.object({
+const InputFileLocationSchema = z.object({
   S3FileLocation: S3InputFileLocationSchema.describe(
     "Specifies the details for a S3 file.",
   ).optional(),
@@ -47,7 +56,7 @@ export const InputFileLocationSchema = z.object({
   ).optional(),
 });
 
-export const S3TagSchema = z.object({
+const S3TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The name assigned to the tag that you create.",
   ),
@@ -56,7 +65,7 @@ export const S3TagSchema = z.object({
   ),
 });
 
-export const WorkflowStepSchema = z.object({
+const WorkflowStepSchema = z.object({
   CopyStepDetails: z.object({
     DestinationFileLocation: S3FileLocationSchema.describe(
       "Specifies the location for the file being copied. Only applicable for the Copy type of workflow steps.",
@@ -128,7 +137,7 @@ export const WorkflowStepSchema = z.object({
   Type: z.enum(["COPY", "CUSTOM", "DECRYPT", "DELETE", "TAG"]).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The name assigned to the tag that you create.",
   ),
@@ -180,9 +189,10 @@ const InputsSchema = z.object({
     .describe("A textual description for the workflow.").optional(),
 });
 
+/** Swamp extension model for Transfer Workflow. Registered at `@swamp/aws/transfer/workflow`. */
 export const model = {
   type: "@swamp/aws/transfer/workflow",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -196,6 +206,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

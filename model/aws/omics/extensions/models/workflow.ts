@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Omics Workflow (AWS::Omics::Workflow).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const WorkflowParameterSchema = z.object({
+const WorkflowParameterSchema = z.object({
   Description: z.string().min(0).max(256).regex(
     new RegExp("^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$", "u"),
   ).optional(),
   Optional: z.boolean().optional(),
 });
 
-export const SourceReferenceSchema = z.object({
+const SourceReferenceSchema = z.object({
   type: z.enum(["BRANCH", "TAG", "COMMIT"]).optional(),
   value: z.string().optional(),
 });
 
-export const RegistryMappingSchema = z.object({
+const RegistryMappingSchema = z.object({
   UpstreamRegistryUrl: z.string().min(1).max(750).regex(
     new RegExp("^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$", "u"),
   ).optional(),
@@ -38,7 +47,7 @@ export const RegistryMappingSchema = z.object({
     .optional(),
 });
 
-export const ImageMappingSchema = z.object({
+const ImageMappingSchema = z.object({
   SourceImage: z.string().min(1).max(750).regex(
     new RegExp("^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$", "u"),
   ).optional(),
@@ -202,9 +211,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Omics Workflow. Registered at `@swamp/aws/omics/workflow`. */
 export const model = {
   type: "@swamp/aws/omics/workflow",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -218,6 +228,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

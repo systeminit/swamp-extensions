@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for RDS OptionGroup (AWS::RDS::OptionGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const OptionSettingSchema = z.object({
+const OptionSettingSchema = z.object({
   Name: z.string().describe(
     "The name of the option that has settings that you can set.",
   ).optional(),
@@ -20,7 +29,7 @@ export const OptionSettingSchema = z.object({
     .optional(),
 });
 
-export const OptionConfigurationSchema = z.object({
+const OptionConfigurationSchema = z.object({
   DBSecurityGroupMemberships: z.array(z.string()).describe(
     "A list of DB security groups used for this option.",
   ).optional(),
@@ -38,7 +47,7 @@ export const OptionConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "A key is the required name of the tag. The string value can be from 1 to 128 Unicode characters in length and can't be prefixed with aws: or rds:. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-@]*)$\").",
   ),
@@ -98,9 +107,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for RDS OptionGroup. Registered at `@swamp/aws/rds/option-group`. */
 export const model = {
   type: "@swamp/aws/rds/option-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -114,6 +124,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker Domain (AWS::SageMaker::Domain).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ResourceSpecSchema = z.object({
+const ResourceSpecSchema = z.object({
   InstanceType: z.enum([
     "system",
     "ml.t3.micro",
@@ -201,7 +210,7 @@ export const ResourceSpecSchema = z.object({
   ).optional(),
 });
 
-export const JupyterServerAppSettingsSchema = z.object({
+const JupyterServerAppSettingsSchema = z.object({
   DefaultResourceSpec: ResourceSpecSchema.optional(),
   LifecycleConfigArns: z.array(
     z.string().max(256).regex(
@@ -214,7 +223,7 @@ export const JupyterServerAppSettingsSchema = z.object({
   ).optional(),
 });
 
-export const CustomImageSchema = z.object({
+const CustomImageSchema = z.object({
   AppImageConfigName: z.string().max(63).regex(
     new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"),
   ).describe("The Name of the AppImageConfig."),
@@ -226,7 +235,7 @@ export const CustomImageSchema = z.object({
   ).optional(),
 });
 
-export const KernelGatewayAppSettingsSchema = z.object({
+const KernelGatewayAppSettingsSchema = z.object({
   CustomImages: z.array(CustomImageSchema).describe(
     "A list of custom SageMaker images that are configured to run as a KernelGateway app.",
   ).optional(),
@@ -244,7 +253,7 @@ export const KernelGatewayAppSettingsSchema = z.object({
   ).optional(),
 });
 
-export const RStudioServerProAppSettingsSchema = z.object({
+const RStudioServerProAppSettingsSchema = z.object({
   AccessStatus: z.enum(["ENABLED", "DISABLED"]).describe(
     "Indicates whether the current user has access to the RStudioServerPro app.",
   ).optional(),
@@ -253,14 +262,14 @@ export const RStudioServerProAppSettingsSchema = z.object({
   ).optional(),
 });
 
-export const RSessionAppSettingsSchema = z.object({
+const RSessionAppSettingsSchema = z.object({
   CustomImages: z.array(CustomImageSchema).describe(
     "A list of custom SageMaker images that are configured to run as a KernelGateway app.",
   ).optional(),
   DefaultResourceSpec: ResourceSpecSchema.optional(),
 });
 
-export const CodeRepositorySchema = z.object({
+const CodeRepositorySchema = z.object({
   RepositoryUrl: z.string().max(256).regex(
     new RegExp("^https://([.\\-_a-zA-Z0-9]+/?){3,1016}$"),
   ).describe(
@@ -268,7 +277,7 @@ export const CodeRepositorySchema = z.object({
   ),
 });
 
-export const IdleSettingsSchema = z.object({
+const IdleSettingsSchema = z.object({
   LifecycleManagement: z.enum(["ENABLED", "DISABLED"]).describe(
     "A flag to enable/disable AppLifecycleManagement settings",
   ).optional(),
@@ -283,11 +292,11 @@ export const IdleSettingsSchema = z.object({
   ).optional(),
 });
 
-export const AppLifecycleManagementSchema = z.object({
+const AppLifecycleManagementSchema = z.object({
   IdleSettings: IdleSettingsSchema.optional(),
 });
 
-export const JupyterLabAppSettingsSchema = z.object({
+const JupyterLabAppSettingsSchema = z.object({
   DefaultResourceSpec: ResourceSpecSchema.describe(
     "The default instance type and the Amazon Resource Name (ARN) of the default SageMaker image used by the JupyterLab app.",
   ).optional(),
@@ -316,7 +325,7 @@ export const JupyterLabAppSettingsSchema = z.object({
   ).optional(),
 });
 
-export const DefaultEbsStorageSettingsSchema = z.object({
+const DefaultEbsStorageSettingsSchema = z.object({
   DefaultEbsVolumeSizeInGb: z.number().int().min(5).max(16384).describe(
     "Default size of the Amazon EBS volume in Gb",
   ),
@@ -325,13 +334,13 @@ export const DefaultEbsStorageSettingsSchema = z.object({
   ),
 });
 
-export const DefaultSpaceStorageSettingsSchema = z.object({
+const DefaultSpaceStorageSettingsSchema = z.object({
   DefaultEbsStorageSettings: DefaultEbsStorageSettingsSchema.describe(
     "Properties related to the Amazon Elastic Block Store volume. Must be provided if storage type is Amazon EBS and must not be provided if storage type is not Amazon EBS",
   ).optional(),
 });
 
-export const CodeEditorAppSettingsSchema = z.object({
+const CodeEditorAppSettingsSchema = z.object({
   DefaultResourceSpec: ResourceSpecSchema.describe(
     "The default instance type and the Amazon Resource Name (ARN) of the default SageMaker image used by the CodeEditor app.",
   ).optional(),
@@ -357,7 +366,7 @@ export const CodeEditorAppSettingsSchema = z.object({
   ).optional(),
 });
 
-export const HiddenSageMakerImageSchema = z.object({
+const HiddenSageMakerImageSchema = z.object({
   SageMakerImageName: z.enum(["sagemaker_distribution"]).describe(
     "The SageMaker image name that you are hiding from the Studio user interface.",
   ).optional(),
@@ -368,7 +377,7 @@ export const HiddenSageMakerImageSchema = z.object({
   ).optional(),
 });
 
-export const StudioWebPortalSettingsSchema = z.object({
+const StudioWebPortalSettingsSchema = z.object({
   HiddenMlTools: z.array(
     z.enum([
       "DataWrangler",
@@ -583,12 +592,12 @@ export const StudioWebPortalSettingsSchema = z.object({
     ).optional(),
 });
 
-export const CustomPosixUserConfigSchema = z.object({
+const CustomPosixUserConfigSchema = z.object({
   Uid: z.number().int().min(10000).max(4000000),
   Gid: z.number().int().min(1001).max(4000000),
 });
 
-export const EFSFileSystemConfigSchema = z.object({
+const EFSFileSystemConfigSchema = z.object({
   FileSystemPath: z.string().min(1).max(256).regex(new RegExp("^\\/\\S*$"))
     .optional(),
   FileSystemId: z.string().min(11).max(21).regex(
@@ -596,7 +605,7 @@ export const EFSFileSystemConfigSchema = z.object({
   ),
 });
 
-export const FSxLustreFileSystemConfigSchema = z.object({
+const FSxLustreFileSystemConfigSchema = z.object({
   FileSystemPath: z.string().min(1).max(256).regex(new RegExp("^\\/\\S*$"))
     .optional(),
   FileSystemId: z.string().min(11).max(21).regex(
@@ -604,19 +613,19 @@ export const FSxLustreFileSystemConfigSchema = z.object({
   ),
 });
 
-export const S3FileSystemConfigSchema = z.object({
+const S3FileSystemConfigSchema = z.object({
   MountPath: z.string().min(0).max(1024).optional(),
   S3Uri: z.string().min(0).max(1024).regex(new RegExp("(s3)://([^/]+)/?(.*)"))
     .optional(),
 });
 
-export const CustomFileSystemConfigSchema = z.object({
+const CustomFileSystemConfigSchema = z.object({
   EFSFileSystemConfig: EFSFileSystemConfigSchema.optional(),
   FSxLustreFileSystemConfig: FSxLustreFileSystemConfigSchema.optional(),
   S3FileSystemConfig: S3FileSystemConfigSchema.optional(),
 });
 
-export const SharingSettingsSchema = z.object({
+const SharingSettingsSchema = z.object({
   NotebookOutputOption: z.enum(["Allowed", "Disabled"]).describe(
     "Whether to include the notebook cell output when sharing the notebook. The default is Disabled.",
   ).optional(),
@@ -630,12 +639,12 @@ export const SharingSettingsSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(1).max(128),
   Key: z.string().min(1).max(128),
 });
 
-export const RStudioServerProDomainSettingsSchema = z.object({
+const RStudioServerProDomainSettingsSchema = z.object({
   DomainExecutionRoleArn: z.string().min(20).max(2048).regex(
     new RegExp("^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"),
   ).describe(
@@ -649,7 +658,7 @@ export const RStudioServerProDomainSettingsSchema = z.object({
   DefaultResourceSpec: ResourceSpecSchema.optional(),
 });
 
-export const DockerSettingsSchema = z.object({
+const DockerSettingsSchema = z.object({
   EnableDockerAccess: z.enum(["ENABLED", "DISABLED"]).describe(
     "The flag to enable/disable docker-proxy server",
   ).optional(),
@@ -660,7 +669,7 @@ export const DockerSettingsSchema = z.object({
   ).optional(),
 });
 
-export const UnifiedStudioSettingsSchema = z.object({
+const UnifiedStudioSettingsSchema = z.object({
   StudioWebPortalAccess: z.enum(["ENABLED", "DISABLED"]).describe(
     "Sets whether you can access the domain in Amazon SageMaker Studio: ENABLED You can access the domain in Amazon SageMaker Studio. If you migrate the domain to Amazon SageMaker Unified Studio, you can access it in both studio interfaces. DISABLED You can't access the domain in Amazon SageMaker Studio. If you migrate the domain to Amazon SageMaker Unified Studio, you can access it only in that studio interface.",
   ).optional(),
@@ -1009,9 +1018,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker Domain. Registered at `@swamp/aws/sagemaker/domain`. */
 export const model = {
   type: "@swamp/aws/sagemaker/domain",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -1025,6 +1035,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

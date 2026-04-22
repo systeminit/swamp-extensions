@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GuardDuty Filter (AWS::GuardDuty::Filter).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ConditionSchema = z.object({
+const ConditionSchema = z.object({
   Lt: z.number().int().optional(),
   Gt: z.number().int().optional(),
   Gte: z.number().int().optional(),
@@ -27,7 +36,7 @@ export const ConditionSchema = z.object({
   NotEquals: z.array(z.string()).optional(),
 });
 
-export const TagItemSchema = z.object({
+const TagItemSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -74,9 +83,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagItemSchema).optional(),
 });
 
+/** Swamp extension model for GuardDuty Filter. Registered at `@swamp/aws/guardduty/filter`. */
 export const model = {
   type: "@swamp/aws/guardduty/filter",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -90,6 +100,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

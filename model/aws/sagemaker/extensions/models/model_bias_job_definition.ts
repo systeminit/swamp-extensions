@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker ModelBiasJobDefinition (AWS::SageMaker::ModelBiasJobDefinition).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,14 +20,14 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const ConstraintsResourceSchema = z.object({
+const ConstraintsResourceSchema = z.object({
   S3Uri: z.string().max(1024).regex(new RegExp("^(https|s3)://([^/]+)/?(.*)$"))
     .describe(
       "The Amazon S3 URI for baseline constraint file in Amazon S3 that the current monitoring job should validated against.",
     ).optional(),
 });
 
-export const EndpointInputSchema = z.object({
+const EndpointInputSchema = z.object({
   EndpointName: z.string().max(63).regex(
     new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*"),
   ).describe("The name of the endpoint used to run the monitoring job."),
@@ -49,19 +58,19 @@ export const EndpointInputSchema = z.object({
   ProbabilityThresholdAttribute: z.number().optional(),
 });
 
-export const CsvSchema = z.object({
+const CsvSchema = z.object({
   Header: z.boolean().describe(
     "A boolean flag indicating if given CSV has header",
   ).optional(),
 });
 
-export const JsonSchema = z.object({
+const JsonSchema = z.object({
   Line: z.boolean().describe(
     "A boolean flag indicating if it is JSON line format",
   ).optional(),
 });
 
-export const DatasetFormatSchema = z.object({
+const DatasetFormatSchema = z.object({
   Csv: CsvSchema.describe("The CSV format").optional(),
   Json: JsonSchema.describe("The Json format").optional(),
   Parquet: z.boolean().describe(
@@ -69,7 +78,7 @@ export const DatasetFormatSchema = z.object({
   ).optional(),
 });
 
-export const BatchTransformInputSchema = z.object({
+const BatchTransformInputSchema = z.object({
   DataCapturedDestinationS3Uri: z.string().max(512).regex(
     new RegExp("^(https|s3)://([^/]+)/?(.*)$"),
   ).describe(
@@ -105,14 +114,14 @@ export const BatchTransformInputSchema = z.object({
   ProbabilityThresholdAttribute: z.number().optional(),
 });
 
-export const MonitoringGroundTruthS3InputSchema = z.object({
+const MonitoringGroundTruthS3InputSchema = z.object({
   S3Uri: z.string().max(512).regex(new RegExp("^(https|s3)://([^/]+)/?(.*)$"))
     .describe(
       "A URI that identifies the Amazon S3 storage location where Amazon SageMaker saves the results of a monitoring job.",
     ),
 });
 
-export const S3OutputSchema = z.object({
+const S3OutputSchema = z.object({
   LocalPath: z.string().max(256).regex(new RegExp(".*")).describe(
     "The local path to the Amazon S3 storage location where Amazon SageMaker saves the results of a monitoring job. LocalPath is an absolute path for the output data.",
   ),
@@ -125,13 +134,13 @@ export const S3OutputSchema = z.object({
     ),
 });
 
-export const MonitoringOutputSchema = z.object({
+const MonitoringOutputSchema = z.object({
   S3Output: S3OutputSchema.describe(
     "Information about where and how to store the results of a monitoring job.",
   ),
 });
 
-export const ClusterConfigSchema = z.object({
+const ClusterConfigSchema = z.object({
   InstanceCount: z.number().int().min(1).max(100).describe(
     "The number of ML compute instances to use in the model monitoring job. For distributed processing jobs, specify a value greater than 1. The default value is 1.",
   ),
@@ -146,7 +155,7 @@ export const ClusterConfigSchema = z.object({
   ),
 });
 
-export const VpcConfigSchema = z.object({
+const VpcConfigSchema = z.object({
   SecurityGroupIds: z.array(
     z.string().max(32).regex(new RegExp("[-0-9a-zA-Z]+")),
   ).describe(
@@ -158,7 +167,7 @@ export const VpcConfigSchema = z.object({
     ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$", "u"),
   ).describe(
@@ -383,9 +392,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker ModelBiasJobDefinition. Registered at `@swamp/aws/sagemaker/model-bias-job-definition`. */
 export const model = {
   type: "@swamp/aws/sagemaker/model-bias-job-definition",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -399,6 +409,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

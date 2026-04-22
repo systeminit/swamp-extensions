@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTSiteWise AccessPolicy (AWS::IoTSiteWise::AccessPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,23 +21,23 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const UserSchema = z.object({
+const UserSchema = z.object({
   id: z.string().describe("The AWS SSO ID of the user.").optional(),
 });
 
-export const IamUserSchema = z.object({
+const IamUserSchema = z.object({
   arn: z.string().describe("The ARN of the IAM user.").optional(),
 });
 
-export const IamRoleSchema = z.object({
+const IamRoleSchema = z.object({
   arn: z.string().describe("The ARN of the IAM role.").optional(),
 });
 
-export const PortalSchema = z.object({
+const PortalSchema = z.object({
   id: z.string().describe("The ID of the portal.").optional(),
 });
 
-export const ProjectSchema = z.object({
+const ProjectSchema = z.object({
   id: z.string().describe("The ID of the project.").optional(),
 });
 
@@ -103,9 +112,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoTSiteWise AccessPolicy. Registered at `@swamp/aws/iotsitewise/access-policy`. */
 export const model = {
   type: "@swamp/aws/iotsitewise/access-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -119,6 +129,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

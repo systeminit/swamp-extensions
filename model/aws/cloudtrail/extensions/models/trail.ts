@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudTrail Trail (AWS::CloudTrail::Trail).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DataResourceSchema = z.object({
+const DataResourceSchema = z.object({
   Type: z.string().describe(
     "The resource type in which you want to log data events. You can specify AWS::S3::Object or AWS::Lambda::Function resources.",
   ),
@@ -21,7 +30,7 @@ export const DataResourceSchema = z.object({
   ).optional(),
 });
 
-export const EventSelectorSchema = z.object({
+const EventSelectorSchema = z.object({
   IncludeManagementEvents: z.boolean().describe(
     "Specify if you want your event selector to include management events for your trail.",
   ).optional(),
@@ -34,7 +43,7 @@ export const EventSelectorSchema = z.object({
   DataResources: z.array(DataResourceSchema).optional(),
 });
 
-export const AggregationConfigurationSchema = z.object({
+const AggregationConfigurationSchema = z.object({
   EventCategory: z.enum(["Data"]).describe(
     "The category of events to be aggregated.",
   ),
@@ -43,7 +52,7 @@ export const AggregationConfigurationSchema = z.object({
   ).describe("Contains all templates in an aggregation configuration."),
 });
 
-export const AdvancedFieldSelectorSchema = z.object({
+const AdvancedFieldSelectorSchema = z.object({
   Field: z.string().min(1).max(1000).regex(new RegExp("([\\w|\\d|\\.|_]+)"))
     .describe(
       "A field in an event record on which to filter events to be logged. Supported fields include readOnly, eventCategory, eventSource (for management events), eventName, resources.type, and resources.ARN.",
@@ -74,7 +83,7 @@ export const AdvancedFieldSelectorSchema = z.object({
     ).optional(),
 });
 
-export const AdvancedEventSelectorSchema = z.object({
+const AdvancedEventSelectorSchema = z.object({
   FieldSelectors: z.array(AdvancedFieldSelectorSchema).describe(
     "Contains all selector statements in an advanced event selector.",
   ),
@@ -83,7 +92,7 @@ export const AdvancedEventSelectorSchema = z.object({
   ).optional(),
 });
 
-export const InsightSelectorSchema = z.object({
+const InsightSelectorSchema = z.object({
   InsightType: z.string().describe("The type of insight to log on a trail.")
     .optional(),
   EventCategories: z.array(z.enum(["Management", "Data"])).describe(
@@ -91,7 +100,7 @@ export const InsightSelectorSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe(
     "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -228,9 +237,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CloudTrail Trail. Registered at `@swamp/aws/cloudtrail/trail`. */
 export const model = {
   type: "@swamp/aws/cloudtrail/trail",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -244,6 +254,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

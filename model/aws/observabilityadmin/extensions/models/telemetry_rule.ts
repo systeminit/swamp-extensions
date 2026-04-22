@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ObservabilityAdmin TelemetryRule (AWS::ObservabilityAdmin::TelemetryRule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const VPCFlowLogParametersSchema = z.object({
+const VPCFlowLogParametersSchema = z.object({
   LogFormat: z.string().describe(
     "The fields to include in the flow log record. If you omit this parameter, the flow log is created using the default format.",
   ).optional(),
@@ -24,7 +33,7 @@ export const VPCFlowLogParametersSchema = z.object({
   ).optional(),
 });
 
-export const AdvancedFieldSelectorSchema = z.object({
+const AdvancedFieldSelectorSchema = z.object({
   Field: z.string().min(1).max(1000).describe(
     "A field in a CloudTrail event record on which to filter events to be logged",
   ).optional(),
@@ -48,7 +57,7 @@ export const AdvancedFieldSelectorSchema = z.object({
   ).optional(),
 });
 
-export const AdvancedEventSelectorSchema = z.object({
+const AdvancedEventSelectorSchema = z.object({
   Name: z.string().describe(
     "An optional descriptive name for the advanced event selector",
   ).optional(),
@@ -57,23 +66,23 @@ export const AdvancedEventSelectorSchema = z.object({
   ),
 });
 
-export const CloudtrailParametersSchema = z.object({
+const CloudtrailParametersSchema = z.object({
   AdvancedEventSelectors: z.array(AdvancedEventSelectorSchema).describe(
     "Create fine-grained selectors for AWS CloudTrail management and data.",
   ),
 });
 
-export const ELBLoadBalancerLoggingParametersSchema = z.object({
+const ELBLoadBalancerLoggingParametersSchema = z.object({
   OutputFormat: z.enum(["plain", "json"]).optional(),
   FieldDelimiter: z.string().describe("A delimiter to delineate log fields")
     .optional(),
 });
 
-export const SingleHeaderSchema = z.object({
+const SingleHeaderSchema = z.object({
   Name: z.string().min(1).max(64).describe("The name of the header"),
 });
 
-export const FieldToMatchSchema = z.object({
+const FieldToMatchSchema = z.object({
   SingleHeader: SingleHeaderSchema.describe("Header for the field to match.")
     .optional(),
   UriPath: z.string().describe("This is the URI path to match this rule to.")
@@ -85,7 +94,7 @@ export const FieldToMatchSchema = z.object({
     .optional(),
 });
 
-export const ActionConditionSchema = z.object({
+const ActionConditionSchema = z.object({
   Action: z.enum([
     "ALLOW",
     "BLOCK",
@@ -96,13 +105,13 @@ export const ActionConditionSchema = z.object({
   ]).describe("The enumerated action to take.").optional(),
 });
 
-export const LabelNameConditionSchema = z.object({
+const LabelNameConditionSchema = z.object({
   LabelName: z.string().min(1).max(1024).regex(
     new RegExp("^[0-9A-Za-z_\\-:]+$"),
   ).describe("The label name of the condition.").optional(),
 });
 
-export const ConditionSchema = z.object({
+const ConditionSchema = z.object({
   ActionCondition: ActionConditionSchema.describe(
     "The condition of the action desired in the filter.",
   ).optional(),
@@ -111,7 +120,7 @@ export const ConditionSchema = z.object({
   ).optional(),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   Behavior: z.enum(["KEEP", "DROP"]).describe(
     "The behavior required of the filter.",
   ).optional(),
@@ -123,7 +132,7 @@ export const FilterSchema = z.object({
   ).optional(),
 });
 
-export const LoggingFilterSchema = z.object({
+const LoggingFilterSchema = z.object({
   Filters: z.array(FilterSchema).describe("A list of filters to be applied.")
     .optional(),
   DefaultBehavior: z.enum(["KEEP", "DROP"]).describe(
@@ -131,7 +140,7 @@ export const LoggingFilterSchema = z.object({
   ).optional(),
 });
 
-export const WAFLoggingParametersSchema = z.object({
+const WAFLoggingParametersSchema = z.object({
   RedactedFields: z.array(FieldToMatchSchema).describe(
     "Fields not to be included in the logs.",
   ).optional(),
@@ -143,7 +152,7 @@ export const WAFLoggingParametersSchema = z.object({
   ).optional(),
 });
 
-export const TelemetryDestinationConfigurationSchema = z.object({
+const TelemetryDestinationConfigurationSchema = z.object({
   DestinationType: z.enum(["cloud-watch-logs"]).describe(
     "Type of telemetry destination",
   ).optional(),
@@ -171,7 +180,7 @@ export const TelemetryDestinationConfigurationSchema = z.object({
   }).describe("Parameters for BedrockAgentCore log delivery").optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -281,9 +290,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ObservabilityAdmin TelemetryRule. Registered at `@swamp/aws/observabilityadmin/telemetry-rule`. */
 export const model = {
   type: "@swamp/aws/observabilityadmin/telemetry-rule",
-  version: "2026.04.08.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -302,6 +312,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.08.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

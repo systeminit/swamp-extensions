@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for WAFv2 RuleGroup (AWS::WAFv2::RuleGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).optional(),
   Value: z.string().min(0).max(256).optional(),
 });
 
-export const CustomResponseBodySchema = z.object({
+const CustomResponseBodySchema = z.object({
   ContentType: z.enum(["TEXT_PLAIN", "TEXT_HTML", "APPLICATION_JSON"]).describe(
     "Valid values are TEXT_PLAIN, TEXT_HTML, and APPLICATION_JSON.",
   ),
   Content: z.string().min(1).max(10240).describe("Response content."),
 });
 
-export const LabelSummarySchema = z.object({
+const LabelSummarySchema = z.object({
   Name: z.string().regex(new RegExp("^[0-9A-Za-z_:-]{1,1024}$")).describe(
     "Name of the Label.",
   ).optional(),
@@ -112,9 +121,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for WAFv2 RuleGroup. Registered at `@swamp/aws/wafv2/rule-group`. */
 export const model = {
   type: "@swamp/aws/wafv2/rule-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -128,6 +138,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

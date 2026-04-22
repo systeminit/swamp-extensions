@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CleanRooms Collaboration (AWS::CleanRooms::Collaboration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,51 +21,51 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
 
-export const MLMemberAbilitiesSchema = z.object({
+const MLMemberAbilitiesSchema = z.object({
   CustomMLMemberAbilities: z.array(
     z.enum(["CAN_RECEIVE_MODEL_OUTPUT", "CAN_RECEIVE_INFERENCE_OUTPUT"]),
   ),
 });
 
-export const JobComputePaymentConfigSchema = z.object({
+const JobComputePaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const QueryComputePaymentConfigSchema = z.object({
+const QueryComputePaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const ModelTrainingPaymentConfigSchema = z.object({
+const ModelTrainingPaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const ModelInferencePaymentConfigSchema = z.object({
+const ModelInferencePaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const SyntheticDataGenerationPaymentConfigSchema = z.object({
+const SyntheticDataGenerationPaymentConfigSchema = z.object({
   IsResponsible: z.boolean(),
 });
 
-export const MLPaymentConfigSchema = z.object({
+const MLPaymentConfigSchema = z.object({
   ModelTraining: ModelTrainingPaymentConfigSchema.optional(),
   ModelInference: ModelInferencePaymentConfigSchema.optional(),
   SyntheticDataGeneration: SyntheticDataGenerationPaymentConfigSchema
     .optional(),
 });
 
-export const PaymentConfigurationSchema = z.object({
+const PaymentConfigurationSchema = z.object({
   JobCompute: JobComputePaymentConfigSchema.optional(),
   QueryCompute: QueryComputePaymentConfigSchema,
   MachineLearning: MLPaymentConfigSchema.optional(),
 });
 
-export const MemberSpecificationSchema = z.object({
+const MemberSpecificationSchema = z.object({
   AccountId: z.string().min(12).max(12).regex(new RegExp("^\\d+$")),
   MemberAbilities: z.array(
     z.enum(["CAN_QUERY", "CAN_RUN_JOB", "CAN_RECEIVE_RESULTS"]),
@@ -279,9 +288,10 @@ const InputsSchema = z.object({
   IsMetricsEnabled: z.boolean().optional(),
 });
 
+/** Swamp extension model for CleanRooms Collaboration. Registered at `@swamp/aws/cleanrooms/collaboration`. */
 export const model = {
   type: "@swamp/aws/cleanrooms/collaboration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -295,6 +305,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

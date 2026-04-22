@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataZone DataSource (AWS::DataZone::DataSource).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FormInputSchema = z.object({
+const FormInputSchema = z.object({
   FormName: z.string().min(1).max(128).regex(
     new RegExp("^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"),
   ).describe("The name of the metadata form."),
@@ -26,14 +35,14 @@ export const FormInputSchema = z.object({
     .optional(),
 });
 
-export const FilterExpressionSchema = z.object({
+const FilterExpressionSchema = z.object({
   Type: z.enum(["INCLUDE", "EXCLUDE"]).describe(
     "The search filter expression type.",
   ),
   Expression: z.string().min(1).max(2048),
 });
 
-export const RelationalFilterConfigurationSchema = z.object({
+const RelationalFilterConfigurationSchema = z.object({
   DatabaseName: z.string().min(1).max(128).describe(
     "The database name specified in the relational filter configuration for the data source.",
   ),
@@ -45,7 +54,7 @@ export const RelationalFilterConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const GlueRunConfigurationInputSchema = z.object({
+const GlueRunConfigurationInputSchema = z.object({
   AutoImportDataQualityResult: z.boolean().describe(
     "Specifies whether to automatically import data quality metrics as part of the data source run.",
   ).optional(),
@@ -65,7 +74,7 @@ export const GlueRunConfigurationInputSchema = z.object({
     ),
 });
 
-export const RedshiftCredentialConfigurationSchema = z.object({
+const RedshiftCredentialConfigurationSchema = z.object({
   SecretManagerArn: z.string().max(256).regex(
     new RegExp(
       "^arn:aws[^:]*:secretsmanager:[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]:\\d{12}:secret:.*$",
@@ -73,18 +82,18 @@ export const RedshiftCredentialConfigurationSchema = z.object({
   ).describe("The ARN of a secret manager for an Amazon Redshift cluster."),
 });
 
-export const RedshiftClusterStorageSchema = z.object({
+const RedshiftClusterStorageSchema = z.object({
   ClusterName: z.string().min(1).max(63).regex(
     new RegExp("^[0-9a-z].[a-z0-9\\-]*$"),
   ).describe("The name of an Amazon Redshift cluster."),
 });
 
-export const RedshiftServerlessStorageSchema = z.object({
+const RedshiftServerlessStorageSchema = z.object({
   WorkgroupName: z.string().min(3).max(64).regex(new RegExp("^[a-z0-9-]+$"))
     .describe("The name of the Amazon Redshift Serverless workgroup."),
 });
 
-export const RedshiftRunConfigurationInputSchema = z.object({
+const RedshiftRunConfigurationInputSchema = z.object({
   DataAccessRole: z.string().regex(
     new RegExp(
       "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$",
@@ -112,7 +121,7 @@ export const RedshiftRunConfigurationInputSchema = z.object({
   ).optional(),
 });
 
-export const SageMakerRunConfigurationInputSchema = z.object({
+const SageMakerRunConfigurationInputSchema = z.object({
   TrackingAssets: z.record(
     z.string(),
     z.array(
@@ -283,9 +292,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for DataZone DataSource. Registered at `@swamp/aws/datazone/data-source`. */
 export const model = {
   type: "@swamp/aws/datazone/data-source",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -299,6 +309,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

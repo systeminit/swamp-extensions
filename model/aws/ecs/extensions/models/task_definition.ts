@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ECS TaskDefinition (AWS::ECS::TaskDefinition).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const InferenceAcceleratorSchema = z.object({
+const InferenceAcceleratorSchema = z.object({
   DeviceType: z.string().optional(),
   DeviceName: z.string().optional(),
 });
 
-export const TaskDefinitionPlacementConstraintSchema = z.object({
+const TaskDefinitionPlacementConstraintSchema = z.object({
   Type: z.string().describe(
     "The type of constraint. The MemberOf constraint restricts selection to be from a group of valid candidates.",
   ),
@@ -26,7 +35,7 @@ export const TaskDefinitionPlacementConstraintSchema = z.object({
   ).optional(),
 });
 
-export const KeyValuePairSchema = z.object({
+const KeyValuePairSchema = z.object({
   Value: z.string().describe(
     "The value of the key-value pair. For environment variables, this is the value of the environment variable.",
   ).optional(),
@@ -35,7 +44,7 @@ export const KeyValuePairSchema = z.object({
   ).optional(),
 });
 
-export const AuthorizationConfigSchema = z.object({
+const AuthorizationConfigSchema = z.object({
   IAM: z.enum(["ENABLED", "DISABLED"]).describe(
     "Determines whether to use the Amazon ECS task role defined in a task definition when mounting the Amazon EFS file system. If it is turned on, transit encryption must be turned on in the EFSVolumeConfiguration. If this parameter is omitted, the default value of DISABLED is used. For more information, see [Using Amazon EFS access points](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/efs-volumes.html#efs-volume-accesspoints) in the *Amazon Elastic Container Service Developer Guide*.",
   ).optional(),
@@ -44,7 +53,7 @@ export const AuthorizationConfigSchema = z.object({
   ).optional(),
 });
 
-export const EFSVolumeConfigurationSchema = z.object({
+const EFSVolumeConfigurationSchema = z.object({
   FilesystemId: z.string().describe("The Amazon EFS file system ID to use."),
   TransitEncryption: z.enum(["ENABLED", "DISABLED"]).describe(
     "Determines whether to use encryption for Amazon EFS data in transit between the Amazon ECS host and the Amazon EFS server. Transit encryption must be turned on if Amazon EFS IAM authorization is used. If this parameter is omitted, the default value of DISABLED is used. For more information, see [Encrypting data in transit](https://docs.aws.amazon.com/efs/latest/ug/encryption-in-transit.html) in the *Amazon Elastic File System User Guide*.",
@@ -60,20 +69,20 @@ export const EFSVolumeConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const S3FilesVolumeConfigurationSchema = z.object({
+const S3FilesVolumeConfigurationSchema = z.object({
   FileSystemArn: z.string(),
   AccessPointArn: z.string().optional(),
   RootDirectory: z.string().optional(),
   TransitEncryptionPort: z.number().int().optional(),
 });
 
-export const HostVolumePropertiesSchema = z.object({
+const HostVolumePropertiesSchema = z.object({
   SourcePath: z.string().describe(
     "When the host parameter is used, specify a sourcePath to declare the path on the host container instance that's presented to the container. If this parameter is empty, then the Docker daemon has assigned a host path for you. If the host parameter contains a sourcePath file location, then the data volume persists at the specified location on the host container instance until you delete it manually. If the sourcePath value doesn't exist on the host container instance, the Docker daemon creates it. If the location does exist, the contents of the source path folder are exported. If you're using the Fargate launch type, the sourcePath parameter is not supported.",
   ).optional(),
 });
 
-export const DockerVolumeConfigurationSchema = z.object({
+const DockerVolumeConfigurationSchema = z.object({
   DriverOpts: z.record(z.string(), z.string()).describe(
     "A map of Docker driver-specific options passed through. This parameter maps to DriverOpts in the docker create-volume command and the xxopt option to docker volume create.",
   ).optional(),
@@ -91,7 +100,7 @@ export const DockerVolumeConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const FSxAuthorizationConfigSchema = z.object({
+const FSxAuthorizationConfigSchema = z.object({
   CredentialsParameter: z.string().describe(
     "The authorization credential option to use. The authorization credential options can be provided using either the Amazon Resource Name (ARN) of an ASMlong secret or SSM Parameter Store parameter. The ARN refers to the stored credentials.",
   ),
@@ -100,7 +109,7 @@ export const FSxAuthorizationConfigSchema = z.object({
   ),
 });
 
-export const FSxWindowsFileServerVolumeConfigurationSchema = z.object({
+const FSxWindowsFileServerVolumeConfigurationSchema = z.object({
   AuthorizationConfig: FSxAuthorizationConfigSchema.describe(
     "The authorization configuration details for the Amazon FSx for Windows File Server file system.",
   ).optional(),
@@ -112,7 +121,7 @@ export const FSxWindowsFileServerVolumeConfigurationSchema = z.object({
   ),
 });
 
-export const VolumeSchema = z.object({
+const VolumeSchema = z.object({
   EFSVolumeConfiguration: EFSVolumeConfigurationSchema.describe(
     "This parameter is specified when you use an Amazon Elastic File System file system for task storage.",
   ).optional(),
@@ -135,14 +144,14 @@ export const VolumeSchema = z.object({
   ).optional(),
 });
 
-export const SecretSchema = z.object({
+const SecretSchema = z.object({
   ValueFrom: z.string().describe(
     "The secret to expose to the container. The supported values are either the full ARN of the ASMlong secret or the full ARN of the parameter in the SSM Parameter Store. For information about the require IAMlong permissions, see [Required IAM permissions for Amazon ECS secrets](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data-secrets.html#secrets-iam) (for Secrets Manager) or [Required IAM permissions for Amazon ECS secrets](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data-parameters.html) (for Systems Manager Parameter store) in the *Amazon Elastic Container Service Developer Guide*. If the SSM Parameter Store parameter exists in the same Region as the task you're launching, then you can use either the full ARN or name of the parameter. If the parameter exists in a different Region, then the full ARN must be specified.",
   ),
   Name: z.string().describe("The name of the secret."),
 });
 
-export const HealthCheckSchema = z.object({
+const HealthCheckSchema = z.object({
   Command: z.array(z.string()).describe(
     'A string array representing the command that the container runs to determine if it is healthy. The string array must start with CMD to run the command arguments directly, or CMD-SHELL to run the command with the container\'s default shell. When you use the AWS Management Console JSON panel, the CLIlong, or the APIs, enclose the list of commands in double quotes and brackets. [ "CMD-SHELL", "curl -f http://localhost/ || exit 1" ] You don\'t include the double quotes and brackets when you use the AWS Management Console. CMD-SHELL, curl -f http://localhost/ || exit 1 An exit code of 0 indicates success, and non-zero exit code indicates failure. For more information, see HealthCheck in the docker container create command.',
   ).optional(),
@@ -160,7 +169,7 @@ export const HealthCheckSchema = z.object({
   ).optional(),
 });
 
-export const VolumeFromSchema = z.object({
+const VolumeFromSchema = z.object({
   ReadOnly: z.boolean().describe(
     "If this value is true, the container has read-only access to the volume. If this value is false, then the container can write to the volume. The default value is false.",
   ).optional(),
@@ -169,7 +178,7 @@ export const VolumeFromSchema = z.object({
   ).optional(),
 });
 
-export const LogConfigurationSchema = z.object({
+const LogConfigurationSchema = z.object({
   SecretOptions: z.array(SecretSchema).describe(
     "The secrets to pass to the log configuration. For more information, see [Specifying sensitive data](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html) in the *Amazon Elastic Container Service Developer Guide*.",
   ).optional(),
@@ -181,14 +190,14 @@ export const LogConfigurationSchema = z.object({
   ),
 });
 
-export const ResourceRequirementSchema = z.object({
+const ResourceRequirementSchema = z.object({
   Type: z.string().describe("The type of resource to assign to a container."),
   Value: z.string().describe(
     "The value for the specified resource type. When the type is GPU, the value is the number of physical GPUs the Amazon ECS container agent reserves for the container. The number of GPUs that's reserved for all containers in a task can't exceed the number of available GPUs on the container instance that the task is launched on. When the type is InferenceAccelerator, the value matches the deviceName for an [InferenceAccelerator](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_InferenceAccelerator.html) specified in a task definition.",
   ),
 });
 
-export const EnvironmentFileSchema = z.object({
+const EnvironmentFileSchema = z.object({
   Type: z.string().describe(
     "The file type to use. Environment files are objects in Amazon S3. The only supported value is s3.",
   ).optional(),
@@ -197,7 +206,7 @@ export const EnvironmentFileSchema = z.object({
   ).optional(),
 });
 
-export const FirelensConfigurationSchema = z.object({
+const FirelensConfigurationSchema = z.object({
   Options: z.record(z.string(), z.string()).describe(
     "The options to use when configuring the log router. This field is optional and can be used to add additional metadata, such as the task, task definition, cluster, and container instance details to the log event. If specified, valid option keys are: enable-ecs-log-metadata, which can be true or false config-file-type, which can be s3 or file config-file-value, which is either an S3 ARN or a file path",
   ).optional(),
@@ -206,7 +215,7 @@ export const FirelensConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SystemControlSchema = z.object({
+const SystemControlSchema = z.object({
   Value: z.string().describe(
     'The namespaced kernel parameter to set a value for. Valid IPC namespace values: "kernel.msgmax" | "kernel.msgmnb" | "kernel.msgmni" | "kernel.sem" | "kernel.shmall" | "kernel.shmmax" | "kernel.shmmni" | "kernel.shm_rmid_forced", and Sysctls that start with "fs.mqueue.*" Valid network namespace values: Sysctls that start with "net.*". Only namespaced Sysctls that exist within the container starting with "net.* are accepted. All of these values are supported by Fargate.',
   ).optional(),
@@ -215,7 +224,7 @@ export const SystemControlSchema = z.object({
   ).optional(),
 });
 
-export const UlimitSchema = z.object({
+const UlimitSchema = z.object({
   SoftLimit: z.number().int().describe(
     "The soft limit for the ulimit type. The value can be specified in bytes, seconds, or as a count, depending on the type of the ulimit.",
   ),
@@ -225,13 +234,13 @@ export const UlimitSchema = z.object({
   Name: z.string().describe("The type of the ulimit."),
 });
 
-export const RepositoryCredentialsSchema = z.object({
+const RepositoryCredentialsSchema = z.object({
   CredentialsParameter: z.string().describe(
     "The Amazon Resource Name (ARN) of the secret containing the private repository credentials. When you use the Amazon ECS API, CLI, or AWS SDK, if the secret exists in the same Region as the task that you're launching then you can use either the full ARN or the name of the secret. When you use the AWS Management Console, you must specify the full ARN of the secret.",
   ).optional(),
 });
 
-export const HostEntrySchema = z.object({
+const HostEntrySchema = z.object({
   Hostname: z.string().describe("The hostname to use in the /etc/hosts entry.")
     .optional(),
   IpAddress: z.string().describe(
@@ -239,7 +248,7 @@ export const HostEntrySchema = z.object({
   ).optional(),
 });
 
-export const KernelCapabilitiesSchema = z.object({
+const KernelCapabilitiesSchema = z.object({
   Add: z.array(z.string()).describe(
     'The Linux capabilities for the container that have been added to the default configuration provided by Docker. This parameter maps to CapAdd in the docker container create command and the --cap-add option to docker run. Tasks launched on FARGATElong only support adding the SYS_PTRACE kernel capability. Valid values: "ALL" | "AUDIT_CONTROL" | "AUDIT_WRITE" | "BLOCK_SUSPEND" | "CHOWN" | "DAC_OVERRIDE" | "DAC_READ_SEARCH" | "FOWNER" | "FSETID" | "IPC_LOCK" | "IPC_OWNER" | "KILL" | "LEASE" | "LINUX_IMMUTABLE" | "MAC_ADMIN" | "MAC_OVERRIDE" | "MKNOD" | "NET_ADMIN" | "NET_BIND_SERVICE" | "NET_BROADCAST" | "NET_RAW" | "SETFCAP" | "SETGID" | "SETPCAP" | "SETUID" | "SYS_ADMIN" | "SYS_BOOT" | "SYS_CHROOT" | "SYS_MODULE" | "SYS_NICE" | "SYS_PACCT" | "SYS_PTRACE" | "SYS_RAWIO" | "SYS_RESOURCE" | "SYS_TIME" | "SYS_TTY_CONFIG" | "SYSLOG" | "WAKE_ALARM"',
   ).optional(),
@@ -248,7 +257,7 @@ export const KernelCapabilitiesSchema = z.object({
   ).optional(),
 });
 
-export const TmpfsSchema = z.object({
+const TmpfsSchema = z.object({
   Size: z.number().int().describe(
     "The maximum size (in MiB) of the tmpfs volume.",
   ),
@@ -260,7 +269,7 @@ export const TmpfsSchema = z.object({
   ).optional(),
 });
 
-export const DeviceSchema = z.object({
+const DeviceSchema = z.object({
   HostPath: z.string().describe(
     "The path for the device on the host container instance.",
   ).optional(),
@@ -272,7 +281,7 @@ export const DeviceSchema = z.object({
   ).optional(),
 });
 
-export const LinuxParametersSchema = z.object({
+const LinuxParametersSchema = z.object({
   Capabilities: KernelCapabilitiesSchema.describe(
     "The Linux capabilities for the container that are added to or dropped from the default configuration provided by Docker. For tasks that use the Fargate launch type, capabilities is supported for all platform versions but the add parameter is only supported if using platform version 1.4.0 or later.",
   ).optional(),
@@ -296,7 +305,7 @@ export const LinuxParametersSchema = z.object({
   ).optional(),
 });
 
-export const RestartPolicySchema = z.object({
+const RestartPolicySchema = z.object({
   IgnoredExitCodes: z.array(z.number().int()).describe(
     "A list of exit codes that Amazon ECS will ignore and not attempt a restart on. You can specify a maximum of 50 container exit codes. By default, Amazon ECS does not ignore any exit codes.",
   ).optional(),
@@ -308,7 +317,7 @@ export const RestartPolicySchema = z.object({
   ).optional(),
 });
 
-export const MountPointSchema = z.object({
+const MountPointSchema = z.object({
   ReadOnly: z.boolean().describe(
     "If this value is true, the container has read-only access to the volume. If this value is false, then the container can write to the volume. The default value is false.",
   ).optional(),
@@ -320,14 +329,14 @@ export const MountPointSchema = z.object({
   ).optional(),
 });
 
-export const ContainerDependencySchema = z.object({
+const ContainerDependencySchema = z.object({
   Condition: z.string().describe(
     "The dependency condition of the container. The following are the available conditions and their behavior: START - This condition emulates the behavior of links and volumes today. It validates that a dependent container is started before permitting other containers to start. COMPLETE - This condition validates that a dependent container runs to completion (exits) before permitting other containers to start. This can be useful for nonessential containers that run a script and then exit. This condition can't be set on an essential container. SUCCESS - This condition is the same as COMPLETE, but it also requires that the container exits with a zero status. This condition can't be set on an essential container. HEALTHY - This condition validates that the dependent container passes its Docker health check before permitting other containers to start. This requires that the dependent container has health checks configured. This condition is confirmed only at task startup.",
   ).optional(),
   ContainerName: z.string().describe("The name of a container.").optional(),
 });
 
-export const PortMappingSchema = z.object({
+const PortMappingSchema = z.object({
   AppProtocol: z.enum(["http", "http2", "grpc"]).describe(
     "The application protocol that's used for the port mapping. This parameter only applies to Service Connect. We recommend that you set this parameter to be consistent with the protocol that your application uses. If you set this parameter, Amazon ECS adds protocol-specific connection handling to the Service Connect proxy. If you set this parameter, Amazon ECS adds protocol-specific telemetry in the Amazon ECS console and CloudWatch. If you don't set a value for this parameter, then TCP is used. However, Amazon ECS doesn't add protocol-specific telemetry for TCP. appProtocol is immutable in a Service Connect service. Updating this field requires a service deletion and redeployment. Tasks that run in a namespace can use short names to connect to services in the namespace. Tasks can connect to services across all of the clusters in the namespace. Tasks connect through a managed proxy container that collects logs and metrics for increased visibility. Only the tasks that Amazon ECS services create are supported with Service Connect. For more information, see [Service Connect](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html) in the *Amazon Elastic Container Service Developer Guide*.",
   ).optional(),
@@ -348,7 +357,7 @@ export const PortMappingSchema = z.object({
   ).optional(),
 });
 
-export const ContainerDefinitionSchema = z.object({
+const ContainerDefinitionSchema = z.object({
   User: z.string().describe(
     "The user to use inside the container. This parameter maps to User in the docker container create command and the --user option to docker run. When running tasks using the host network mode, don't run containers using the root user (UID 0). We recommend using a non-root user for better security. You can specify the user using the following formats. If specifying a UID or GID, you must specify it as a positive integer. user user:group uid uid:gid user:gid uid:group This parameter is not supported for Windows containers.",
   ).optional(),
@@ -477,7 +486,7 @@ export const ContainerDefinitionSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe(
     "The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).",
   ).optional(),
@@ -674,9 +683,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ECS TaskDefinition. Registered at `@swamp/aws/ecs/task-definition`. */
 export const model = {
   type: "@swamp/aws/ecs/task-definition",
-  version: "2026.04.08.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -695,6 +705,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.08.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

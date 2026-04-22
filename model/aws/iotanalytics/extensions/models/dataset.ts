@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTAnalytics Dataset (AWS::IoTAnalytics::Dataset).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,17 +21,17 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DatasetContentVersionValueSchema = z.object({
+const DatasetContentVersionValueSchema = z.object({
   DatasetName: z.string().min(1).max(128).regex(
     new RegExp("(^(?!_{2}))(^[a-zA-Z0-9_]+$)"),
   ),
 });
 
-export const OutputFileUriValueSchema = z.object({
+const OutputFileUriValueSchema = z.object({
   FileName: z.string().regex(new RegExp("^[\\w\\.-]{1,255}$")),
 });
 
-export const VariableSchema = z.object({
+const VariableSchema = z.object({
   VariableName: z.string().min(1).max(256),
   DatasetContentVersionValue: DatasetContentVersionValueSchema.optional(),
   StringValue: z.string().min(0).max(1024).optional(),
@@ -30,66 +39,66 @@ export const VariableSchema = z.object({
   OutputFileUriValue: OutputFileUriValueSchema.optional(),
 });
 
-export const ResourceConfigurationSchema = z.object({
+const ResourceConfigurationSchema = z.object({
   VolumeSizeInGB: z.number().int().min(1).max(50),
   ComputeType: z.enum(["ACU_1", "ACU_2"]),
 });
 
-export const ContainerActionSchema = z.object({
+const ContainerActionSchema = z.object({
   Variables: z.array(VariableSchema).optional(),
   ExecutionRoleArn: z.string().min(20).max(2048),
   Image: z.string().max(255),
   ResourceConfiguration: ResourceConfigurationSchema,
 });
 
-export const DeltaTimeSchema = z.object({
+const DeltaTimeSchema = z.object({
   OffsetSeconds: z.number().int(),
   TimeExpression: z.string(),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   DeltaTime: DeltaTimeSchema.optional(),
 });
 
-export const QueryActionSchema = z.object({
+const QueryActionSchema = z.object({
   Filters: z.array(FilterSchema).optional(),
   SqlQuery: z.string(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   ActionName: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9_]+$")),
   ContainerAction: ContainerActionSchema.optional(),
   QueryAction: QueryActionSchema.optional(),
 });
 
-export const DeltaTimeSessionWindowConfigurationSchema = z.object({
+const DeltaTimeSessionWindowConfigurationSchema = z.object({
   TimeoutInMinutes: z.number().int().min(1).max(60),
 });
 
-export const LateDataRuleConfigurationSchema = z.object({
+const LateDataRuleConfigurationSchema = z.object({
   DeltaTimeSessionWindowConfiguration: DeltaTimeSessionWindowConfigurationSchema
     .optional(),
 });
 
-export const LateDataRuleSchema = z.object({
+const LateDataRuleSchema = z.object({
   RuleConfiguration: LateDataRuleConfigurationSchema,
   RuleName: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9_]+$"))
     .optional(),
 });
 
-export const IotEventsDestinationConfigurationSchema = z.object({
+const IotEventsDestinationConfigurationSchema = z.object({
   InputName: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$"),
   ),
   RoleArn: z.string().min(20).max(2048),
 });
 
-export const GlueConfigurationSchema = z.object({
+const GlueConfigurationSchema = z.object({
   DatabaseName: z.string().min(1).max(150),
   TableName: z.string().min(1).max(150),
 });
 
-export const S3DestinationConfigurationSchema = z.object({
+const S3DestinationConfigurationSchema = z.object({
   GlueConfiguration: GlueConfigurationSchema.optional(),
   Bucket: z.string().min(3).max(255).regex(new RegExp("^[a-zA-Z0-9.\\-_]*$")),
   Key: z.string().min(1).max(255).regex(
@@ -98,33 +107,33 @@ export const S3DestinationConfigurationSchema = z.object({
   RoleArn: z.string().min(20).max(2048),
 });
 
-export const DatasetContentDeliveryRuleDestinationSchema = z.object({
+const DatasetContentDeliveryRuleDestinationSchema = z.object({
   IotEventsDestinationConfiguration: IotEventsDestinationConfigurationSchema
     .optional(),
   S3DestinationConfiguration: S3DestinationConfigurationSchema.optional(),
 });
 
-export const DatasetContentDeliveryRuleSchema = z.object({
+const DatasetContentDeliveryRuleSchema = z.object({
   Destination: DatasetContentDeliveryRuleDestinationSchema,
   EntryName: z.string().optional(),
 });
 
-export const TriggeringDatasetSchema = z.object({
+const TriggeringDatasetSchema = z.object({
   DatasetName: z.string().min(1).max(128).regex(
     new RegExp("(^(?!_{2}))(^[a-zA-Z0-9_]+$)"),
   ),
 });
 
-export const ScheduleSchema = z.object({
+const ScheduleSchema = z.object({
   ScheduleExpression: z.string(),
 });
 
-export const TriggerSchema = z.object({
+const TriggerSchema = z.object({
   TriggeringDataset: TriggeringDatasetSchema.optional(),
   Schedule: ScheduleSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
@@ -187,9 +196,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for IoTAnalytics Dataset. Registered at `@swamp/aws/iotanalytics/dataset`. */
 export const model = {
   type: "@swamp/aws/iotanalytics/dataset",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -203,6 +213,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

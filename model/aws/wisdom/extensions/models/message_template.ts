@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Wisdom MessageTemplate (AWS::Wisdom::MessageTemplate).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,11 +21,11 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MessageTemplateBodyContentProviderSchema = z.object({
+const MessageTemplateBodyContentProviderSchema = z.object({
   Content: z.string().min(1).optional(),
 });
 
-export const EmailMessageTemplateContentBodySchema = z.object({
+const EmailMessageTemplateContentBodySchema = z.object({
   PlainText: MessageTemplateBodyContentProviderSchema.describe(
     "The message body, in plain text format, to use in email messages that are based on the message template. We recommend using plain text format for email clients that don't render HTML content and clients that are connected to high-latency networks, such as mobile devices.",
   ).optional(),
@@ -25,7 +34,7 @@ export const EmailMessageTemplateContentBodySchema = z.object({
   ).optional(),
 });
 
-export const EmailMessageTemplateHeaderSchema = z.object({
+const EmailMessageTemplateHeaderSchema = z.object({
   Name: z.string().min(1).max(126).regex(new RegExp("^[!-9;-@A-~]+$")).describe(
     "The name of the email header.",
   ).optional(),
@@ -34,7 +43,7 @@ export const EmailMessageTemplateHeaderSchema = z.object({
   ).optional(),
 });
 
-export const EmailMessageTemplateContentSchema = z.object({
+const EmailMessageTemplateContentSchema = z.object({
   Subject: z.string().min(1).describe(
     "The subject line, or title, to use in email messages.",
   ),
@@ -46,25 +55,25 @@ export const EmailMessageTemplateContentSchema = z.object({
   ),
 });
 
-export const SmsMessageTemplateContentBodySchema = z.object({
+const SmsMessageTemplateContentBodySchema = z.object({
   PlainText: MessageTemplateBodyContentProviderSchema.describe(
     "The container of message template body.",
   ).optional(),
 });
 
-export const SmsMessageTemplateContentSchema = z.object({
+const SmsMessageTemplateContentSchema = z.object({
   Body: SmsMessageTemplateContentBodySchema.describe(
     "The body to use in SMS messages.",
   ),
 });
 
-export const SystemEndpointAttributesSchema = z.object({
+const SystemEndpointAttributesSchema = z.object({
   Address: z.string().min(1).max(32767).describe(
     "The customer's phone number if used with customerEndpoint, or the number the customer dialed to call your contact center if used with systemEndpoint.",
   ).optional(),
 });
 
-export const SystemAttributesSchema = z.object({
+const SystemAttributesSchema = z.object({
   Name: z.string().min(1).max(32767).describe("The name of the task.")
     .optional(),
   CustomerEndpoint: SystemEndpointAttributesSchema.describe(
@@ -75,7 +84,7 @@ export const SystemAttributesSchema = z.object({
   ).optional(),
 });
 
-export const AgentAttributesSchema = z.object({
+const AgentAttributesSchema = z.object({
   FirstName: z.string().min(1).max(32767).describe(
     "The agent’s first name as entered in their Amazon Connect user account.",
   ).optional(),
@@ -84,7 +93,7 @@ export const AgentAttributesSchema = z.object({
   ).optional(),
 });
 
-export const CustomerProfileAttributesSchema = z.object({
+const CustomerProfileAttributesSchema = z.object({
   ProfileId: z.string().min(1).max(32767).describe(
     "The unique identifier of a customer profile.",
   ).optional(),
@@ -256,7 +265,7 @@ export const CustomerProfileAttributesSchema = z.object({
   ).optional(),
 });
 
-export const MessageTemplateAttachmentSchema = z.object({
+const MessageTemplateAttachmentSchema = z.object({
   AttachmentId: z.string().min(1).optional(),
   AttachmentName: z.string().min(1).max(255).describe(
     "The name of the attachment file being uploaded. The name should include the file extension.",
@@ -266,7 +275,7 @@ export const MessageTemplateAttachmentSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -435,9 +444,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Wisdom MessageTemplate. Registered at `@swamp/aws/wisdom/message-template`. */
 export const model = {
   type: "@swamp/aws/wisdom/message-template",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -451,6 +461,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

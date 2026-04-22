@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Wisdom AIGuardrail (AWS::Wisdom::AIGuardrail).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const GuardrailTopicConfigSchema = z.object({
+const GuardrailTopicConfigSchema = z.object({
   Name: z.string().min(1).max(100).regex(new RegExp("^[0-9a-zA-Z-_ !?.]+$"))
     .describe("Name of topic in topic policy"),
   Definition: z.string().min(1).max(200).describe(
@@ -24,7 +33,7 @@ export const GuardrailTopicConfigSchema = z.object({
   Type: z.enum(["DENY"]).describe("Type of topic in a policy"),
 });
 
-export const GuardrailContentFilterConfigSchema = z.object({
+const GuardrailContentFilterConfigSchema = z.object({
   Type: z.enum([
     "SEXUAL",
     "VIOLENCE",
@@ -41,15 +50,15 @@ export const GuardrailContentFilterConfigSchema = z.object({
   ),
 });
 
-export const GuardrailWordConfigSchema = z.object({
+const GuardrailWordConfigSchema = z.object({
   Text: z.string().min(1).describe("The custom word text."),
 });
 
-export const GuardrailManagedWordsConfigSchema = z.object({
+const GuardrailManagedWordsConfigSchema = z.object({
   Type: z.enum(["PROFANITY"]).describe("Options for managed words."),
 });
 
-export const GuardrailPiiEntityConfigSchema = z.object({
+const GuardrailPiiEntityConfigSchema = z.object({
   Type: z.enum([
     "ADDRESS",
     "AGE",
@@ -88,7 +97,7 @@ export const GuardrailPiiEntityConfigSchema = z.object({
   ),
 });
 
-export const GuardrailRegexConfigSchema = z.object({
+const GuardrailRegexConfigSchema = z.object({
   Name: z.string().min(1).max(100).describe("The regex name."),
   Description: z.string().min(1).max(1000).describe("The regex description.")
     .optional(),
@@ -98,7 +107,7 @@ export const GuardrailRegexConfigSchema = z.object({
   ),
 });
 
-export const GuardrailContextualGroundingFilterConfigSchema = z.object({
+const GuardrailContextualGroundingFilterConfigSchema = z.object({
   Type: z.enum(["GROUNDING", "RELEVANCE"]).describe(
     "Type of contextual grounding filter",
   ),
@@ -242,9 +251,10 @@ const InputsSchema = z.object({
   Tags: z.record(z.string(), z.string().min(1).max(256)).optional(),
 });
 
+/** Swamp extension model for Wisdom AIGuardrail. Registered at `@swamp/aws/wisdom/aiguardrail`. */
 export const model = {
   type: "@swamp/aws/wisdom/aiguardrail",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -258,6 +268,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

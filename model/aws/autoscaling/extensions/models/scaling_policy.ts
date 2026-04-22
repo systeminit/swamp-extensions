@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AutoScaling ScalingPolicy (AWS::AutoScaling::ScalingPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,24 +21,24 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MetricDimensionSchema = z.object({
+const MetricDimensionSchema = z.object({
   Value: z.string(),
   Name: z.string(),
 });
 
-export const MetricSchema = z.object({
+const MetricSchema = z.object({
   MetricName: z.string(),
   Dimensions: z.array(MetricDimensionSchema).optional(),
   Namespace: z.string(),
 });
 
-export const MetricStatSchema = z.object({
+const MetricStatSchema = z.object({
   Metric: MetricSchema,
   Stat: z.string(),
   Unit: z.string().optional(),
 });
 
-export const MetricDataQuerySchema = z.object({
+const MetricDataQuerySchema = z.object({
   Label: z.string().optional(),
   MetricStat: MetricStatSchema.optional(),
   Id: z.string(),
@@ -37,34 +46,34 @@ export const MetricDataQuerySchema = z.object({
   Expression: z.string().optional(),
 });
 
-export const PredictiveScalingCustomizedCapacityMetricSchema = z.object({
+const PredictiveScalingCustomizedCapacityMetricSchema = z.object({
   MetricDataQueries: z.array(MetricDataQuerySchema),
 });
 
-export const PredictiveScalingCustomizedLoadMetricSchema = z.object({
+const PredictiveScalingCustomizedLoadMetricSchema = z.object({
   MetricDataQueries: z.array(MetricDataQuerySchema),
 });
 
-export const PredictiveScalingCustomizedScalingMetricSchema = z.object({
+const PredictiveScalingCustomizedScalingMetricSchema = z.object({
   MetricDataQueries: z.array(MetricDataQuerySchema),
 });
 
-export const PredictiveScalingPredefinedLoadMetricSchema = z.object({
+const PredictiveScalingPredefinedLoadMetricSchema = z.object({
   ResourceLabel: z.string().optional(),
   PredefinedMetricType: z.string(),
 });
 
-export const PredictiveScalingPredefinedScalingMetricSchema = z.object({
+const PredictiveScalingPredefinedScalingMetricSchema = z.object({
   ResourceLabel: z.string().optional(),
   PredefinedMetricType: z.string(),
 });
 
-export const PredictiveScalingPredefinedMetricPairSchema = z.object({
+const PredictiveScalingPredefinedMetricPairSchema = z.object({
   ResourceLabel: z.string().optional(),
   PredefinedMetricType: z.string(),
 });
 
-export const PredictiveScalingMetricSpecificationSchema = z.object({
+const PredictiveScalingMetricSpecificationSchema = z.object({
   CustomizedCapacityMetricSpecification:
     PredictiveScalingCustomizedCapacityMetricSchema.optional(),
   CustomizedLoadMetricSpecification: PredictiveScalingCustomizedLoadMetricSchema
@@ -80,20 +89,20 @@ export const PredictiveScalingMetricSpecificationSchema = z.object({
     .optional(),
 });
 
-export const StepAdjustmentSchema = z.object({
+const StepAdjustmentSchema = z.object({
   MetricIntervalUpperBound: z.number().optional(),
   MetricIntervalLowerBound: z.number().optional(),
   ScalingAdjustment: z.number().int(),
 });
 
-export const TargetTrackingMetricStatSchema = z.object({
+const TargetTrackingMetricStatSchema = z.object({
   Metric: MetricSchema,
   Stat: z.string(),
   Unit: z.string().optional(),
   Period: z.number().int().optional(),
 });
 
-export const TargetTrackingMetricDataQuerySchema = z.object({
+const TargetTrackingMetricDataQuerySchema = z.object({
   Label: z.string().optional(),
   MetricStat: TargetTrackingMetricStatSchema.optional(),
   Id: z.string(),
@@ -102,7 +111,7 @@ export const TargetTrackingMetricDataQuerySchema = z.object({
   Period: z.number().int().optional(),
 });
 
-export const CustomizedMetricSpecificationSchema = z.object({
+const CustomizedMetricSpecificationSchema = z.object({
   MetricName: z.string().optional(),
   Dimensions: z.array(MetricDimensionSchema).optional(),
   Metrics: z.array(TargetTrackingMetricDataQuerySchema).optional(),
@@ -112,7 +121,7 @@ export const CustomizedMetricSpecificationSchema = z.object({
   Period: z.number().int().optional(),
 });
 
-export const PredefinedMetricSpecificationSchema = z.object({
+const PredefinedMetricSpecificationSchema = z.object({
   ResourceLabel: z.string().optional(),
   PredefinedMetricType: z.string(),
 });
@@ -249,9 +258,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for AutoScaling ScalingPolicy. Registered at `@swamp/aws/autoscaling/scaling-policy`. */
 export const model = {
   type: "@swamp/aws/autoscaling/scaling-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -265,6 +275,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

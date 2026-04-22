@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for KafkaConnect Connector (AWS::KafkaConnect::Connector).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ScaleInPolicySchema = z.object({
+const ScaleInPolicySchema = z.object({
   CpuUtilizationPercentage: z.number().int().min(1).max(100).describe(
     "Specifies the CPU utilization percentage threshold at which connector scale in should trigger.",
   ),
 });
 
-export const ScaleOutPolicySchema = z.object({
+const ScaleOutPolicySchema = z.object({
   CpuUtilizationPercentage: z.number().int().min(1).max(100).describe(
     "Specifies the CPU utilization percentage threshold at which connector scale out should trigger.",
   ),
 });
 
-export const AutoScalingSchema = z.object({
+const AutoScalingSchema = z.object({
   MaxWorkerCount: z.number().int().describe(
     "The maximum number of workers for a connector.",
   ),
@@ -46,7 +55,7 @@ export const AutoScalingSchema = z.object({
   ).optional(),
 });
 
-export const ProvisionedCapacitySchema = z.object({
+const ProvisionedCapacitySchema = z.object({
   McuCount: z.union([z.literal(1), z.literal(2), z.literal(4), z.literal(8)])
     .describe(
       "Specifies how many MSK Connect Units (MCU) are allocated to the connector.",
@@ -54,7 +63,7 @@ export const ProvisionedCapacitySchema = z.object({
   WorkerCount: z.number().int().describe("Number of workers for a connector."),
 });
 
-export const VpcSchema = z.object({
+const VpcSchema = z.object({
   SecurityGroups: z.array(z.string()).describe(
     "The AWS security groups to associate with the elastic network interfaces in order to specify what the connector has access to.",
   ),
@@ -63,14 +72,14 @@ export const VpcSchema = z.object({
   ),
 });
 
-export const ApacheKafkaClusterSchema = z.object({
+const ApacheKafkaClusterSchema = z.object({
   BootstrapServers: z.string().describe(
     "The bootstrap servers string of the Apache Kafka cluster.",
   ),
   Vpc: VpcSchema.describe("Information about a VPC used with the connector."),
 });
 
-export const CloudWatchLogsLogDeliverySchema = z.object({
+const CloudWatchLogsLogDeliverySchema = z.object({
   Enabled: z.boolean().describe(
     "Specifies whether the logs get sent to the specified CloudWatch Logs destination.",
   ),
@@ -79,7 +88,7 @@ export const CloudWatchLogsLogDeliverySchema = z.object({
   ).optional(),
 });
 
-export const FirehoseLogDeliverySchema = z.object({
+const FirehoseLogDeliverySchema = z.object({
   DeliveryStream: z.string().describe(
     "The Kinesis Data Firehose delivery stream that is the destination for log delivery.",
   ).optional(),
@@ -88,7 +97,7 @@ export const FirehoseLogDeliverySchema = z.object({
   ),
 });
 
-export const S3LogDeliverySchema = z.object({
+const S3LogDeliverySchema = z.object({
   Bucket: z.string().describe(
     "The name of the S3 bucket that is the destination for log delivery.",
   ).optional(),
@@ -100,7 +109,7 @@ export const S3LogDeliverySchema = z.object({
   ).optional(),
 });
 
-export const WorkerLogDeliverySchema = z.object({
+const WorkerLogDeliverySchema = z.object({
   CloudWatchLogs: CloudWatchLogsLogDeliverySchema.describe(
     "Details about delivering logs to Amazon CloudWatch Logs.",
   ).optional(),
@@ -112,7 +121,7 @@ export const WorkerLogDeliverySchema = z.object({
   ).optional(),
 });
 
-export const CustomPluginSchema = z.object({
+const CustomPluginSchema = z.object({
   CustomPluginArn: z.string().regex(
     new RegExp("arn:(aws|aws-us-gov|aws-cn):kafkaconnect:.*"),
   ).describe("The Amazon Resource Name (ARN) of the custom plugin to use."),
@@ -121,11 +130,11 @@ export const CustomPluginSchema = z.object({
   ),
 });
 
-export const PluginSchema = z.object({
+const PluginSchema = z.object({
   CustomPlugin: CustomPluginSchema.describe("Details about a custom plugin."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().max(256),
 });
@@ -313,9 +322,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for KafkaConnect Connector. Registered at `@swamp/aws/kafkaconnect/connector`. */
 export const model = {
   type: "@swamp/aws/kafkaconnect/connector",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -329,6 +339,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

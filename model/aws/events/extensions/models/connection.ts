@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Events Connection (AWS::Events::Connection).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ApiKeyAuthParametersSchema = z.object({
+const ApiKeyAuthParametersSchema = z.object({
   ApiKeyName: z.string().regex(
     new RegExp(
       "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$",
@@ -25,7 +34,7 @@ export const ApiKeyAuthParametersSchema = z.object({
   ),
 });
 
-export const BasicAuthParametersSchema = z.object({
+const BasicAuthParametersSchema = z.object({
   Username: z.string().regex(
     new RegExp(
       "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$",
@@ -38,7 +47,7 @@ export const BasicAuthParametersSchema = z.object({
   ),
 });
 
-export const ClientParametersSchema = z.object({
+const ClientParametersSchema = z.object({
   ClientID: z.string().regex(
     new RegExp(
       "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$",
@@ -51,19 +60,19 @@ export const ClientParametersSchema = z.object({
   ),
 });
 
-export const ParameterSchema = z.object({
+const ParameterSchema = z.object({
   Key: z.string(),
   Value: z.string(),
   IsValueSecret: z.boolean().optional(),
 });
 
-export const ConnectionHttpParametersSchema = z.object({
+const ConnectionHttpParametersSchema = z.object({
   HeaderParameters: z.array(ParameterSchema).optional(),
   QueryStringParameters: z.array(ParameterSchema).optional(),
   BodyParameters: z.array(ParameterSchema).optional(),
 });
 
-export const OAuthParametersSchema = z.object({
+const OAuthParametersSchema = z.object({
   ClientParameters: ClientParametersSchema,
   AuthorizationEndpoint: z.string().min(1).max(2048).regex(
     new RegExp(
@@ -74,7 +83,7 @@ export const OAuthParametersSchema = z.object({
   OAuthHttpParameters: ConnectionHttpParametersSchema.optional(),
 });
 
-export const ResourceParametersSchema = z.object({
+const ResourceParametersSchema = z.object({
   ResourceConfigurationArn: z.string().max(2048).regex(
     new RegExp(
       "^arn:[a-z0-9f\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}$",
@@ -82,7 +91,7 @@ export const ResourceParametersSchema = z.object({
   ),
 });
 
-export const ConnectivityParametersSchema = z.object({
+const ConnectivityParametersSchema = z.object({
   ResourceParameters: ResourceParametersSchema,
 });
 
@@ -154,9 +163,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Events Connection. Registered at `@swamp/aws/events/connection`. */
 export const model = {
   type: "@swamp/aws/events/connection",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -170,6 +180,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

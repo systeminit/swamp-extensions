@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Deadline Queue (AWS::Deadline::Queue).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PosixUserSchema = z.object({
+const PosixUserSchema = z.object({
   User: z.string().min(0).max(31).regex(
     new RegExp("^(?:[a-z][a-z0-9-]{0,30})?$"),
   ),
@@ -21,7 +30,7 @@ export const PosixUserSchema = z.object({
   ),
 });
 
-export const WindowsUserSchema = z.object({
+const WindowsUserSchema = z.object({
   User: z.string().min(0).max(111).regex(
     new RegExp("^[^\"'/\\[\\]:;|=,+*?<>\\s]*$"),
   ),
@@ -32,7 +41,7 @@ export const WindowsUserSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(127).describe(
     "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -148,9 +157,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Deadline Queue. Registered at `@swamp/aws/deadline/queue`. */
 export const model = {
   type: "@swamp/aws/deadline/queue",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -170,6 +180,16 @@ export const model = {
     {
       toVersion: "2026.04.19.1",
       description: "Added: SchedulingConfiguration",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

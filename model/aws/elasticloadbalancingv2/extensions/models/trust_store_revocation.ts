@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ElasticLoadBalancingV2 TrustStoreRevocation (AWS::ElasticLoadBalancingV2::TrustStoreRevocation).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,7 +20,7 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const RevocationContentSchema = z.object({
+const RevocationContentSchema = z.object({
   S3Bucket: z.string().optional(),
   S3Key: z.string().optional(),
   S3ObjectVersion: z.string().optional(),
@@ -54,9 +63,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ElasticLoadBalancingV2 TrustStoreRevocation. Registered at `@swamp/aws/elasticloadbalancingv2/trust-store-revocation`. */
 export const model = {
   type: "@swamp/aws/elasticloadbalancingv2/trust-store-revocation",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -70,6 +80,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

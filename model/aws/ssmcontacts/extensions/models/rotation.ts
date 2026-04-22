@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SSMContacts Rotation (AWS::SSMContacts::Rotation).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MonthlySettingSchema = z.object({
+const MonthlySettingSchema = z.object({
   DayOfMonth: z.number().int().min(1).max(31).describe(
     "The day of the month when monthly recurring on-call rotations begin.",
   ),
@@ -23,7 +32,7 @@ export const MonthlySettingSchema = z.object({
   ),
 });
 
-export const WeeklySettingSchema = z.object({
+const WeeklySettingSchema = z.object({
   DayOfWeek: z.enum(["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]).describe(
     "The day of the week when weekly recurring on-call shift rotations begin.",
   ),
@@ -34,7 +43,7 @@ export const WeeklySettingSchema = z.object({
   ),
 });
 
-export const CoverageTimeSchema = z.object({
+const CoverageTimeSchema = z.object({
   StartTime: z.string().regex(
     new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"),
   ).describe(
@@ -47,7 +56,7 @@ export const CoverageTimeSchema = z.object({
   ),
 });
 
-export const ShiftCoverageSchema = z.object({
+const ShiftCoverageSchema = z.object({
   DayOfWeek: z.enum(["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]).describe(
     "The day of the week when weekly recurring on-call shift rotations begin.",
   ),
@@ -56,7 +65,7 @@ export const ShiftCoverageSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The key name of the tag"),
   Value: z.string().min(0).max(256).describe("The value for the tag."),
 });
@@ -158,9 +167,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for SSMContacts Rotation. Registered at `@swamp/aws/ssmcontacts/rotation`. */
 export const model = {
   type: "@swamp/aws/ssmcontacts/rotation",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -174,6 +184,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

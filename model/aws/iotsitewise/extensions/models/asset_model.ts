@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTSiteWise AssetModel (AWS::IoTSiteWise::AssetModel).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,15 +21,15 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AttributeSchema = z.object({
+const AttributeSchema = z.object({
   DefaultValue: z.string().optional(),
 });
 
-export const PropertyPathDefinitionSchema = z.object({
+const PropertyPathDefinitionSchema = z.object({
   Name: z.string().describe("The name of the property"),
 });
 
-export const VariableValueSchema = z.object({
+const VariableValueSchema = z.object({
   PropertyLogicalId: z.string().min(1).max(256).regex(
     new RegExp("[^\\u0000-\\u001F\\u007F]+"),
   ).optional(),
@@ -52,7 +61,7 @@ export const VariableValueSchema = z.object({
     .optional(),
 });
 
-export const ExpressionVariableSchema = z.object({
+const ExpressionVariableSchema = z.object({
   Name: z.string().describe(
     "The friendly name of the variable to be used in the expression.",
   ),
@@ -61,7 +70,7 @@ export const ExpressionVariableSchema = z.object({
   ),
 });
 
-export const TransformSchema = z.object({
+const TransformSchema = z.object({
   Expression: z.string().describe(
     "The mathematical expression that defines the transformation function. You can specify up to 10 functions per expression.",
   ),
@@ -70,20 +79,20 @@ export const TransformSchema = z.object({
   ),
 });
 
-export const TumblingWindowSchema = z.object({
+const TumblingWindowSchema = z.object({
   Interval: z.string().describe("The time interval for the tumbling window."),
   Offset: z.string().describe(
     "The shift or reference point on timeline for the contiguous time intervals.",
   ).optional(),
 });
 
-export const MetricWindowSchema = z.object({
+const MetricWindowSchema = z.object({
   Tumbling: TumblingWindowSchema.describe(
     "Contains a tumbling window, which is a repeating fixed-sized, non-overlapping, and contiguous time interval. This window is used in metric and aggregation computations.",
   ).optional(),
 });
 
-export const MetricSchema = z.object({
+const MetricSchema = z.object({
   Expression: z.string().describe(
     "The mathematical expression that defines the metric aggregation function. You can specify up to 10 functions per expression.",
   ),
@@ -95,14 +104,14 @@ export const MetricSchema = z.object({
   ),
 });
 
-export const PropertyTypeSchema = z.object({
+const PropertyTypeSchema = z.object({
   TypeName: z.enum(["Measurement", "Attribute", "Transform", "Metric"]),
   Attribute: AttributeSchema.optional(),
   Transform: TransformSchema.optional(),
   Metric: MetricSchema.optional(),
 });
 
-export const AssetModelPropertySchema = z.object({
+const AssetModelPropertySchema = z.object({
   LogicalId: z.string().min(1).max(256).regex(
     new RegExp("[^\\u0000-\\u001F\\u007F]+"),
   ).describe("Customer provided Logical ID for property.").optional(),
@@ -126,7 +135,7 @@ export const AssetModelPropertySchema = z.object({
   Type: PropertyTypeSchema.describe("The property type"),
 });
 
-export const AssetModelCompositeModelSchema = z.object({
+const AssetModelCompositeModelSchema = z.object({
   Id: z.string().min(36).max(36).regex(
     new RegExp(
       "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
@@ -158,7 +167,7 @@ export const AssetModelCompositeModelSchema = z.object({
   ).optional(),
 });
 
-export const AssetModelHierarchySchema = z.object({
+const AssetModelHierarchySchema = z.object({
   Id: z.string().min(36).max(36).regex(
     new RegExp(
       "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
@@ -176,7 +185,7 @@ export const AssetModelHierarchySchema = z.object({
   ),
 });
 
-export const EnforcedAssetModelInterfacePropertyMappingSchema = z.object({
+const EnforcedAssetModelInterfacePropertyMappingSchema = z.object({
   AssetModelPropertyExternalId: z.string().describe(
     "The external ID of the enforced asset model property",
   ).optional(),
@@ -188,7 +197,7 @@ export const EnforcedAssetModelInterfacePropertyMappingSchema = z.object({
   ),
 });
 
-export const EnforcedAssetModelInterfaceRelationshipSchema = z.object({
+const EnforcedAssetModelInterfaceRelationshipSchema = z.object({
   InterfaceAssetModelId: z.string().describe(
     "The ID of the interface that is enforced to the asset model",
   ).optional(),
@@ -198,7 +207,7 @@ export const EnforcedAssetModelInterfaceRelationshipSchema = z.object({
     ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -285,9 +294,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoTSiteWise AssetModel. Registered at `@swamp/aws/iotsitewise/asset-model`. */
 export const model = {
   type: "@swamp/aws/iotsitewise/asset-model",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -301,6 +311,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

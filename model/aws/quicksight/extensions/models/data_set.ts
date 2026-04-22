@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for QuickSight DataSet (AWS::QuickSight::DataSet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ColumnLevelPermissionRuleSchema = z.object({
+const ColumnLevelPermissionRuleSchema = z.object({
   ColumnNames: z.array(z.string()).describe("An array of column names.")
     .optional(),
   Principals: z.array(z.string()).describe(
@@ -20,7 +29,7 @@ export const ColumnLevelPermissionRuleSchema = z.object({
   ).optional(),
 });
 
-export const ResourcePermissionSchema = z.object({
+const ResourcePermissionSchema = z.object({
   Actions: z.array(z.string()).describe(
     "The IAM action to grant or revoke permissions on.",
   ),
@@ -29,12 +38,12 @@ export const ResourcePermissionSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(1).max(256).describe("Tag value."),
   Key: z.string().min(1).max(128).describe("Tag key."),
 });
 
-export const InputColumnSchema = z.object({
+const InputColumnSchema = z.object({
   Type: z.enum([
     "STRING",
     "INTEGER",
@@ -52,18 +61,18 @@ export const InputColumnSchema = z.object({
   ),
 });
 
-export const TablePathElementSchema = z.object({
+const TablePathElementSchema = z.object({
   Id: z.string().min(1).max(256).optional(),
   Name: z.string().min(1).max(256).optional(),
 });
 
-export const SaaSTableSchema = z.object({
+const SaaSTableSchema = z.object({
   DataSourceArn: z.string(),
   InputColumns: z.array(InputColumnSchema),
   TablePath: z.array(TablePathElementSchema),
 });
 
-export const RelationalTableSchema = z.object({
+const RelationalTableSchema = z.object({
   DataSourceArn: z.string().describe(
     "The Amazon Resource Name (ARN) for the data source.",
   ),
@@ -81,7 +90,7 @@ export const RelationalTableSchema = z.object({
   ),
 });
 
-export const CustomSqlSchema = z.object({
+const CustomSqlSchema = z.object({
   DataSourceArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the data source.",
   ),
@@ -94,7 +103,7 @@ export const CustomSqlSchema = z.object({
   ),
 });
 
-export const UploadSettingsSchema = z.object({
+const UploadSettingsSchema = z.object({
   ContainsHeader: z.boolean().describe(
     "Whether the file has a header row, or the files each have a header row.",
   ).optional(),
@@ -108,7 +117,7 @@ export const UploadSettingsSchema = z.object({
   ).optional(),
 });
 
-export const S3SourceSchema = z.object({
+const S3SourceSchema = z.object({
   DataSourceArn: z.string().describe(
     "The Amazon Resource Name (ARN) for the data source.",
   ),
@@ -120,7 +129,7 @@ export const S3SourceSchema = z.object({
   ).optional(),
 });
 
-export const PhysicalTableSchema = z.object({
+const PhysicalTableSchema = z.object({
   SaaSTable: SaaSTableSchema.optional(),
   RelationalTable: RelationalTableSchema.describe(
     "A physical table type for relational data sources.",
@@ -133,7 +142,7 @@ export const PhysicalTableSchema = z.object({
   ).optional(),
 });
 
-export const FieldFolderSchema = z.object({
+const FieldFolderSchema = z.object({
   Description: z.string().min(0).max(500).describe(
     "The description for a field folder.",
   ).optional(),
@@ -142,7 +151,7 @@ export const FieldFolderSchema = z.object({
   ).optional(),
 });
 
-export const RowLevelPermissionTagRuleSchema = z.object({
+const RowLevelPermissionTagRuleSchema = z.object({
   ColumnName: z.string().describe(
     "The column name that a tag key is assigned to.",
   ),
@@ -155,7 +164,7 @@ export const RowLevelPermissionTagRuleSchema = z.object({
   ).optional(),
 });
 
-export const RowLevelPermissionTagConfigurationSchema = z.object({
+const RowLevelPermissionTagConfigurationSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   TagRules: z.array(RowLevelPermissionTagRuleSchema).describe(
     "A set of rules associated with row-level security, such as the tag names and columns that they are assigned to.",
@@ -165,7 +174,7 @@ export const RowLevelPermissionTagConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const RowLevelPermissionDataSetSchema = z.object({
+const RowLevelPermissionDataSetSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   FormatVersion: z.enum(["VERSION_1", "VERSION_2"]).optional(),
   Arn: z.string().describe(
@@ -178,7 +187,7 @@ export const RowLevelPermissionDataSetSchema = z.object({
   PermissionPolicy: z.enum(["GRANT_ACCESS", "DENY_ACCESS"]),
 });
 
-export const RowLevelPermissionConfigurationSchema = z.object({
+const RowLevelPermissionConfigurationSchema = z.object({
   TagConfiguration: RowLevelPermissionTagConfigurationSchema.describe(
     "The configuration of tags on a dataset to set row-level security.",
   ).optional(),
@@ -187,7 +196,7 @@ export const RowLevelPermissionConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SemanticTableSchema = z.object({
+const SemanticTableSchema = z.object({
   Alias: z.string().min(1).max(64),
   DestinationTableId: z.string().min(1).max(64).regex(
     new RegExp("^[0-9a-zA-Z-]*$"),
@@ -196,37 +205,37 @@ export const SemanticTableSchema = z.object({
     .optional(),
 });
 
-export const UniqueKeySchema = z.object({
+const UniqueKeySchema = z.object({
   ColumnNames: z.array(z.string().min(1).max(127)),
 });
 
-export const LookbackWindowSchema = z.object({
+const LookbackWindowSchema = z.object({
   ColumnName: z.string().describe("The name of the lookback window column."),
   SizeUnit: z.enum(["HOUR", "DAY", "WEEK"]),
   Size: z.number().min(1).describe("The lookback window column size."),
 });
 
-export const IncrementalRefreshSchema = z.object({
+const IncrementalRefreshSchema = z.object({
   LookbackWindow: LookbackWindowSchema.describe(
     "The lookback window setup of an incremental refresh configuration.",
   ),
 });
 
-export const RefreshConfigurationSchema = z.object({
+const RefreshConfigurationSchema = z.object({
   IncrementalRefresh: IncrementalRefreshSchema.describe(
     "The incremental refresh configuration for a dataset.",
   ),
 });
 
-export const RefreshFailureEmailAlertSchema = z.object({
+const RefreshFailureEmailAlertSchema = z.object({
   AlertStatus: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const RefreshFailureConfigurationSchema = z.object({
+const RefreshFailureConfigurationSchema = z.object({
   EmailAlert: RefreshFailureEmailAlertSchema.optional(),
 });
 
-export const GeoSpatialColumnGroupSchema = z.object({
+const GeoSpatialColumnGroupSchema = z.object({
   Columns: z.array(z.string().min(1).max(127)).describe(
     "Columns in this hierarchy.",
   ),
@@ -234,19 +243,19 @@ export const GeoSpatialColumnGroupSchema = z.object({
   Name: z.string().min(1).max(64).describe("A display name for the hierarchy."),
 });
 
-export const ColumnGroupSchema = z.object({
+const ColumnGroupSchema = z.object({
   GeoSpatialColumnGroup: GeoSpatialColumnGroupSchema.describe(
     "Geospatial column group that denotes a hierarchy.",
   ).optional(),
 });
 
-export const IntegerDatasetParameterDefaultValuesSchema = z.object({
+const IntegerDatasetParameterDefaultValuesSchema = z.object({
   StaticValues: z.array(z.number().int()).describe(
     "A list of static default values for a given integer parameter.",
   ).optional(),
 });
 
-export const IntegerDatasetParameterSchema = z.object({
+const IntegerDatasetParameterSchema = z.object({
   ValueType: z.enum(["MULTI_VALUED", "SINGLE_VALUED"]),
   DefaultValues: IntegerDatasetParameterDefaultValuesSchema.describe(
     "The default values of an integer parameter.",
@@ -260,13 +269,13 @@ export const IntegerDatasetParameterSchema = z.object({
     ),
 });
 
-export const DateTimeDatasetParameterDefaultValuesSchema = z.object({
+const DateTimeDatasetParameterDefaultValuesSchema = z.object({
   StaticValues: z.array(z.string()).describe(
     "A list of static default values for a given date time parameter.",
   ).optional(),
 });
 
-export const DateTimeDatasetParameterSchema = z.object({
+const DateTimeDatasetParameterSchema = z.object({
   ValueType: z.enum(["MULTI_VALUED", "SINGLE_VALUED"]),
   TimeGranularity: z.enum([
     "YEAR",
@@ -291,13 +300,13 @@ export const DateTimeDatasetParameterSchema = z.object({
     ),
 });
 
-export const DecimalDatasetParameterDefaultValuesSchema = z.object({
+const DecimalDatasetParameterDefaultValuesSchema = z.object({
   StaticValues: z.array(z.number()).describe(
     "A list of static default values for a given decimal parameter.",
   ).optional(),
 });
 
-export const DecimalDatasetParameterSchema = z.object({
+const DecimalDatasetParameterSchema = z.object({
   ValueType: z.enum(["MULTI_VALUED", "SINGLE_VALUED"]),
   DefaultValues: DecimalDatasetParameterDefaultValuesSchema.describe(
     "The default values of a decimal parameter.",
@@ -311,13 +320,13 @@ export const DecimalDatasetParameterSchema = z.object({
     ),
 });
 
-export const StringDatasetParameterDefaultValuesSchema = z.object({
+const StringDatasetParameterDefaultValuesSchema = z.object({
   StaticValues: z.array(z.string().min(0).max(512)).describe(
     "A list of static default values for a given string parameter.",
   ).optional(),
 });
 
-export const StringDatasetParameterSchema = z.object({
+const StringDatasetParameterSchema = z.object({
   ValueType: z.enum(["MULTI_VALUED", "SINGLE_VALUED"]),
   DefaultValues: StringDatasetParameterDefaultValuesSchema.describe(
     "The default values of a string parameter.",
@@ -331,7 +340,7 @@ export const StringDatasetParameterSchema = z.object({
     ),
 });
 
-export const DatasetParameterSchema = z.object({
+const DatasetParameterSchema = z.object({
   IntegerDatasetParameter: IntegerDatasetParameterSchema.describe(
     "An integer parameter for a dataset.",
   ).optional(),
@@ -346,13 +355,13 @@ export const DatasetParameterSchema = z.object({
   ).optional(),
 });
 
-export const ColumnDescriptionSchema = z.object({
+const ColumnDescriptionSchema = z.object({
   Text: z.string().min(0).max(500).describe(
     "The text of a description for a column.",
   ).optional(),
 });
 
-export const ColumnTagSchema = z.object({
+const ColumnTagSchema = z.object({
   ColumnGeographicRole: z.enum([
     "COUNTRY",
     "STATE",
@@ -371,7 +380,7 @@ export const ColumnTagSchema = z.object({
   ).optional(),
 });
 
-export const TagColumnOperationSchema = z.object({
+const TagColumnOperationSchema = z.object({
   ColumnName: z.string().min(1).max(127).describe(
     "The column that this operation acts on.",
   ),
@@ -380,7 +389,7 @@ export const TagColumnOperationSchema = z.object({
   ),
 });
 
-export const UntagColumnOperationSchema = z.object({
+const UntagColumnOperationSchema = z.object({
   ColumnName: z.string().min(1).max(127).describe(
     "The column that this operation acts on.",
   ),
@@ -388,7 +397,7 @@ export const UntagColumnOperationSchema = z.object({
     .describe("The column tags to remove from this column."),
 });
 
-export const NewDefaultValuesSchema = z.object({
+const NewDefaultValuesSchema = z.object({
   DecimalStaticValues: z.array(z.number()).describe(
     "A list of static default values for a given decimal parameter.",
   ).optional(),
@@ -403,7 +412,7 @@ export const NewDefaultValuesSchema = z.object({
   ).optional(),
 });
 
-export const OverrideDatasetParameterOperationSchema = z.object({
+const OverrideDatasetParameterOperationSchema = z.object({
   NewDefaultValues: NewDefaultValuesSchema.describe(
     "The configuration that overrides the existing default values for a dataset parameter that is inherited from another dataset.",
   ).optional(),
@@ -416,18 +425,18 @@ export const OverrideDatasetParameterOperationSchema = z.object({
   ).describe("The new name for the parameter.").optional(),
 });
 
-export const DataSetDateFilterValueSchema = z.object({
+const DataSetDateFilterValueSchema = z.object({
   StaticValue: z.string().optional(),
 });
 
-export const DataSetDateRangeFilterConditionSchema = z.object({
+const DataSetDateRangeFilterConditionSchema = z.object({
   IncludeMaximum: z.boolean().optional(),
   RangeMinimum: DataSetDateFilterValueSchema.optional(),
   RangeMaximum: DataSetDateFilterValueSchema.optional(),
   IncludeMinimum: z.boolean().optional(),
 });
 
-export const DataSetDateComparisonFilterConditionSchema = z.object({
+const DataSetDateComparisonFilterConditionSchema = z.object({
   Operator: z.enum([
     "BEFORE",
     "BEFORE_OR_EQUALS_TO",
@@ -437,18 +446,18 @@ export const DataSetDateComparisonFilterConditionSchema = z.object({
   Value: DataSetDateFilterValueSchema.optional(),
 });
 
-export const DataSetDateFilterConditionSchema = z.object({
+const DataSetDateFilterConditionSchema = z.object({
   ColumnName: z.string().min(1).max(127).optional(),
   RangeFilterCondition: DataSetDateRangeFilterConditionSchema.optional(),
   ComparisonFilterCondition: DataSetDateComparisonFilterConditionSchema
     .optional(),
 });
 
-export const DataSetStringFilterValueSchema = z.object({
+const DataSetStringFilterValueSchema = z.object({
   StaticValue: z.string().min(0).max(512).optional(),
 });
 
-export const DataSetStringComparisonFilterConditionSchema = z.object({
+const DataSetStringComparisonFilterConditionSchema = z.object({
   Operator: z.enum([
     "EQUALS",
     "DOES_NOT_EQUAL",
@@ -460,34 +469,34 @@ export const DataSetStringComparisonFilterConditionSchema = z.object({
   Value: DataSetStringFilterValueSchema.optional(),
 });
 
-export const DataSetStringListFilterValueSchema = z.object({
+const DataSetStringListFilterValueSchema = z.object({
   StaticValues: z.array(z.string().min(0).max(512)).optional(),
 });
 
-export const DataSetStringListFilterConditionSchema = z.object({
+const DataSetStringListFilterConditionSchema = z.object({
   Operator: z.enum(["INCLUDE", "EXCLUDE"]),
   Values: DataSetStringListFilterValueSchema.optional(),
 });
 
-export const DataSetStringFilterConditionSchema = z.object({
+const DataSetStringFilterConditionSchema = z.object({
   ColumnName: z.string().min(1).max(127).optional(),
   ComparisonFilterCondition: DataSetStringComparisonFilterConditionSchema
     .optional(),
   ListFilterCondition: DataSetStringListFilterConditionSchema.optional(),
 });
 
-export const DataSetNumericFilterValueSchema = z.object({
+const DataSetNumericFilterValueSchema = z.object({
   StaticValue: z.number().optional(),
 });
 
-export const DataSetNumericRangeFilterConditionSchema = z.object({
+const DataSetNumericRangeFilterConditionSchema = z.object({
   IncludeMaximum: z.boolean().optional(),
   RangeMinimum: DataSetNumericFilterValueSchema.optional(),
   RangeMaximum: DataSetNumericFilterValueSchema.optional(),
   IncludeMinimum: z.boolean().optional(),
 });
 
-export const DataSetNumericComparisonFilterConditionSchema = z.object({
+const DataSetNumericComparisonFilterConditionSchema = z.object({
   Operator: z.enum([
     "EQUALS",
     "DOES_NOT_EQUAL",
@@ -499,14 +508,14 @@ export const DataSetNumericComparisonFilterConditionSchema = z.object({
   Value: DataSetNumericFilterValueSchema.optional(),
 });
 
-export const DataSetNumericFilterConditionSchema = z.object({
+const DataSetNumericFilterConditionSchema = z.object({
   ColumnName: z.string().min(1).max(127).optional(),
   RangeFilterCondition: DataSetNumericRangeFilterConditionSchema.optional(),
   ComparisonFilterCondition: DataSetNumericComparisonFilterConditionSchema
     .optional(),
 });
 
-export const FilterOperationSchema = z.object({
+const FilterOperationSchema = z.object({
   DateFilterCondition: DataSetDateFilterConditionSchema.optional(),
   StringFilterCondition: DataSetStringFilterConditionSchema.optional(),
   ConditionExpression: z.string().min(1).max(4096).describe(
@@ -515,7 +524,7 @@ export const FilterOperationSchema = z.object({
   NumericFilterCondition: DataSetNumericFilterConditionSchema.optional(),
 });
 
-export const CastColumnTypeOperationSchema = z.object({
+const CastColumnTypeOperationSchema = z.object({
   ColumnName: z.string().min(1).max(127).describe("Column name."),
   SubType: z.enum(["FLOAT", "FIXED"]).optional(),
   Format: z.string().min(0).max(32).describe(
@@ -524,7 +533,7 @@ export const CastColumnTypeOperationSchema = z.object({
   NewColumnType: z.enum(["STRING", "INTEGER", "DECIMAL", "DATETIME"]),
 });
 
-export const CalculatedColumnSchema = z.object({
+const CalculatedColumnSchema = z.object({
   ColumnId: z.string().min(1).max(64).describe(
     "A unique ID to identify a calculated column. During a dataset update, if the column ID of a calculated column matches that of an existing calculated column, Amazon QuickSight preserves the existing calculated column.",
   ),
@@ -534,19 +543,19 @@ export const CalculatedColumnSchema = z.object({
   ),
 });
 
-export const DataSetColumnIdMappingSchema = z.object({
+const DataSetColumnIdMappingSchema = z.object({
   SourceColumnId: z.string().min(1).max(64),
   TargetColumnId: z.string().min(1).max(64),
 });
 
-export const TransformOperationSourceSchema = z.object({
+const TransformOperationSourceSchema = z.object({
   TransformOperationId: z.string().min(1).max(64).regex(
     new RegExp("^[0-9a-zA-Z-]*$"),
   ),
   ColumnIdMappings: z.array(DataSetColumnIdMappingSchema).optional(),
 });
 
-export const CreateColumnsOperationSchema = z.object({
+const CreateColumnsOperationSchema = z.object({
   Alias: z.string().min(1).max(64).optional(),
   Columns: z.array(CalculatedColumnSchema).describe(
     "Calculated columns to create.",
@@ -554,7 +563,7 @@ export const CreateColumnsOperationSchema = z.object({
   Source: TransformOperationSourceSchema.optional(),
 });
 
-export const RenameColumnOperationSchema = z.object({
+const RenameColumnOperationSchema = z.object({
   NewColumnName: z.string().min(1).max(127).describe(
     "The new name for the column.",
   ),
@@ -563,14 +572,14 @@ export const RenameColumnOperationSchema = z.object({
   ),
 });
 
-export const ProjectOperationSchema = z.object({
+const ProjectOperationSchema = z.object({
   Alias: z.string().min(1).max(64).optional(),
   ProjectedColumns: z.array(z.string()).describe("Projected columns.")
     .optional(),
   Source: TransformOperationSourceSchema.optional(),
 });
 
-export const TransformOperationSchema = z.object({
+const TransformOperationSchema = z.object({
   TagColumnOperation: TagColumnOperationSchema.describe(
     "A transform operation that tags a column with additional information.",
   ).optional(),
@@ -598,13 +607,13 @@ export const TransformOperationSchema = z.object({
   ).optional(),
 });
 
-export const JoinKeyPropertiesSchema = z.object({
+const JoinKeyPropertiesSchema = z.object({
   UniqueKey: z.boolean().describe(
     "A value that indicates that a row in a table is uniquely identified by the columns in a join key. This is used by Amazon QuickSight to optimize query performance.",
   ).optional(),
 });
 
-export const JoinInstructionSchema = z.object({
+const JoinInstructionSchema = z.object({
   OnClause: z.string().min(1).max(512).describe(
     "The join instructions provided in the ON clause of a join.",
   ),
@@ -621,7 +630,7 @@ export const JoinInstructionSchema = z.object({
   ).optional(),
 });
 
-export const LogicalTableSourceSchema = z.object({
+const LogicalTableSourceSchema = z.object({
   PhysicalTableId: z.string().min(1).max(64).regex(
     new RegExp("^[0-9a-zA-Z-]*$"),
   ).describe("Physical table ID.").optional(),
@@ -633,7 +642,7 @@ export const LogicalTableSourceSchema = z.object({
   ).optional(),
 });
 
-export const LogicalTableSchema = z.object({
+const LogicalTableSchema = z.object({
   Alias: z.string().min(1).max(64).describe(
     "A display name for the logical table.",
   ),
@@ -645,45 +654,45 @@ export const LogicalTableSchema = z.object({
   ),
 });
 
-export const DestinationTableSourceSchema = z.object({
+const DestinationTableSourceSchema = z.object({
   TransformOperationId: z.string().min(1).max(64).regex(
     new RegExp("^[0-9a-zA-Z-]*$"),
   ),
 });
 
-export const DestinationTableSchema = z.object({
+const DestinationTableSchema = z.object({
   Alias: z.string().min(1).max(64),
   Source: DestinationTableSourceSchema,
 });
 
-export const RenameColumnsOperationSchema = z.object({
+const RenameColumnsOperationSchema = z.object({
   Alias: z.string().min(1).max(64),
   RenameColumnOperations: z.array(RenameColumnOperationSchema),
   Source: TransformOperationSourceSchema,
 });
 
-export const CastColumnTypesOperationSchema = z.object({
+const CastColumnTypesOperationSchema = z.object({
   CastColumnTypeOperations: z.array(CastColumnTypeOperationSchema),
   Alias: z.string().min(1).max(64),
   Source: TransformOperationSourceSchema,
 });
 
-export const ImportTableOperationSourceSchema = z.object({
+const ImportTableOperationSourceSchema = z.object({
   SourceTableId: z.string().min(1).max(64).regex(new RegExp("^[0-9a-zA-Z-]*$")),
   ColumnIdMappings: z.array(DataSetColumnIdMappingSchema).optional(),
 });
 
-export const ImportTableOperationSchema = z.object({
+const ImportTableOperationSchema = z.object({
   Alias: z.string().min(1).max(64),
   Source: ImportTableOperationSourceSchema,
 });
 
-export const ColumnToUnpivotSchema = z.object({
+const ColumnToUnpivotSchema = z.object({
   ColumnName: z.string().min(1).max(127).optional(),
   NewValue: z.string().min(0).max(2047).optional(),
 });
 
-export const UnpivotOperationSchema = z.object({
+const UnpivotOperationSchema = z.object({
   UnpivotedLabelColumnName: z.string().min(1).max(127),
   ColumnsToUnpivot: z.array(ColumnToUnpivotSchema),
   UnpivotedLabelColumnId: z.string().min(1).max(64),
@@ -693,16 +702,16 @@ export const UnpivotOperationSchema = z.object({
   Source: TransformOperationSourceSchema,
 });
 
-export const OutputColumnNameOverrideSchema = z.object({
+const OutputColumnNameOverrideSchema = z.object({
   OutputColumnName: z.string().min(1).max(127),
   SourceColumnName: z.string().min(1).max(127).optional(),
 });
 
-export const JoinOperandPropertiesSchema = z.object({
+const JoinOperandPropertiesSchema = z.object({
   OutputColumnNameOverrides: z.array(OutputColumnNameOverrideSchema),
 });
 
-export const JoinOperationSchema = z.object({
+const JoinOperationSchema = z.object({
   OnClause: z.string().min(1).max(512),
   Type: z.enum(["INNER", "OUTER", "LEFT", "RIGHT"]),
   RightOperandProperties: JoinOperandPropertiesSchema.optional(),
@@ -712,30 +721,30 @@ export const JoinOperationSchema = z.object({
   RightOperand: TransformOperationSourceSchema,
 });
 
-export const AppendedColumnSchema = z.object({
+const AppendedColumnSchema = z.object({
   ColumnName: z.string().min(1).max(127),
   NewColumnId: z.string().min(1).max(64),
 });
 
-export const AppendOperationSchema = z.object({
+const AppendOperationSchema = z.object({
   AppendedColumns: z.array(AppendedColumnSchema),
   SecondSource: TransformOperationSourceSchema.optional(),
   Alias: z.string().min(1).max(64),
   FirstSource: TransformOperationSourceSchema.optional(),
 });
 
-export const FiltersOperationSchema = z.object({
+const FiltersOperationSchema = z.object({
   FilterOperations: z.array(FilterOperationSchema),
   Alias: z.string().min(1).max(64),
   Source: TransformOperationSourceSchema,
 });
 
-export const DataPrepPercentileAggregationFunctionSchema = z.object({
+const DataPrepPercentileAggregationFunctionSchema = z.object({
   InputColumnName: z.string().min(1).max(127).optional(),
   PercentileValue: z.number().min(0).max(100),
 });
 
-export const DataPrepSimpleAggregationFunctionSchema = z.object({
+const DataPrepSimpleAggregationFunctionSchema = z.object({
   FunctionType: z.enum([
     "COUNT",
     "DISTINCT_COUNT",
@@ -750,47 +759,47 @@ export const DataPrepSimpleAggregationFunctionSchema = z.object({
   InputColumnName: z.string().min(1).max(127).optional(),
 });
 
-export const DataPrepListAggregationFunctionSchema = z.object({
+const DataPrepListAggregationFunctionSchema = z.object({
   Distinct: z.boolean(),
   InputColumnName: z.string().min(1).max(127).optional(),
   Separator: z.string(),
 });
 
-export const DataPrepAggregationFunctionSchema = z.object({
+const DataPrepAggregationFunctionSchema = z.object({
   PercentileAggregation: DataPrepPercentileAggregationFunctionSchema.optional(),
   SimpleAggregation: DataPrepSimpleAggregationFunctionSchema.optional(),
   ListAggregation: DataPrepListAggregationFunctionSchema.optional(),
 });
 
-export const AggregationSchema = z.object({
+const AggregationSchema = z.object({
   AggregationFunction: DataPrepAggregationFunctionSchema,
   NewColumnName: z.string().min(1).max(127),
   NewColumnId: z.string().min(1).max(64),
 });
 
-export const AggregateOperationSchema = z.object({
+const AggregateOperationSchema = z.object({
   GroupByColumnNames: z.array(z.string().min(1).max(127)).optional(),
   Alias: z.string().min(1).max(64),
   Aggregations: z.array(AggregationSchema),
   Source: TransformOperationSourceSchema,
 });
 
-export const PivotedLabelSchema = z.object({
+const PivotedLabelSchema = z.object({
   NewColumnName: z.string().min(1).max(127),
   NewColumnId: z.string().min(1).max(64),
   LabelName: z.string().min(0).max(2047),
 });
 
-export const PivotConfigurationSchema = z.object({
+const PivotConfigurationSchema = z.object({
   LabelColumnName: z.string().min(1).max(127).optional(),
   PivotedLabels: z.array(PivotedLabelSchema),
 });
 
-export const ValueColumnConfigurationSchema = z.object({
+const ValueColumnConfigurationSchema = z.object({
   AggregationFunction: DataPrepAggregationFunctionSchema.optional(),
 });
 
-export const PivotOperationSchema = z.object({
+const PivotOperationSchema = z.object({
   PivotConfiguration: PivotConfigurationSchema,
   GroupByColumnNames: z.array(z.string().min(1).max(127)).optional(),
   Alias: z.string().min(1).max(64),
@@ -798,7 +807,7 @@ export const PivotOperationSchema = z.object({
   Source: TransformOperationSourceSchema,
 });
 
-export const TransformStepSchema = z.object({
+const TransformStepSchema = z.object({
   ProjectStep: ProjectOperationSchema.describe(
     "A transform operation that projects columns. Operations that come after a projection can only refer to projected columns.",
   ).optional(),
@@ -816,12 +825,12 @@ export const TransformStepSchema = z.object({
   PivotStep: PivotOperationSchema.optional(),
 });
 
-export const ParentDataSetSchema = z.object({
+const ParentDataSetSchema = z.object({
   InputColumns: z.array(InputColumnSchema),
   DataSetArn: z.string(),
 });
 
-export const SourceTableSchema = z.object({
+const SourceTableSchema = z.object({
   PhysicalTableId: z.string().min(1).max(64).regex(
     new RegExp("^[0-9a-zA-Z-]*$"),
   ).optional(),
@@ -1072,9 +1081,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for QuickSight DataSet. Registered at `@swamp/aws/quicksight/data-set`. */
 export const model = {
   type: "@swamp/aws/quicksight/data-set",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1098,6 +1108,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

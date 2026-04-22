@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaConnect RouterInput (AWS::MediaConnect::RouterInput).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const RtpRouterInputConfigurationSchema = z.object({
+const RtpRouterInputConfigurationSchema = z.object({
   Port: z.number().int().min(3000).max(30000).describe(
     "The port number used for the RTP protocol in the router input configuration.",
   ),
   ForwardErrorCorrection: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const RistRouterInputConfigurationSchema = z.object({
+const RistRouterInputConfigurationSchema = z.object({
   Port: z.number().int().min(3000).max(30000).describe(
     "The port number used for the RIST protocol in the router input configuration.",
   ),
@@ -28,7 +37,7 @@ export const RistRouterInputConfigurationSchema = z.object({
   ),
 });
 
-export const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
+const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
   SecretArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$",
@@ -43,13 +52,13 @@ export const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
   ),
 });
 
-export const SrtDecryptionConfigurationSchema = z.object({
+const SrtDecryptionConfigurationSchema = z.object({
   EncryptionKey: SecretsManagerEncryptionKeyConfigurationSchema.describe(
     "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
   ),
 });
 
-export const SrtListenerRouterInputConfigurationSchema = z.object({
+const SrtListenerRouterInputConfigurationSchema = z.object({
   Port: z.number().int().min(3000).max(30000).describe(
     "The port number for the SRT protocol in listener mode.",
   ),
@@ -61,7 +70,7 @@ export const SrtListenerRouterInputConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SrtCallerRouterInputConfigurationSchema = z.object({
+const SrtCallerRouterInputConfigurationSchema = z.object({
   SourceAddress: z.string().describe(
     "The source IP address for the SRT protocol in caller mode.",
   ),
@@ -79,7 +88,7 @@ export const SrtCallerRouterInputConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const StandardRouterInputConfigurationSchema = z.object({
+const StandardRouterInputConfigurationSchema = z.object({
   NetworkInterfaceArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:routerNetworkInterface:[a-z0-9]{12}$",
@@ -104,7 +113,7 @@ export const StandardRouterInputConfigurationSchema = z.object({
   Protocol: z.enum(["RTP", "RIST", "SRT_CALLER", "SRT_LISTENER"]).optional(),
 });
 
-export const FailoverRouterInputConfigurationSchema = z.object({
+const FailoverRouterInputConfigurationSchema = z.object({
   NetworkInterfaceArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:routerNetworkInterface:[a-z0-9]{12}$",
@@ -134,7 +143,7 @@ export const FailoverRouterInputConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const MergeRouterInputConfigurationSchema = z.object({
+const MergeRouterInputConfigurationSchema = z.object({
   NetworkInterfaceArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:routerNetworkInterface:[a-z0-9]{12}$",
@@ -157,7 +166,7 @@ export const MergeRouterInputConfigurationSchema = z.object({
   ),
 });
 
-export const FlowTransitEncryptionSchema = z.object({
+const FlowTransitEncryptionSchema = z.object({
   EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
   EncryptionKeyConfiguration: z.object({
     SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
@@ -169,7 +178,7 @@ export const FlowTransitEncryptionSchema = z.object({
   }).describe("Configuration settings for flow transit encryption keys."),
 });
 
-export const MediaConnectFlowRouterInputConfigurationSchema = z.object({
+const MediaConnectFlowRouterInputConfigurationSchema = z.object({
   FlowArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:flow:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
@@ -186,7 +195,7 @@ export const MediaConnectFlowRouterInputConfigurationSchema = z.object({
   ),
 });
 
-export const PreferredDayTimeMaintenanceConfigurationSchema = z.object({
+const PreferredDayTimeMaintenanceConfigurationSchema = z.object({
   Day: z.enum([
     "MONDAY",
     "TUESDAY",
@@ -199,7 +208,7 @@ export const PreferredDayTimeMaintenanceConfigurationSchema = z.object({
   Time: z.string().describe("The preferred time for maintenance operations."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -357,9 +366,10 @@ const InputsSchema = z.object({
   }).describe("The transit encryption settings for a router input.").optional(),
 });
 
+/** Swamp extension model for MediaConnect RouterInput. Registered at `@swamp/aws/mediaconnect/router-input`. */
 export const model = {
   type: "@swamp/aws/mediaconnect/router-input",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -373,6 +383,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CustomerProfiles CalculatedAttributeDefinition (AWS::CustomerProfiles::CalculatedAttributeDefinition).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AttributeItemSchema = z.object({
+const AttributeItemSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9_.-]+$"))
     .describe("The name of an attribute defined in a profile object type."),
 });
 
-export const ValueRangeSchema = z.object({
+const ValueRangeSchema = z.object({
   Start: z.number().int().min(-2147483648).max(2147483647).describe(
     "The starting point for this range. Positive numbers indicate how many days in the past data should be included, and negative numbers indicate how many days in the future.",
   ),
@@ -26,7 +35,7 @@ export const ValueRangeSchema = z.object({
   ),
 });
 
-export const RangeSchema = z.object({
+const RangeSchema = z.object({
   Value: z.number().int().min(1).max(2147483647).describe(
     "The amount of time of the specified unit.",
   ).optional(),
@@ -42,13 +51,13 @@ export const RangeSchema = z.object({
   ).optional(),
 });
 
-export const ThresholdSchema = z.object({
+const ThresholdSchema = z.object({
   Value: z.string().min(1).max(255).describe("The value of the threshold."),
   Operator: z.enum(["EQUAL_TO", "GREATER_THAN", "LESS_THAN", "NOT_EQUAL_TO"])
     .describe("The operator of the threshold."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -215,9 +224,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CustomerProfiles CalculatedAttributeDefinition. Registered at `@swamp/aws/customerprofiles/calculated-attribute-definition`. */
 export const model = {
   type: "@swamp/aws/customerprofiles/calculated-attribute-definition",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -231,6 +241,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

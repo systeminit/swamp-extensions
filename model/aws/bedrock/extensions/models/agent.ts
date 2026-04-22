@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Bedrock Agent (AWS::Bedrock::Agent).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const S3IdentifierSchema = z.object({
+const S3IdentifierSchema = z.object({
   S3BucketName: z.string().min(3).max(63).regex(
     new RegExp("^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"),
   ).describe("A bucket in S3.").optional(),
@@ -23,7 +32,7 @@ export const S3IdentifierSchema = z.object({
   ).describe("A object key in S3.").optional(),
 });
 
-export const ParameterDetailSchema = z.object({
+const ParameterDetailSchema = z.object({
   Description: z.string().min(1).max(500).describe(
     "Description of function parameter.",
   ).optional(),
@@ -35,7 +44,7 @@ export const ParameterDetailSchema = z.object({
   ).optional(),
 });
 
-export const FunctionSchema = z.object({
+const FunctionSchema = z.object({
   Name: z.string().regex(new RegExp("^([0-9a-zA-Z][_-]?){1,100}$")).describe(
     "Name for a resource.",
   ),
@@ -49,11 +58,11 @@ export const FunctionSchema = z.object({
   ).optional(),
 });
 
-export const FunctionsSchema = z.object({
+const FunctionsSchema = z.object({
   Functions: z.array(FunctionSchema).describe("List of Function definitions"),
 });
 
-export const AgentActionGroupSchema = z.object({
+const AgentActionGroupSchema = z.object({
   ActionGroupName: z.string().regex(new RegExp("^([0-9a-zA-Z][_-]?){1,100}$"))
     .describe("Name of the action group"),
   Description: z.string().min(1).max(200).describe(
@@ -88,7 +97,7 @@ export const AgentActionGroupSchema = z.object({
   ).optional(),
 });
 
-export const LambdaSchema = z.object({
+const LambdaSchema = z.object({
   Lambda: z.string().max(2048).regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*)?:lambda:[a-z0-9-]{1,20}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$",
@@ -96,13 +105,13 @@ export const LambdaSchema = z.object({
   ).describe("ARN of a Lambda."),
 });
 
-export const SessionSummaryConfigurationSchema = z.object({
+const SessionSummaryConfigurationSchema = z.object({
   MaxRecentSessions: z.number().describe(
     "Maximum number of Sessions to Summarize",
   ).optional(),
 });
 
-export const AgentKnowledgeBaseSchema = z.object({
+const AgentKnowledgeBaseSchema = z.object({
   KnowledgeBaseId: z.string().regex(new RegExp("^[0-9a-zA-Z]{10}$")).describe(
     "Identifier for a resource.",
   ),
@@ -114,7 +123,7 @@ export const AgentKnowledgeBaseSchema = z.object({
   ).optional(),
 });
 
-export const AgentCollaboratorSchema = z.object({
+const AgentCollaboratorSchema = z.object({
   AgentDescriptor: z.object({
     AliasArn: z.string().regex(
       new RegExp(
@@ -131,7 +140,7 @@ export const AgentCollaboratorSchema = z.object({
   ).optional(),
 });
 
-export const InferenceConfigurationSchema = z.object({
+const InferenceConfigurationSchema = z.object({
   Temperature: z.number().min(0).max(1).describe(
     "Controls randomness, higher values increase diversity",
   ).optional(),
@@ -148,7 +157,7 @@ export const InferenceConfigurationSchema = z.object({
     .optional(),
 });
 
-export const PromptConfigurationSchema = z.object({
+const PromptConfigurationSchema = z.object({
   PromptType: z.enum([
     "PRE_PROCESSING",
     "ORCHESTRATION",
@@ -407,9 +416,10 @@ const InputsSchema = z.object({
   ).describe("A map of tag keys and values").optional(),
 });
 
+/** Swamp extension model for Bedrock Agent. Registered at `@swamp/aws/bedrock/agent`. */
 export const model = {
   type: "@swamp/aws/bedrock/agent",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -423,6 +433,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

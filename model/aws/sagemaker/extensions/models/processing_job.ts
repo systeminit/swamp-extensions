@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker ProcessingJob (AWS::SageMaker::ProcessingJob).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,7 +20,7 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const VpcConfigSchema = z.object({
+const VpcConfigSchema = z.object({
   SecurityGroupIds: z.array(
     z.string().min(0).max(32).regex(new RegExp("[-0-9a-zA-Z]+")),
   ).describe(
@@ -23,7 +32,7 @@ export const VpcConfigSchema = z.object({
     ),
 });
 
-export const S3InputSchema = z.object({
+const S3InputSchema = z.object({
   LocalPath: z.string().min(0).max(256).regex(new RegExp(".*")).describe(
     "The local path in your container where you want Amazon SageMaker to write input data to. `LocalPath` is an absolute path to the input data and must begin with `/opt/ml/processing/`. LocalPath is a required parameter when `AppManaged` is `False` (default).",
   ).optional(),
@@ -47,7 +56,7 @@ export const S3InputSchema = z.object({
   ),
 });
 
-export const AthenaDatasetDefinitionSchema = z.object({
+const AthenaDatasetDefinitionSchema = z.object({
   Catalog: z.string().max(256).describe(
     "The name of the data catalog used in Athena query execution.",
   ),
@@ -77,7 +86,7 @@ export const AthenaDatasetDefinitionSchema = z.object({
   ).optional(),
 });
 
-export const RedshiftDatasetDefinitionSchema = z.object({
+const RedshiftDatasetDefinitionSchema = z.object({
   Database: z.string().max(64).regex(new RegExp(".*")).describe(
     "The name of the Redshift database used in Redshift query execution.",
   ),
@@ -111,7 +120,7 @@ export const RedshiftDatasetDefinitionSchema = z.object({
     .describe("The compression used for Redshift query results.").optional(),
 });
 
-export const DatasetDefinitionSchema = z.object({
+const DatasetDefinitionSchema = z.object({
   AthenaDatasetDefinition: AthenaDatasetDefinitionSchema.describe(
     "Configuration for Athena Dataset Definition input.",
   ).optional(),
@@ -129,7 +138,7 @@ export const DatasetDefinitionSchema = z.object({
   ).optional(),
 });
 
-export const ProcessingInputsObjectSchema = z.object({
+const ProcessingInputsObjectSchema = z.object({
   S3Input: S3InputSchema.describe(
     "Configuration for downloading input data from Amazon S3 into the processing container.",
   ).optional(),
@@ -142,7 +151,7 @@ export const ProcessingInputsObjectSchema = z.object({
   ).optional(),
 });
 
-export const S3OutputSchema = z.object({
+const S3OutputSchema = z.object({
   LocalPath: z.string().min(0).max(256).regex(new RegExp(".*")).describe(
     "The local path of a directory where you want Amazon SageMaker to upload its contents to Amazon S3. LocalPath is an absolute path to a directory containing output files. This directory will be created by the platform and exist when your container's entrypoint is invoked.",
   ).optional(),
@@ -156,7 +165,7 @@ export const S3OutputSchema = z.object({
   ),
 });
 
-export const FeatureStoreOutputSchema = z.object({
+const FeatureStoreOutputSchema = z.object({
   FeatureGroupName: z.string().max(64).regex(
     new RegExp("[a-zA-Z0-9]([_-]*[a-zA-Z0-9]){0,63}"),
   ).describe(
@@ -164,7 +173,7 @@ export const FeatureStoreOutputSchema = z.object({
   ),
 });
 
-export const ProcessingOutputsObjectSchema = z.object({
+const ProcessingOutputsObjectSchema = z.object({
   OutputName: z.string().describe("The name for the processing job output."),
   AppManaged: z.boolean().describe(
     "When True, output operations such as data upload are managed natively by the processing job application. When False (default), output operations are managed by Amazon SageMaker.",
@@ -177,7 +186,7 @@ export const ProcessingOutputsObjectSchema = z.object({
   ).optional(),
 });
 
-export const ClusterConfigSchema = z.object({
+const ClusterConfigSchema = z.object({
   InstanceCount: z.number().int().min(1).max(100).describe(
     "The number of ML compute instances to use in the processing job. For distributed processing jobs, specify a value greater than 1. The default value is 1.",
   ),
@@ -307,7 +316,7 @@ export const ClusterConfigSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().max(256).regex(
     new RegExp("([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)", "u"),
   ).describe("The tag value."),
@@ -565,9 +574,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker ProcessingJob. Registered at `@swamp/aws/sagemaker/processing-job`. */
 export const model = {
   type: "@swamp/aws/sagemaker/processing-job",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -581,6 +591,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

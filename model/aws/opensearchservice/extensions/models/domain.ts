@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for OpenSearchService Domain (AWS::OpenSearchService::Domain).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,42 +21,42 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ZoneAwarenessConfigSchema = z.object({
+const ZoneAwarenessConfigSchema = z.object({
   AvailabilityZoneCount: z.number().int().optional(),
 });
 
-export const ColdStorageOptionsSchema = z.object({
+const ColdStorageOptionsSchema = z.object({
   Enabled: z.boolean().optional(),
 });
 
-export const NodeConfigSchema = z.object({
+const NodeConfigSchema = z.object({
   Enabled: z.boolean().optional(),
   Type: z.string().optional(),
   Count: z.number().int().optional(),
 });
 
-export const NodeOptionSchema = z.object({
+const NodeOptionSchema = z.object({
   NodeType: z.enum(["coordinator"]).optional(),
   NodeConfig: NodeConfigSchema.optional(),
 });
 
-export const LogPublishingOptionSchema = z.object({
+const LogPublishingOptionSchema = z.object({
   CloudWatchLogsLogGroupArn: z.string().optional(),
   Enabled: z.boolean().optional(),
 });
 
-export const MasterUserOptionsSchema = z.object({
+const MasterUserOptionsSchema = z.object({
   MasterUserPassword: z.string().optional(),
   MasterUserName: z.string().optional(),
   MasterUserARN: z.string().optional(),
 });
 
-export const IdpSchema = z.object({
+const IdpSchema = z.object({
   MetadataContent: z.string().min(1).max(1048576),
   EntityId: z.string(),
 });
 
-export const SAMLOptionsSchema = z.object({
+const SAMLOptionsSchema = z.object({
   Enabled: z.boolean().optional(),
   Idp: IdpSchema.optional(),
   MasterUserName: z.string().optional(),
@@ -57,38 +66,38 @@ export const SAMLOptionsSchema = z.object({
   SessionTimeoutMinutes: z.number().int().optional(),
 });
 
-export const JWTOptionsSchema = z.object({
+const JWTOptionsSchema = z.object({
   Enabled: z.boolean().optional(),
   PublicKey: z.string().optional(),
   SubjectKey: z.string().optional(),
   RolesKey: z.string().optional(),
 });
 
-export const IAMFederationOptionsSchema = z.object({
+const IAMFederationOptionsSchema = z.object({
   Enabled: z.boolean().optional(),
   RolesKey: z.string().optional(),
   SubjectKey: z.string().optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(0).max(256).describe("The key of the tag."),
   Key: z.string().min(0).max(128).describe("The value of the tag."),
 });
 
-export const WindowStartTimeSchema = z.object({
+const WindowStartTimeSchema = z.object({
   Hours: z.number().int().min(0).max(23),
   Minutes: z.number().int().min(0).max(59),
 });
 
-export const OffPeakWindowSchema = z.object({
+const OffPeakWindowSchema = z.object({
   WindowStartTime: WindowStartTimeSchema.optional(),
 });
 
-export const S3VectorsEngineSchema = z.object({
+const S3VectorsEngineSchema = z.object({
   Enabled: z.boolean().describe("Whether to enable S3 vectors engine."),
 });
 
-export const ServerlessVectorAccelerationSchema = z.object({
+const ServerlessVectorAccelerationSchema = z.object({
   Enabled: z.boolean().describe(
     "Whether to enable serverless vector acceleration.",
   ).optional(),
@@ -424,9 +433,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for OpenSearchService Domain. Registered at `@swamp/aws/opensearchservice/domain`. */
 export const model = {
   type: "@swamp/aws/opensearchservice/domain",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -440,6 +450,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

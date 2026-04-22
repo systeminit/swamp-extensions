@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CE AnomalySubscription (AWS::CE::AnomalySubscription).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SubscriberSchema = z.object({
+const SubscriberSchema = z.object({
   Address: z.string().regex(
     new RegExp(
       "(^[a-zA-Z0-9.!#$%&'*+=?^_‘{|}~-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$)|(^arn:(aws[a-zA-Z-]*):sns:[a-zA-Z0-9-]+:[0-9]{12}:[a-zA-Z0-9_-]+(\\.fifo)?$)",
@@ -22,7 +31,7 @@ export const SubscriberSchema = z.object({
   Type: z.enum(["EMAIL", "SNS"]),
 });
 
-export const ResourceTagSchema = z.object({
+const ResourceTagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^(?!aws:).*$")).describe(
     "The key name for the tag.",
   ),
@@ -98,9 +107,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CE AnomalySubscription. Registered at `@swamp/aws/ce/anomaly-subscription`. */
 export const model = {
   type: "@swamp/aws/ce/anomaly-subscription",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -114,6 +124,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

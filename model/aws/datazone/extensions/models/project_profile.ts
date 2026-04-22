@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataZone ProjectProfile (AWS::DataZone::ProjectProfile).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EnvironmentConfigurationParameterSchema = z.object({
+const EnvironmentConfigurationParameterSchema = z.object({
   Name: z.string().regex(new RegExp("^[a-zA-Z_][a-zA-Z0-9_]*$")).optional(),
   Value: z.string().optional(),
   IsEditable: z.boolean().optional(),
 });
 
-export const EnvironmentConfigurationParametersDetailsSchema = z.object({
+const EnvironmentConfigurationParametersDetailsSchema = z.object({
   SsmPath: z.string().min(1).max(2048).optional(),
   ParameterOverrides: z.array(EnvironmentConfigurationParameterSchema)
     .optional(),
@@ -26,17 +35,17 @@ export const EnvironmentConfigurationParametersDetailsSchema = z.object({
     .optional(),
 });
 
-export const AwsAccountSchema = z.object({
+const AwsAccountSchema = z.object({
   AwsAccountId: z.string().regex(new RegExp("^\\d{12}$")),
 });
 
-export const RegionSchema = z.object({
+const RegionSchema = z.object({
   RegionName: z.string().min(4).max(16).regex(
     new RegExp("^[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]$"),
   ),
 });
 
-export const EnvironmentConfigurationSchema = z.object({
+const EnvironmentConfigurationSchema = z.object({
   Name: z.string().min(1).max(64).regex(new RegExp("^[\\w -]+$")),
   EnvironmentConfigurationId: z.string().regex(
     new RegExp("^[a-zA-Z0-9_-]{1,36}$"),
@@ -51,7 +60,7 @@ export const EnvironmentConfigurationSchema = z.object({
   DeploymentOrder: z.number().min(0).max(16).optional(),
 });
 
-export const ResourceTagParameterSchema = z.object({
+const ResourceTagParameterSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^[\\w \\.:/=+@-]+$")),
   Value: z.string().min(0).max(256).regex(new RegExp("^[\\w \\.:/=+@-]*$")),
   IsValueEditable: z.boolean(),
@@ -115,9 +124,10 @@ const InputsSchema = z.object({
   ProjectResourceTagsDescription: z.string().max(2048).optional(),
 });
 
+/** Swamp extension model for DataZone ProjectProfile. Registered at `@swamp/aws/datazone/project-profile`. */
 export const model = {
   type: "@swamp/aws/datazone/project-profile",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -142,6 +152,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

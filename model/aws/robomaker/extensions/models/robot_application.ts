@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for RoboMaker RobotApplication (AWS::RoboMaker::RobotApplication).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SourceConfigSchema = z.object({
+const SourceConfigSchema = z.object({
   S3Bucket: z.string().describe(
     "The Arn of the S3Bucket that stores the robot application source.",
   ),
@@ -94,9 +103,22 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for RoboMaker RobotApplication. Registered at `@swamp/aws/robomaker/robot-application`. */
 export const model = {
   type: "@swamp/aws/robomaker/robot-application",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
+  upgrades: [
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

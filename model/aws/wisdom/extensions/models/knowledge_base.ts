@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Wisdom KnowledgeBase (AWS::Wisdom::KnowledgeBase).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AppIntegrationsConfigurationSchema = z.object({
+const AppIntegrationsConfigurationSchema = z.object({
   ObjectFields: z.array(z.string().min(1).max(4096)).optional(),
   AppIntegrationArn: z.string().min(1).max(2048).regex(
     new RegExp(
@@ -21,11 +30,11 @@ export const AppIntegrationsConfigurationSchema = z.object({
   ),
 });
 
-export const SeedUrlSchema = z.object({
+const SeedUrlSchema = z.object({
   Url: z.string().regex(new RegExp("^https?://[A-Za-z0-9][^\\s]*$")).optional(),
 });
 
-export const WebCrawlerConfigurationSchema = z.object({
+const WebCrawlerConfigurationSchema = z.object({
   UrlConfiguration: z.object({
     SeedUrls: z.array(SeedUrlSchema).optional(),
   }),
@@ -37,27 +46,27 @@ export const WebCrawlerConfigurationSchema = z.object({
   Scope: z.enum(["HOST_ONLY", "SUBDOMAINS"]).optional(),
 });
 
-export const FixedSizeChunkingConfigurationSchema = z.object({
+const FixedSizeChunkingConfigurationSchema = z.object({
   MaxTokens: z.number().min(1),
   OverlapPercentage: z.number().min(1).max(99),
 });
 
-export const HierarchicalChunkingLevelConfigurationSchema = z.object({
+const HierarchicalChunkingLevelConfigurationSchema = z.object({
   MaxTokens: z.number().min(1).max(8192),
 });
 
-export const HierarchicalChunkingConfigurationSchema = z.object({
+const HierarchicalChunkingConfigurationSchema = z.object({
   LevelConfigurations: z.array(HierarchicalChunkingLevelConfigurationSchema),
   OverlapTokens: z.number().min(1),
 });
 
-export const SemanticChunkingConfigurationSchema = z.object({
+const SemanticChunkingConfigurationSchema = z.object({
   MaxTokens: z.number().min(1),
   BufferSize: z.number().min(0).max(1),
   BreakpointPercentileThreshold: z.number().min(50).max(99),
 });
 
-export const BedrockFoundationModelConfigurationSchema = z.object({
+const BedrockFoundationModelConfigurationSchema = z.object({
   ModelArn: z.string().min(1).max(2048).regex(
     new RegExp(
       "^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model\\/anthropic.claude-3-haiku-20240307-v1:0$",
@@ -68,7 +77,7 @@ export const BedrockFoundationModelConfigurationSchema = z.object({
   }).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
@@ -208,9 +217,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for Wisdom KnowledgeBase. Registered at `@swamp/aws/wisdom/knowledge-base`. */
 export const model = {
   type: "@swamp/aws/wisdom/knowledge-base",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -224,6 +234,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

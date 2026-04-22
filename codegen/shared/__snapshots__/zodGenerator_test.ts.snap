@@ -108,7 +108,7 @@ snapshot[`generateZodSchemas - extracted schemas from titled nested objects 1`] 
 {
   extractedSchemas: [
     {
-      declaration: "export const BlockDeviceMappingSchema = z.object({
+      declaration: "const BlockDeviceMappingSchema = z.object({
   DeviceName: z.string().optional(),
   VolumeSize: z.number().int().optional(),
 });",

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaTailor Channel (AWS::MediaTailor::Channel).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DashPlaylistSettingsSchema = z.object({
+const DashPlaylistSettingsSchema = z.object({
   ManifestWindowSeconds: z.number().describe(
     "The total duration (in seconds) of each manifest. Minimum value: 30 seconds. Maximum value: 3600 seconds.",
   ).optional(),
@@ -27,7 +36,7 @@ export const DashPlaylistSettingsSchema = z.object({
   ).optional(),
 });
 
-export const HlsPlaylistSettingsSchema = z.object({
+const HlsPlaylistSettingsSchema = z.object({
   ManifestWindowSeconds: z.number().describe(
     "The total duration (in seconds) of each manifest. Minimum value: 30 seconds. Maximum value: 3600 seconds.",
   ).optional(),
@@ -36,7 +45,7 @@ export const HlsPlaylistSettingsSchema = z.object({
   ).optional(),
 });
 
-export const RequestOutputItemSchema = z.object({
+const RequestOutputItemSchema = z.object({
   DashPlaylistSettings: DashPlaylistSettingsSchema.describe(
     "Dash manifest configuration parameters.",
   ).optional(),
@@ -51,7 +60,7 @@ export const RequestOutputItemSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -138,9 +147,10 @@ const InputsSchema = z.object({
   }).describe("The configuration for time-shifted viewing.").optional(),
 });
 
+/** Swamp extension model for MediaTailor Channel. Registered at `@swamp/aws/mediatailor/channel`. */
 export const model = {
   type: "@swamp/aws/mediatailor/channel",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -154,6 +164,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

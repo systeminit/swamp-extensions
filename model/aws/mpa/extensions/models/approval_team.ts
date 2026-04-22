@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MPA ApprovalTeam (AWS::MPA::ApprovalTeam).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,11 +21,11 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MofNApprovalStrategySchema = z.object({
+const MofNApprovalStrategySchema = z.object({
   MinApprovalsRequired: z.number().int(),
 });
 
-export const ApproverSchema = z.object({
+const ApproverSchema = z.object({
   PrimaryIdentityId: z.string(),
   PrimaryIdentitySourceArn: z.string(),
   ApproverId: z.string().optional(),
@@ -24,7 +33,7 @@ export const ApproverSchema = z.object({
   PrimaryIdentityStatus: z.string().optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -33,7 +42,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const PolicySchema = z.object({
+const PolicySchema = z.object({
   PolicyArn: z.string(),
 });
 
@@ -85,9 +94,10 @@ const InputsSchema = z.object({
   Description: z.string().optional(),
 });
 
+/** Swamp extension model for MPA ApprovalTeam. Registered at `@swamp/aws/mpa/approval-team`. */
 export const model = {
   type: "@swamp/aws/mpa/approval-team",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -101,6 +111,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

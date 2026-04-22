@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IVS Stage (AWS::IVS::Stage).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,20 +21,20 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ParticipantRecordingHlsConfigurationSchema = z.object({
+const ParticipantRecordingHlsConfigurationSchema = z.object({
   TargetSegmentDurationSeconds: z.number().int().min(2).max(10).describe(
     "Defines the target duration for recorded segments generated when recording a stage participant. Segments may have durations longer than the specified value when needed to ensure each segment begins with a keyframe. Default: 6.",
   ).optional(),
 });
 
-export const HlsConfigurationSchema = z.object({
+const HlsConfigurationSchema = z.object({
   ParticipantRecordingHlsConfiguration:
     ParticipantRecordingHlsConfigurationSchema.describe(
       "An object representing a configuration of participant HLS recordings for individual participant recording.",
     ).optional(),
 });
 
-export const ThumbnailConfigurationSchema = z.object({
+const ThumbnailConfigurationSchema = z.object({
   ParticipantThumbnailConfiguration: z.object({
     RecordingMode: z.enum(["INTERVAL", "DISABLED"]).describe(
       "Thumbnail recording mode. Default: DISABLED.",
@@ -41,7 +50,7 @@ export const ThumbnailConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -132,9 +141,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IVS Stage. Registered at `@swamp/aws/ivs/stage`. */
 export const model = {
   type: "@swamp/aws/ivs/stage",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -148,6 +158,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

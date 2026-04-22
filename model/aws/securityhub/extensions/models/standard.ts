@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SecurityHub Standard (AWS::SecurityHub::Standard).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const StandardsControlSchema = z.object({
+const StandardsControlSchema = z.object({
   StandardsControlArn: z.string().regex(
     new RegExp("arn:aws\\S*:securityhub:\\S*"),
   ).describe("The Amazon Resource Name (ARN) of the control."),
@@ -53,9 +62,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SecurityHub Standard. Registered at `@swamp/aws/securityhub/standard`. */
 export const model = {
   type: "@swamp/aws/securityhub/standard",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -69,6 +79,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

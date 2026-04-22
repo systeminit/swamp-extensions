@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Comprehend DocumentClassifier (AWS::Comprehend::DocumentClassifier).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AugmentedManifestsListItemSchema = z.object({
+const AugmentedManifestsListItemSchema = z.object({
   AttributeNames: z.array(
     z.string().regex(new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*")),
   ),
@@ -22,7 +31,7 @@ export const AugmentedManifestsListItemSchema = z.object({
   Split: z.enum(["TRAIN", "TEST"]).optional(),
 });
 
-export const DocumentClassifierDocumentsSchema = z.object({
+const DocumentClassifierDocumentsSchema = z.object({
   S3Uri: z.string().max(1024).regex(
     new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
   ),
@@ -31,7 +40,7 @@ export const DocumentClassifierDocumentsSchema = z.object({
   ).optional(),
 });
 
-export const DocumentReaderConfigSchema = z.object({
+const DocumentReaderConfigSchema = z.object({
   DocumentReadAction: z.enum([
     "TEXTRACT_DETECT_DOCUMENT_TEXT",
     "TEXTRACT_ANALYZE_DOCUMENT",
@@ -41,7 +50,7 @@ export const DocumentReaderConfigSchema = z.object({
   FeatureTypes: z.array(z.enum(["TABLES", "FORMS"])).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -185,9 +194,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for Comprehend DocumentClassifier. Registered at `@swamp/aws/comprehend/document-classifier`. */
 export const model = {
   type: "@swamp/aws/comprehend/document-classifier",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -201,6 +211,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

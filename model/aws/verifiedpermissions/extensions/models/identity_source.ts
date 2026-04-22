@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for VerifiedPermissions IdentitySource (AWS::VerifiedPermissions::IdentitySource).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CognitoGroupConfigurationSchema = z.object({
+const CognitoGroupConfigurationSchema = z.object({
   GroupEntityType: z.string().min(1).max(200).regex(
     new RegExp("^([_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*$"),
   ),
 });
 
-export const CognitoUserPoolConfigurationSchema = z.object({
+const CognitoUserPoolConfigurationSchema = z.object({
   UserPoolArn: z.string().min(1).max(255).regex(
     new RegExp(
       "^arn:[a-zA-Z0-9-]+:cognito-idp:(([a-zA-Z0-9-]+:\\d{12}:userpool/[\\w-]+_[0-9a-zA-Z]+))$",
@@ -29,25 +38,25 @@ export const CognitoUserPoolConfigurationSchema = z.object({
   GroupConfiguration: CognitoGroupConfigurationSchema.optional(),
 });
 
-export const OpenIdConnectGroupConfigurationSchema = z.object({
+const OpenIdConnectGroupConfigurationSchema = z.object({
   GroupClaim: z.string().min(1),
   GroupEntityType: z.string().min(1).max(200).regex(
     new RegExp("^([_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*$"),
   ),
 });
 
-export const OpenIdConnectAccessTokenConfigurationSchema = z.object({
+const OpenIdConnectAccessTokenConfigurationSchema = z.object({
   PrincipalIdClaim: z.string().min(1).optional(),
   Audiences: z.array(z.string().min(1).max(255)).optional(),
 });
 
-export const OpenIdConnectIdentityTokenConfigurationSchema = z.object({
+const OpenIdConnectIdentityTokenConfigurationSchema = z.object({
   PrincipalIdClaim: z.string().min(1).optional(),
   ClientIds: z.array(z.string().min(1).max(255).regex(new RegExp("^.*$")))
     .optional(),
 });
 
-export const OpenIdConnectConfigurationSchema = z.object({
+const OpenIdConnectConfigurationSchema = z.object({
   Issuer: z.string().min(1).max(2048).regex(new RegExp("^https://.*$")),
   EntityIdPrefix: z.string().min(1).max(100).optional(),
   GroupConfiguration: OpenIdConnectGroupConfigurationSchema.optional(),
@@ -126,9 +135,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for VerifiedPermissions IdentitySource. Registered at `@swamp/aws/verifiedpermissions/identity-source`. */
 export const model = {
   type: "@swamp/aws/verifiedpermissions/identity-source",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -142,6 +152,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

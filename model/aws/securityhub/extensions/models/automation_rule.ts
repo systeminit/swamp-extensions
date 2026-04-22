@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SecurityHub AutomationRule (AWS::SecurityHub::AutomationRule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SeverityUpdateSchema = z.object({
+const SeverityUpdateSchema = z.object({
   Product: z.number().describe(
     "The native severity as defined by the AWS service or integrated partner product that generated the finding.",
   ).optional(),
@@ -25,7 +34,7 @@ export const SeverityUpdateSchema = z.object({
   ).optional(),
 });
 
-export const RelatedFindingSchema = z.object({
+const RelatedFindingSchema = z.object({
   ProductArn: z.string().min(12).max(2048).regex(
     new RegExp(
       "^arn:(aws|aws-cn|aws-us-gov|aws-iso-?[a-z]{0,2}):[A-Za-z0-9]{1,63}:[a-z]+-([a-z]{1,10}-)?[a-z]+-[0-9]+:([0-9]{12})?:.+$",
@@ -38,18 +47,18 @@ export const RelatedFindingSchema = z.object({
   ),
 });
 
-export const NoteUpdateSchema = z.object({
+const NoteUpdateSchema = z.object({
   Text: z.string().min(1).max(512).describe("The updated note text."),
   UpdatedBy: z.string().describe("The principal that updated the note."),
 });
 
-export const WorkflowUpdateSchema = z.object({
+const WorkflowUpdateSchema = z.object({
   Status: z.enum(["NEW", "NOTIFIED", "RESOLVED", "SUPPRESSED"]).describe(
     "The status of the investigation into the finding. The workflow status is specific to an individual finding. It does not affect the generation of new findings. For example, setting the workflow status to SUPPRESSED or RESOLVED does not prevent a new finding for the same issue. The allowed values are the following. NEW - The initial state of a finding, before it is reviewed. Security Hub CSPM also resets WorkFlowStatus from NOTIFIED or RESOLVED to NEW in the following cases: The record state changes from ARCHIVED to ACTIVE. The compliance status changes from PASSED to either WARNING, FAILED, or NOT_AVAILABLE. NOTIFIED - Indicates that you notified the resource owner about the security issue. Used when the initial reviewer is not the resource owner, and needs intervention from the resource owner. RESOLVED - The finding was reviewed and remediated and is now considered resolved. SUPPRESSED - Indicates that you reviewed the finding and don't believe that any action is needed. The finding is no longer updated.",
   ),
 });
 
-export const AutomationRulesFindingFieldsUpdateSchema = z.object({
+const AutomationRulesFindingFieldsUpdateSchema = z.object({
   Types: z.array(z.string().regex(new RegExp("^([^/]+)(/[^/]+){0,2}$")))
     .describe("The rule action updates the Types field of a finding.")
     .optional(),
@@ -84,7 +93,7 @@ export const AutomationRulesFindingFieldsUpdateSchema = z.object({
   ).optional(),
 });
 
-export const AutomationRulesActionSchema = z.object({
+const AutomationRulesActionSchema = z.object({
   Type: z.enum(["FINDING_FIELDS_UPDATE"]).describe(
     "Specifies the type of action that Security Hub CSPM takes when a finding matches the defined criteria of a rule.",
   ),
@@ -93,7 +102,7 @@ export const AutomationRulesActionSchema = z.object({
   ),
 });
 
-export const StringFilterSchema = z.object({
+const StringFilterSchema = z.object({
   Comparison: z.enum([
     "EQUALS",
     "PREFIX",
@@ -109,12 +118,12 @@ export const StringFilterSchema = z.object({
   ),
 });
 
-export const DateRangeSchema = z.object({
+const DateRangeSchema = z.object({
   Unit: z.enum(["DAYS"]).describe("A date range unit for the date filter."),
   Value: z.number().describe("A date range value for the date filter."),
 });
 
-export const DateFilterSchema = z.object({
+const DateFilterSchema = z.object({
   DateRange: DateRangeSchema.describe("A date range for the date filter.")
     .optional(),
   End: z.string().regex(
@@ -133,7 +142,7 @@ export const DateFilterSchema = z.object({
   ).optional(),
 });
 
-export const NumberFilterSchema = z.object({
+const NumberFilterSchema = z.object({
   Eq: z.number().describe(
     "The equal-to condition to be applied to a single field when querying for findings.",
   ).optional(),
@@ -145,7 +154,7 @@ export const NumberFilterSchema = z.object({
   ).optional(),
 });
 
-export const MapFilterSchema = z.object({
+const MapFilterSchema = z.object({
   Comparison: z.enum(["EQUALS", "NOT_EQUALS", "CONTAINS", "NOT_CONTAINS"])
     .describe(
       "The condition to apply to the key value when filtering Security Hub CSPM findings with a map filter. To search for values that have the filter value, use one of the following comparison operators: To search for values that include the filter value, use CONTAINS. For example, for the ResourceTags field, the filter Department CONTAINS Security matches findings that include the value Security for the Department tag. In the same example, a finding with a value of Security team for the Department tag is a match. To search for values that exactly match the filter value, use EQUALS. For example, for the ResourceTags field, the filter Department EQUALS Security matches findings that have the value Security for the Department tag. CONTAINS and EQUALS filters on the same field are joined by OR. A finding matches if it matches any one of those filters. For example, the filters Department CONTAINS Security OR Department CONTAINS Finance match a finding that includes either Security, Finance, or both values. To search for values that don't have the filter value, use one of the following comparison operators: To search for values that exclude the filter value, use NOT_CONTAINS. For example, for the ResourceTags field, the filter Department NOT_CONTAINS Finance matches findings that exclude the value Finance for the Department tag. To search for values other than the filter value, use NOT_EQUALS. For example, for the ResourceTags field, the filter Department NOT_EQUALS Finance matches findings that don’t have the value Finance for the Department tag. NOT_CONTAINS and NOT_EQUALS filters on the same field are joined by AND. A finding matches only if it matches all of those filters. For example, the filters Department NOT_CONTAINS Security AND Department NOT_CONTAINS Finance match a finding that excludes both the Security and Finance values. CONTAINS filters can only be used with other CONTAINS filters. NOT_CONTAINS filters can only be used with other NOT_CONTAINS filters. You can’t have both a CONTAINS filter and a NOT_CONTAINS filter on the same field. Similarly, you can’t have both an EQUALS filter and a NOT_EQUALS filter on the same field. Combining filters in this way returns an error. CONTAINS and NOT_CONTAINS operators can be used only with automation rules. For more information, see [Automation rules](https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html) in the *User Guide*.",
@@ -466,9 +475,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SecurityHub AutomationRule. Registered at `@swamp/aws/securityhub/automation-rule`. */
 export const model = {
   type: "@swamp/aws/securityhub/automation-rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -482,6 +492,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
