@@ -95,9 +95,25 @@ function resourceInUseBody(id: number): unknown {
   };
 }
 
-Deno.env.set("HETZNER_API_TOKEN", "test-token");
+/**
+ * Save HETZNER_API_TOKEN, set it to a test value, and return a restore
+ * function to call in each test's `finally` block. CLAUDE.md testing rule:
+ * env vars must be restored so changes don't leak into later tests.
+ */
+function withTestToken(): () => void {
+  const original = Deno.env.get("HETZNER_API_TOKEN");
+  Deno.env.set("HETZNER_API_TOKEN", "test-token");
+  return () => {
+    if (original === undefined) {
+      Deno.env.delete("HETZNER_API_TOKEN");
+    } else {
+      Deno.env.set("HETZNER_API_TOKEN", original);
+    }
+  };
+}
 
 Deno.test("remove: succeeds on first attempt when API returns 204", async () => {
+  const restoreToken = withTestToken();
   const { mod, cleanup } = await importFreshHetznerLib();
   try {
     await withFetchQueue(
@@ -112,10 +128,12 @@ Deno.test("remove: succeeds on first attempt when API returns 204", async () => 
     );
   } finally {
     await cleanup();
+    restoreToken();
   }
 });
 
 Deno.test("remove: returns existed=false when API returns 404", async () => {
+  const restoreToken = withTestToken();
   const { mod, cleanup } = await importFreshHetznerLib();
   try {
     await withFetchQueue(
@@ -130,10 +148,12 @@ Deno.test("remove: returns existed=false when API returns 404", async () => {
     );
   } finally {
     await cleanup();
+    restoreToken();
   }
 });
 
 Deno.test("remove: retries on 422 resource_in_use, succeeds after propagation clears", async () => {
+  const restoreToken = withTestToken();
   const { mod, cleanup } = await importFreshHetznerLib();
   try {
     // The retry uses a 3-second delay. Stub setTimeout to resolve instantly so
@@ -162,10 +182,12 @@ Deno.test("remove: retries on 422 resource_in_use, succeeds after propagation cl
     }
   } finally {
     await cleanup();
+    restoreToken();
   }
 });
 
 Deno.test("remove: throws after exhausting retries on persistent 422 resource_in_use", async () => {
+  const restoreToken = withTestToken();
   const { mod, cleanup } = await importFreshHetznerLib();
   try {
     const originalSetTimeout = globalThis.setTimeout;
@@ -197,10 +219,12 @@ Deno.test("remove: throws after exhausting retries on persistent 422 resource_in
     }
   } finally {
     await cleanup();
+    restoreToken();
   }
 });
 
 Deno.test("remove: throws immediately on 422 with a different error code (no retry)", async () => {
+  const restoreToken = withTestToken();
   const { mod, cleanup } = await importFreshHetznerLib();
   try {
     await withFetchQueue(
@@ -225,10 +249,12 @@ Deno.test("remove: throws immediately on 422 with a different error code (no ret
     );
   } finally {
     await cleanup();
+    restoreToken();
   }
 });
 
 Deno.test("remove: throws immediately on 422 with a non-JSON body (no retry)", async () => {
+  const restoreToken = withTestToken();
   const { mod, cleanup } = await importFreshHetznerLib();
   try {
     await withFetchQueue(
@@ -247,10 +273,12 @@ Deno.test("remove: throws immediately on 422 with a non-JSON body (no retry)", a
     );
   } finally {
     await cleanup();
+    restoreToken();
   }
 });
 
 Deno.test("remove: surfaces non-422 non-404 error through request() (e.g. 500)", async () => {
+  const restoreToken = withTestToken();
   const { mod, cleanup } = await importFreshHetznerLib();
   try {
     await withFetchQueue(
@@ -271,5 +299,6 @@ Deno.test("remove: surfaces non-422 non-404 error through request() (e.g. 500)",
     );
   } finally {
     await cleanup();
+    restoreToken();
   }
 });

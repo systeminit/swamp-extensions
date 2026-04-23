@@ -563,7 +563,8 @@ propagation clears, even when the preceding server DELETE action has already
 reached `success`. The generated `remove()` handles this with a bounded retry
 loop:
 
-- `maxAttempts = 3`, `pollDelay = 3000ms` (9s worst case before failure)
+- `maxAttempts = 3`, `pollDelay = 3000ms` (6s worst case: the loop skips the
+  sleep on the final attempt before throwing)
 - Passes `{ allowStatus: [422] }` to `request()` so the 422 response bubbles up
   as a `Response` rather than a thrown error
 - Parses the JSON error body and only retries when
