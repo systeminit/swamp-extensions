@@ -69,11 +69,13 @@ should be zero new diffs on the second run.
 ### Codegen architecture
 
 Each provider has a pipeline in `codegen/<provider>/` with:
+
 - `pipeline.ts` — schema fetching and model generation orchestration
 - `extensionModelGenerator.ts` — TypeScript model file generation
 - `libGenerator.ts` — shared library file generation
 
 Shared code in `codegen/shared/` handles:
+
 - `schema/` — schema loading, normalization, property splitting, and types
 - `zodGenerator.ts` — CfProperty → Zod schema code generation
 - `denoConfigGenerator.ts` — generated `deno.json` files
@@ -81,6 +83,7 @@ Shared code in `codegen/shared/` handles:
 - `version.ts` — CalVer versioning with content-based change detection
 
 Design documents explain each provider's schema-to-model mapping decisions:
+
 - [AWS](codegen/designs/aws.md) — CloudFormation schema → CloudControl models
 - [GCP](codegen/designs/gcp.md) — Cloud Asset Inventory schema → GCP models
 - [Hetzner Cloud](codegen/designs/hetzner.md) — OpenAPI → Hetzner models

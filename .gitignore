@@ -1,3 +1,18 @@
 # Fetched schemas (large files, regenerated on demand)
 codegen/schemas/*.json
 codegen/schemas/gcp/
+
+# Claude Code git worktrees (nested checkouts, not part of main working tree)
+.claude/worktrees/
+.claude/skills/swamp-*
+
+.swamp.yaml
+/models/
+/workflows/workflow-*
+
+# BEGIN swamp managed section - DO NOT EDIT
+
+# Runtime data (not needed in version control)
+.swamp/
+
+# END swamp managed section
