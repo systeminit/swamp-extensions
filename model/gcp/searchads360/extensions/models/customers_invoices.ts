@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Search Ads 360 Reporting Customers.Invoices.
+ *
+ * An invoice. All invoice information is snapshotted to match the PDF invoice. For invoices older than the launch of InvoiceService, the snapshotted information may not match the PDF invoice.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   getProjectId,
   isResourceNotFoundError,
@@ -143,9 +154,17 @@ const InputsSchema = z.object({
   name: z.string().optional(),
 });
 
+/** Swamp extension model for Google Cloud Search Ads 360 Reporting Customers.Invoices. Registered at `@swamp/gcp/searchads360/customers-invoices`. */
 export const model = {
   type: "@swamp/gcp/searchads360/customers-invoices",
-  version: "2026.04.15.1",
+  version: "2026.04.23.1",
+  upgrades: [
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

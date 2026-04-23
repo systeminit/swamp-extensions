@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Vertex AI EvaluationRuns.
+ *
+ * EvaluationRun is a resource that represents a single evaluation run, which includes a set of prompts, model responses, evaluation configuration and the resulting metrics.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -2313,9 +2324,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Vertex AI EvaluationRuns. Registered at `@swamp/gcp/aiplatform/evaluationruns`. */
 export const model = {
   type: "@swamp/gcp/aiplatform/evaluationruns",
-  version: "2026.04.15.1",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2354,6 +2366,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.15.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

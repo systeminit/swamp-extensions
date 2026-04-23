@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Tool Results Histories.
+ *
+ * A History represents a sorted list of Executions ordered by the start_timestamp_millis field (descending). It can be used to group all the Executions of a continuous build. Note that the ordering only operates on one-dimension. If a repository has multiple branches, it means that multiple histories will need to be used in order to order Executions per branch.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   getProjectId,
@@ -96,9 +107,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Tool Results Histories. Registered at `@swamp/gcp/toolresults/histories`. */
 export const model = {
   type: "@swamp/gcp/toolresults/histories",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -122,6 +134,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

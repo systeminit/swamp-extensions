@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Real-time Bidding Buyers.UserLists.
+ *
+ * Represents an Authorized Buyers user list. Authorized Buyers can create/update/list user lists. Once a user list is created in the system, Authorized Buyers can add users to the user list using the bulk uploader API. Alternatively, users can be added by hosting a tag on the advertiser's page.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   getProjectId,
@@ -208,9 +219,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Real-time Bidding Buyers.UserLists. Registered at `@swamp/gcp/realtimebidding/buyers-userlists`. */
 export const model = {
   type: "@swamp/gcp/realtimebidding/buyers-userlists",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -234,6 +246,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

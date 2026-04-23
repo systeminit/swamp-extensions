@@ -668,6 +668,8 @@ export async function generateGcpModels(options: {
       modelFiles: modelFileNames,
       additionalFiles,
       releaseNotes,
+      repository: "https://github.com/systeminit/swamp-extensions",
+      platforms: [],
     });
     const hasChangedModels = modelChanges.some((c) =>
       c.status === "new" || c.status === "changed"
@@ -695,6 +697,8 @@ export async function generateGcpModels(options: {
       modelFiles: modelFileNames,
       additionalFiles,
       releaseNotes,
+      repository: "https://github.com/systeminit/swamp-extensions",
+      platforms: [],
     });
     const manifest: GcpGeneratedFile = {
       filePath: "manifest.yaml",

@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Network Security ClientTlsPolicies.
+ *
+ * ClientTlsPolicy is a resource that specifies how a client should authenticate connections to backends of a service. This resource itself does not affect configuration unless it is attached to a backend service resource.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -219,9 +230,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Network Security ClientTlsPolicies. Registered at `@swamp/gcp/networksecurity/clienttlspolicies`. */
 export const model = {
   type: "@swamp/gcp/networksecurity/clienttlspolicies",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -245,6 +257,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

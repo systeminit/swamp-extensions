@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud YouTube Data Search.
+ *
+ * A search result contains information about a YouTube video, channel, or playlist that matches the search parameters specified in an API request. While a search result points to a uniquely identifiable resource, like a video, it does not have its own persistent data.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   getProjectId,
   isResourceNotFoundError,
@@ -175,9 +186,10 @@ const InputsSchema = z.object({
   name: z.string().optional(),
 });
 
+/** Swamp extension model for Google Cloud YouTube Data Search. Registered at `@swamp/gcp/youtube/search`. */
 export const model = {
   type: "@swamp/gcp/youtube/search",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -201,6 +213,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

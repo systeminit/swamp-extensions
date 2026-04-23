@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Compute Engine RegionTargetHttpsProxies.
+ *
+ * Represents a Target HTTPS Proxy resource. Google Compute Engine has two Target HTTPS Proxy resources: * [Global](/compute/docs/reference/rest/v1/targetHttpsProxies) * [Regional](/compute/docs/reference/rest/v1/regionTargetHttpsProxies) A target HTTPS proxy is a component of Google Cloud HTTPS load balancers. * targetHttpsProxies are used by global external Application Load Balancers, classic Application Load Balancers, cross-region internal Application Load Balancers, and Traffic Director. * regionTargetHttpsProxies are used by regional internal Application Load Balancers and regional external Application Load Balancers. Forwarding rules reference a target HTTPS proxy, and the target proxy then references a URL map. For more information, readUsing Target Proxies and Forwarding rule concepts.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -245,9 +256,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine RegionTargetHttpsProxies. Registered at `@swamp/gcp/compute/regiontargethttpsproxies`. */
 export const model = {
   type: "@swamp/gcp/compute/regiontargethttpsproxies",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -271,6 +283,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

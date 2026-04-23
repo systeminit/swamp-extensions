@@ -1,15 +1,14 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/omics"
-version: "2026.04.23.2"
+version: "2026.04.23.3"
 description: "AWS OMICS infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - aws
   - omics
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: annotation_store, configuration, reference_store, run_group, sequence_store, variant_store, workflow, workflow_version
 models:
   - annotation_store.ts
   - configuration.ts
@@ -22,3 +21,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

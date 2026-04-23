@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Network Security AuthorizationPolicies.
+ *
+ * AuthorizationPolicy is a resource that specifies how a server should authorize incoming connections. This resource in itself does not change the configuration unless it's attached to a target https proxy or endpoint config selector resource.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -224,9 +235,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Network Security AuthorizationPolicies. Registered at `@swamp/gcp/networksecurity/authorizationpolicies`. */
 export const model = {
   type: "@swamp/gcp/networksecurity/authorizationpolicies",
-  version: "2026.04.04.1",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -255,6 +267,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

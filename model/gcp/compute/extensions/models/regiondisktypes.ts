@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Compute Engine RegionDiskTypes.
+ *
+ * Represents a Disk Type resource. Google Compute Engine has two Disk Type resources: * [Regional](/compute/docs/reference/rest/v1/regionDiskTypes) * [Zonal](/compute/docs/reference/rest/v1/diskTypes) You can choose from a variety of disk types based on your needs. For more information, readStorage options. The diskTypes resource represents disk types for a zonal persistent disk. For more information, readZonal persistent disks. The regionDiskTypes resource represents disk types for a regional persistent disk. For more information, read Regional persistent disks.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   getProjectId,
   isResourceNotFoundError,
@@ -69,9 +80,10 @@ const InputsSchema = z.object({
   name: z.string().optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine RegionDiskTypes. Registered at `@swamp/gcp/compute/regiondisktypes`. */
 export const model = {
   type: "@swamp/gcp/compute/regiondisktypes",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -95,6 +107,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

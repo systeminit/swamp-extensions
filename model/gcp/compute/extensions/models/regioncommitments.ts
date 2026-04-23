@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Compute Engine RegionCommitments.
+ *
+ * Represents a regional resource-based commitment resource. Creating this commitment resource means that you are purchasing a resource-based committed use contract, with an explicit start and end time. You can purchase resource-based commitments for both hardware and software resources. For more information, read Resource-based committed use discounts
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   getProjectId,
@@ -965,9 +976,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine RegionCommitments. Registered at `@swamp/gcp/compute/regioncommitments`. */
 export const model = {
   type: "@swamp/gcp/compute/regioncommitments",
-  version: "2026.04.07.1",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -1023,6 +1035,11 @@ export const model = {
     {
       toVersion: "2026.04.07.1",
       description: "Added: params",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

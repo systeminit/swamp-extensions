@@ -1,19 +1,19 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/firebaserules"
-version: "2026.04.03.3"
+version: "2026.04.23.1"
 description: "Google Cloud firebaserules infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - gcp
   - google-cloud
   - firebaserules
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: releases, rulesets
 models:
   - releases.ts
   - rulesets.ts
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

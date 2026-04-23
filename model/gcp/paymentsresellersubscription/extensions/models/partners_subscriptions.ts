@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Payments Reseller Subscription Partners.Subscriptions.
+ *
+ * Acts as a central billing entity between an external partner and Google. Google services use the subscription state to grant or revoke the user's service entitlement. Note: The subscription state might not perfectly align with the user's service entitlement. Some services might continue providing access until the current cycle ends, even if the subscription is immediately canceled. Consult the relevant contract or product policy for specific details.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   getProjectId,
@@ -681,9 +692,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Payments Reseller Subscription Partners.Subscriptions. Registered at `@swamp/gcp/paymentsresellersubscription/partners-subscriptions`. */
 export const model = {
   type: "@swamp/gcp/paymentsresellersubscription/partners-subscriptions",
-  version: "2026.04.04.1",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -712,6 +724,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

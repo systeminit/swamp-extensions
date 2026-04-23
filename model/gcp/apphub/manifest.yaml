@@ -1,16 +1,15 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/apphub"
-version: "2026.04.03.3"
+version: "2026.04.23.1"
 description: "Google Cloud apphub infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - gcp
   - google-cloud
   - apphub
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: locations, applications, applications_services, applications_workloads, discoveredservices, discoveredworkloads, extendedmetadataschemas, serviceprojectattachments
 models:
   - applications.ts
   - applications_services.ts
@@ -23,3 +22,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

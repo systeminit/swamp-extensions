@@ -1,15 +1,14 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/redshift"
-version: "2026.04.23.2"
+version: "2026.04.23.3"
 description: "AWS REDSHIFT infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - aws
   - redshift
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: cluster, cluster_parameter_group, cluster_subnet_group, endpoint_access, endpoint_authorization, event_subscription, integration, scheduled_action
 models:
   - cluster.ts
   - cluster_parameter_group.ts
@@ -22,3 +21,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

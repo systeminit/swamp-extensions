@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Contact Center AI Insights AssessmentRules.
+ *
+ * The CCAI Insights project wide assessment rule. This assessment rule will be applied to all conversations from the previous sampling cycle that match the sample rule defined in the assessment rule. One project can have multiple assessment rules.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -198,9 +209,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Contact Center AI Insights AssessmentRules. Registered at `@swamp/gcp/contactcenterinsights/assessmentrules`. */
 export const model = {
   type: "@swamp/gcp/contactcenterinsights/assessmentrules",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -224,6 +236,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

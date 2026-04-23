@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Network Security MirroringEndpointGroups.
+ *
+ * An endpoint group is a consumer frontend for a deployment group (backend). In order to configure mirroring for a network, consumers must create: - An association between their network and the endpoint group. - A security profile that points to the endpoint group. - A mirroring rule that references the security profile (group).
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -175,9 +186,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Network Security MirroringEndpointGroups. Registered at `@swamp/gcp/networksecurity/mirroringendpointgroups`. */
 export const model = {
   type: "@swamp/gcp/networksecurity/mirroringendpointgroups",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -201,6 +213,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

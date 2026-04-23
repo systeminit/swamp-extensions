@@ -1,17 +1,17 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/osis"
-version: "2026.04.23.2"
+version: "2026.04.23.3"
 description: "AWS OSIS infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - aws
   - osis
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: pipeline
 models:
   - pipeline.ts
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

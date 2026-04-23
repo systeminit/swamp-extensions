@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Firestore Databases.CollectionGroups.Fields.
+ *
+ * Represents a single field in the database. Fields are grouped by their "Collection Group", which represent all collections in the database with the same ID.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   getProjectId,
   isResourceNotFoundError,
@@ -273,9 +284,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Firestore Databases.CollectionGroups.Fields. Registered at `@swamp/gcp/firestore/databases-collectiongroups-fields`. */
 export const model = {
   type: "@swamp/gcp/firestore/databases-collectiongroups-fields",
-  version: "2026.04.09.1",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -309,6 +321,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.09.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

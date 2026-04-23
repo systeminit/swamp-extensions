@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Firebase App Hosting Backends.Builds.
+ *
+ * A single build for a backend, at a specific point codebase reference tag and point in time. Encapsulates several resources, including an Artifact Registry container image, a Cloud Build invocation that built the image, and the Cloud Run revision that uses that image.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -534,9 +545,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Firebase App Hosting Backends.Builds. Registered at `@swamp/gcp/firebaseapphosting/backends-builds`. */
 export const model = {
   type: "@swamp/gcp/firebaseapphosting/backends-builds",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -560,6 +572,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

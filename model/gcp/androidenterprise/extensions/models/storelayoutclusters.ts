@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Google Play EMM Storelayoutclusters.
+ *
+ * Definition of a managed Google Play store cluster, a list of products displayed as part of a store page.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -172,9 +183,10 @@ const InputsSchema = z.object({
   pageId: z.string().describe("The ID of the page.").optional(),
 });
 
+/** Swamp extension model for Google Cloud Google Play EMM Storelayoutclusters. Registered at `@swamp/gcp/androidenterprise/storelayoutclusters`. */
 export const model = {
   type: "@swamp/gcp/androidenterprise/storelayoutclusters",
-  version: "2026.04.03.3",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -198,6 +210,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

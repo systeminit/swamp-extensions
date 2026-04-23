@@ -1,19 +1,19 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/solar"
-version: "2026.04.03.3"
+version: "2026.04.23.1"
 description: "Google Cloud solar infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - gcp
   - google-cloud
   - solar
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: datalayers, geotiff
 models:
   - datalayers.ts
   - geotiff.ts
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

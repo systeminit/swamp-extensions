@@ -475,6 +475,8 @@ export async function generateAwsModels(options: {
       modelFiles: modelFileNames,
       additionalFiles,
       releaseNotes,
+      repository: "https://github.com/systeminit/swamp-extensions",
+      platforms: [],
     });
     const hasChangedModels = modelChanges.some((c) =>
       c.status === "new" || c.status === "changed"
@@ -496,6 +498,8 @@ export async function generateAwsModels(options: {
       modelFiles: modelFileNames,
       additionalFiles,
       releaseNotes,
+      repository: "https://github.com/systeminit/swamp-extensions",
+      platforms: [],
     });
     const manifest: GeneratedFile = {
       filePath: "manifest.yaml",

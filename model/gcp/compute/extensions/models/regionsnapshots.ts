@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Compute Engine RegionSnapshots.
+ *
+ * Represents a Persistent Disk Snapshot resource. You can use snapshots to back up data on a regular interval. For more information, read Creating persistent disk snapshots.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -362,9 +373,17 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine RegionSnapshots. Registered at `@swamp/gcp/compute/regionsnapshots`. */
 export const model = {
   type: "@swamp/gcp/compute/regionsnapshots",
-  version: "2026.04.04.1",
+  version: "2026.04.23.1",
+  upgrades: [
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

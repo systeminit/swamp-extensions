@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Agent Registry Bindings.
+ *
+ * Represents a user-defined Binding.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -200,9 +211,17 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Agent Registry Bindings. Registered at `@swamp/gcp/agentregistry/bindings`. */
 export const model = {
   type: "@swamp/gcp/agentregistry/bindings",
-  version: "2026.04.09.1",
+  version: "2026.04.23.1",
+  upgrades: [
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
