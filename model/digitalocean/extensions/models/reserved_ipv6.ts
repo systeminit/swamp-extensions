@@ -151,7 +151,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean reserved ipv6. Registered at `@swamp/digitalocean/reserved-ipv6`. */
 export const model = {
   type: "@swamp/digitalocean/reserved-ipv6",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",

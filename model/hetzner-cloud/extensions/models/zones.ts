@@ -146,7 +146,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud zone. Registered at `@swamp/hetzner-cloud/zones`. */
 export const model = {
   type: "@swamp/hetzner-cloud/zones",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.03.1",

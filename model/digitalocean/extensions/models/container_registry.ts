@@ -85,7 +85,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean container registry. Registered at `@swamp/digitalocean/container-registry`. */
 export const model = {
   type: "@swamp/digitalocean/container-registry",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",

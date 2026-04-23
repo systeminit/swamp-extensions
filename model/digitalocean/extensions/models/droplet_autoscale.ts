@@ -148,7 +148,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean droplet autoscale. Registered at `@swamp/digitalocean/droplet-autoscale`. */
 export const model = {
   type: "@swamp/digitalocean/droplet-autoscale",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",

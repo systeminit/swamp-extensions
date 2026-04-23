@@ -102,7 +102,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud firewall. Registered at `@swamp/hetzner-cloud/firewalls`. */
 export const model = {
   type: "@swamp/hetzner-cloud/firewalls",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.03.1",

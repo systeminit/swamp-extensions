@@ -153,7 +153,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean monitoring alert policy. Registered at `@swamp/digitalocean/monitoring-alert-policy`. */
 export const model = {
   type: "@swamp/digitalocean/monitoring-alert-policy",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
