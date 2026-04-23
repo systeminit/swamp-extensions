@@ -1,16 +1,15 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/analyticsadmin"
-version: "2026.04.03.3"
+version: "2026.04.23.1"
 description: "Google Cloud analyticsadmin infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - gcp
   - google-cloud
   - analyticsadmin
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: accountsummaries, accounts, properties, properties_conversionevents, properties_customdimensions, properties_custommetrics, properties_datastreams, properties_datastreams_measurementprotocolsecrets, properties_firebaselinks, properties_googleadslinks, properties_keyevents
 models:
   - accounts.ts
   - accountsummaries.ts
@@ -26,3 +25,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

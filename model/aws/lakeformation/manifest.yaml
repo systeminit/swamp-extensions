@@ -1,15 +1,14 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/lakeformation"
-version: "2026.04.23.2"
+version: "2026.04.23.3"
 description: "AWS LAKEFORMATION infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - aws
   - lakeformation
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: data_cells_filter, principal_permissions, tag, tag_association
 models:
   - data_cells_filter.ts
   - principal_permissions.ts
@@ -18,3 +17,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

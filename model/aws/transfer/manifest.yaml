@@ -1,15 +1,14 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/transfer"
-version: "2026.04.23.2"
+version: "2026.04.23.3"
 description: "AWS TRANSFER infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - aws
   - transfer
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: agreement, certificate, connector, profile, server, user, web_app, workflow
 models:
   - agreement.ts
   - certificate.ts
@@ -22,3 +21,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

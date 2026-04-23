@@ -1,16 +1,15 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/sasportal"
-version: "2026.04.04.1"
+version: "2026.04.23.1"
 description: "Google Cloud sasportal infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - gcp
   - google-cloud
   - sasportal
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: customers_deployments_devices, customers_devices, customers_nodes_devices, deployments_devices, nodes_deployments_devices, nodes_devices, nodes_nodes_devices
 models:
   - customers.ts
   - customers_deployments.ts
@@ -34,3 +33,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

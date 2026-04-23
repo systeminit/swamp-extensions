@@ -1,18 +1,18 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/discovery"
-version: "2026.04.03.3"
+version: "2026.04.23.1"
 description: "Google Cloud discovery infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - gcp
   - google-cloud
   - discovery
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: apis
 models:
   - apis.ts
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

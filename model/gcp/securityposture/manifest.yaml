@@ -1,16 +1,15 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/securityposture"
-version: "2026.04.04.1"
+version: "2026.04.23.1"
 description: "Google Cloud securityposture infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - gcp
   - google-cloud
   - securityposture
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: posturetemplates, postures, reports
 models:
   - locations.ts
   - posturedeployments.ts
@@ -20,3 +19,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

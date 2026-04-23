@@ -90,8 +90,11 @@ async function generateHetznerProvider(options: {
   const unchangedCount = modelChanges.filter((c) => c.status === "unchanged")
     .length;
 
-  // Write manifest only when content actually differs from disk
-  if (hasChanges) {
+  // Write manifest only when content actually differs from disk. Note we
+  // do *not* gate on hasChanges — that flag tracks model/readme/license
+  // deltas only, so a pure manifest edit (e.g. adding `repository:` via a
+  // codegen change) would be missed. Rely on direct content comparison.
+  {
     const manifestPath = `${hetznerOutputDir}/${manifest.filePath}`;
     let manifestChanged = true;
     try {
@@ -197,8 +200,11 @@ async function generateDigitalOceanProvider(options: {
   const unchangedCount = modelChanges.filter((c) => c.status === "unchanged")
     .length;
 
-  // Write manifest only when content actually differs from disk
-  if (hasChanges) {
+  // Write manifest only when content actually differs from disk. Note we
+  // do *not* gate on hasChanges — that flag tracks model/readme/license
+  // deltas only, so a pure manifest edit (e.g. adding `repository:` via a
+  // codegen change) would be missed. Rely on direct content comparison.
+  {
     const manifestPath = `${doOutputDir}/${manifest.filePath}`;
     let manifestChanged = true;
     try {
@@ -336,8 +342,12 @@ async function generateAwsProvider(options: {
     totalModelsChanged += changedCount;
     totalModelsUnchanged += unchangedCount;
 
-    // Write manifest only when content actually differs from disk
-    if (serviceResult.hasChanges) {
+    // Write manifest only when content actually differs from disk. Note we
+    // do *not* gate on serviceResult.hasChanges here — that flag tracks
+    // model/readme/license deltas only, so a pure manifest edit (e.g.
+    // adding `repository:` or `platforms:` via a codegen change) would be
+    // missed. Rely on the direct content comparison instead.
+    {
       const manifestPath =
         `${serviceOutputDir}/${serviceResult.manifest.filePath}`;
       let manifestChanged = true;
@@ -486,8 +496,12 @@ async function generateGcpProvider(options: {
     totalModelsChanged += changedCount;
     totalModelsUnchanged += unchangedCount;
 
-    // Write manifest only when content actually differs from disk
-    if (serviceResult.hasChanges) {
+    // Write manifest only when content actually differs from disk. Note we
+    // do *not* gate on serviceResult.hasChanges here — that flag tracks
+    // model/readme/license deltas only, so a pure manifest edit (e.g.
+    // adding `repository:` or `platforms:` via a codegen change) would be
+    // missed. Rely on the direct content comparison instead.
+    {
       const manifestPath =
         `${serviceOutputDir}/${serviceResult.manifest.filePath}`;
       let manifestChanged = true;

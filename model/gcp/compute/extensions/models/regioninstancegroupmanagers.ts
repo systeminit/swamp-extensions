@@ -3,7 +3,18 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Google Cloud Compute Engine RegionInstanceGroupManagers.
+ *
+ * Represents a Managed Instance Group resource. An instance group is a collection of VM instances that you can manage as a single entity. For more information, readInstance groups. For zonal Managed Instance Group, use the instanceGroupManagers resource. For regional Managed Instance Group, use theregionInstanceGroupManagers resource.
+ *
+ * Wraps the GCP resource as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -1057,9 +1068,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Google Cloud Compute Engine RegionInstanceGroupManagers. Registered at `@swamp/gcp/compute/regioninstancegroupmanagers`. */
 export const model = {
   type: "@swamp/gcp/compute/regioninstancegroupmanagers",
-  version: "2026.04.07.1",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -1108,6 +1120,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
