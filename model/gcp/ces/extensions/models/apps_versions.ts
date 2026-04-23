@@ -595,6 +595,16 @@ const GlobalArgsSchema = z.object({
         }).describe(
           "Configuration to instruct how sensitive data should be handled.",
         ).optional(),
+        unredactedAudioRecordingConfig: z.object({
+          gcsBucket: z.string().describe(
+            'Optional. The [Cloud Storage](https://cloud.google.com/storage) bucket to store the session audio recordings. The URI must start with "gs://". Please choose a bucket location that meets your data residency requirements. Note: If the Cloud Storage bucket is in a different project from the app, you should grant `storage.objects.create` permission to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.',
+          ).optional(),
+          gcsPathPrefix: z.string().describe(
+            "Optional. The Cloud Storage path prefix for audio recordings. This prefix can include the following placeholders, which will be dynamically substituted at serving time: - $project: project ID - $location: app location - $app: app ID - $date: session date in YYYY-MM-DD format - $session: session ID If the path prefix is not specified, the default prefix `$project/$location/$app/$date/$session/` will be used.",
+          ).optional(),
+        }).describe(
+          "Configuration for how the audio interactions should be recorded.",
+        ).optional(),
       }).describe("Settings to describe the logging behaviors for the app.")
         .optional(),
       metadata: z.record(z.string(), z.string()).describe(
@@ -1614,6 +1624,19 @@ const GlobalArgsSchema = z.object({
         }).describe(
           "Represents a select subset of an OpenAPI 3.0 schema object.",
         ).optional(),
+        textResponseConfig: z.object({
+          staticText: z.unknown().describe(
+            "Optional. The static text response to return when type is STATIC.",
+          ).optional(),
+          textResponseInstruction: z.unknown().describe(
+            "Optional. Instruction for the LLM on how to generate the text response. Used as the description for the text response parameter if type is LLM_GENERATED.",
+          ).optional(),
+          type: z.unknown().describe(
+            "Optional. The strategy for providing the text response.",
+          ).optional(),
+        }).describe(
+          "Configuration for the text response returned with the widget.",
+        ).optional(),
         uiConfig: z.record(z.string(), z.unknown()).describe(
           "Optional. Configuration for rendering the widget.",
         ).optional(),
@@ -1982,6 +2005,10 @@ const StateSchema = z.object({
           deidentifyTemplate: z.string(),
           enableRedaction: z.boolean(),
           inspectTemplate: z.string(),
+        }),
+        unredactedAudioRecordingConfig: z.object({
+          gcsBucket: z.string(),
+          gcsPathPrefix: z.string(),
         }),
       }),
       metadata: z.record(z.string(), z.unknown()),
@@ -2378,6 +2405,11 @@ const StateSchema = z.object({
           title: z.unknown(),
           type: z.unknown(),
           uniqueItems: z.unknown(),
+        }),
+        textResponseConfig: z.object({
+          staticText: z.unknown(),
+          textResponseInstruction: z.unknown(),
+          type: z.unknown(),
         }),
         uiConfig: z.record(z.string(), z.unknown()),
         widgetType: z.string(),
@@ -2960,6 +2992,16 @@ const InputsSchema = z.object({
         }).describe(
           "Configuration to instruct how sensitive data should be handled.",
         ).optional(),
+        unredactedAudioRecordingConfig: z.object({
+          gcsBucket: z.string().describe(
+            'Optional. The [Cloud Storage](https://cloud.google.com/storage) bucket to store the session audio recordings. The URI must start with "gs://". Please choose a bucket location that meets your data residency requirements. Note: If the Cloud Storage bucket is in a different project from the app, you should grant `storage.objects.create` permission to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.',
+          ).optional(),
+          gcsPathPrefix: z.string().describe(
+            "Optional. The Cloud Storage path prefix for audio recordings. This prefix can include the following placeholders, which will be dynamically substituted at serving time: - $project: project ID - $location: app location - $app: app ID - $date: session date in YYYY-MM-DD format - $session: session ID If the path prefix is not specified, the default prefix `$project/$location/$app/$date/$session/` will be used.",
+          ).optional(),
+        }).describe(
+          "Configuration for how the audio interactions should be recorded.",
+        ).optional(),
       }).describe("Settings to describe the logging behaviors for the app.")
         .optional(),
       metadata: z.record(z.string(), z.string()).describe(
@@ -3979,6 +4021,19 @@ const InputsSchema = z.object({
         }).describe(
           "Represents a select subset of an OpenAPI 3.0 schema object.",
         ).optional(),
+        textResponseConfig: z.object({
+          staticText: z.unknown().describe(
+            "Optional. The static text response to return when type is STATIC.",
+          ).optional(),
+          textResponseInstruction: z.unknown().describe(
+            "Optional. Instruction for the LLM on how to generate the text response. Used as the description for the text response parameter if type is LLM_GENERATED.",
+          ).optional(),
+          type: z.unknown().describe(
+            "Optional. The strategy for providing the text response.",
+          ).optional(),
+        }).describe(
+          "Configuration for the text response returned with the widget.",
+        ).optional(),
         uiConfig: z.record(z.string(), z.unknown()).describe(
           "Optional. Configuration for rendering the widget.",
         ).optional(),
@@ -4153,7 +4208,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Google Cloud Gemini Enterprise for Customer Experience Apps.Versions. Registered at `@swamp/gcp/ces/apps-versions`. */
 export const model = {
   type: "@swamp/gcp/ces/apps-versions",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -4202,6 +4257,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
