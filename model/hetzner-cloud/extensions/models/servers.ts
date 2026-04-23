@@ -139,6 +139,8 @@ const ResourceSchema = z.object({
         unavailable_after: z.string().optional(),
         announced: z.string().optional(),
       }).optional(),
+      recommended: z.boolean().optional(),
+      available: z.boolean().optional(),
     })).optional(),
   }).optional(),
   datacenter: z.object({
@@ -261,7 +263,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud server. Registered at `@swamp/hetzner-cloud/servers`. */
 export const model = {
   type: "@swamp/hetzner-cloud/servers",
-  version: "2026.04.23.3",
+  version: "2026.04.23.4",
   upgrades: [
     {
       toVersion: "2026.04.02.1",
@@ -295,6 +297,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.23.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.4",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

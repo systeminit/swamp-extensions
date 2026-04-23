@@ -547,9 +547,9 @@ Key behaviors:
 - Token is read from `HETZNER_API_TOKEN` env var
 - Token is validated once against `GET /v1/locations` and cached
 - 404 responses are not thrown as errors (callers handle them)
-- `request()` accepts an optional `{ allowStatus: number[] }` option so
-  callers can opt specific non-OK statuses through as a `Response` instead
-  of a thrown `Error` — generalizes the built-in 404 special-case
+- `request()` accepts an optional `{ allowStatus: number[] }` option so callers
+  can opt specific non-OK statuses through as a `Response` instead of a thrown
+  `Error` — generalizes the built-in 404 special-case
 - All other non-OK responses throw with method, path, status, and body
 - Response bodies are unwrapped via the `unwrap()` function (see Section 7)
 - No `subResourceUpdate` or `discover` exports (Hetzner doesn't need them)
@@ -557,27 +557,25 @@ Key behaviors:
 
 #### `remove()` retry on `resource_in_use` (swamp-club #41)
 
-Hetzner processes firewall-from-server detach asynchronously after a
-server DELETE. An immediate firewall DELETE can return
-`422 resource_in_use` until propagation clears, even when the preceding
-server DELETE action has already reached `success`. The generated
-`remove()` handles this with a bounded retry loop:
+Hetzner processes firewall-from-server detach asynchronously after a server
+DELETE. An immediate firewall DELETE can return `422 resource_in_use` until
+propagation clears, even when the preceding server DELETE action has already
+reached `success`. The generated `remove()` handles this with a bounded retry
+loop:
 
 - `maxAttempts = 3`, `pollDelay = 3000ms` (9s worst case before failure)
-- Passes `{ allowStatus: [422] }` to `request()` so the 422 response
-  bubbles up as a `Response` rather than a thrown error
+- Passes `{ allowStatus: [422] }` to `request()` so the 422 response bubbles up
+  as a `Response` rather than a thrown error
 - Parses the JSON error body and only retries when
-  `error.code === "resource_in_use"`; other 422 codes (e.g.
-  `invalid_input`, `protected`) and non-JSON bodies surface verbatim
-  without retry
+  `error.code === "resource_in_use"`; other 422 codes (e.g. `invalid_input`,
+  `protected`) and non-JSON bodies surface verbatim without retry
 - Loop shape mirrors `pollAction` / `pollResourceReady` in
-  `codegen/digitalocean/libGenerator.ts` for provider-to-provider
-  consistency
+  `codegen/digitalocean/libGenerator.ts` for provider-to-provider consistency
 
-Runtime behavior is covered by `codegen/hetzner/libGenerator_test.ts`,
-which dynamic-imports the generated template with a cache-bust URL and
-stubs `globalThis.fetch` to exercise retry/exhaust/other-422/non-JSON
-paths without needing a `HETZNER_API_BASE` env override.
+Runtime behavior is covered by `codegen/hetzner/libGenerator_test.ts`, which
+dynamic-imports the generated template with a cache-bust URL and stubs
+`globalThis.fetch` to exercise retry/exhaust/other-422/non-JSON paths without
+needing a `HETZNER_API_BASE` env override.
 
 ### Naming conventions
 
