@@ -258,7 +258,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud load balancer. Registered at `@swamp/hetzner-cloud/load-balancers`. */
 export const model = {
   type: "@swamp/hetzner-cloud/load-balancers",
-  version: "2026.04.23.2",
+  version: "2026.04.23.4",
   upgrades: [
     {
       toVersion: "2026.04.03.1",
@@ -283,6 +283,16 @@ export const model = {
     {
       toVersion: "2026.04.23.2",
       description: "No schema changes (version bump for manifest republish)",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.4",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
