@@ -44,6 +44,7 @@ async function request(
   method: string,
   path: string,
   body?: Record<string, unknown>,
+  options?: { allowStatus?: number[] },
 ): Promise<Response> {
   const token = await getToken();
   const url = \`\${API_BASE}\${path}\`;
@@ -61,6 +62,11 @@ async function request(
   if (!resp.ok) {
     // 404 is handled by callers — not an exception
     if (resp.status === 404) {
+      return resp;
+    }
+    // Allow-listed statuses bubble up to the caller for bespoke handling
+    // (e.g. remove() retries on 422 resource_in_use).
+    if (options?.allowStatus?.includes(resp.status)) {
       return resp;
     }
     const text = await resp.text();
@@ -137,12 +143,61 @@ export async function update(
   return unwrap(data);
 }
 
+/**
+ * Delete a Hetzner resource. Retries on 422 \`resource_in_use\` because Hetzner
+ * processes detach propagation asynchronously — an immediate firewall DELETE
+ * after a server DELETE can return 422 until the firewall-from-server detach
+ * has propagated. Other 422 error codes (protected, invalid_input, etc.) are
+ * surfaced unchanged, as is every non-422 non-404 status.
+ *
+ * Loop shape mirrors the polling helpers in \`codegen/digitalocean/libGenerator.ts\`
+ * (pollAction, pollResourceReady) for provider-to-provider consistency.
+ */
 export async function remove(
   endpoint: string,
   id: number | string,
 ): Promise<{ existed: boolean }> {
-  const resp = await request("DELETE", \`\${endpoint}/\${id}\`);
-  return { existed: resp.status !== 404 };
+  const maxAttempts = 3;
+  const pollDelay = 3000;
+  let lastBody = "";
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const resp = await request(
+      "DELETE",
+      \`\${endpoint}/\${id}\`,
+      undefined,
+      { allowStatus: [422] },
+    );
+    if (resp.status !== 422) {
+      return { existed: resp.status !== 404 };
+    }
+
+    lastBody = await resp.text();
+    let errorCode: string | undefined;
+    try {
+      const parsed = JSON.parse(lastBody) as { error?: { code?: string } };
+      errorCode = parsed?.error?.code;
+    } catch {
+      // Body isn't JSON — we can't confirm it's a transient resource_in_use,
+      // so surface the 422 verbatim rather than retrying blindly.
+      throw new Error(
+        \`Hetzner API error: DELETE \${endpoint}/\${id} returned 422: \${lastBody}\`,
+      );
+    }
+    if (errorCode !== "resource_in_use") {
+      throw new Error(
+        \`Hetzner API error: DELETE \${endpoint}/\${id} returned 422: \${lastBody}\`,
+      );
+    }
+
+    if (attempt < maxAttempts - 1) {
+      await new Promise((resolve) => setTimeout(resolve, pollDelay));
+    }
+  }
+
+  throw new Error(
+    \`Hetzner API error: DELETE \${endpoint}/\${id} timed out after \${maxAttempts} attempts (422 resource_in_use): \${lastBody}\`,
+  );
 }
 `;
 }
