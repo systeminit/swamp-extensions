@@ -24,13 +24,18 @@
 // remote indexes must self-heal via the `indexMutated` flag.
 
 import {
+  assert,
   assertEquals,
   assertExists,
   assertRejects,
 } from "jsr:@std/assert@1.0.19";
 import { join } from "jsr:@std/path@1";
-import { S3CacheSyncService } from "./s3_cache_sync.ts";
-import type { S3Client } from "./s3_client.ts";
+import {
+  isRetryableError,
+  retryWithBackoff,
+  S3CacheSyncService,
+} from "./s3_cache_sync.ts";
+import { S3Client, S3OperationError } from "./s3_client.ts";
 
 /** Creates an error that matches the SDK's "object not found" shape. */
 function makeNoSuchKeyError(key: string): Error {
@@ -638,4 +643,452 @@ Deno.test("pushChanged: propagates non-NotFound remote errors and skips writebac
   } finally {
     await Deno.remove(cachePath, { recursive: true });
   }
+});
+
+// -- DEF-2: retry + classification + batch failure message ------------------
+
+/** Build an S3OperationError carrying a specific HTTP status. */
+function opError(status: number): S3OperationError {
+  return new S3OperationError(`S3 test failed HTTP ${status}`, {
+    name: "TestError",
+    cause: new Error("test"),
+    httpStatusCode: status,
+    code: "TestError",
+    requestId: "r",
+    bodyPreview: undefined,
+  });
+}
+
+Deno.test("isRetryableError: 5xx and 429 are retryable, 4xx is not", () => {
+  assertEquals(isRetryableError(opError(500)), true);
+  assertEquals(isRetryableError(opError(503)), true);
+  assertEquals(isRetryableError(opError(429)), true);
+  assertEquals(isRetryableError(opError(403)), false);
+  assertEquals(isRetryableError(opError(404)), false);
+  assertEquals(isRetryableError(opError(412)), false);
+});
+
+Deno.test("isRetryableError: TimeoutError retryable, AbortError not", () => {
+  const timeout = new Error("timed out");
+  timeout.name = "TimeoutError";
+  assertEquals(isRetryableError(timeout), true);
+
+  const abort = new Error("aborted");
+  abort.name = "AbortError";
+  assertEquals(isRetryableError(abort), false);
+});
+
+Deno.test("retryWithBackoff: succeeds after transient 500", async () => {
+  let attempts = 0;
+  const result = await retryWithBackoff(() => {
+    attempts++;
+    if (attempts < 2) return Promise.reject(opError(500));
+    return Promise.resolve("ok");
+  }, { maxAttempts: 3, baseDelayMs: 1 });
+  assertEquals(result, "ok");
+  assertEquals(attempts, 2);
+});
+
+Deno.test("retryWithBackoff: does NOT retry non-retryable (403)", async () => {
+  let attempts = 0;
+  await assertRejects(
+    () =>
+      retryWithBackoff(() => {
+        attempts++;
+        return Promise.reject(opError(403));
+      }, { maxAttempts: 3, baseDelayMs: 1 }),
+    S3OperationError,
+  );
+  assertEquals(attempts, 1, "403 must not trigger a retry");
+});
+
+Deno.test("retryWithBackoff: exhausts maxAttempts then rethrows", async () => {
+  let attempts = 0;
+  await assertRejects(
+    () =>
+      retryWithBackoff(() => {
+        attempts++;
+        return Promise.reject(opError(500));
+      }, { maxAttempts: 3, baseDelayMs: 1 }),
+    S3OperationError,
+  );
+  assertEquals(attempts, 3);
+});
+
+Deno.test("pushChanged: batch failure message includes underlying error details", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-test-retry-" });
+  try {
+    // Mock whose putObject rejects with 403 (non-retryable, so fails fast)
+    // for every file push. Index fetch returns empty so writeback is unused.
+    const mock = {
+      getObject(key: string): Promise<Uint8Array> {
+        if (key === ".datastore-index.json") {
+          const err = new Error("NoSuchKey");
+          err.name = "NoSuchKey";
+          return Promise.reject(err);
+        }
+        return Promise.reject(new Error("unexpected get"));
+      },
+      putObject(_key: string, _body: Uint8Array): Promise<void> {
+        return Promise.reject(opError(403));
+      },
+    } as unknown as S3Client;
+
+    await seedFile(cachePath, "data/a.yaml", "1\n");
+    await seedFile(cachePath, "data/b.yaml", "2\n");
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    let caught: unknown;
+    try {
+      await service.pushChanged();
+    } catch (e) {
+      caught = e;
+    }
+    assert(caught instanceof Error);
+    const msg = (caught as Error).message;
+    assert(
+      msg.includes("HTTP 403"),
+      `batch failure message must include underlying error text, got: ${msg}`,
+    );
+    assert(
+      msg.includes("data/a.yaml"),
+      `batch failure message must list failed files, got: ${msg}`,
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// --- DEF-2 integration: real AWS SDK → real HTTP → retry classification ---
+//
+// These tests exercise retryWithBackoff + pushFile against the real
+// @aws-sdk/client-s3 going over a real TCP socket. The unit tests above
+// use hand-built S3OperationError objects; these prove the SDK actually
+// surfaces 5xx/429 in a shape isRetryableError recognizes, so a failure
+// mode the mocks can't catch — "the SDK returned an error named
+// 'ServiceException' instead of an S3OperationError with httpStatusCode"
+// — would be caught here.
+//
+// `maxAttempts: 2, baseDelayMs: 10` keeps integration test wall time
+// under a second while still exercising the retry path end-to-end.
+
+/**
+ * Start a local HTTP server whose response on the Nth request is
+ * controlled by `responses[N-1]`; after responses run out, further
+ * requests return 500. Also counts requests so tests can assert
+ * retries actually fired.
+ */
+function withProgrammableServer(
+  responses: Array<() => Response>,
+  fn: (s3: S3Client, state: { requestCount: number }) => Promise<void>,
+): Promise<void> {
+  const state = { requestCount: 0 };
+  const server = Deno.serve({ port: 0, onListen() {} }, () => {
+    const i = state.requestCount++;
+    const handler = responses[i] ??
+      (() => new Response("overflow", { status: 500 }));
+    return handler();
+  });
+  const addr = server.addr as Deno.NetAddr;
+
+  const priorKey = Deno.env.get("AWS_ACCESS_KEY_ID");
+  const priorSecret = Deno.env.get("AWS_SECRET_ACCESS_KEY");
+  Deno.env.set("AWS_ACCESS_KEY_ID", "test");
+  Deno.env.set("AWS_SECRET_ACCESS_KEY", "test");
+
+  const cleanup = async () => {
+    if (priorKey) Deno.env.set("AWS_ACCESS_KEY_ID", priorKey);
+    else Deno.env.delete("AWS_ACCESS_KEY_ID");
+    if (priorSecret) Deno.env.set("AWS_SECRET_ACCESS_KEY", priorSecret);
+    else Deno.env.delete("AWS_SECRET_ACCESS_KEY");
+    await server.shutdown();
+  };
+
+  const s3 = new S3Client({
+    bucket: "test-bucket",
+    region: "us-east-1",
+    endpoint: `http://127.0.0.1:${addr.port}`,
+    forcePathStyle: true,
+  });
+
+  return fn(s3, state).finally(cleanup);
+}
+
+Deno.test({
+  sanitizeResources: false,
+  name: "integration: retryWithBackoff treats a real SDK 503 as retryable",
+  fn: () =>
+    withProgrammableServer(
+      [
+        () =>
+          new Response(
+            '<?xml version="1.0"?><Error><Code>ServiceUnavailable</Code><Message>try later</Message><RequestId>r503</RequestId></Error>',
+            {
+              status: 503,
+              headers: { "Content-Type": "application/xml" },
+            },
+          ),
+        () => new Response(null, { status: 200 }),
+      ],
+      async (s3, state) => {
+        await retryWithBackoff(
+          () => s3.putObject("k", new Uint8Array([1, 2, 3])),
+          { maxAttempts: 3, baseDelayMs: 10 },
+        );
+        assertEquals(
+          state.requestCount,
+          2,
+          "503 must trigger a retry that succeeds on attempt 2",
+        );
+      },
+    ),
+});
+
+Deno.test({
+  sanitizeResources: false,
+  name: "integration: retryWithBackoff treats a real SDK 429 as retryable",
+  fn: () =>
+    withProgrammableServer(
+      [
+        () =>
+          new Response(
+            '<?xml version="1.0"?><Error><Code>SlowDown</Code><Message>throttled</Message><RequestId>r429</RequestId></Error>',
+            {
+              status: 429,
+              headers: { "Content-Type": "application/xml" },
+            },
+          ),
+        () => new Response(null, { status: 200 }),
+      ],
+      async (s3, state) => {
+        await retryWithBackoff(
+          () => s3.putObject("k", new Uint8Array([1, 2, 3])),
+          { maxAttempts: 3, baseDelayMs: 10 },
+        );
+        assertEquals(
+          state.requestCount,
+          2,
+          "429 must trigger a retry that succeeds on attempt 2",
+        );
+      },
+    ),
+});
+
+Deno.test({
+  sanitizeResources: false,
+  name: "integration: retryWithBackoff does NOT retry a real SDK 403",
+  fn: () =>
+    withProgrammableServer(
+      [
+        () =>
+          new Response(
+            '<?xml version="1.0"?><Error><Code>AccessDenied</Code><Message>nope</Message><RequestId>r403</RequestId></Error>',
+            {
+              status: 403,
+              headers: { "Content-Type": "application/xml" },
+            },
+          ),
+        // A second stub that would "succeed" — if we see it used, the
+        // predicate wrongly classified 403 as retryable.
+        () => new Response(null, { status: 200 }),
+      ],
+      async (s3, state) => {
+        let caught: unknown;
+        try {
+          await retryWithBackoff(
+            () => s3.putObject("k", new Uint8Array([1, 2, 3])),
+            { maxAttempts: 3, baseDelayMs: 10 },
+          );
+        } catch (e) {
+          caught = e;
+        }
+        assert(
+          caught instanceof S3OperationError,
+          "expected S3OperationError from 403",
+        );
+        assertEquals(
+          state.requestCount,
+          1,
+          "403 must NOT trigger a retry",
+        );
+      },
+    ),
+});
+
+Deno.test({
+  sanitizeResources: false,
+  sanitizeOps: false,
+  name:
+    "integration: retryWithBackoff treats a real SDK TimeoutError as retryable",
+  fn: async () => {
+    // Use a short per-request timeout (100ms) and a first-response delay
+    // greater than it (600ms). Attempt 1 hits the timeout; attempt 2
+    // responds immediately with 200.
+    const state = { requestCount: 0 };
+    const server = Deno.serve({ port: 0, onListen() {} }, () => {
+      const i = state.requestCount++;
+      if (i === 0) {
+        return new Promise<Response>((resolve) => {
+          setTimeout(() => resolve(new Response(null, { status: 200 })), 600);
+        });
+      }
+      return new Response(null, { status: 200 });
+    });
+    const addr = server.addr as Deno.NetAddr;
+    const priorKey = Deno.env.get("AWS_ACCESS_KEY_ID");
+    const priorSecret = Deno.env.get("AWS_SECRET_ACCESS_KEY");
+    Deno.env.set("AWS_ACCESS_KEY_ID", "test");
+    Deno.env.set("AWS_SECRET_ACCESS_KEY", "test");
+    try {
+      const s3 = new S3Client({
+        bucket: "test-bucket",
+        region: "us-east-1",
+        endpoint: `http://127.0.0.1:${addr.port}`,
+        forcePathStyle: true,
+        defaultRequestTimeoutMs: 100,
+      });
+      await retryWithBackoff(
+        () => s3.putObject("k", new Uint8Array([1, 2, 3])),
+        { maxAttempts: 3, baseDelayMs: 10 },
+      );
+      assertEquals(
+        state.requestCount,
+        2,
+        "TimeoutError on attempt 1 must trigger a retry that succeeds on attempt 2",
+      );
+    } finally {
+      if (priorKey) Deno.env.set("AWS_ACCESS_KEY_ID", priorKey);
+      else Deno.env.delete("AWS_ACCESS_KEY_ID");
+      if (priorSecret) Deno.env.set("AWS_SECRET_ACCESS_KEY", priorSecret);
+      else Deno.env.delete("AWS_SECRET_ACCESS_KEY");
+      await server.shutdown();
+    }
+  },
+});
+
+Deno.test({
+  sanitizeResources: false,
+  sanitizeOps: false,
+  name:
+    "integration: retryWithBackoff treats a real SDK connection reset as retryable",
+  fn: async () => {
+    // Accept attempt 1 and slam the socket closed, accept attempt 2 and
+    // return a proper HTTP 200. Verifies the AWS SDK's transport-level
+    // error (name "Http", no httpStatusCode) is classified retryable.
+    //
+    // Uses raw Deno.listen instead of Deno.serve because Deno.serve
+    // writes a basic HTTP response on handler throw, which would give us
+    // an HTTP error instead of a connection-level one.
+    const listener = Deno.listen({ port: 0 });
+    const addr = listener.addr as Deno.NetAddr;
+    let attempt = 0;
+
+    const acceptLoop = (async () => {
+      for await (const conn of listener) {
+        attempt++;
+        if (attempt === 1) {
+          // Connection reset: close without reading, without responding.
+          try {
+            conn.close();
+          } catch {
+            // already closed
+          }
+        } else {
+          // Attempt 2: read the request (best-effort), then write 200.
+          const buf = new Uint8Array(4096);
+          try {
+            await conn.read(buf);
+          } catch {
+            // body may be larger; ignoring
+          }
+          const resp =
+            "HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
+          try {
+            await conn.write(new TextEncoder().encode(resp));
+          } catch {
+            // peer may have closed
+          }
+          try {
+            conn.close();
+          } catch {
+            // already closed
+          }
+        }
+      }
+    })();
+
+    const priorKey = Deno.env.get("AWS_ACCESS_KEY_ID");
+    const priorSecret = Deno.env.get("AWS_SECRET_ACCESS_KEY");
+    Deno.env.set("AWS_ACCESS_KEY_ID", "test");
+    Deno.env.set("AWS_SECRET_ACCESS_KEY", "test");
+    try {
+      const s3 = new S3Client({
+        bucket: "test-bucket",
+        region: "us-east-1",
+        endpoint: `http://127.0.0.1:${addr.port}`,
+        forcePathStyle: true,
+      });
+      await retryWithBackoff(
+        () => s3.putObject("k", new Uint8Array([1, 2, 3])),
+        { maxAttempts: 3, baseDelayMs: 10 },
+      );
+      assertEquals(
+        attempt,
+        2,
+        "connection reset on attempt 1 must trigger a retry that succeeds on attempt 2",
+      );
+    } finally {
+      if (priorKey) Deno.env.set("AWS_ACCESS_KEY_ID", priorKey);
+      else Deno.env.delete("AWS_ACCESS_KEY_ID");
+      if (priorSecret) Deno.env.set("AWS_SECRET_ACCESS_KEY", priorSecret);
+      else Deno.env.delete("AWS_SECRET_ACCESS_KEY");
+      try {
+        listener.close();
+      } catch {
+        // already closed
+      }
+      await acceptLoop.catch(() => {}); // listener.close races accept()
+    }
+  },
+});
+
+Deno.test({
+  sanitizeResources: false,
+  name: "integration: pushFile retries a transient 503 via the real SDK path",
+  fn: async () => {
+    const cachePath = await Deno.makeTempDir({
+      prefix: "s3sync-integration-",
+    });
+    try {
+      await seedFile(cachePath, "data/a.yaml", "payload\n");
+
+      await withProgrammableServer(
+        [
+          () =>
+            new Response(
+              '<?xml version="1.0"?><Error><Code>ServiceUnavailable</Code><Message>try later</Message><RequestId>rA</RequestId></Error>',
+              {
+                status: 503,
+                headers: { "Content-Type": "application/xml" },
+              },
+            ),
+          () => new Response(null, { status: 200 }),
+        ],
+        async (s3, state) => {
+          const service = new S3CacheSyncService(s3, cachePath);
+          // pushFile is what's called inside pushChanged's Promise.allSettled;
+          // calling it directly isolates the retry behavior from the
+          // pushChanged index writeback (which would need its own fixtures).
+          await service.pushFile("data/a.yaml");
+          assertEquals(
+            state.requestCount,
+            2,
+            "pushFile must retry a transient 503 via the real SDK",
+          );
+        },
+      );
+    } finally {
+      await Deno.remove(cachePath, { recursive: true });
+    }
+  },
 });

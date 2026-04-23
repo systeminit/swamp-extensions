@@ -51,7 +51,16 @@ export interface S3ClientConfig {
   endpoint?: string;
   /** Use path-style addressing (bucket in path, not subdomain). Default: false. */
   forcePathStyle?: boolean;
+  /**
+   * Per-request timeout in milliseconds. Defaults to 30s. Every SDK call
+   * is guarded by `AbortSignal.timeout(defaultRequestTimeoutMs)`, composed
+   * with any caller-supplied signal. Prevents individual operations from
+   * hanging indefinitely on network stalls.
+   */
+  defaultRequestTimeoutMs?: number;
 }
+
+const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
 
 export interface S3ListResult {
   keys: string[];
@@ -214,10 +223,30 @@ export class S3Client {
   private readonly client: AwsS3Client;
   private readonly bucket: string;
   private readonly prefix: string;
+  private readonly defaultRequestTimeoutMs: number;
 
   constructor(config: S3ClientConfig) {
+    this.defaultRequestTimeoutMs = config.defaultRequestTimeoutMs ??
+      DEFAULT_REQUEST_TIMEOUT_MS;
     this.client = new AwsS3Client({
       region: config.region,
+      // Retries live at the cache-sync layer (see s3_cache_sync.ts) where
+      // backoff, jitter, and error classification are deterministic and
+      // observable. SDK-level retries would obscure that and also fight
+      // our per-request timeout (retrying a timed-out request 3× with
+      // exponential backoff turns a 30s timeout into minutes of hang).
+      maxAttempts: 1,
+      // Per-request HTTP timeout: guards against stalled connections at
+      // the socket layer. Primary timeout defense — works regardless of
+      // whether callers pass an AbortSignal. AWS SDK accepts a plain
+      // object here and wraps it into a NodeHttpHandler internally.
+      // `throwOnRequestTimeout` promotes the smithy handler's default
+      // warn-only behavior to a proper TimeoutError so wrapError can
+      // surface it and the retry layer (DEF-2) can classify it.
+      requestHandler: {
+        requestTimeout: this.defaultRequestTimeoutMs,
+        throwOnRequestTimeout: true,
+      },
       ...(config.endpoint ? { endpoint: config.endpoint } : {}),
       ...(config.forcePathStyle != null
         ? { forcePathStyle: config.forcePathStyle }
@@ -244,26 +273,32 @@ export class S3Client {
   private run(
     op: string,
     cmd: HeadBucketCommand,
+    signal?: AbortSignal,
   ): Promise<HeadBucketCommandOutput>;
   private run(
     op: string,
     cmd: HeadObjectCommand,
+    signal?: AbortSignal,
   ): Promise<HeadObjectCommandOutput>;
   private run(
     op: string,
     cmd: GetObjectCommand,
+    signal?: AbortSignal,
   ): Promise<GetObjectCommandOutput>;
   private run(
     op: string,
     cmd: PutObjectCommand,
+    signal?: AbortSignal,
   ): Promise<PutObjectCommandOutput>;
   private run(
     op: string,
     cmd: DeleteObjectCommand,
+    signal?: AbortSignal,
   ): Promise<DeleteObjectCommandOutput>;
   private run(
     op: string,
     cmd: ListObjectsV2Command,
+    signal?: AbortSignal,
   ): Promise<ListObjectsV2CommandOutput>;
   private async run(
     op: string,
@@ -274,6 +309,7 @@ export class S3Client {
       | PutObjectCommand
       | DeleteObjectCommand
       | ListObjectsV2Command,
+    signal?: AbortSignal,
   ): Promise<
     | HeadBucketCommandOutput
     | HeadObjectCommandOutput
@@ -282,17 +318,30 @@ export class S3Client {
     | DeleteObjectCommandOutput
     | ListObjectsV2CommandOutput
   > {
+    // Primary timeout defense is the NodeHttpHandler's requestTimeout
+    // (set in the constructor). The caller's signal is forwarded as an
+    // extra cancellation escape hatch for when swamp core adopts the
+    // external-signal contract.
+    const opts = signal ? { abortSignal: signal } : undefined;
     try {
       // `send` is overloaded per-command; dispatch by constructor so TS
       // picks the right overload and we avoid a cast.
-      if (cmd instanceof HeadBucketCommand) return await this.client.send(cmd);
-      if (cmd instanceof HeadObjectCommand) return await this.client.send(cmd);
-      if (cmd instanceof GetObjectCommand) return await this.client.send(cmd);
-      if (cmd instanceof PutObjectCommand) return await this.client.send(cmd);
-      if (cmd instanceof DeleteObjectCommand) {
-        return await this.client.send(cmd);
+      if (cmd instanceof HeadBucketCommand) {
+        return await this.client.send(cmd, opts);
       }
-      return await this.client.send(cmd);
+      if (cmd instanceof HeadObjectCommand) {
+        return await this.client.send(cmd, opts);
+      }
+      if (cmd instanceof GetObjectCommand) {
+        return await this.client.send(cmd, opts);
+      }
+      if (cmd instanceof PutObjectCommand) {
+        return await this.client.send(cmd, opts);
+      }
+      if (cmd instanceof DeleteObjectCommand) {
+        return await this.client.send(cmd, opts);
+      }
+      return await this.client.send(cmd, opts);
     } catch (err) {
       throw this.wrapError(op, err);
     }
@@ -311,6 +360,15 @@ export class S3Client {
     const preview = e.$response?.__errorBodyPreview;
 
     const parts: string[] = [`S3 ${op} failed`];
+    // Signal-triggered aborts carry no HTTP status; surface the timeout
+    // context so callers can distinguish "timed out" from "service 5xx".
+    // `AbortSignal.timeout()` triggers a DOMException with name
+    // "TimeoutError"; an external AbortSignal triggers "AbortError".
+    if (e.name === "TimeoutError") {
+      parts.push(`timed out after ${this.defaultRequestTimeoutMs}ms`);
+    } else if (e.name === "AbortError") {
+      parts.push("aborted");
+    }
     if (status != null) parts.push(`HTTP ${status}`);
     if (code && code !== "Unknown") parts.push(code);
     const rawMsg = e.message && e.message !== "UnknownError" ? e.message : "";
@@ -334,15 +392,20 @@ export class S3Client {
   }
 
   /** Checks if the bucket exists and is accessible. */
-  async headBucket(): Promise<void> {
+  async headBucket(signal?: AbortSignal): Promise<void> {
     await this.run(
       "headBucket",
       new HeadBucketCommand({ Bucket: this.bucket }),
+      signal,
     );
   }
 
   /** Uploads an object to S3. */
-  async putObject(key: string, body: Uint8Array): Promise<void> {
+  async putObject(
+    key: string,
+    body: Uint8Array,
+    signal?: AbortSignal,
+  ): Promise<void> {
     await this.run(
       "putObject",
       new PutObjectCommand({
@@ -350,17 +413,19 @@ export class S3Client {
         Key: this.fullKey(key),
         Body: body,
       }),
+      signal,
     );
   }
 
   /** Downloads an object from S3. */
-  async getObject(key: string): Promise<Uint8Array> {
+  async getObject(key: string, signal?: AbortSignal): Promise<Uint8Array> {
     const response = await this.run(
       "getObject",
       new GetObjectCommand({
         Bucket: this.bucket,
         Key: this.fullKey(key),
       }),
+      signal,
     );
     if (!response.Body) {
       throw new Error(`S3 GetObject returned empty body for key: ${key}`);
@@ -369,19 +434,21 @@ export class S3Client {
   }
 
   /** Deletes an object from S3. */
-  async deleteObject(key: string): Promise<void> {
+  async deleteObject(key: string, signal?: AbortSignal): Promise<void> {
     await this.run(
       "deleteObject",
       new DeleteObjectCommand({
         Bucket: this.bucket,
         Key: this.fullKey(key),
       }),
+      signal,
     );
   }
 
   /** Checks if an object exists in S3. */
   async headObject(
     key: string,
+    signal?: AbortSignal,
   ): Promise<{ exists: boolean; size?: number; lastModified?: Date }> {
     try {
       const response = await this.run(
@@ -390,6 +457,7 @@ export class S3Client {
           Bucket: this.bucket,
           Key: this.fullKey(key),
         }),
+        signal,
       );
       return {
         exists: true,
@@ -415,6 +483,7 @@ export class S3Client {
   async putObjectConditional(
     key: string,
     body: Uint8Array,
+    signal?: AbortSignal,
   ): Promise<boolean> {
     try {
       await this.run(
@@ -425,6 +494,7 @@ export class S3Client {
           Body: body,
           IfNoneMatch: "*",
         }),
+        signal,
       );
       return true;
     } catch (error) {
@@ -443,6 +513,7 @@ export class S3Client {
   async listObjects(
     subPrefix?: string,
     continuationToken?: string,
+    signal?: AbortSignal,
   ): Promise<S3ListResult> {
     const prefix = subPrefix
       ? this.fullKey(subPrefix)
@@ -457,6 +528,7 @@ export class S3Client {
         Prefix: prefix,
         ContinuationToken: continuationToken,
       }),
+      signal,
     );
 
     const prefixLen = this.prefix ? this.prefix.length + 1 : 0;
@@ -472,12 +544,19 @@ export class S3Client {
   }
 
   /** Lists all objects (handling pagination). */
-  async listAllObjects(subPrefix?: string): Promise<string[]> {
+  async listAllObjects(
+    subPrefix?: string,
+    signal?: AbortSignal,
+  ): Promise<string[]> {
     const allKeys: string[] = [];
     let continuationToken: string | undefined;
 
     do {
-      const result = await this.listObjects(subPrefix, continuationToken);
+      const result = await this.listObjects(
+        subPrefix,
+        continuationToken,
+        signal,
+      );
       allKeys.push(...result.keys);
       continuationToken = result.truncated
         ? result.continuationToken

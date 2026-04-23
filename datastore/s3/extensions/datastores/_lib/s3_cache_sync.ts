@@ -30,7 +30,7 @@
 import { dirname, join, normalize, relative } from "jsr:@std/path@1";
 import { ensureDir, walk } from "jsr:@std/fs@1";
 import type { DatastoreSyncService } from "./interfaces.ts";
-import type { S3Client } from "./s3_client.ts";
+import { type S3Client, S3OperationError } from "./s3_client.ts";
 import { atomicWriteTextFile } from "./atomic_write.ts";
 
 /**
@@ -113,6 +113,102 @@ const INDEX_CACHE_TTL_MS = 60_000;
 
 /** Maximum number of concurrent S3 downloads/uploads. */
 const MAX_CONCURRENCY = 10;
+
+/** Retry budget for single-object S3 operations in the sync pipeline. */
+const RETRY_MAX_ATTEMPTS = 3;
+/** Base delay between retry attempts (ms). Each retry multiplies by 3. */
+const RETRY_BASE_DELAY_MS = 500;
+/** Jitter fraction applied to each backoff delay (±25%). */
+const RETRY_JITTER_FRACTION = 0.25;
+
+/**
+ * Returns true when an error is a transient condition that should be
+ * retried: request timeouts, 5xx service errors, 429 throttling, and
+ * transport-level failures (connection reset, DNS, TLS handshake).
+ *
+ * Explicitly NOT retryable: 4xx other than 429 (bad request, auth
+ * failure), PreconditionFailed (conditional write lost the race —
+ * retrying would give the same answer), NoSuchBucket (config error),
+ * any AbortError (caller explicitly cancelled).
+ *
+ * The `status == null` branch matters more than it looks. The AWS SDK
+ * surfaces connection-level failures (e.g., ECONNRESET, DNS lookup
+ * failure, TLS close_notify) with `name: "Http"` and no
+ * `$metadata.httpStatusCode` — verified against @aws-sdk/client-s3
+ * 3.1024.0. Without this branch, real network blips would not be
+ * retried, defeating the whole DEF-2 premise. Auth and config errors
+ * always carry a 4xx status, so treating a missing status as transient
+ * is safe.
+ *
+ * Exported for unit tests; not part of the public extension API.
+ */
+export function isRetryableError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  if (err.name === "AbortError") return false;
+  if (err.name === "TimeoutError") return true;
+  if (err instanceof S3OperationError) {
+    const status = err.httpStatusCode;
+    if (status === 429) return true;
+    if (status != null && status >= 500 && status < 600) return true;
+    if (status == null) return true;
+  }
+  return false;
+}
+
+/**
+ * Retry `op` with exponential backoff + jitter until it succeeds, a
+ * non-retryable error is thrown, or `maxAttempts` is reached.
+ * Re-throws the last error if all attempts fail.
+ *
+ * Exported for unit tests; not part of the public extension API.
+ * The `config` override exists so tests can run without paying the
+ * production backoff latency.
+ */
+export async function retryWithBackoff<T>(
+  op: () => Promise<T>,
+  config?: { maxAttempts?: number; baseDelayMs?: number },
+): Promise<T> {
+  const maxAttempts = config?.maxAttempts ?? RETRY_MAX_ATTEMPTS;
+  const baseDelayMs = config?.baseDelayMs ?? RETRY_BASE_DELAY_MS;
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      return await op();
+    } catch (err) {
+      lastErr = err;
+      const isLastAttempt = attempt === maxAttempts - 1;
+      if (isLastAttempt || !isRetryableError(err)) throw err;
+      const raw = baseDelayMs * Math.pow(3, attempt);
+      const jitter = raw * RETRY_JITTER_FRACTION * (Math.random() * 2 - 1);
+      const delay = Math.max(0, Math.floor(raw + jitter));
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+  throw lastErr;
+}
+
+/**
+ * Build a batch-failure message that surfaces the actual reasons
+ * things failed, not just filenames. The first 3 underlying errors are
+ * included verbatim so users can tell a credential issue from a
+ * network blip from a bucket misconfig without having to re-run.
+ */
+function formatBatchFailure(
+  op: "push" | "pull",
+  failures: Array<{ file: string; error: unknown }>,
+): string {
+  const files = failures.map((f) => f.file);
+  const preview = failures.slice(0, 3).map((f) => {
+    const msg = f.error instanceof Error ? f.error.message : String(f.error);
+    return `  - ${f.file}: ${msg}`;
+  }).join("\n");
+  const more = failures.length > 3
+    ? `\n  ... and ${failures.length - 3} more`
+    : "";
+  return `Failed to ${op} ${failures.length} file(s) ${
+    op === "push" ? "to" : "from"
+  } S3: ${files.join(", ")}\n${preview}${more}`;
+}
 
 /** S3 cache sync service. */
 export class S3CacheSyncService implements DatastoreSyncService {
@@ -243,7 +339,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
   /** Fetches a single file from S3 to the local cache. */
   async pullFile(relativePath: string): Promise<void> {
     const localPath = assertSafePath(this.cachePath, relativePath);
-    const data = await this.s3.getObject(relativePath);
+    const data = await retryWithBackoff(() => this.s3.getObject(relativePath));
     await ensureDir(dirname(localPath));
     await Deno.writeFile(localPath, data);
   }
@@ -289,7 +385,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
 
     // Download concurrently in batches
     let pulled = 0;
-    const failedFiles: string[] = [];
+    const failures: Array<{ file: string; error: unknown }> = [];
     for (let i = 0; i < toPull.length; i += MAX_CONCURRENCY) {
       const batch = toPull.slice(i, i + MAX_CONCURRENCY);
       const results = await Promise.allSettled(
@@ -308,20 +404,17 @@ export class S3CacheSyncService implements DatastoreSyncService {
         }),
       );
       for (let j = 0; j < results.length; j++) {
-        if (results[j].status === "fulfilled") {
+        const result = results[j];
+        if (result.status === "fulfilled") {
           pulled++;
         } else {
-          failedFiles.push(batch[j]);
+          failures.push({ file: batch[j], error: result.reason });
         }
       }
     }
 
-    if (failedFiles.length > 0) {
-      throw new Error(
-        `Failed to pull ${failedFiles.length} file(s) from S3: ${
-          failedFiles.join(", ")
-        }`,
-      );
+    if (failures.length > 0) {
+      throw new Error(formatBatchFailure("pull", failures));
     }
 
     return pulled;
@@ -331,7 +424,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
   async pushFile(relativePath: string): Promise<void> {
     const localPath = assertSafePath(this.cachePath, relativePath);
     const data = await Deno.readFile(localPath);
-    await this.s3.putObject(relativePath, data);
+    await retryWithBackoff(() => this.s3.putObject(relativePath, data));
 
     // Update index with size and local mtime
     if (this.index) {
@@ -401,39 +494,44 @@ export class S3CacheSyncService implements DatastoreSyncService {
 
     // Upload concurrently in batches
     let pushed = 0;
-    const failedFiles: string[] = [];
+    const failures: Array<{ file: string; error: unknown }> = [];
     for (let i = 0; i < toPush.length; i += MAX_CONCURRENCY) {
       const batch = toPush.slice(i, i + MAX_CONCURRENCY);
       const results = await Promise.allSettled(
         batch.map((rel) => this.pushFile(rel)),
       );
       for (let j = 0; j < results.length; j++) {
-        if (results[j].status === "fulfilled") {
+        const result = results[j];
+        if (result.status === "fulfilled") {
           pushed++;
         } else {
-          failedFiles.push(batch[j]);
+          failures.push({ file: batch[j], error: result.reason });
         }
       }
     }
 
-    if (failedFiles.length > 0) {
-      throw new Error(
-        `Failed to push ${failedFiles.length} file(s) to S3: ${
-          failedFiles.join(", ")
-        }`,
-      );
+    if (failures.length > 0) {
+      throw new Error(formatBatchFailure("push", failures));
     }
 
     // Push updated index if anything changed — either new files were
     // pushed OR scrubIndex removed zombie entries that need to
     // propagate to the remote (swamp-club#29 migration path).
+    //
+    // Wrapped in retryWithBackoff: if the per-file pushes all succeed
+    // but the index write fails on a transient 5xx/timeout, we'd leave
+    // the remote inconsistent with what was just uploaded (files
+    // present, index unaware). Retry keeps the write-back atomic from
+    // the caller's perspective.
     if ((pushed > 0 || this.indexMutated) && this.index) {
       if (pushed > 0) {
         this.index.lastPulled = new Date().toISOString();
       }
       const indexJson = JSON.stringify(this.index, null, 2);
       const indexData = new TextEncoder().encode(indexJson);
-      await this.s3.putObject(".datastore-index.json", indexData);
+      await retryWithBackoff(() =>
+        this.s3.putObject(".datastore-index.json", indexData)
+      );
       // Also update the local cache
       await atomicWriteTextFile(this.indexPath, indexJson);
       this.indexMutated = false;

@@ -28,6 +28,7 @@ import { S3Client, S3OperationError } from "./s3_client.ts";
 async function withMockServer(
   handler: (req: Request) => Response | Promise<Response>,
   fn: (client: S3Client) => Promise<void>,
+  configOverrides?: { defaultRequestTimeoutMs?: number },
 ): Promise<void> {
   const server = Deno.serve({ port: 0, onListen() {} }, handler);
   const addr = server.addr as Deno.NetAddr;
@@ -43,6 +44,7 @@ async function withMockServer(
       region: "us-east-1",
       endpoint: `http://127.0.0.1:${addr.port}`,
       forcePathStyle: true,
+      ...configOverrides,
     });
     await fn(client);
   } finally {
@@ -205,6 +207,46 @@ Deno.test({
         assertEquals(err.code, "InvalidAccessKeyId");
         assertEquals(err.name, "InvalidAccessKeyId");
       },
+    ),
+});
+
+// --- DEF-1: per-request timeout guards against hung connections -----------
+
+Deno.test({
+  // Node HTTP agent pool holds connections across requests; sanitization
+  // would flag those even though the SDK schedules their close.
+  sanitizeResources: false,
+  sanitizeOps: false,
+  name: "putObject times out when server delays longer than timeout",
+  fn: () =>
+    withMockServer(
+      // Delay the response well past the client's timeout, then reply.
+      // A delay-then-respond pattern lets Deno.serve cleanly shut down
+      // after the client aborts (vs. a never-resolving handler Promise
+      // which blocks server.shutdown()).
+      () =>
+        new Promise<Response>((resolve) => {
+          setTimeout(() => resolve(new Response(null, { status: 200 })), 1_000);
+        }),
+      async (client) => {
+        let caught: unknown;
+        try {
+          await client.putObject("k", new Uint8Array([1, 2, 3]));
+        } catch (e) {
+          caught = e;
+        }
+        assert(
+          caught instanceof S3OperationError,
+          "expected S3OperationError",
+        );
+        const err = caught as S3OperationError;
+        assertEquals(err.name, "TimeoutError");
+        assert(
+          err.message.includes("timed out after 100ms"),
+          `expected timeout context in message, got: ${err.message}`,
+        );
+      },
+      { defaultRequestTimeoutMs: 100 },
     ),
 });
 
