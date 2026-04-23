@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for LakeFormation PrincipalPermissions (AWS::LakeFormation::PrincipalPermissions).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,7 +20,7 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const DatabaseResourceSchema = z.object({
+const DatabaseResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12).describe(
     "The identifier for the Data Catalog. By default, it is the account ID of the caller.",
   ),
@@ -20,7 +29,7 @@ export const DatabaseResourceSchema = z.object({
   ),
 });
 
-export const TableResourceSchema = z.object({
+const TableResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12).describe(
     "The identifier for the Data Catalog. By default, it is the account ID of the caller.",
   ),
@@ -34,13 +43,13 @@ export const TableResourceSchema = z.object({
   ).optional(),
 });
 
-export const ColumnWildcardSchema = z.object({
+const ColumnWildcardSchema = z.object({
   ExcludedColumnNames: z.array(z.string().min(1).max(255)).describe(
     "Excludes column names. Any column with this name will be excluded.",
   ).optional(),
 });
 
-export const TableWithColumnsResourceSchema = z.object({
+const TableWithColumnsResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12).describe(
     "The identifier for the GLUDC where the location is registered with LFlong.",
   ),
@@ -58,7 +67,7 @@ export const TableWithColumnsResourceSchema = z.object({
   ).optional(),
 });
 
-export const DataLocationResourceSchema = z.object({
+const DataLocationResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12).describe(
     "The identifier for the GLUDC where the location is registered with LFlong.",
   ),
@@ -67,7 +76,7 @@ export const DataLocationResourceSchema = z.object({
   ),
 });
 
-export const DataCellsFilterResourceSchema = z.object({
+const DataCellsFilterResourceSchema = z.object({
   TableCatalogId: z.string().min(12).max(12).describe(
     "The ID of the catalog to which the table belongs.",
   ),
@@ -78,7 +87,7 @@ export const DataCellsFilterResourceSchema = z.object({
   ),
 });
 
-export const LFTagKeyResourceSchema = z.object({
+const LFTagKeyResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12).describe(
     "The identifier for the GLUDC where the location is registered with GLUDC.",
   ),
@@ -88,7 +97,7 @@ export const LFTagKeyResourceSchema = z.object({
   ),
 });
 
-export const LFTagSchema = z.object({
+const LFTagSchema = z.object({
   TagKey: z.string().min(1).max(128).describe("The key-name for the LF-tag.")
     .optional(),
   TagValues: z.array(z.string().min(0).max(256)).describe(
@@ -96,7 +105,7 @@ export const LFTagSchema = z.object({
   ).optional(),
 });
 
-export const LFTagPolicyResourceSchema = z.object({
+const LFTagPolicyResourceSchema = z.object({
   CatalogId: z.string().min(12).max(12).describe(
     "The identifier for the GLUDC. The GLUDC is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your LFlong environment.",
   ),
@@ -281,9 +290,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for LakeFormation PrincipalPermissions. Registered at `@swamp/aws/lakeformation/principal-permissions`. */
 export const model = {
   type: "@swamp/aws/lakeformation/principal-permissions",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -297,6 +307,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

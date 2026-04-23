@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTAnalytics Pipeline (AWS::IoTAnalytics::Pipeline).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,41 +21,41 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
 
-export const SelectAttributesSchema = z.object({
+const SelectAttributesSchema = z.object({
   Next: z.string().min(1).max(128).optional(),
   Attributes: z.array(z.string().min(1).max(256)),
   Name: z.string().min(1).max(128),
 });
 
-export const DatastoreSchema = z.object({
+const DatastoreSchema = z.object({
   DatastoreName: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9_]+")),
   Name: z.string().min(1).max(128),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   Filter: z.string().min(1).max(256),
   Next: z.string().min(1).max(128).optional(),
   Name: z.string().min(1).max(128),
 });
 
-export const AddAttributesSchema = z.object({
+const AddAttributesSchema = z.object({
   Next: z.string().min(1).max(128).optional(),
   Attributes: z.record(z.string(), z.string().min(1).max(256)),
   Name: z.string().min(1).max(128),
 });
 
-export const ChannelSchema = z.object({
+const ChannelSchema = z.object({
   ChannelName: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9_]+")),
   Next: z.string().min(1).max(128).optional(),
   Name: z.string().min(1).max(128),
 });
 
-export const DeviceShadowEnrichSchema = z.object({
+const DeviceShadowEnrichSchema = z.object({
   Attribute: z.string().min(1).max(256),
   Next: z.string().min(1).max(128).optional(),
   ThingName: z.string().min(1).max(256),
@@ -54,21 +63,21 @@ export const DeviceShadowEnrichSchema = z.object({
   Name: z.string().min(1).max(128),
 });
 
-export const MathSchema = z.object({
+const MathSchema = z.object({
   Attribute: z.string().min(1).max(256),
   Next: z.string().min(1).max(128).optional(),
   Math: z.string().min(1).max(256),
   Name: z.string().min(1).max(128),
 });
 
-export const LambdaSchema = z.object({
+const LambdaSchema = z.object({
   BatchSize: z.number().int().min(1).max(1000),
   Next: z.string().min(1).max(128).optional(),
   LambdaName: z.string().min(1).max(64).regex(new RegExp("[a-zA-Z0-9_-]+")),
   Name: z.string().min(1).max(128),
 });
 
-export const DeviceRegistryEnrichSchema = z.object({
+const DeviceRegistryEnrichSchema = z.object({
   Attribute: z.string().min(1).max(256),
   Next: z.string().min(1).max(128).optional(),
   ThingName: z.string().min(1).max(256),
@@ -76,13 +85,13 @@ export const DeviceRegistryEnrichSchema = z.object({
   Name: z.string().min(1).max(128),
 });
 
-export const RemoveAttributesSchema = z.object({
+const RemoveAttributesSchema = z.object({
   Next: z.string().min(1).max(128).optional(),
   Attributes: z.array(z.string().min(1).max(256)),
   Name: z.string().min(1).max(128),
 });
 
-export const ActivitySchema = z.object({
+const ActivitySchema = z.object({
   SelectAttributes: SelectAttributesSchema.optional(),
   Datastore: DatastoreSchema.optional(),
   Filter: FilterSchema.optional(),
@@ -118,9 +127,10 @@ const InputsSchema = z.object({
   PipelineActivities: z.array(ActivitySchema).optional(),
 });
 
+/** Swamp extension model for IoTAnalytics Pipeline. Registered at `@swamp/aws/iotanalytics/pipeline`. */
 export const model = {
   type: "@swamp/aws/iotanalytics/pipeline",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -134,6 +144,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

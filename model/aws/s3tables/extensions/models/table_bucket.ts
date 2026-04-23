@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for S3Tables TableBucket (AWS::S3Tables::TableBucket).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ReplicationDestinationSchema = z.object({
+const ReplicationDestinationSchema = z.object({
   DestinationTableBucketARN: z.string().describe(
     "The ARN of the destination table bucket",
   ),
 });
 
-export const ReplicationRuleSchema = z.object({
+const ReplicationRuleSchema = z.object({
   Destinations: z.array(ReplicationDestinationSchema).describe(
     "List of replication destinations",
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "Tag key must be between 1 to 128 characters in length. Tag key cannot start with 'aws:' and can only contain alphanumeric characters, spaces, _,., /, =, +, -, and @.",
   ),
@@ -160,9 +169,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for S3Tables TableBucket. Registered at `@swamp/aws/s3tables/table-bucket`. */
 export const model = {
   type: "@swamp/aws/s3tables/table-bucket",
-  version: "2026.04.07.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -182,6 +192,16 @@ export const model = {
     {
       toVersion: "2026.04.07.1",
       description: "Added: ReplicationConfiguration",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

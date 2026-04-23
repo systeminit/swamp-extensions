@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AuditManager Assessment (AWS::AuditManager::Assessment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -21,7 +30,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const DelegationSchema = z.object({
+const DelegationSchema = z.object({
   LastUpdated: z.number().describe(
     "The sequence of characters that identifies when the event occurred.",
   ).optional(),
@@ -60,7 +69,7 @@ export const DelegationSchema = z.object({
   ).optional(),
 });
 
-export const RoleSchema = z.object({
+const RoleSchema = z.object({
   RoleArn: z.string().min(20).max(2048).regex(new RegExp("^arn:.*:iam:.*"))
     .describe("The Amazon Resource Name (ARN) of the IAM user or role.")
     .optional(),
@@ -69,7 +78,7 @@ export const RoleSchema = z.object({
   ).optional(),
 });
 
-export const AWSAccountSchema = z.object({
+const AWSAccountSchema = z.object({
   Id: z.string().min(12).max(12).regex(new RegExp("^[0-9]{12}$")).describe(
     "The identifier for the specified AWS account.",
   ).optional(),
@@ -79,7 +88,7 @@ export const AWSAccountSchema = z.object({
     .describe("The name of the specified AWS account.").optional(),
 });
 
-export const AWSServiceSchema = z.object({
+const AWSServiceSchema = z.object({
   ServiceName: z.string().describe("The name of the AWS service.").optional(),
 });
 
@@ -215,9 +224,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for AuditManager Assessment. Registered at `@swamp/aws/auditmanager/assessment`. */
 export const model = {
   type: "@swamp/aws/auditmanager/assessment",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -231,6 +241,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

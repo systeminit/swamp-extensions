@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoT MitigationAction (AWS::IoT::MitigationAction).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The tag's key."),
   Value: z.string().min(1).max(256).describe("The tag's value."),
 });
 
-export const AddThingsToThingGroupParamsSchema = z.object({
+const AddThingsToThingGroupParamsSchema = z.object({
   OverrideDynamicGroups: z.boolean().describe(
     "Specifies if this mitigation action can move the things that triggered the mitigation action out of one or more dynamic thing groups.",
   ).optional(),
@@ -26,7 +35,7 @@ export const AddThingsToThingGroupParamsSchema = z.object({
   ),
 });
 
-export const EnableIoTLoggingParamsSchema = z.object({
+const EnableIoTLoggingParamsSchema = z.object({
   LogLevel: z.enum(["DEBUG", "INFO", "ERROR", "WARN", "UNSET_VALUE"]).describe(
     "Specifies which types of information are logged.",
   ),
@@ -35,21 +44,21 @@ export const EnableIoTLoggingParamsSchema = z.object({
   ),
 });
 
-export const PublishFindingToSnsParamsSchema = z.object({
+const PublishFindingToSnsParamsSchema = z.object({
   TopicArn: z.string().min(11).max(2048).describe(
     "The ARN of the topic to which you want to publish the findings.",
   ),
 });
 
-export const ReplaceDefaultPolicyVersionParamsSchema = z.object({
+const ReplaceDefaultPolicyVersionParamsSchema = z.object({
   TemplateName: z.enum(["BLANK_POLICY", "UNSET_VALUE"]),
 });
 
-export const UpdateCACertificateParamsSchema = z.object({
+const UpdateCACertificateParamsSchema = z.object({
   Action: z.enum(["DEACTIVATE", "UNSET_VALUE"]),
 });
 
-export const UpdateDeviceCertificateParamsSchema = z.object({
+const UpdateDeviceCertificateParamsSchema = z.object({
   Action: z.enum(["DEACTIVATE", "UNSET_VALUE"]),
 });
 
@@ -135,9 +144,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoT MitigationAction. Registered at `@swamp/aws/iot/mitigation-action`. */
 export const model = {
   type: "@swamp/aws/iot/mitigation-action",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -151,6 +161,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

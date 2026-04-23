@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for LicenseManager License (AWS::LicenseManager::License).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EntitlementSchema = z.object({
+const EntitlementSchema = z.object({
   Name: z.string(),
   Value: z.string().optional(),
   MaxCount: z.number().int().optional(),
@@ -21,21 +30,21 @@ export const EntitlementSchema = z.object({
   AllowCheckIn: z.boolean().optional(),
 });
 
-export const ProvisionalConfigurationSchema = z.object({
+const ProvisionalConfigurationSchema = z.object({
   MaxTimeToLiveInMinutes: z.number().int(),
 });
 
-export const BorrowConfigurationSchema = z.object({
+const BorrowConfigurationSchema = z.object({
   MaxTimeToLiveInMinutes: z.number().int(),
   AllowEarlyCheckIn: z.boolean(),
 });
 
-export const MetadataSchema = z.object({
+const MetadataSchema = z.object({
   Name: z.string(),
   Value: z.string(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe("The key name of the tag."),
   Value: z.string().describe("The value for the tag."),
 });
@@ -129,9 +138,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe("A list of tags to attach.").optional(),
 });
 
+/** Swamp extension model for LicenseManager License. Registered at `@swamp/aws/licensemanager/license`. */
 export const model = {
   type: "@swamp/aws/licensemanager/license",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -145,6 +155,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

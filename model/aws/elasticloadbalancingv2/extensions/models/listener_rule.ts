@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ElasticLoadBalancingV2 ListenerRule (AWS::ElasticLoadBalancingV2::ListenerRule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FixedResponseConfigSchema = z.object({
+const FixedResponseConfigSchema = z.object({
   ContentType: z.string().describe(
     "The content type. Valid Values: text/plain | text/css | text/html | application/javascript | application/json",
   ).optional(),
@@ -20,7 +29,7 @@ export const FixedResponseConfigSchema = z.object({
   MessageBody: z.string().describe("The message.").optional(),
 });
 
-export const AuthenticateCognitoConfigSchema = z.object({
+const AuthenticateCognitoConfigSchema = z.object({
   OnUnauthenticatedRequest: z.string().describe(
     "The behavior if the user is not authenticated. The following are possible values: deny`` - Return an HTTP 401 Unauthorized error. allow - Allow the request to be forwarded to the target. authenticate `` - Redirect the request to the IdP authorization endpoint. This is the default value.",
   ).optional(),
@@ -47,7 +56,7 @@ export const AuthenticateCognitoConfigSchema = z.object({
   ).optional(),
 });
 
-export const RedirectConfigSchema = z.object({
+const RedirectConfigSchema = z.object({
   Path: z.string().describe(
     'The absolute path, starting with the leading "/". This component is not percent-encoded. The path can contain #{host}, #{path}, and #{port}.',
   ).optional(),
@@ -68,7 +77,7 @@ export const RedirectConfigSchema = z.object({
   ),
 });
 
-export const TargetGroupStickinessConfigSchema = z.object({
+const TargetGroupStickinessConfigSchema = z.object({
   Enabled: z.boolean().describe(
     "Indicates whether target group stickiness is enabled.",
   ).optional(),
@@ -77,7 +86,7 @@ export const TargetGroupStickinessConfigSchema = z.object({
   ).optional(),
 });
 
-export const TargetGroupTupleSchema = z.object({
+const TargetGroupTupleSchema = z.object({
   TargetGroupArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the target group.",
   ).optional(),
@@ -85,7 +94,7 @@ export const TargetGroupTupleSchema = z.object({
     .optional(),
 });
 
-export const ForwardConfigSchema = z.object({
+const ForwardConfigSchema = z.object({
   TargetGroupStickinessConfig: TargetGroupStickinessConfigSchema.describe(
     "Information about the target group stickiness for a rule.",
   ).optional(),
@@ -94,7 +103,7 @@ export const ForwardConfigSchema = z.object({
   ).optional(),
 });
 
-export const AuthenticateOidcConfigSchema = z.object({
+const AuthenticateOidcConfigSchema = z.object({
   OnUnauthenticatedRequest: z.string().describe(
     "The behavior if the user is not authenticated. The following are possible values: deny`` - Return an HTTP 401 Unauthorized error. allow - Allow the request to be forwarded to the target. authenticate `` - Redirect the request to the IdP authorization endpoint. This is the default value.",
   ).optional(),
@@ -131,7 +140,7 @@ export const AuthenticateOidcConfigSchema = z.object({
   ).optional(),
 });
 
-export const JwtValidationActionAdditionalClaimSchema = z.object({
+const JwtValidationActionAdditionalClaimSchema = z.object({
   Format: z.string().describe("The format of the claim value."),
   Name: z.string().describe(
     "The name of the claim. You can't specify exp, iss, nbf, or iat because we validate them by default.",
@@ -141,14 +150,14 @@ export const JwtValidationActionAdditionalClaimSchema = z.object({
   ),
 });
 
-export const JwtValidationConfigSchema = z.object({
+const JwtValidationConfigSchema = z.object({
   JwksEndpoint: z.string(),
   Issuer: z.string(),
   AdditionalClaims: z.array(JwtValidationActionAdditionalClaimSchema)
     .optional(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   Order: z.number().int().describe(
     "The order for the action. This value is required for rules with multiple actions. The action with the lowest value for order is performed first.",
   ).optional(),
@@ -176,20 +185,20 @@ export const ActionSchema = z.object({
   ).optional(),
 });
 
-export const HttpRequestMethodConfigSchema = z.object({
+const HttpRequestMethodConfigSchema = z.object({
   Values: z.array(z.string()).describe(
     "The name of the request method. The maximum length is 40 characters. The allowed characters are A-Z, hyphen (-), and underscore (_). The comparison is case sensitive. Wildcards are not supported; therefore, the method name must be an exact match. If you specify multiple strings, the condition is satisfied if one of the strings matches the HTTP request method. We recommend that you route GET and HEAD requests in the same way, because the response to a HEAD request may be cached.",
   ).optional(),
 });
 
-export const PathPatternConfigSchema = z.object({
+const PathPatternConfigSchema = z.object({
   RegexValues: z.array(z.string()).optional(),
   Values: z.array(z.string()).describe(
     "The path patterns to compare against the request URL. The maximum size of each string is 128 characters. The comparison is case sensitive. The following wildcard characters are supported: * (matches 0 or more characters) and? (matches exactly 1 character). If you specify multiple strings, the condition is satisfied if one of them matches the request URL. The path pattern is compared only to the path of the URL, not to its query string.",
   ).optional(),
 });
 
-export const HttpHeaderConfigSchema = z.object({
+const HttpHeaderConfigSchema = z.object({
   RegexValues: z.array(z.string()).optional(),
   Values: z.array(z.string()).describe(
     "The strings to compare against the value of the HTTP header. The maximum length of each string is 128 characters. The comparison strings are case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and? (matches exactly 1 character). If the same header appears multiple times in the request, we search them in order until a match is found. If you specify multiple strings, the condition is satisfied if one of the strings matches the value of the HTTP header. To require that all of the strings are a match, create one condition per string.",
@@ -199,31 +208,31 @@ export const HttpHeaderConfigSchema = z.object({
   ).optional(),
 });
 
-export const SourceIpConfigSchema = z.object({
+const SourceIpConfigSchema = z.object({
   Values: z.array(z.string()).describe(
     "The source IP addresses, in CIDR format. You can use both IPv4 and IPv6 addresses. Wildcards are not supported. If you specify multiple addresses, the condition is satisfied if the source IP address of the request matches one of the CIDR blocks. This condition is not satisfied by the addresses in the X-Forwarded-For header.",
   ).optional(),
 });
 
-export const HostHeaderConfigSchema = z.object({
+const HostHeaderConfigSchema = z.object({
   RegexValues: z.array(z.string()).optional(),
   Values: z.array(z.string()).describe(
     'The host names. The maximum length of each string is 128 characters. The comparison is case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and? (matches exactly 1 character). You must include at least one "." character. You can include only alphabetical characters after the final "." character. If you specify multiple strings, the condition is satisfied if one of the strings matches the host name.',
   ).optional(),
 });
 
-export const QueryStringKeyValueSchema = z.object({
+const QueryStringKeyValueSchema = z.object({
   Value: z.string().describe("The value.").optional(),
   Key: z.string().describe("The key. You can omit the key.").optional(),
 });
 
-export const QueryStringConfigSchema = z.object({
+const QueryStringConfigSchema = z.object({
   Values: z.array(QueryStringKeyValueSchema).describe(
     "The key/value pairs or values to find in the query string. The maximum length of each string is 128 characters. The comparison is case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and? (matches exactly 1 character). To search for a literal '*' or '?' character in a query string, you must escape these characters in Values using a '\\' character. If you specify multiple key/value pairs or values, the condition is satisfied if one of them is found in the query string.",
   ).optional(),
 });
 
-export const RuleConditionSchema = z.object({
+const RuleConditionSchema = z.object({
   Field: z.string().describe(
     "The field in the HTTP request. The following are the possible values: http-header http-request-method host-header path-pattern query-string source-ip",
   ).optional(),
@@ -253,7 +262,7 @@ export const RuleConditionSchema = z.object({
   ).optional(),
 });
 
-export const RewriteConfigSchema = z.object({
+const RewriteConfigSchema = z.object({
   Regex: z.string().describe(
     "The regular expression to match in the input string. The maximum length of the string is 1,024 characters.",
   ),
@@ -262,11 +271,11 @@ export const RewriteConfigSchema = z.object({
   ),
 });
 
-export const RewriteConfigObjectSchema = z.object({
+const RewriteConfigObjectSchema = z.object({
   Rewrites: z.array(RewriteConfigSchema),
 });
 
-export const TransformSchema = z.object({
+const TransformSchema = z.object({
   Type: z.string(),
   HostHeaderRewriteConfig: RewriteConfigObjectSchema.optional(),
   UrlRewriteConfig: RewriteConfigObjectSchema.optional(),
@@ -320,9 +329,10 @@ const InputsSchema = z.object({
   Transforms: z.array(TransformSchema).optional(),
 });
 
+/** Swamp extension model for ElasticLoadBalancingV2 ListenerRule. Registered at `@swamp/aws/elasticloadbalancingv2/listener-rule`. */
 export const model = {
   type: "@swamp/aws/elasticloadbalancingv2/listener-rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -336,6 +346,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

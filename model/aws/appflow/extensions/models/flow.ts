@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppFlow Flow (AWS::AppFlow::Flow).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ScheduledTriggerPropertiesSchema = z.object({
+const ScheduledTriggerPropertiesSchema = z.object({
   ScheduleExpression: z.string().min(1).max(256),
   DataPullMode: z.enum(["Incremental", "Complete"]).optional(),
   ScheduleStartTime: z.number().optional(),
@@ -23,49 +32,49 @@ export const ScheduledTriggerPropertiesSchema = z.object({
   FlowErrorDeactivationThreshold: z.number().int().min(1).max(100).optional(),
 });
 
-export const AmplitudeSourcePropertiesSchema = z.object({
+const AmplitudeSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const DatadogSourcePropertiesSchema = z.object({
+const DatadogSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const DynatraceSourcePropertiesSchema = z.object({
+const DynatraceSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const GoogleAnalyticsSourcePropertiesSchema = z.object({
+const GoogleAnalyticsSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const InforNexusSourcePropertiesSchema = z.object({
+const InforNexusSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const MarketoSourcePropertiesSchema = z.object({
+const MarketoSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const S3InputFormatConfigSchema = z.object({
+const S3InputFormatConfigSchema = z.object({
   S3InputFileType: z.enum(["CSV", "JSON"]).optional(),
 });
 
-export const S3SourcePropertiesSchema = z.object({
+const S3SourcePropertiesSchema = z.object({
   BucketName: z.string().min(3).max(63).regex(new RegExp("\\S+")),
   BucketPrefix: z.string().max(512),
   S3InputFormatConfig: S3InputFormatConfigSchema.optional(),
 });
 
-export const SAPODataParallelismConfigSchema = z.object({
+const SAPODataParallelismConfigSchema = z.object({
   maxParallelism: z.number().int().min(1).max(10),
 });
 
-export const SAPODataPaginationConfigSchema = z.object({
+const SAPODataPaginationConfigSchema = z.object({
   maxPageSize: z.number().int().min(1).max(10000),
 });
 
-export const SAPODataSourcePropertiesSchema = z.object({
+const SAPODataSourcePropertiesSchema = z.object({
   ObjectPath: z.string().max(512).regex(new RegExp("\\S+")),
   parallelismConfig: SAPODataParallelismConfigSchema.describe(
     "SAP Source connector parallelism factor",
@@ -75,34 +84,34 @@ export const SAPODataSourcePropertiesSchema = z.object({
   ).optional(),
 });
 
-export const SalesforceSourcePropertiesSchema = z.object({
+const SalesforceSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   EnableDynamicFieldUpdate: z.boolean().optional(),
   IncludeDeletedRecords: z.boolean().optional(),
   DataTransferApi: z.enum(["AUTOMATIC", "BULKV2", "REST_SYNC"]).optional(),
 });
 
-export const PardotSourcePropertiesSchema = z.object({
+const PardotSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const ServiceNowSourcePropertiesSchema = z.object({
+const ServiceNowSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const SingularSourcePropertiesSchema = z.object({
+const SingularSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const SlackSourcePropertiesSchema = z.object({
+const SlackSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const TrendmicroSourcePropertiesSchema = z.object({
+const TrendmicroSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const VeevaSourcePropertiesSchema = z.object({
+const VeevaSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   DocumentType: z.string().max(512).regex(new RegExp("[\\s\\w_-]+")).optional(),
   IncludeSourceFiles: z.boolean().optional(),
@@ -110,11 +119,11 @@ export const VeevaSourcePropertiesSchema = z.object({
   IncludeAllVersions: z.boolean().optional(),
 });
 
-export const ZendeskSourcePropertiesSchema = z.object({
+const ZendeskSourcePropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const CustomConnectorSourcePropertiesSchema = z.object({
+const CustomConnectorSourcePropertiesSchema = z.object({
   EntityName: z.string().max(1024).regex(new RegExp("\\S+")),
   CustomProperties: z.record(
     z.string(),
@@ -126,7 +135,7 @@ export const CustomConnectorSourcePropertiesSchema = z.object({
   }).optional(),
 });
 
-export const SourceConnectorPropertiesSchema = z.object({
+const SourceConnectorPropertiesSchema = z.object({
   Amplitude: AmplitudeSourcePropertiesSchema.optional(),
   Datadog: DatadogSourcePropertiesSchema.optional(),
   Dynatrace: DynatraceSourcePropertiesSchema.optional(),
@@ -146,51 +155,51 @@ export const SourceConnectorPropertiesSchema = z.object({
   CustomConnector: CustomConnectorSourcePropertiesSchema.optional(),
 });
 
-export const IncrementalPullConfigSchema = z.object({
+const IncrementalPullConfigSchema = z.object({
   DatetimeTypeFieldName: z.string().max(256).describe(
     "Name of the datetime/timestamp data type field to be used for importing incremental records from the source",
   ).optional(),
 });
 
-export const ErrorHandlingConfigSchema = z.object({
+const ErrorHandlingConfigSchema = z.object({
   FailOnFirstError: z.boolean().optional(),
   BucketPrefix: z.string().max(512).optional(),
   BucketName: z.string().min(3).max(63).regex(new RegExp("\\S+")).optional(),
 });
 
-export const RedshiftDestinationPropertiesSchema = z.object({
+const RedshiftDestinationPropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   IntermediateBucketName: z.string().min(3).max(63).regex(new RegExp("\\S+")),
   BucketPrefix: z.string().max(512).optional(),
   ErrorHandlingConfig: ErrorHandlingConfigSchema.optional(),
 });
 
-export const PrefixConfigSchema = z.object({
+const PrefixConfigSchema = z.object({
   PrefixType: z.enum(["FILENAME", "PATH", "PATH_AND_FILENAME"]).optional(),
   PrefixFormat: z.enum(["YEAR", "MONTH", "DAY", "HOUR", "MINUTE"]).optional(),
   PathPrefixHierarchy: z.array(z.enum(["EXECUTION_ID", "SCHEMA_VERSION"]))
     .optional(),
 });
 
-export const AggregationConfigSchema = z.object({
+const AggregationConfigSchema = z.object({
   AggregationType: z.enum(["None", "SingleFile"]).optional(),
   TargetFileSize: z.number().int().optional(),
 });
 
-export const S3OutputFormatConfigSchema = z.object({
+const S3OutputFormatConfigSchema = z.object({
   FileType: z.enum(["CSV", "JSON", "PARQUET"]).optional(),
   PrefixConfig: PrefixConfigSchema.optional(),
   AggregationConfig: AggregationConfigSchema.optional(),
   PreserveSourceDataTyping: z.boolean().optional(),
 });
 
-export const S3DestinationPropertiesSchema = z.object({
+const S3DestinationPropertiesSchema = z.object({
   BucketName: z.string().min(3).max(63).regex(new RegExp("\\S+")),
   BucketPrefix: z.string().max(512).optional(),
   S3OutputFormatConfig: S3OutputFormatConfigSchema.optional(),
 });
 
-export const SalesforceDestinationPropertiesSchema = z.object({
+const SalesforceDestinationPropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   ErrorHandlingConfig: ErrorHandlingConfigSchema.optional(),
   IdFieldNames: z.array(z.string()).describe(
@@ -201,25 +210,25 @@ export const SalesforceDestinationPropertiesSchema = z.object({
   DataTransferApi: z.enum(["AUTOMATIC", "BULKV2", "REST_SYNC"]).optional(),
 });
 
-export const SnowflakeDestinationPropertiesSchema = z.object({
+const SnowflakeDestinationPropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   IntermediateBucketName: z.string().min(3).max(63).regex(new RegExp("\\S+")),
   BucketPrefix: z.string().max(512).optional(),
   ErrorHandlingConfig: ErrorHandlingConfigSchema.optional(),
 });
 
-export const EventBridgeDestinationPropertiesSchema = z.object({
+const EventBridgeDestinationPropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   ErrorHandlingConfig: ErrorHandlingConfigSchema.optional(),
 });
 
-export const UpsolverS3OutputFormatConfigSchema = z.object({
+const UpsolverS3OutputFormatConfigSchema = z.object({
   FileType: z.enum(["CSV", "JSON", "PARQUET"]).optional(),
   PrefixConfig: PrefixConfigSchema,
   AggregationConfig: AggregationConfigSchema.optional(),
 });
 
-export const UpsolverDestinationPropertiesSchema = z.object({
+const UpsolverDestinationPropertiesSchema = z.object({
   BucketName: z.string().min(16).max(63).regex(
     new RegExp("^(upsolver-appflow)\\S*"),
   ),
@@ -227,16 +236,16 @@ export const UpsolverDestinationPropertiesSchema = z.object({
   S3OutputFormatConfig: UpsolverS3OutputFormatConfigSchema,
 });
 
-export const LookoutMetricsDestinationPropertiesSchema = z.object({
+const LookoutMetricsDestinationPropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")).optional(),
 });
 
-export const MarketoDestinationPropertiesSchema = z.object({
+const MarketoDestinationPropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   ErrorHandlingConfig: ErrorHandlingConfigSchema.optional(),
 });
 
-export const ZendeskDestinationPropertiesSchema = z.object({
+const ZendeskDestinationPropertiesSchema = z.object({
   Object: z.string().max(512).regex(new RegExp("\\S+")),
   ErrorHandlingConfig: ErrorHandlingConfigSchema.optional(),
   IdFieldNames: z.array(z.string()).describe(
@@ -246,7 +255,7 @@ export const ZendeskDestinationPropertiesSchema = z.object({
     .optional(),
 });
 
-export const CustomConnectorDestinationPropertiesSchema = z.object({
+const CustomConnectorDestinationPropertiesSchema = z.object({
   EntityName: z.string().max(1024).regex(new RegExp("\\S+")),
   ErrorHandlingConfig: ErrorHandlingConfigSchema.optional(),
   WriteOperationType: z.enum(["INSERT", "UPSERT", "UPDATE", "DELETE"])
@@ -260,12 +269,12 @@ export const CustomConnectorDestinationPropertiesSchema = z.object({
   ).describe("A map for properties for custom connector.").optional(),
 });
 
-export const SuccessResponseHandlingConfigSchema = z.object({
+const SuccessResponseHandlingConfigSchema = z.object({
   BucketPrefix: z.string().max(512).optional(),
   BucketName: z.string().min(3).max(63).regex(new RegExp("\\S+")).optional(),
 });
 
-export const SAPODataDestinationPropertiesSchema = z.object({
+const SAPODataDestinationPropertiesSchema = z.object({
   ObjectPath: z.string().max(512).regex(new RegExp("\\S+")),
   ErrorHandlingConfig: ErrorHandlingConfigSchema.optional(),
   SuccessResponseHandlingConfig: SuccessResponseHandlingConfigSchema.optional(),
@@ -276,7 +285,7 @@ export const SAPODataDestinationPropertiesSchema = z.object({
     .optional(),
 });
 
-export const DestinationConnectorPropertiesSchema = z.object({
+const DestinationConnectorPropertiesSchema = z.object({
   Redshift: RedshiftDestinationPropertiesSchema.optional(),
   S3: S3DestinationPropertiesSchema.optional(),
   Salesforce: SalesforceDestinationPropertiesSchema.optional(),
@@ -290,7 +299,7 @@ export const DestinationConnectorPropertiesSchema = z.object({
   SAPOData: SAPODataDestinationPropertiesSchema.optional(),
 });
 
-export const DestinationFlowConfigSchema = z.object({
+const DestinationFlowConfigSchema = z.object({
   ConnectorType: z.enum([
     "SAPOData",
     "Salesforce",
@@ -325,7 +334,7 @@ export const DestinationFlowConfigSchema = z.object({
   ),
 });
 
-export const ConnectorOperatorSchema = z.object({
+const ConnectorOperatorSchema = z.object({
   Amplitude: z.enum(["BETWEEN"]).optional(),
   Datadog: z.enum([
     "PROJECTION",
@@ -616,7 +625,7 @@ export const ConnectorOperatorSchema = z.object({
   ]).optional(),
 });
 
-export const TaskPropertiesObjectSchema = z.object({
+const TaskPropertiesObjectSchema = z.object({
   Key: z.enum([
     "VALUE",
     "VALUES",
@@ -639,7 +648,7 @@ export const TaskPropertiesObjectSchema = z.object({
   Value: z.string().max(2048).regex(new RegExp(".+")),
 });
 
-export const TaskSchema = z.object({
+const TaskSchema = z.object({
   SourceFields: z.array(z.string()).describe(
     "Source fields on which particular task will be applied",
   ),
@@ -666,7 +675,7 @@ export const TaskSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "A string used to identify this tag",
   ),
@@ -675,7 +684,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const GlueDataCatalogSchema = z.object({
+const GlueDataCatalogSchema = z.object({
   RoleArn: z.string().min(0).max(512).regex(
     new RegExp("arn:aws:iam:.*:[0-9]+:.*"),
   ).describe("A string containing the value for the tag"),
@@ -858,9 +867,10 @@ const InputsSchema = z.object({
   }).describe("Configurations of metadata catalog of the flow.").optional(),
 });
 
+/** Swamp extension model for AppFlow Flow. Registered at `@swamp/aws/appflow/flow`. */
 export const model = {
   type: "@swamp/aws/appflow/flow",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -874,6 +884,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

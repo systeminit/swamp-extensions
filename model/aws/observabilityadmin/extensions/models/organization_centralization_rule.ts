@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ObservabilityAdmin OrganizationCentralizationRule (AWS::ObservabilityAdmin::OrganizationCentralizationRule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SourceLogsConfigurationSchema = z.object({
+const SourceLogsConfigurationSchema = z.object({
   LogGroupSelectionCriteria: z.string().min(1).max(2000).optional(),
   DataSourceSelectionCriteria: z.string().min(1).max(2000).optional(),
   EncryptedLogGroupStrategy: z.enum(["ALLOW", "SKIP"]),
 });
 
-export const CentralizationRuleSourceSchema = z.object({
+const CentralizationRuleSourceSchema = z.object({
   Regions: z.array(z.string().min(1)),
   Scope: z.string().min(1).max(2000).optional(),
   SourceLogsConfiguration: SourceLogsConfigurationSchema.optional(),
 });
 
-export const LogsEncryptionConfigurationSchema = z.object({
+const LogsEncryptionConfigurationSchema = z.object({
   EncryptionStrategy: z.enum(["CUSTOMER_MANAGED", "AWS_OWNED"]),
   KmsKeyArn: z.string().min(1).max(1011).regex(
     new RegExp(
@@ -34,7 +43,7 @@ export const LogsEncryptionConfigurationSchema = z.object({
   EncryptionConflictResolutionStrategy: z.enum(["ALLOW", "SKIP"]).optional(),
 });
 
-export const LogsBackupConfigurationSchema = z.object({
+const LogsBackupConfigurationSchema = z.object({
   Region: z.string().min(1),
   KmsKeyArn: z.string().min(1).max(1011).regex(
     new RegExp(
@@ -43,7 +52,7 @@ export const LogsBackupConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const LogGroupNameConfigurationSchema = z.object({
+const LogGroupNameConfigurationSchema = z.object({
   LogGroupNamePattern: z.string().min(1).max(512).regex(
     new RegExp(
       "^(?:[\\._\\-/#A-Za-z0-9]+|\\$\\{[A-Za-z]+(?:\\.[A-Za-z]+){1,2}\\})+$",
@@ -51,20 +60,20 @@ export const LogGroupNameConfigurationSchema = z.object({
   ),
 });
 
-export const DestinationLogsConfigurationSchema = z.object({
+const DestinationLogsConfigurationSchema = z.object({
   LogsEncryptionConfiguration: LogsEncryptionConfigurationSchema.optional(),
   BackupConfiguration: LogsBackupConfigurationSchema.optional(),
   LogGroupNameConfiguration: LogGroupNameConfigurationSchema.optional(),
 });
 
-export const CentralizationRuleDestinationSchema = z.object({
+const CentralizationRuleDestinationSchema = z.object({
   Region: z.string().min(1),
   Account: z.string().min(12).max(12).regex(new RegExp("^[0-9]{12}$"))
     .optional(),
   DestinationLogsConfiguration: DestinationLogsConfigurationSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -112,9 +121,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ObservabilityAdmin OrganizationCentralizationRule. Registered at `@swamp/aws/observabilityadmin/organization-centralization-rule`. */
 export const model = {
   type: "@swamp/aws/observabilityadmin/organization-centralization-rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -128,6 +138,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

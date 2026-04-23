@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Pipes Pipe (AWS::Pipes::Pipe).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PipeEnrichmentHttpParametersSchema = z.object({
+const PipeEnrichmentHttpParametersSchema = z.object({
   PathParameterValues: z.array(
     z.string().regex(
       new RegExp("^(?!\\s*$).+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"),
@@ -36,14 +45,14 @@ export const PipeEnrichmentHttpParametersSchema = z.object({
   ).optional(),
 });
 
-export const S3LogDestinationSchema = z.object({
+const S3LogDestinationSchema = z.object({
   BucketName: z.string().optional(),
   Prefix: z.string().optional(),
   BucketOwner: z.string().optional(),
   OutputFormat: z.enum(["json", "plain", "w3c"]).optional(),
 });
 
-export const FirehoseLogDestinationSchema = z.object({
+const FirehoseLogDestinationSchema = z.object({
   DeliveryStreamArn: z.string().min(1).max(1600).regex(
     new RegExp(
       "^(^arn:aws([a-z]|\\-)*:firehose:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):deliverystream/.+)$",
@@ -51,7 +60,7 @@ export const FirehoseLogDestinationSchema = z.object({
   ).optional(),
 });
 
-export const CloudwatchLogsLogDestinationSchema = z.object({
+const CloudwatchLogsLogDestinationSchema = z.object({
   LogGroupArn: z.string().min(1).max(1600).regex(
     new RegExp(
       "^(^arn:aws([a-z]|\\-)*:logs:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):log-group:.+)$",
@@ -59,15 +68,15 @@ export const CloudwatchLogsLogDestinationSchema = z.object({
   ).optional(),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   Pattern: z.string().min(0).max(4096).optional(),
 });
 
-export const FilterCriteriaSchema = z.object({
+const FilterCriteriaSchema = z.object({
   Filters: z.array(FilterSchema).optional(),
 });
 
-export const PipeSourceKinesisStreamParametersSchema = z.object({
+const PipeSourceKinesisStreamParametersSchema = z.object({
   BatchSize: z.number().int().min(1).max(10000).optional(),
   OnPartialBatchItemFailure: z.enum(["AUTOMATIC_BISECT"]).optional(),
   MaximumBatchingWindowInSeconds: z.number().int().min(0).max(300).optional(),
@@ -78,7 +87,7 @@ export const PipeSourceKinesisStreamParametersSchema = z.object({
   StartingPositionTimestamp: z.string().optional(),
 });
 
-export const PipeSourceDynamoDBStreamParametersSchema = z.object({
+const PipeSourceDynamoDBStreamParametersSchema = z.object({
   BatchSize: z.number().int().min(1).max(10000).optional(),
   OnPartialBatchItemFailure: z.enum(["AUTOMATIC_BISECT"]).optional(),
   MaximumBatchingWindowInSeconds: z.number().int().min(0).max(300).optional(),
@@ -88,12 +97,12 @@ export const PipeSourceDynamoDBStreamParametersSchema = z.object({
   StartingPosition: z.enum(["TRIM_HORIZON", "LATEST"]),
 });
 
-export const PipeSourceSqsQueueParametersSchema = z.object({
+const PipeSourceSqsQueueParametersSchema = z.object({
   BatchSize: z.number().int().min(1).max(10000).optional(),
   MaximumBatchingWindowInSeconds: z.number().int().min(0).max(300).optional(),
 });
 
-export const PipeSourceActiveMQBrokerParametersSchema = z.object({
+const PipeSourceActiveMQBrokerParametersSchema = z.object({
   Credentials: z.object({
     BasicAuth: z.string().min(1).max(1600).regex(
       new RegExp(
@@ -108,7 +117,7 @@ export const PipeSourceActiveMQBrokerParametersSchema = z.object({
   MaximumBatchingWindowInSeconds: z.number().int().min(0).max(300).optional(),
 });
 
-export const PipeSourceRabbitMQBrokerParametersSchema = z.object({
+const PipeSourceRabbitMQBrokerParametersSchema = z.object({
   Credentials: z.object({
     BasicAuth: z.string().min(1).max(1600).regex(
       new RegExp(
@@ -126,7 +135,7 @@ export const PipeSourceRabbitMQBrokerParametersSchema = z.object({
   MaximumBatchingWindowInSeconds: z.number().int().min(0).max(300).optional(),
 });
 
-export const PipeSourceManagedStreamingKafkaParametersSchema = z.object({
+const PipeSourceManagedStreamingKafkaParametersSchema = z.object({
   TopicName: z.string().min(1).max(249).regex(
     new RegExp("^[^.]([a-zA-Z0-9\\-_.]+)$"),
   ),
@@ -154,7 +163,7 @@ export const PipeSourceManagedStreamingKafkaParametersSchema = z.object({
   }).optional(),
 });
 
-export const SelfManagedKafkaAccessConfigurationVpcSchema = z.object({
+const SelfManagedKafkaAccessConfigurationVpcSchema = z.object({
   Subnets: z.array(
     z.string().min(1).max(1024).regex(new RegExp("^subnet-[0-9a-z]*$")),
   ).describe("List of SubnetId.").optional(),
@@ -163,7 +172,7 @@ export const SelfManagedKafkaAccessConfigurationVpcSchema = z.object({
   ).describe("List of SecurityGroupId.").optional(),
 });
 
-export const PipeSourceSelfManagedKafkaParametersSchema = z.object({
+const PipeSourceSelfManagedKafkaParametersSchema = z.object({
   TopicName: z.string().min(1).max(249).regex(
     new RegExp("^[^.]([a-zA-Z0-9\\-_.]+)$"),
   ),
@@ -219,19 +228,19 @@ export const PipeSourceSelfManagedKafkaParametersSchema = z.object({
   Vpc: SelfManagedKafkaAccessConfigurationVpcSchema.optional(),
 });
 
-export const PipeTargetLambdaFunctionParametersSchema = z.object({
+const PipeTargetLambdaFunctionParametersSchema = z.object({
   InvocationType: z.enum(["REQUEST_RESPONSE", "FIRE_AND_FORGET"]).optional(),
 });
 
-export const PipeTargetStateMachineParametersSchema = z.object({
+const PipeTargetStateMachineParametersSchema = z.object({
   InvocationType: z.enum(["REQUEST_RESPONSE", "FIRE_AND_FORGET"]).optional(),
 });
 
-export const PipeTargetKinesisStreamParametersSchema = z.object({
+const PipeTargetKinesisStreamParametersSchema = z.object({
   PartitionKey: z.string().min(0).max(256),
 });
 
-export const AwsVpcConfigurationSchema = z.object({
+const AwsVpcConfigurationSchema = z.object({
   Subnets: z.array(
     z.string().min(1).max(1024).regex(
       new RegExp("^subnet-[0-9a-z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"),
@@ -245,42 +254,42 @@ export const AwsVpcConfigurationSchema = z.object({
   AssignPublicIp: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const NetworkConfigurationSchema = z.object({
+const NetworkConfigurationSchema = z.object({
   AwsvpcConfiguration: AwsVpcConfigurationSchema.optional(),
 });
 
-export const CapacityProviderStrategyItemSchema = z.object({
+const CapacityProviderStrategyItemSchema = z.object({
   CapacityProvider: z.string().min(1).max(255),
   Weight: z.number().int().min(0).max(1000).optional(),
   Base: z.number().int().min(0).max(100000).optional(),
 });
 
-export const PlacementConstraintSchema = z.object({
+const PlacementConstraintSchema = z.object({
   Type: z.enum(["distinctInstance", "memberOf"]).optional(),
   Expression: z.string().min(0).max(2000).optional(),
 });
 
-export const PlacementStrategySchema = z.object({
+const PlacementStrategySchema = z.object({
   Type: z.enum(["random", "spread", "binpack"]).optional(),
   Field: z.string().min(0).max(255).optional(),
 });
 
-export const EcsEnvironmentVariableSchema = z.object({
+const EcsEnvironmentVariableSchema = z.object({
   Name: z.string().optional(),
   Value: z.string().optional(),
 });
 
-export const EcsEnvironmentFileSchema = z.object({
+const EcsEnvironmentFileSchema = z.object({
   Type: z.enum(["s3"]),
   Value: z.string(),
 });
 
-export const EcsResourceRequirementSchema = z.object({
+const EcsResourceRequirementSchema = z.object({
   Type: z.enum(["GPU", "InferenceAccelerator"]),
   Value: z.string(),
 });
 
-export const EcsContainerOverrideSchema = z.object({
+const EcsContainerOverrideSchema = z.object({
   Command: z.array(z.string()).optional(),
   Cpu: z.number().int().optional(),
   Environment: z.array(EcsEnvironmentVariableSchema).optional(),
@@ -291,16 +300,16 @@ export const EcsContainerOverrideSchema = z.object({
   ResourceRequirements: z.array(EcsResourceRequirementSchema).optional(),
 });
 
-export const EcsEphemeralStorageSchema = z.object({
+const EcsEphemeralStorageSchema = z.object({
   SizeInGiB: z.number().int().min(21).max(200),
 });
 
-export const EcsInferenceAcceleratorOverrideSchema = z.object({
+const EcsInferenceAcceleratorOverrideSchema = z.object({
   DeviceName: z.string().optional(),
   DeviceType: z.string().optional(),
 });
 
-export const EcsTaskOverrideSchema = z.object({
+const EcsTaskOverrideSchema = z.object({
   ContainerOverrides: z.array(EcsContainerOverrideSchema).optional(),
   Cpu: z.string().optional(),
   EphemeralStorage: EcsEphemeralStorageSchema.optional(),
@@ -319,12 +328,12 @@ export const EcsTaskOverrideSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
 
-export const PipeTargetEcsTaskParametersSchema = z.object({
+const PipeTargetEcsTaskParametersSchema = z.object({
   TaskDefinitionArn: z.string().min(1).max(1600).regex(
     new RegExp(
       "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
@@ -347,37 +356,37 @@ export const PipeTargetEcsTaskParametersSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
-export const BatchArrayPropertiesSchema = z.object({
+const BatchArrayPropertiesSchema = z.object({
   Size: z.number().int().min(2).max(10000).optional(),
 });
 
-export const BatchRetryStrategySchema = z.object({
+const BatchRetryStrategySchema = z.object({
   Attempts: z.number().int().min(1).max(10).optional(),
 });
 
-export const BatchEnvironmentVariableSchema = z.object({
+const BatchEnvironmentVariableSchema = z.object({
   Name: z.string().optional(),
   Value: z.string().optional(),
 });
 
-export const BatchResourceRequirementSchema = z.object({
+const BatchResourceRequirementSchema = z.object({
   Type: z.enum(["GPU", "MEMORY", "VCPU"]),
   Value: z.string(),
 });
 
-export const BatchContainerOverridesSchema = z.object({
+const BatchContainerOverridesSchema = z.object({
   Command: z.array(z.string()).optional(),
   Environment: z.array(BatchEnvironmentVariableSchema).optional(),
   InstanceType: z.string().optional(),
   ResourceRequirements: z.array(BatchResourceRequirementSchema).optional(),
 });
 
-export const BatchJobDependencySchema = z.object({
+const BatchJobDependencySchema = z.object({
   JobId: z.string().optional(),
   Type: z.enum(["N_TO_N", "SEQUENTIAL"]).optional(),
 });
 
-export const PipeTargetBatchJobParametersSchema = z.object({
+const PipeTargetBatchJobParametersSchema = z.object({
   JobDefinition: z.string(),
   JobName: z.string(),
   ArrayProperties: BatchArrayPropertiesSchema.optional(),
@@ -387,12 +396,12 @@ export const PipeTargetBatchJobParametersSchema = z.object({
   Parameters: z.record(z.string(), z.string()).optional(),
 });
 
-export const PipeTargetSqsQueueParametersSchema = z.object({
+const PipeTargetSqsQueueParametersSchema = z.object({
   MessageGroupId: z.string().min(0).max(100).optional(),
   MessageDeduplicationId: z.string().min(0).max(100).optional(),
 });
 
-export const PipeTargetHttpParametersSchema = z.object({
+const PipeTargetHttpParametersSchema = z.object({
   PathParameterValues: z.array(
     z.string().regex(
       new RegExp("^(?!\\s*$).+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"),
@@ -416,7 +425,7 @@ export const PipeTargetHttpParametersSchema = z.object({
   ).optional(),
 });
 
-export const PipeTargetRedshiftDataParametersSchema = z.object({
+const PipeTargetRedshiftDataParametersSchema = z.object({
   SecretManagerArn: z.string().min(1).max(1600).regex(
     new RegExp(
       "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
@@ -432,7 +441,7 @@ export const PipeTargetRedshiftDataParametersSchema = z.object({
   Sqls: z.array(z.string().min(1).max(100000)).describe("A list of SQLs."),
 });
 
-export const SageMakerPipelineParameterSchema = z.object({
+const SageMakerPipelineParameterSchema = z.object({
   Name: z.string().min(1).max(256).regex(
     new RegExp(
       "^[a-zA-Z0-9](-*[a-zA-Z0-9])*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
@@ -441,11 +450,11 @@ export const SageMakerPipelineParameterSchema = z.object({
   Value: z.string().min(0).max(1024),
 });
 
-export const PipeTargetSageMakerPipelineParametersSchema = z.object({
+const PipeTargetSageMakerPipelineParametersSchema = z.object({
   PipelineParameterList: z.array(SageMakerPipelineParameterSchema).optional(),
 });
 
-export const PipeTargetEventBridgeEventBusParametersSchema = z.object({
+const PipeTargetEventBridgeEventBusParametersSchema = z.object({
   EndpointId: z.string().min(1).max(50).regex(
     new RegExp("^[A-Za-z0-9\\-]+[\\.][A-Za-z0-9\\-]+$"),
   ).optional(),
@@ -467,20 +476,20 @@ export const PipeTargetEventBridgeEventBusParametersSchema = z.object({
   ).optional(),
 });
 
-export const PipeTargetCloudWatchLogsParametersSchema = z.object({
+const PipeTargetCloudWatchLogsParametersSchema = z.object({
   LogStreamName: z.string().min(1).max(256).optional(),
   Timestamp: z.string().min(1).max(256).regex(
     new RegExp("^\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*$"),
   ).optional(),
 });
 
-export const DimensionMappingSchema = z.object({
+const DimensionMappingSchema = z.object({
   DimensionValue: z.string().min(1).max(2048),
   DimensionValueType: z.enum(["VARCHAR"]),
   DimensionName: z.string().min(1).max(256),
 });
 
-export const SingleMeasureMappingSchema = z.object({
+const SingleMeasureMappingSchema = z.object({
   MeasureValue: z.string().min(1).max(2048),
   MeasureValueType: z.enum([
     "DOUBLE",
@@ -492,7 +501,7 @@ export const SingleMeasureMappingSchema = z.object({
   MeasureName: z.string().min(1).max(1024),
 });
 
-export const MultiMeasureAttributeMappingSchema = z.object({
+const MultiMeasureAttributeMappingSchema = z.object({
   MeasureValue: z.string().min(1).max(2048),
   MeasureValueType: z.enum([
     "DOUBLE",
@@ -504,12 +513,12 @@ export const MultiMeasureAttributeMappingSchema = z.object({
   MultiMeasureAttributeName: z.string().min(1).max(256),
 });
 
-export const MultiMeasureMappingSchema = z.object({
+const MultiMeasureMappingSchema = z.object({
   MultiMeasureName: z.string().min(1).max(256),
   MultiMeasureAttributeMappings: z.array(MultiMeasureAttributeMappingSchema),
 });
 
-export const PipeTargetTimestreamParametersSchema = z.object({
+const PipeTargetTimestreamParametersSchema = z.object({
   TimeValue: z.string().min(1).max(256),
   EpochTimeUnit: z.enum([
     "MILLISECONDS",
@@ -732,9 +741,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for Pipes Pipe. Registered at `@swamp/aws/pipes/pipe`. */
 export const model = {
   type: "@swamp/aws/pipes/pipe",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -748,6 +758,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

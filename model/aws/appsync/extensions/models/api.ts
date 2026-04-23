@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppSync Api (AWS::AppSync::Api).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,26 +21,26 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const OpenIDConnectConfigSchema = z.object({
+const OpenIDConnectConfigSchema = z.object({
   ClientId: z.string().optional(),
   AuthTTL: z.number().optional(),
   Issuer: z.string(),
   IatTTL: z.number().optional(),
 });
 
-export const CognitoConfigSchema = z.object({
+const CognitoConfigSchema = z.object({
   AppIdClientRegex: z.string().optional(),
   UserPoolId: z.string(),
   AwsRegion: z.string(),
 });
 
-export const LambdaAuthorizerConfigSchema = z.object({
+const LambdaAuthorizerConfigSchema = z.object({
   AuthorizerResultTtlInSeconds: z.number().int().min(0).max(3600).optional(),
   AuthorizerUri: z.string(),
   IdentityValidationExpression: z.string().optional(),
 });
 
-export const AuthProviderSchema = z.object({
+const AuthProviderSchema = z.object({
   AuthType: z.enum([
     "AMAZON_COGNITO_USER_POOLS",
     "AWS_IAM",
@@ -50,7 +59,7 @@ export const AuthProviderSchema = z.object({
   ).optional(),
 });
 
-export const AuthModeSchema = z.object({
+const AuthModeSchema = z.object({
   AuthType: z.enum([
     "AMAZON_COGNITO_USER_POOLS",
     "AWS_IAM",
@@ -60,14 +69,14 @@ export const AuthModeSchema = z.object({
   ]).describe("Security configuration for your AppSync API.").optional(),
 });
 
-export const EventLogConfigSchema = z.object({
+const EventLogConfigSchema = z.object({
   LogLevel: z.enum(["NONE", "ERROR", "ALL", "INFO", "DEBUG"]).describe(
     "Logging level for the AppSync API.",
   ),
   CloudWatchLogsRoleArn: z.string(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[ a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -160,9 +169,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for AppSync Api. Registered at `@swamp/aws/appsync/api`. */
 export const model = {
   type: "@swamp/aws/appsync/api",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -176,6 +186,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTAnalytics Datastore (AWS::IoTAnalytics::Datastore).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CustomerManagedS3Schema = z.object({
+const CustomerManagedS3Schema = z.object({
   Bucket: z.string().min(3).max(255).regex(new RegExp("[a-zA-Z0-9.\\-_]*")),
   RoleArn: z.string().min(20).max(2048),
   KeyPrefix: z.string().min(1).max(255).regex(
@@ -20,46 +29,46 @@ export const CustomerManagedS3Schema = z.object({
   ).optional(),
 });
 
-export const CustomerManagedS3StorageSchema = z.object({
+const CustomerManagedS3StorageSchema = z.object({
   Bucket: z.string().min(3).max(255).regex(new RegExp("[a-zA-Z0-9.\\-_]*")),
   KeyPrefix: z.string().min(1).max(255).regex(
     new RegExp("[a-zA-Z0-9!_.*'()/{}:-]*/"),
   ).optional(),
 });
 
-export const IotSiteWiseMultiLayerStorageSchema = z.object({
+const IotSiteWiseMultiLayerStorageSchema = z.object({
   CustomerManagedS3Storage: CustomerManagedS3StorageSchema.optional(),
 });
 
-export const PartitionSchema = z.object({
+const PartitionSchema = z.object({
   AttributeName: z.string().regex(new RegExp("[a-zA-Z0-9_]+")),
 });
 
-export const TimestampPartitionSchema = z.object({
+const TimestampPartitionSchema = z.object({
   AttributeName: z.string().regex(new RegExp("[a-zA-Z0-9_]+")),
   TimestampFormat: z.string().regex(new RegExp("[a-zA-Z0-9\\s\\[\\]_,.'/:-]*"))
     .optional(),
 });
 
-export const DatastorePartitionSchema = z.object({
+const DatastorePartitionSchema = z.object({
   Partition: PartitionSchema.optional(),
   TimestampPartition: TimestampPartitionSchema.optional(),
 });
 
-export const ColumnSchema = z.object({
+const ColumnSchema = z.object({
   Type: z.string(),
   Name: z.string(),
 });
 
-export const SchemaDefinitionSchema = z.object({
+const SchemaDefinitionSchema = z.object({
   Columns: z.array(ColumnSchema).optional(),
 });
 
-export const ParquetConfigurationSchema = z.object({
+const ParquetConfigurationSchema = z.object({
   SchemaDefinition: SchemaDefinitionSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
@@ -132,9 +141,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for IoTAnalytics Datastore. Registered at `@swamp/aws/iotanalytics/datastore`. */
 export const model = {
   type: "@swamp/aws/iotanalytics/datastore",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -148,6 +158,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

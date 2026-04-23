@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppRunner Service (AWS::AppRunner::Service).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,17 +21,17 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SourceCodeVersionSchema = z.object({
+const SourceCodeVersionSchema = z.object({
   Type: z.enum(["BRANCH"]).describe("Source Code Version Type"),
   Value: z.string().describe("Source Code Version Value"),
 });
 
-export const KeyValuePairSchema = z.object({
+const KeyValuePairSchema = z.object({
   Name: z.string().optional(),
   Value: z.string().optional(),
 });
 
-export const CodeConfigurationValuesSchema = z.object({
+const CodeConfigurationValuesSchema = z.object({
   Runtime: z.enum([
     "PYTHON_3",
     "NODEJS_12",
@@ -47,7 +56,7 @@ export const CodeConfigurationValuesSchema = z.object({
   ).optional(),
 });
 
-export const CodeConfigurationSchema = z.object({
+const CodeConfigurationSchema = z.object({
   ConfigurationSource: z.enum(["REPOSITORY", "API"]).describe(
     "Configuration Source",
   ),
@@ -56,7 +65,7 @@ export const CodeConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const CodeRepositorySchema = z.object({
+const CodeRepositorySchema = z.object({
   RepositoryUrl: z.string().describe("Repository Url"),
   SourceCodeVersion: SourceCodeVersionSchema.describe("Source Code Version"),
   CodeConfiguration: CodeConfigurationSchema.describe("Code Configuration")
@@ -65,7 +74,7 @@ export const CodeRepositorySchema = z.object({
     .describe("Source Directory").optional(),
 });
 
-export const ImageConfigurationSchema = z.object({
+const ImageConfigurationSchema = z.object({
   StartCommand: z.string().describe("Start Command").optional(),
   Port: z.string().describe("Port").optional(),
   RuntimeEnvironmentVariables: z.array(KeyValuePairSchema).optional(),
@@ -74,7 +83,7 @@ export const ImageConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ImageRepositorySchema = z.object({
+const ImageRepositorySchema = z.object({
   ImageIdentifier: z.string().min(1).max(1024).regex(
     new RegExp(
       "([0-9]{12}.dkr.ecr.[a-z\\-]+-[0-9]{1}.amazonaws.com\\/.*)|(^public\\.ecr\\.aws\\/.+\\/.+)",
@@ -87,7 +96,7 @@ export const ImageRepositorySchema = z.object({
   ),
 });
 
-export const AuthenticationConfigurationSchema = z.object({
+const AuthenticationConfigurationSchema = z.object({
   ConnectionArn: z.string().min(1).max(1011).regex(
     new RegExp(
       "arn:aws(-[\\w]+)*:[a-z0-9-\\\\.]{0,63}:[a-z0-9-\\\\.]{0,63}:[0-9]{12}:(\\w|\\/|-){1,1011}",
@@ -100,12 +109,12 @@ export const AuthenticationConfigurationSchema = z.object({
   ).describe("Access Role Arn").optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().optional(),
   Value: z.string().optional(),
 });
 
-export const EgressConfigurationSchema = z.object({
+const EgressConfigurationSchema = z.object({
   EgressType: z.enum(["DEFAULT", "VPC"]).describe("Network egress type."),
   VpcConnectorArn: z.string().min(44).max(1011).regex(
     new RegExp(
@@ -115,7 +124,7 @@ export const EgressConfigurationSchema = z.object({
     .optional(),
 });
 
-export const IngressConfigurationSchema = z.object({
+const IngressConfigurationSchema = z.object({
   IsPubliclyAccessible: z.boolean().describe(
     "It's set to true if the Apprunner service is publicly accessible. It's set to false otherwise.",
   ),
@@ -329,9 +338,10 @@ const InputsSchema = z.object({
   }).describe("Network configuration").optional(),
 });
 
+/** Swamp extension model for AppRunner Service. Registered at `@swamp/aws/apprunner/service`. */
 export const model = {
   type: "@swamp/aws/apprunner/service",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -345,6 +355,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

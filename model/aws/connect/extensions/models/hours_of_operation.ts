@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Connect HoursOfOperation (AWS::Connect::HoursOfOperation).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const HoursOfOperationTimeSliceSchema = z.object({
+const HoursOfOperationTimeSliceSchema = z.object({
   Hours: z.number().int().min(0).max(23).describe("The hours."),
   Minutes: z.number().int().min(0).max(59).describe("The minutes."),
 });
 
-export const HoursOfOperationConfigSchema = z.object({
+const HoursOfOperationConfigSchema = z.object({
   Day: z.enum([
     "SUNDAY",
     "MONDAY",
@@ -35,7 +44,7 @@ export const HoursOfOperationConfigSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -46,12 +55,12 @@ export const TagSchema = z.object({
   ),
 });
 
-export const OverrideTimeSliceSchema = z.object({
+const OverrideTimeSliceSchema = z.object({
   Hours: z.number().int().min(0).max(23).describe("The hours."),
   Minutes: z.number().int().min(0).max(59).describe("The minutes."),
 });
 
-export const HoursOfOperationOverrideConfigSchema = z.object({
+const HoursOfOperationOverrideConfigSchema = z.object({
   Day: z.enum([
     "SUNDAY",
     "MONDAY",
@@ -69,7 +78,7 @@ export const HoursOfOperationOverrideConfigSchema = z.object({
   ),
 });
 
-export const RecurrencePatternSchema = z.object({
+const RecurrencePatternSchema = z.object({
   Frequency: z.enum(["WEEKLY", "MONTHLY", "YEARLY"]).describe(
     "The frequency of recurrence for hours of operation overrides.",
   ).optional(),
@@ -83,13 +92,13 @@ export const RecurrencePatternSchema = z.object({
   ByWeekdayOccurrence: z.array(z.number().int().min(-1).max(4)).optional(),
 });
 
-export const RecurrenceConfigSchema = z.object({
+const RecurrenceConfigSchema = z.object({
   RecurrencePattern: RecurrencePatternSchema.describe(
     "Pattern for recurring hours of operation overrides.",
   ),
 });
 
-export const HoursOfOperationOverrideSchema = z.object({
+const HoursOfOperationOverrideSchema = z.object({
   OverrideName: z.string().min(1).max(127).describe(
     "The name of the hours of operation override.",
   ),
@@ -118,7 +127,7 @@ export const HoursOfOperationOverrideSchema = z.object({
   ).optional(),
 });
 
-export const HoursOfOperationsIdentifierSchema = z.object({
+const HoursOfOperationsIdentifierSchema = z.object({
   Name: z.string().min(1).max(127).describe(
     "The name of the hours of operation.",
   ).optional(),
@@ -202,9 +211,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Connect HoursOfOperation. Registered at `@swamp/aws/connect/hours-of-operation`. */
 export const model = {
   type: "@swamp/aws/connect/hours-of-operation",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -218,6 +228,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

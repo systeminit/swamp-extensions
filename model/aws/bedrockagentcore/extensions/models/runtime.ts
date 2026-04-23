@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore Runtime (AWS::BedrockAgentCore::Runtime).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ContainerConfigurationSchema = z.object({
+const ContainerConfigurationSchema = z.object({
   ContainerUri: z.string().min(1).max(1024).regex(
     new RegExp(
       "^\\d{12}\\.dkr\\.ecr\\.([a-z0-9-]+)\\.amazonaws\\.com/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)([:@]\\S+)$",
@@ -20,7 +29,7 @@ export const ContainerConfigurationSchema = z.object({
   ).describe("The ECR URI of the container"),
 });
 
-export const S3LocationSchema = z.object({
+const S3LocationSchema = z.object({
   Bucket: z.string().regex(new RegExp("^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$"))
     .describe("S3 bucket name"),
   Prefix: z.string().min(1).max(1024).describe("S3 object key prefix"),
@@ -28,11 +37,11 @@ export const S3LocationSchema = z.object({
     .optional(),
 });
 
-export const CodeSchema = z.object({
+const CodeSchema = z.object({
   S3: S3LocationSchema.describe("S3 Location Configuration").optional(),
 });
 
-export const CodeConfigurationSchema = z.object({
+const CodeConfigurationSchema = z.object({
   Code: CodeSchema.describe("Object represents source code from zip file"),
   Runtime: z.enum([
     "PYTHON_3_10",
@@ -44,7 +53,7 @@ export const CodeConfigurationSchema = z.object({
   EntryPoint: z.array(z.string()).describe("List of entry points"),
 });
 
-export const VpcConfigSchema = z.object({
+const VpcConfigSchema = z.object({
   SecurityGroups: z.array(
     z.string().regex(new RegExp("^sg-[0-9a-zA-Z]{8,17}$")),
   ).describe("Security groups for VPC"),
@@ -52,7 +61,7 @@ export const VpcConfigSchema = z.object({
     .describe("Subnets for VPC"),
 });
 
-export const ClaimMatchValueTypeSchema = z.object({
+const ClaimMatchValueTypeSchema = z.object({
   MatchValueString: z.string().regex(new RegExp("[A-Za-z0-9_.-]+")).describe(
     "The string value to match for",
   ).optional(),
@@ -60,7 +69,7 @@ export const ClaimMatchValueTypeSchema = z.object({
     .describe("The list of strings to check for a match").optional(),
 });
 
-export const AuthorizingClaimMatchValueTypeSchema = z.object({
+const AuthorizingClaimMatchValueTypeSchema = z.object({
   ClaimMatchOperator: z.enum(["EQUALS", "CONTAINS", "CONTAINS_ANY"]).describe(
     "The relationship between the claim field value and the value or values being matched",
   ),
@@ -69,7 +78,7 @@ export const AuthorizingClaimMatchValueTypeSchema = z.object({
   ),
 });
 
-export const CustomClaimValidationTypeSchema = z.object({
+const CustomClaimValidationTypeSchema = z.object({
   AuthorizingClaimMatchValue: AuthorizingClaimMatchValueTypeSchema.describe(
     "The value or values in the custom claim to match and relationship of match",
   ),
@@ -80,7 +89,7 @@ export const CustomClaimValidationTypeSchema = z.object({
   ),
 });
 
-export const CustomJWTAuthorizerConfigurationSchema = z.object({
+const CustomJWTAuthorizerConfigurationSchema = z.object({
   DiscoveryUrl: z.string().regex(
     new RegExp("^.+/\\.well-known/openid-configuration$"),
   ).describe("OpenID Connect discovery URL"),
@@ -96,13 +105,13 @@ export const CustomJWTAuthorizerConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SessionStorageConfigurationSchema = z.object({
+const SessionStorageConfigurationSchema = z.object({
   MountPath: z.string().min(6).max(200).regex(
     new RegExp("^/mnt/[a-zA-Z0-9._-]+/?$"),
   ).describe("Mount path for session storage"),
 });
 
-export const FilesystemConfigurationSchema = z.object({
+const FilesystemConfigurationSchema = z.object({
   SessionStorage: SessionStorageConfigurationSchema.describe(
     "Configuration for session storage",
   ).optional(),
@@ -286,9 +295,10 @@ const InputsSchema = z.object({
   ).describe("A map of tag keys and values").optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore Runtime. Registered at `@swamp/aws/bedrockagentcore/runtime`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/runtime",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -307,6 +317,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTSiteWise Gateway (AWS::IoTSiteWise::Gateway).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const GreengrassV2Schema = z.object({
+const GreengrassV2Schema = z.object({
   CoreDeviceThingName: z.string().describe(
     "The name of the CoreDevice in GreenGrass V2.",
   ),
@@ -25,16 +34,16 @@ export const GreengrassV2Schema = z.object({
   ).optional(),
 });
 
-export const SiemensIESchema = z.object({
+const SiemensIESchema = z.object({
   IotCoreThingName: z.string().describe("The name of the IoT Core Thing."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
 
-export const GatewayCapabilitySummarySchema = z.object({
+const GatewayCapabilitySummarySchema = z.object({
   CapabilityNamespace: z.string().describe(
     "The namespace of the capability configuration.",
   ),
@@ -109,9 +118,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoTSiteWise Gateway. Registered at `@swamp/aws/iotsitewise/gateway`. */
 export const model = {
   type: "@swamp/aws/iotsitewise/gateway",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -125,6 +135,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

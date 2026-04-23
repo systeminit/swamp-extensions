@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for KinesisFirehose DeliveryStream (AWS::KinesisFirehose::DeliveryStream).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,37 +21,37 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const HttpEndpointCommonAttributeSchema = z.object({
+const HttpEndpointCommonAttributeSchema = z.object({
   AttributeValue: z.string().min(0).max(1024),
   AttributeName: z.string().min(1).max(256),
 });
 
-export const HttpEndpointRequestConfigurationSchema = z.object({
+const HttpEndpointRequestConfigurationSchema = z.object({
   CommonAttributes: z.array(HttpEndpointCommonAttributeSchema).optional(),
   ContentEncoding: z.enum(["NONE", "GZIP"]).optional(),
 });
 
-export const BufferingHintsSchema = z.object({
+const BufferingHintsSchema = z.object({
   IntervalInSeconds: z.number().int().optional(),
   SizeInMBs: z.number().int().optional(),
 });
 
-export const KMSEncryptionConfigSchema = z.object({
+const KMSEncryptionConfigSchema = z.object({
   AWSKMSKeyARN: z.string(),
 });
 
-export const EncryptionConfigurationSchema = z.object({
+const EncryptionConfigurationSchema = z.object({
   KMSEncryptionConfig: KMSEncryptionConfigSchema.optional(),
   NoEncryptionConfig: z.enum(["NoEncryption"]).optional(),
 });
 
-export const CloudWatchLoggingOptionsSchema = z.object({
+const CloudWatchLoggingOptionsSchema = z.object({
   LogStreamName: z.string().optional(),
   Enabled: z.boolean().optional(),
   LogGroupName: z.string().optional(),
 });
 
-export const S3DestinationConfigurationSchema = z.object({
+const S3DestinationConfigurationSchema = z.object({
   ErrorOutputPrefix: z.string().min(0).max(1024).optional(),
   BucketARN: z.string().min(1).max(2048).regex(new RegExp("arn:.*")),
   BufferingHints: BufferingHintsSchema.optional(),
@@ -59,11 +68,11 @@ export const S3DestinationConfigurationSchema = z.object({
   RoleARN: z.string().min(1).max(512).regex(new RegExp("arn:.*")),
 });
 
-export const RetryOptionsSchema = z.object({
+const RetryOptionsSchema = z.object({
   DurationInSeconds: z.number().int().optional(),
 });
 
-export const SecretsManagerConfigurationSchema = z.object({
+const SecretsManagerConfigurationSchema = z.object({
   SecretARN: z.string().min(1).max(2048).regex(
     new RegExp(
       "arn:.*:secretsmanager:[a-zA-Z0-9\\-]+:\\d{12}:secret:[a-zA-Z0-9\\-/_+=.@]+",
@@ -75,18 +84,18 @@ export const SecretsManagerConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const HttpEndpointConfigurationSchema = z.object({
+const HttpEndpointConfigurationSchema = z.object({
   AccessKey: z.string().min(0).max(4096).optional(),
   Url: z.string().min(1).max(1000),
   Name: z.string().min(1).max(256).optional(),
 });
 
-export const ProcessorParameterSchema = z.object({
+const ProcessorParameterSchema = z.object({
   ParameterValue: z.string(),
   ParameterName: z.string(),
 });
 
-export const ProcessorSchema = z.object({
+const ProcessorSchema = z.object({
   Type: z.enum([
     "RecordDeAggregation",
     "Decompression",
@@ -98,23 +107,23 @@ export const ProcessorSchema = z.object({
   Parameters: z.array(ProcessorParameterSchema).optional(),
 });
 
-export const ProcessingConfigurationSchema = z.object({
+const ProcessingConfigurationSchema = z.object({
   Enabled: z.boolean().optional(),
   Processors: z.array(ProcessorSchema).optional(),
 });
 
-export const CatalogConfigurationSchema = z.object({
+const CatalogConfigurationSchema = z.object({
   CatalogArn: z.string().min(1).max(512).regex(new RegExp("arn:.*")).optional(),
   WarehouseLocation: z.string().min(1).max(2048).regex(
     new RegExp("s3:\\/\\/.*"),
   ).optional(),
 });
 
-export const PartitionFieldSchema = z.object({
+const PartitionFieldSchema = z.object({
   SourceName: z.string().min(1).max(255),
 });
 
-export const DestinationTableConfigurationSchema = z.object({
+const DestinationTableConfigurationSchema = z.object({
   DestinationDatabaseName: z.string().min(1).max(512),
   S3ErrorOutputPrefix: z.string().min(1).max(1024).optional(),
   DestinationTableName: z.string().min(1).max(512),
@@ -124,77 +133,77 @@ export const DestinationTableConfigurationSchema = z.object({
   }).optional(),
 });
 
-export const TableCreationConfigurationSchema = z.object({
+const TableCreationConfigurationSchema = z.object({
   Enabled: z.boolean().optional(),
 });
 
-export const SchemaEvolutionConfigurationSchema = z.object({
+const SchemaEvolutionConfigurationSchema = z.object({
   Enabled: z.boolean().optional(),
 });
 
-export const CopyCommandSchema = z.object({
+const CopyCommandSchema = z.object({
   DataTableName: z.string().min(1).max(512),
   CopyOptions: z.string().min(0).max(204800).optional(),
   DataTableColumns: z.string().min(0).max(204800).optional(),
 });
 
-export const RedshiftRetryOptionsSchema = z.object({
+const RedshiftRetryOptionsSchema = z.object({
   DurationInSeconds: z.number().int().optional(),
 });
 
-export const DocumentIdOptionsSchema = z.object({
+const DocumentIdOptionsSchema = z.object({
   DefaultDocumentIdFormat: z.enum(["FIREHOSE_DEFAULT", "NO_DOCUMENT_ID"]),
 });
 
-export const AmazonopensearchserviceBufferingHintsSchema = z.object({
+const AmazonopensearchserviceBufferingHintsSchema = z.object({
   IntervalInSeconds: z.number().int().optional(),
   SizeInMBs: z.number().int().optional(),
 });
 
-export const AmazonopensearchserviceRetryOptionsSchema = z.object({
+const AmazonopensearchserviceRetryOptionsSchema = z.object({
   DurationInSeconds: z.number().int().optional(),
 });
 
-export const VpcConfigurationSchema = z.object({
+const VpcConfigurationSchema = z.object({
   SubnetIds: z.array(z.string().min(1).max(1024)),
   SecurityGroupIds: z.array(z.string().min(1).max(1024)),
   RoleARN: z.string().min(1).max(512).regex(new RegExp("arn:.*")),
 });
 
-export const AuthenticationConfigurationSchema = z.object({
+const AuthenticationConfigurationSchema = z.object({
   Connectivity: z.enum(["PUBLIC", "PRIVATE"]),
   RoleARN: z.string().min(1).max(512).regex(new RegExp("arn:.*")),
 });
 
-export const SplunkBufferingHintsSchema = z.object({
+const SplunkBufferingHintsSchema = z.object({
   IntervalInSeconds: z.number().int().optional(),
   SizeInMBs: z.number().int().optional(),
 });
 
-export const SplunkRetryOptionsSchema = z.object({
+const SplunkRetryOptionsSchema = z.object({
   DurationInSeconds: z.number().int().optional(),
 });
 
-export const HiveJsonSerDeSchema = z.object({
+const HiveJsonSerDeSchema = z.object({
   TimestampFormats: z.array(z.string()).optional(),
 });
 
-export const OpenXJsonSerDeSchema = z.object({
+const OpenXJsonSerDeSchema = z.object({
   ConvertDotsInJsonKeysToUnderscores: z.boolean().optional(),
   ColumnToJsonKeyMappings: z.record(z.string(), z.string()).optional(),
   CaseInsensitive: z.boolean().optional(),
 });
 
-export const DeserializerSchema = z.object({
+const DeserializerSchema = z.object({
   HiveJsonSerDe: HiveJsonSerDeSchema.optional(),
   OpenXJsonSerDe: OpenXJsonSerDeSchema.optional(),
 });
 
-export const InputFormatConfigurationSchema = z.object({
+const InputFormatConfigurationSchema = z.object({
   Deserializer: DeserializerSchema.optional(),
 });
 
-export const SchemaConfigurationSchema = z.object({
+const SchemaConfigurationSchema = z.object({
   VersionId: z.string().optional(),
   TableName: z.string().optional(),
   DatabaseName: z.string().optional(),
@@ -203,7 +212,7 @@ export const SchemaConfigurationSchema = z.object({
   RoleARN: z.string().min(1).max(512).regex(new RegExp("arn:.*")).optional(),
 });
 
-export const OrcSerDeSchema = z.object({
+const OrcSerDeSchema = z.object({
   PaddingTolerance: z.number().optional(),
   Compression: z.string().optional(),
   StripeSizeBytes: z.number().int().optional(),
@@ -216,7 +225,7 @@ export const OrcSerDeSchema = z.object({
   DictionaryKeyThreshold: z.number().optional(),
 });
 
-export const ParquetSerDeSchema = z.object({
+const ParquetSerDeSchema = z.object({
   Compression: z.string().optional(),
   BlockSizeBytes: z.number().int().optional(),
   EnableDictionaryCompression: z.boolean().optional(),
@@ -225,46 +234,46 @@ export const ParquetSerDeSchema = z.object({
   WriterVersion: z.string().optional(),
 });
 
-export const SerializerSchema = z.object({
+const SerializerSchema = z.object({
   OrcSerDe: OrcSerDeSchema.optional(),
   ParquetSerDe: ParquetSerDeSchema.optional(),
 });
 
-export const OutputFormatConfigurationSchema = z.object({
+const OutputFormatConfigurationSchema = z.object({
   Serializer: SerializerSchema.optional(),
 });
 
-export const DataFormatConversionConfigurationSchema = z.object({
+const DataFormatConversionConfigurationSchema = z.object({
   InputFormatConfiguration: InputFormatConfigurationSchema.optional(),
   Enabled: z.boolean().optional(),
   SchemaConfiguration: SchemaConfigurationSchema.optional(),
   OutputFormatConfiguration: OutputFormatConfigurationSchema.optional(),
 });
 
-export const DynamicPartitioningConfigurationSchema = z.object({
+const DynamicPartitioningConfigurationSchema = z.object({
   Enabled: z.boolean().optional(),
   RetryOptions: RetryOptionsSchema.optional(),
 });
 
-export const AmazonOpenSearchServerlessBufferingHintsSchema = z.object({
+const AmazonOpenSearchServerlessBufferingHintsSchema = z.object({
   IntervalInSeconds: z.number().int().optional(),
   SizeInMBs: z.number().int().optional(),
 });
 
-export const AmazonOpenSearchServerlessRetryOptionsSchema = z.object({
+const AmazonOpenSearchServerlessRetryOptionsSchema = z.object({
   DurationInSeconds: z.number().int().optional(),
 });
 
-export const ElasticsearchBufferingHintsSchema = z.object({
+const ElasticsearchBufferingHintsSchema = z.object({
   IntervalInSeconds: z.number().int().optional(),
   SizeInMBs: z.number().int().optional(),
 });
 
-export const ElasticsearchRetryOptionsSchema = z.object({
+const ElasticsearchRetryOptionsSchema = z.object({
   DurationInSeconds: z.number().int().optional(),
 });
 
-export const SnowflakeVpcConfigurationSchema = z.object({
+const SnowflakeVpcConfigurationSchema = z.object({
   PrivateLinkVpceId: z.string().min(47).max(255).regex(
     new RegExp(
       "([a-zA-Z0-9\\-\\_]+\\.){2,3}vpce\\.[a-zA-Z0-9\\-]*\\.vpce-svc\\-[a-zA-Z0-9\\-]{17}$",
@@ -272,21 +281,21 @@ export const SnowflakeVpcConfigurationSchema = z.object({
   ),
 });
 
-export const SnowflakeRoleConfigurationSchema = z.object({
+const SnowflakeRoleConfigurationSchema = z.object({
   SnowflakeRole: z.string().min(1).max(255).optional(),
   Enabled: z.boolean().optional(),
 });
 
-export const SnowflakeBufferingHintsSchema = z.object({
+const SnowflakeBufferingHintsSchema = z.object({
   IntervalInSeconds: z.number().int().optional(),
   SizeInMBs: z.number().int().optional(),
 });
 
-export const SnowflakeRetryOptionsSchema = z.object({
+const SnowflakeRetryOptionsSchema = z.object({
   DurationInSeconds: z.number().int().optional(),
 });
 
-export const DatabaseColumnsSchema = z.object({
+const DatabaseColumnsSchema = z.object({
   Exclude: z.array(
     z.string().min(1).max(194).regex(new RegExp("[\\u0001-\\uFFFF]*")),
   ).optional(),
@@ -295,7 +304,7 @@ export const DatabaseColumnsSchema = z.object({
   ).optional(),
 });
 
-export const DatabasesSchema = z.object({
+const DatabasesSchema = z.object({
   Exclude: z.array(
     z.string().min(1).max(64).regex(new RegExp("[\\u0001-\\uFFFF]*")),
   ).optional(),
@@ -304,11 +313,11 @@ export const DatabasesSchema = z.object({
   ).optional(),
 });
 
-export const DatabaseSourceAuthenticationConfigurationSchema = z.object({
+const DatabaseSourceAuthenticationConfigurationSchema = z.object({
   SecretsManagerConfiguration: SecretsManagerConfigurationSchema,
 });
 
-export const DatabaseTablesSchema = z.object({
+const DatabaseTablesSchema = z.object({
   Exclude: z.array(
     z.string().min(1).max(129).regex(new RegExp("[\\u0001-\\uFFFF]*")),
   ).optional(),
@@ -317,7 +326,7 @@ export const DatabaseTablesSchema = z.object({
   ).optional(),
 });
 
-export const DatabaseSourceVPCConfigurationSchema = z.object({
+const DatabaseSourceVPCConfigurationSchema = z.object({
   VpcEndpointServiceName: z.string().min(47).max(255).regex(
     new RegExp(
       "([a-zA-Z0-9\\-\\_]+\\.){2,3}vpce\\.[a-zA-Z0-9\\-]*\\.vpce-svc\\-[a-zA-Z0-9\\-]{17}$",
@@ -325,7 +334,7 @@ export const DatabaseSourceVPCConfigurationSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(0).max(256).regex(
     new RegExp("^[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@%]*$", "u"),
   ).optional(),
@@ -1011,9 +1020,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for KinesisFirehose DeliveryStream. Registered at `@swamp/aws/kinesisfirehose/delivery-stream`. */
 export const model = {
   type: "@swamp/aws/kinesisfirehose/delivery-stream",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1027,6 +1037,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

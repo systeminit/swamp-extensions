@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for NeptuneGraph GraphSnapshot (AWS::NeptuneGraph::GraphSnapshot).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The key name of the tag."),
   Value: z.string().min(0).max(256).describe("The value for the tag."),
 });
@@ -58,9 +67,22 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for NeptuneGraph GraphSnapshot. Registered at `@swamp/aws/neptunegraph/graph-snapshot`. */
 export const model = {
   type: "@swamp/aws/neptunegraph/graph-snapshot",
-  version: "2026.04.15.1",
+  version: "2026.04.23.2",
+  upgrades: [
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

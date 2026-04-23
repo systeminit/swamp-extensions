@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Evidently Launch (AWS::Evidently::Launch).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const GroupToWeightSchema = z.object({
+const GroupToWeightSchema = z.object({
   GroupName: z.string().min(1).max(127).regex(new RegExp("[-a-zA-Z0-9._]*")),
   SplitWeight: z.number().int(),
 });
 
-export const SegmentOverrideSchema = z.object({
+const SegmentOverrideSchema = z.object({
   Segment: z.string().min(1).max(2048).regex(
     new RegExp(
       "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:segment/[-a-zA-Z0-9._]*)",
@@ -27,20 +36,20 @@ export const SegmentOverrideSchema = z.object({
   Weights: z.array(GroupToWeightSchema),
 });
 
-export const StepConfigSchema = z.object({
+const StepConfigSchema = z.object({
   StartTime: z.string(),
   GroupWeights: z.array(GroupToWeightSchema),
   SegmentOverrides: z.array(SegmentOverrideSchema).optional(),
 });
 
-export const LaunchGroupObjectSchema = z.object({
+const LaunchGroupObjectSchema = z.object({
   GroupName: z.string().min(1).max(127).regex(new RegExp("[-a-zA-Z0-9._]*")),
   Description: z.string().min(0).max(160).optional(),
   Feature: z.string(),
   Variation: z.string(),
 });
 
-export const MetricDefinitionObjectSchema = z.object({
+const MetricDefinitionObjectSchema = z.object({
   MetricName: z.string().min(1).max(255).regex(new RegExp("^[\\S]+$")),
   EntityIdKey: z.string().describe(
     "The JSON path to reference the entity id in the event.",
@@ -54,7 +63,7 @@ export const MetricDefinitionObjectSchema = z.object({
   UnitLabel: z.string().min(1).max(256).regex(new RegExp(".*")).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -149,9 +158,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for Evidently Launch. Registered at `@swamp/aws/evidently/launch`. */
 export const model = {
   type: "@swamp/aws/evidently/launch",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -165,6 +175,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

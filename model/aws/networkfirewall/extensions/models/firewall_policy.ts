@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for NetworkFirewall FirewallPolicy (AWS::NetworkFirewall::FirewallPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,34 +21,34 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DimensionSchema = z.object({
+const DimensionSchema = z.object({
   Value: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9-_ ]+$")),
 });
 
-export const PublishMetricActionSchema = z.object({
+const PublishMetricActionSchema = z.object({
   Dimensions: z.array(DimensionSchema),
 });
 
-export const ActionDefinitionSchema = z.object({
+const ActionDefinitionSchema = z.object({
   PublishMetricAction: PublishMetricActionSchema.optional(),
 });
 
-export const CustomActionSchema = z.object({
+const CustomActionSchema = z.object({
   ActionName: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9]+$")),
   ActionDefinition: ActionDefinitionSchema,
 });
 
-export const StatelessRuleGroupReferenceSchema = z.object({
+const StatelessRuleGroupReferenceSchema = z.object({
   ResourceArn: z.string().min(1).max(256).regex(new RegExp("^(arn:aws.*)$"))
     .describe("A resource ARN."),
   Priority: z.number().int().min(1).max(65535),
 });
 
-export const StatefulRuleGroupOverrideSchema = z.object({
+const StatefulRuleGroupOverrideSchema = z.object({
   Action: z.enum(["DROP_TO_ALERT"]).optional(),
 });
 
-export const StatefulRuleGroupReferenceSchema = z.object({
+const StatefulRuleGroupReferenceSchema = z.object({
   ResourceArn: z.string().min(1).max(256).regex(new RegExp("^(arn:aws.*)$"))
     .describe("A resource ARN."),
   Priority: z.number().int().min(1).max(65535).optional(),
@@ -47,7 +56,7 @@ export const StatefulRuleGroupReferenceSchema = z.object({
   DeepThreatInspection: z.boolean().optional(),
 });
 
-export const StatefulEngineOptionsSchema = z.object({
+const StatefulEngineOptionsSchema = z.object({
   RuleOrder: z.enum(["DEFAULT_ACTION_ORDER", "STRICT_ORDER"]).optional(),
   StreamExceptionPolicy: z.enum(["DROP", "CONTINUE", "REJECT"]).optional(),
   FlowTimeouts: z.object({
@@ -55,11 +64,11 @@ export const StatefulEngineOptionsSchema = z.object({
   }).optional(),
 });
 
-export const IPSetSchema = z.object({
+const IPSetSchema = z.object({
   Definition: z.array(z.string().min(1).regex(new RegExp("^.*$"))).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^.*$")),
   Value: z.string().min(0).max(255).regex(new RegExp("^.*$")),
 });
@@ -144,9 +153,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for NetworkFirewall FirewallPolicy. Registered at `@swamp/aws/networkfirewall/firewall-policy`. */
 export const model = {
   type: "@swamp/aws/networkfirewall/firewall-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -160,6 +170,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ECS TaskSet (AWS::ECS::TaskSet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const LoadBalancerSchema = z.object({
+const LoadBalancerSchema = z.object({
   TargetGroupArn: z.string().describe(
     "The full Amazon Resource Name (ARN) of the Elastic Load Balancing target group or groups associated with a service or task set. A target group ARN is only specified when using an Application Load Balancer or Network Load Balancer. If you are using a Classic Load Balancer this should be omitted. For services using the ECS deployment controller, you can specify one or multiple target groups. For more information, see https://docs.aws.amazon.com/AmazonECS/latest/developerguide/register-multiple-targetgroups.html in the Amazon Elastic Container Service Developer Guide. For services using the CODE_DEPLOY deployment controller, you are required to define two target groups for the load balancer. For more information, see https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html in the Amazon Elastic Container Service Developer Guide. If your service's task definition uses the awsvpc network mode (which is required for the Fargate launch type), you must choose ip as the target type, not instance, when creating your target groups because tasks that use the awsvpc network mode are associated with an elastic network interface, not an Amazon EC2 instance.",
   ).optional(),
@@ -24,7 +33,7 @@ export const LoadBalancerSchema = z.object({
   ).optional(),
 });
 
-export const ServiceRegistrySchema = z.object({
+const ServiceRegistrySchema = z.object({
   ContainerName: z.string().describe(
     "The container name value, already specified in the task definition, to be used for your service discovery service. If the task definition that your service task specifies uses the bridge or host network mode, you must specify a containerName and containerPort combination from the task definition. If the task definition that your service task specifies uses the awsvpc network mode and a type SRV DNS record is used, you must specify either a containerName and containerPort combination or a port value, but not both.",
   ).optional(),
@@ -39,13 +48,13 @@ export const ServiceRegistrySchema = z.object({
   ).optional(),
 });
 
-export const CapacityProviderStrategyItemSchema = z.object({
+const CapacityProviderStrategyItemSchema = z.object({
   CapacityProvider: z.string().optional(),
   Base: z.number().int().optional(),
   Weight: z.number().int().optional(),
 });
 
-export const AwsVpcConfigurationSchema = z.object({
+const AwsVpcConfigurationSchema = z.object({
   SecurityGroups: z.array(z.string()).describe(
     "The security groups associated with the task or service. If you do not specify a security group, the default security group for the VPC is used. There is a limit of 5 security groups that can be specified per AwsVpcConfiguration.",
   ).optional(),
@@ -57,7 +66,7 @@ export const AwsVpcConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().optional(),
   Key: z.string().optional(),
 });
@@ -180,9 +189,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for ECS TaskSet. Registered at `@swamp/aws/ecs/task-set`. */
 export const model = {
   type: "@swamp/aws/ecs/task-set",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -196,6 +206,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

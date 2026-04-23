@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GroundStation DataflowEndpointGroup (AWS::GroundStation::DataflowEndpointGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SecurityDetailsSchema = z.object({
+const SecurityDetailsSchema = z.object({
   SubnetIds: z.array(z.string()).optional(),
   SecurityGroupIds: z.array(z.string()).optional(),
   RoleArn: z.string().regex(
@@ -20,36 +29,36 @@ export const SecurityDetailsSchema = z.object({
   ).optional(),
 });
 
-export const SocketAddressSchema = z.object({
+const SocketAddressSchema = z.object({
   Name: z.string().optional(),
   Port: z.number().int().optional(),
 });
 
-export const DataflowEndpointSchema = z.object({
+const DataflowEndpointSchema = z.object({
   Name: z.string().regex(new RegExp("^[ a-zA-Z0-9_:-]{1,256}$")).optional(),
   Address: SocketAddressSchema.optional(),
   Mtu: z.number().int().optional(),
 });
 
-export const ConnectionDetailsSchema = z.object({
+const ConnectionDetailsSchema = z.object({
   SocketAddress: SocketAddressSchema.optional(),
   Mtu: z.number().int().describe(
     "Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.",
   ).optional(),
 });
 
-export const IntegerRangeSchema = z.object({
+const IntegerRangeSchema = z.object({
   Minimum: z.number().int().describe("A minimum value.").optional(),
   Maximum: z.number().int().describe("A maximum value.").optional(),
 });
 
-export const RangedSocketAddressSchema = z.object({
+const RangedSocketAddressSchema = z.object({
   Name: z.string().describe("IPv4 socket address.").optional(),
   PortRange: IntegerRangeSchema.describe("Port range of a socket address.")
     .optional(),
 });
 
-export const RangedConnectionDetailsSchema = z.object({
+const RangedConnectionDetailsSchema = z.object({
   SocketAddress: RangedSocketAddressSchema.describe(
     "A socket address with a port range.",
   ).optional(),
@@ -58,7 +67,7 @@ export const RangedConnectionDetailsSchema = z.object({
   ).optional(),
 });
 
-export const AwsGroundStationAgentEndpointSchema = z.object({
+const AwsGroundStationAgentEndpointSchema = z.object({
   Name: z.string().regex(new RegExp("^[ a-zA-Z0-9_:-]{1,256}$")).optional(),
   EgressAddress: ConnectionDetailsSchema.describe(
     "Egress address of AgentEndpoint with an optional mtu.",
@@ -74,7 +83,7 @@ export const AwsGroundStationAgentEndpointSchema = z.object({
   ).optional(),
 });
 
-export const EndpointDetailsSchema = z.object({
+const EndpointDetailsSchema = z.object({
   SecurityDetails: SecurityDetailsSchema.optional(),
   Endpoint: DataflowEndpointSchema.optional(),
   AwsGroundStationAgentEndpoint: AwsGroundStationAgentEndpointSchema.describe(
@@ -82,7 +91,7 @@ export const EndpointDetailsSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().regex(new RegExp("^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$")),
   Value: z.string().regex(new RegExp("^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$")),
 });
@@ -124,9 +133,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for GroundStation DataflowEndpointGroup. Registered at `@swamp/aws/groundstation/dataflow-endpoint-group`. */
 export const model = {
   type: "@swamp/aws/groundstation/dataflow-endpoint-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -140,6 +150,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

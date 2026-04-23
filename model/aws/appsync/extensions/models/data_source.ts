@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppSync DataSource (AWS::AppSync::DataSource).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DeltaSyncConfigSchema = z.object({
+const DeltaSyncConfigSchema = z.object({
   BaseTableTTL: z.string().describe(
     "The number of minutes that an Item is stored in the data source.",
   ),
@@ -22,7 +31,7 @@ export const DeltaSyncConfigSchema = z.object({
   DeltaSyncTableName: z.string().describe("The Delta Sync table name."),
 });
 
-export const AwsIamConfigSchema = z.object({
+const AwsIamConfigSchema = z.object({
   SigningRegion: z.string().describe(
     "The signing Region for AWS Identity and Access Management authorization.",
   ).optional(),
@@ -31,7 +40,7 @@ export const AwsIamConfigSchema = z.object({
   ).optional(),
 });
 
-export const AuthorizationConfigSchema = z.object({
+const AuthorizationConfigSchema = z.object({
   AuthorizationType: z.string().describe(
     "The authorization type that the HTTP endpoint requires.",
   ),
@@ -40,7 +49,7 @@ export const AuthorizationConfigSchema = z.object({
   ).optional(),
 });
 
-export const RdsHttpEndpointConfigSchema = z.object({
+const RdsHttpEndpointConfigSchema = z.object({
   DatabaseName: z.string().describe("Logical database name.").optional(),
   AwsRegion: z.string().describe("AWS Region for RDS HTTP endpoint."),
   DbClusterIdentifier: z.string().describe(
@@ -232,9 +241,10 @@ const InputsSchema = z.object({
   MetricsConfig: z.enum(["DISABLED", "ENABLED"]).optional(),
 });
 
+/** Swamp extension model for AppSync DataSource. Registered at `@swamp/aws/appsync/data-source`. */
 export const model = {
   type: "@swamp/aws/appsync/data-source",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -248,6 +258,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

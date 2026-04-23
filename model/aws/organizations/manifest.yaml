@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/organizations"
-version: "2026.04.19.1"
+version: "2026.04.23.2"
 description: "AWS ORGANIZATIONS infrastructure models"
 labels:
   - aws
@@ -9,7 +9,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: account, organizational_unit
+  - Updated: account, organization, organizational_unit, policy, resource_policy
 models:
   - account.ts
   - organization.ts

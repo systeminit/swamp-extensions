@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoT JobTemplate (AWS::IoT::JobTemplate).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,12 +20,12 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const RateIncreaseCriteriaSchema = z.object({
+const RateIncreaseCriteriaSchema = z.object({
   NumberOfNotifiedThings: z.number().int().min(1).optional(),
   NumberOfSucceededThings: z.number().int().min(1).optional(),
 });
 
-export const ExponentialRolloutRateSchema = z.object({
+const ExponentialRolloutRateSchema = z.object({
   BaseRatePerMinute: z.number().int().min(1).describe(
     "The minimum number of things that will be notified of a pending job, per minute at the start of job rollout. This parameter allows you to define the initial rate of rollout.",
   ),
@@ -28,7 +37,7 @@ export const ExponentialRolloutRateSchema = z.object({
   ),
 });
 
-export const AbortCriteriaSchema = z.object({
+const AbortCriteriaSchema = z.object({
   Action: z.enum(["CANCEL"]).describe(
     "The type of job action to take to initiate the job abort.",
   ),
@@ -43,17 +52,17 @@ export const AbortCriteriaSchema = z.object({
   ),
 });
 
-export const RetryCriteriaSchema = z.object({
+const RetryCriteriaSchema = z.object({
   NumberOfRetries: z.number().int().min(0).max(10).optional(),
   FailureType: z.enum(["FAILED", "TIMED_OUT", "ALL"]).optional(),
 });
 
-export const MaintenanceWindowSchema = z.object({
+const MaintenanceWindowSchema = z.object({
   StartTime: z.string().min(1).max(256).optional(),
   DurationInMinutes: z.number().int().min(1).max(1430).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The tag's key."),
   Value: z.string().min(1).max(256).describe("The tag's value."),
 });
@@ -192,9 +201,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoT JobTemplate. Registered at `@swamp/aws/iot/job-template`. */
 export const model = {
   type: "@swamp/aws/iot/job-template",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -208,6 +218,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

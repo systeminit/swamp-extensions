@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppTest TestCase (AWS::AppTest::TestCase).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,51 +21,51 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const M2ManagedActionPropertiesSchema = z.object({
+const M2ManagedActionPropertiesSchema = z.object({
   ForceStop: z.boolean().optional(),
   ImportDataSetLocation: z.string().regex(new RegExp("^\\S{1,1000}$"))
     .optional(),
 });
 
-export const M2ManagedApplicationActionSchema = z.object({
+const M2ManagedApplicationActionSchema = z.object({
   Resource: z.string().regex(new RegExp("^\\S{1,1000}$")),
   ActionType: z.enum(["Configure", "Deconfigure"]),
   Properties: M2ManagedActionPropertiesSchema.optional(),
 });
 
-export const M2NonManagedApplicationActionSchema = z.object({
+const M2NonManagedApplicationActionSchema = z.object({
   Resource: z.string().regex(new RegExp("^\\S{1,1000}$")),
   ActionType: z.enum(["Configure", "Deconfigure"]),
 });
 
-export const CloudFormationActionSchema = z.object({
+const CloudFormationActionSchema = z.object({
   Resource: z.string().regex(new RegExp("^\\S{1,1000}$")),
   ActionType: z.enum(["Create", "Delete"]).optional(),
 });
 
-export const BatchSchema = z.object({
+const BatchSchema = z.object({
   BatchJobName: z.string().regex(new RegExp("^\\S{1,1000}$")),
   BatchJobParameters: z.record(z.string(), z.string()).optional(),
   ExportDataSetNames: z.array(z.string().regex(new RegExp("^\\S{1,100}$")))
     .optional(),
 });
 
-export const ScriptSchema = z.object({
+const ScriptSchema = z.object({
   ScriptLocation: z.string().min(0).max(1024),
   Type: z.enum(["Selenium"]),
 });
 
-export const TN3270Schema = z.object({
+const TN3270Schema = z.object({
   Script: ScriptSchema,
   ExportDataSetNames: z.array(z.string().regex(new RegExp("^\\S{1,100}$")))
     .optional(),
 });
 
-export const MainframeActionPropertiesSchema = z.object({
+const MainframeActionPropertiesSchema = z.object({
   DmsTaskArn: z.string().regex(new RegExp("^\\S{1,1000}$")).optional(),
 });
 
-export const MainframeActionSchema = z.object({
+const MainframeActionSchema = z.object({
   Resource: z.string().regex(new RegExp("^\\S{1,1000}$")),
   ActionType: z.object({
     Batch: BatchSchema.optional(),
@@ -65,7 +74,7 @@ export const MainframeActionSchema = z.object({
   Properties: MainframeActionPropertiesSchema.optional(),
 });
 
-export const DataSetSchema = z.object({
+const DataSetSchema = z.object({
   Type: z.enum(["PS"]),
   Name: z.string().regex(new RegExp("^\\S{1,100}$")),
   Ccsid: z.string().regex(new RegExp("^\\S{1,50}$")),
@@ -73,22 +82,22 @@ export const DataSetSchema = z.object({
   Length: z.number(),
 });
 
-export const SourceDatabaseMetadataSchema = z.object({
+const SourceDatabaseMetadataSchema = z.object({
   Type: z.enum(["z/OS-DB2"]),
   CaptureTool: z.enum(["Precisely", "AWS DMS"]),
 });
 
-export const TargetDatabaseMetadataSchema = z.object({
+const TargetDatabaseMetadataSchema = z.object({
   Type: z.enum(["PostgreSQL"]),
   CaptureTool: z.enum(["Precisely", "AWS DMS"]),
 });
 
-export const DatabaseCDCSchema = z.object({
+const DatabaseCDCSchema = z.object({
   SourceMetadata: SourceDatabaseMetadataSchema,
   TargetMetadata: TargetDatabaseMetadataSchema,
 });
 
-export const InputFileSchema = z.object({
+const InputFileSchema = z.object({
   SourceLocation: z.string().regex(new RegExp("^\\S{1,1000}$")),
   TargetLocation: z.string().regex(new RegExp("^\\S{1,1000}$")),
   FileMetadata: z.object({
@@ -97,11 +106,11 @@ export const InputFileSchema = z.object({
   }),
 });
 
-export const OutputFileSchema = z.object({
+const OutputFileSchema = z.object({
   FileLocation: z.string().min(0).max(1024).optional(),
 });
 
-export const CompareActionSchema = z.object({
+const CompareActionSchema = z.object({
   Input: z.object({
     File: InputFileSchema.optional(),
   }),
@@ -110,7 +119,7 @@ export const CompareActionSchema = z.object({
   }).optional(),
 });
 
-export const StepSchema = z.object({
+const StepSchema = z.object({
   Name: z.string().regex(new RegExp("^[A-Za-z][A-Za-z0-9_\\-]{1,59}$")),
   Description: z.string().min(0).max(1000).optional(),
   Action: z.object({
@@ -169,9 +178,10 @@ const InputsSchema = z.object({
   Tags: z.record(z.string(), z.string().min(0).max(256)).optional(),
 });
 
+/** Swamp extension model for AppTest TestCase. Registered at `@swamp/aws/apptest/test-case`. */
 export const model = {
   type: "@swamp/aws/apptest/test-case",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -185,6 +195,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

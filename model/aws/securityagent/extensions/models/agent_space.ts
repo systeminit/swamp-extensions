@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SecurityAgent AgentSpace (AWS::SecurityAgent::AgentSpace).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const VpcConfigSchema = z.object({
+const VpcConfigSchema = z.object({
   VpcArn: z.string().describe("ARN of the customer VPC").optional(),
   SecurityGroupArns: z.array(z.string()).describe(
     "List of security group ARNs in the customer VPC",
@@ -22,19 +31,19 @@ export const VpcConfigSchema = z.object({
   ).optional(),
 });
 
-export const GitHubRepositoryResourceSchema = z.object({
+const GitHubRepositoryResourceSchema = z.object({
   Name: z.string().describe("GitHub repository name"),
   Owner: z.string().describe("GitHub repository owner (user or organization)"),
 });
 
-export const GitHubCapabilitiesResourceSchema = z.object({
+const GitHubCapabilitiesResourceSchema = z.object({
   LeaveComments: z.boolean().describe("Enables Code Review in the repository"),
   RemediateCode: z.boolean().describe(
     "Enables creation of pull requests with automated fixes",
   ),
 });
 
-export const ProviderResourceSchema = z.object({
+const ProviderResourceSchema = z.object({
   GitHubRepository: GitHubRepositoryResourceSchema.describe(
     "GitHub repository details",
   ).optional(),
@@ -43,7 +52,7 @@ export const ProviderResourceSchema = z.object({
   ).optional(),
 });
 
-export const IntegratedResourceSchema = z.object({
+const IntegratedResourceSchema = z.object({
   Integration: z.string().describe(
     "Unique identifier of the Provider Integration",
   ),
@@ -52,7 +61,7 @@ export const IntegratedResourceSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The key name of the tag"),
   Value: z.string().min(0).max(256).describe("The value for the tag"),
 });
@@ -159,9 +168,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe("Tags for the agent space").optional(),
 });
 
+/** Swamp extension model for SecurityAgent AgentSpace. Registered at `@swamp/aws/securityagent/agent-space`. */
 export const model = {
   type: "@swamp/aws/securityagent/agent-space",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -185,6 +195,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

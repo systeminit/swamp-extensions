@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ECR ReplicationConfiguration (AWS::ECR::ReplicationConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const RepositoryFilterSchema = z.object({
+const RepositoryFilterSchema = z.object({
   Filter: z.string().regex(
     new RegExp(
       "^(?:[a-z0-9]+(?:[._-][a-z0-9]*)*/)*[a-z0-9]*(?:[._-][a-z0-9]*)*$",
@@ -25,7 +34,7 @@ export const RepositoryFilterSchema = z.object({
   ),
 });
 
-export const ReplicationDestinationSchema = z.object({
+const ReplicationDestinationSchema = z.object({
   Region: z.string().regex(new RegExp("[0-9a-z-]{2,25}")).describe(
     "The Region to replicate to.",
   ),
@@ -34,7 +43,7 @@ export const ReplicationDestinationSchema = z.object({
   ),
 });
 
-export const ReplicationRuleSchema = z.object({
+const ReplicationRuleSchema = z.object({
   RepositoryFilters: z.array(RepositoryFilterSchema).describe(
     "An array of objects representing the filters for a replication rule. Specifying a repository filter for a replication rule provides a method for controlling which repositories in a private registry are replicated.",
   ).optional(),
@@ -72,9 +81,10 @@ const InputsSchema = z.object({
   }).describe("The replication configuration for a registry.").optional(),
 });
 
+/** Swamp extension model for ECR ReplicationConfiguration. Registered at `@swamp/aws/ecr/replication-configuration`. */
 export const model = {
   type: "@swamp/aws/ecr/replication-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -88,6 +98,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

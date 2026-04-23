@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/batch"
-version: "2026.04.21.1"
+version: "2026.04.23.2"
 description: "AWS BATCH infrastructure models"
 labels:
   - aws
@@ -9,7 +9,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: quota_share
+  - Updated: compute_environment, consumable_resource, job_definition, job_queue, quota_share, scheduling_policy, service_environment
 models:
   - compute_environment.ts
   - consumable_resource.ts

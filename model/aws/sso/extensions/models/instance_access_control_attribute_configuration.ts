@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SSO InstanceAccessControlAttributeConfiguration (AWS::SSO::InstanceAccessControlAttributeConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AccessControlAttributeValueSchema = z.object({
+const AccessControlAttributeValueSchema = z.object({
   Source: z.array(
     z.string().min(0).max(256).regex(
       new RegExp('[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@\\[\\]\\{\\}\\$\\\\"]*', "u"),
@@ -20,7 +29,7 @@ export const AccessControlAttributeValueSchema = z.object({
   ),
 });
 
-export const AccessControlAttributeSchema = z.object({
+const AccessControlAttributeSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]+", "u"),
   ),
@@ -69,9 +78,10 @@ const InputsSchema = z.object({
   AccessControlAttributes: z.array(AccessControlAttributeSchema).optional(),
 });
 
+/** Swamp extension model for SSO InstanceAccessControlAttributeConfiguration. Registered at `@swamp/aws/sso/instance-access-control-attribute-configuration`. */
 export const model = {
   type: "@swamp/aws/sso/instance-access-control-attribute-configuration",
-  version: "2026.04.07.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -90,6 +100,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

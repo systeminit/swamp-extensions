@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Connect TaskTemplate (AWS::Connect::TaskTemplate).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,31 +21,31 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FieldIdentifierSchema = z.object({
+const FieldIdentifierSchema = z.object({
   Name: z.string().min(1).max(100).describe(
     "The name of the task template field",
   ),
 });
 
-export const InvisibleFieldInfoSchema = z.object({
+const InvisibleFieldInfoSchema = z.object({
   Id: FieldIdentifierSchema.describe(
     "the identifier (name) for the task template field",
   ),
 });
 
-export const RequiredFieldInfoSchema = z.object({
+const RequiredFieldInfoSchema = z.object({
   Id: FieldIdentifierSchema.describe(
     "the identifier (name) for the task template field",
   ),
 });
 
-export const ReadOnlyFieldInfoSchema = z.object({
+const ReadOnlyFieldInfoSchema = z.object({
   Id: FieldIdentifierSchema.describe(
     "the identifier (name) for the task template field",
   ),
 });
 
-export const DefaultFieldValueSchema = z.object({
+const DefaultFieldValueSchema = z.object({
   Id: FieldIdentifierSchema.describe(
     "the identifier (name) for the task template field",
   ),
@@ -45,7 +54,7 @@ export const DefaultFieldValueSchema = z.object({
   ),
 });
 
-export const FieldSchema = z.object({
+const FieldSchema = z.object({
   Id: FieldIdentifierSchema.describe(
     "the identifier (name) for the task template field",
   ),
@@ -75,7 +84,7 @@ export const FieldSchema = z.object({
   ).describe("list of field options to be used with single select").optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -203,9 +212,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe("One or more tags.").optional(),
 });
 
+/** Swamp extension model for Connect TaskTemplate. Registered at `@swamp/aws/connect/task-template`. */
 export const model = {
   type: "@swamp/aws/connect/task-template",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -219,6 +229,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

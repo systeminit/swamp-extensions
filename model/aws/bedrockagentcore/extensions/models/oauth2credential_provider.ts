@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore OAuth2CredentialProvider (AWS::BedrockAgentCore::OAuth2CredentialProvider).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const Oauth2AuthorizationServerMetadataSchema = z.object({
+const Oauth2AuthorizationServerMetadataSchema = z.object({
   Issuer: z.string().describe(
     "The issuer URL for the OAuth2 authorization server",
   ),
@@ -22,7 +31,7 @@ export const Oauth2AuthorizationServerMetadataSchema = z.object({
     .optional(),
 });
 
-export const Oauth2DiscoverySchema = z.object({
+const Oauth2DiscoverySchema = z.object({
   DiscoveryUrl: z.string().regex(
     new RegExp("^.+/\\.well-known/openid-configuration$"),
   ).describe("The discovery URL for the OAuth2 provider").optional(),
@@ -31,7 +40,7 @@ export const Oauth2DiscoverySchema = z.object({
   ).optional(),
 });
 
-export const CustomOauth2ProviderConfigInputSchema = z.object({
+const CustomOauth2ProviderConfigInputSchema = z.object({
   OauthDiscovery: Oauth2DiscoverySchema.describe(
     "Discovery information for an OAuth2 provider",
   ),
@@ -43,27 +52,27 @@ export const CustomOauth2ProviderConfigInputSchema = z.object({
   ),
 });
 
-export const GoogleOauth2ProviderConfigInputSchema = z.object({
+const GoogleOauth2ProviderConfigInputSchema = z.object({
   ClientId: z.string().min(1).max(256),
   ClientSecret: z.string().min(1).max(2048),
 });
 
-export const GithubOauth2ProviderConfigInputSchema = z.object({
+const GithubOauth2ProviderConfigInputSchema = z.object({
   ClientId: z.string().min(1).max(256),
   ClientSecret: z.string().min(1).max(2048),
 });
 
-export const SlackOauth2ProviderConfigInputSchema = z.object({
+const SlackOauth2ProviderConfigInputSchema = z.object({
   ClientId: z.string().min(1).max(256),
   ClientSecret: z.string().min(1).max(2048),
 });
 
-export const SalesforceOauth2ProviderConfigInputSchema = z.object({
+const SalesforceOauth2ProviderConfigInputSchema = z.object({
   ClientId: z.string().min(1).max(256),
   ClientSecret: z.string().min(1).max(2048),
 });
 
-export const MicrosoftOauth2ProviderConfigInputSchema = z.object({
+const MicrosoftOauth2ProviderConfigInputSchema = z.object({
   ClientId: z.string().min(1).max(256),
   ClientSecret: z.string().min(1).max(2048),
   TenantId: z.string().min(1).max(2048).describe(
@@ -71,17 +80,17 @@ export const MicrosoftOauth2ProviderConfigInputSchema = z.object({
   ).optional(),
 });
 
-export const AtlassianOauth2ProviderConfigInputSchema = z.object({
+const AtlassianOauth2ProviderConfigInputSchema = z.object({
   ClientId: z.string().min(1).max(256),
   ClientSecret: z.string().min(1).max(2048),
 });
 
-export const LinkedinOauth2ProviderConfigInputSchema = z.object({
+const LinkedinOauth2ProviderConfigInputSchema = z.object({
   ClientId: z.string().min(1).max(256),
   ClientSecret: z.string().min(1).max(2048),
 });
 
-export const IncludedOauth2ProviderConfigInputSchema = z.object({
+const IncludedOauth2ProviderConfigInputSchema = z.object({
   ClientId: z.string().min(1).max(256),
   ClientSecret: z.string().min(1).max(2048),
   Issuer: z.string().describe(
@@ -95,7 +104,7 @@ export const IncludedOauth2ProviderConfigInputSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$"),
   ),
@@ -294,9 +303,22 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore OAuth2CredentialProvider. Registered at `@swamp/aws/bedrockagentcore/oauth2credential-provider`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/oauth2credential-provider",
-  version: "2026.04.04.1",
+  version: "2026.04.23.2",
+  upgrades: [
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

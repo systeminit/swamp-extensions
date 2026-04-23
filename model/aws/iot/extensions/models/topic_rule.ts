@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoT TopicRule (AWS::IoT::TopicRule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,20 +21,20 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CloudwatchAlarmActionSchema = z.object({
+const CloudwatchAlarmActionSchema = z.object({
   StateValue: z.string(),
   AlarmName: z.string(),
   StateReason: z.string(),
   RoleArn: z.string(),
 });
 
-export const CloudwatchLogsActionSchema = z.object({
+const CloudwatchLogsActionSchema = z.object({
   LogGroupName: z.string(),
   RoleArn: z.string(),
   BatchMode: z.boolean().optional(),
 });
 
-export const CloudwatchMetricActionSchema = z.object({
+const CloudwatchMetricActionSchema = z.object({
   MetricName: z.string(),
   MetricValue: z.string(),
   MetricNamespace: z.string(),
@@ -34,7 +43,7 @@ export const CloudwatchMetricActionSchema = z.object({
   MetricTimestamp: z.string().optional(),
 });
 
-export const DynamoDBActionSchema = z.object({
+const DynamoDBActionSchema = z.object({
   TableName: z.string(),
   PayloadField: z.string().optional(),
   RangeKeyField: z.string().optional(),
@@ -46,16 +55,16 @@ export const DynamoDBActionSchema = z.object({
   RoleArn: z.string(),
 });
 
-export const PutItemInputSchema = z.object({
+const PutItemInputSchema = z.object({
   TableName: z.string(),
 });
 
-export const DynamoDBv2ActionSchema = z.object({
+const DynamoDBv2ActionSchema = z.object({
   PutItem: PutItemInputSchema.optional(),
   RoleArn: z.string().optional(),
 });
 
-export const ElasticsearchActionSchema = z.object({
+const ElasticsearchActionSchema = z.object({
   Type: z.string(),
   Index: z.string(),
   Id: z.string(),
@@ -63,35 +72,35 @@ export const ElasticsearchActionSchema = z.object({
   RoleArn: z.string(),
 });
 
-export const FirehoseActionSchema = z.object({
+const FirehoseActionSchema = z.object({
   DeliveryStreamName: z.string(),
   RoleArn: z.string(),
   Separator: z.string().optional(),
   BatchMode: z.boolean().optional(),
 });
 
-export const HttpActionHeaderSchema = z.object({
+const HttpActionHeaderSchema = z.object({
   Value: z.string(),
   Key: z.string(),
 });
 
-export const SigV4AuthorizationSchema = z.object({
+const SigV4AuthorizationSchema = z.object({
   ServiceName: z.string(),
   SigningRegion: z.string(),
   RoleArn: z.string(),
 });
 
-export const HttpAuthorizationSchema = z.object({
+const HttpAuthorizationSchema = z.object({
   Sigv4: SigV4AuthorizationSchema.optional(),
 });
 
-export const BatchConfigSchema = z.object({
+const BatchConfigSchema = z.object({
   MaxBatchOpenMs: z.number().int().optional(),
   MaxBatchSize: z.number().int().optional(),
   MaxBatchSizeBytes: z.number().int().optional(),
 });
 
-export const HttpActionSchema = z.object({
+const HttpActionSchema = z.object({
   ConfirmationUrl: z.string().optional(),
   Headers: z.array(HttpActionHeaderSchema).optional(),
   Url: z.string(),
@@ -100,38 +109,38 @@ export const HttpActionSchema = z.object({
   BatchConfig: BatchConfigSchema.optional(),
 });
 
-export const IotAnalyticsActionSchema = z.object({
+const IotAnalyticsActionSchema = z.object({
   RoleArn: z.string(),
   ChannelName: z.string(),
   BatchMode: z.boolean().optional(),
 });
 
-export const IotEventsActionSchema = z.object({
+const IotEventsActionSchema = z.object({
   InputName: z.string(),
   RoleArn: z.string(),
   MessageId: z.string().optional(),
   BatchMode: z.boolean().optional(),
 });
 
-export const AssetPropertyVariantSchema = z.object({
+const AssetPropertyVariantSchema = z.object({
   StringValue: z.string().optional(),
   DoubleValue: z.string().optional(),
   BooleanValue: z.string().optional(),
   IntegerValue: z.string().optional(),
 });
 
-export const AssetPropertyTimestampSchema = z.object({
+const AssetPropertyTimestampSchema = z.object({
   TimeInSeconds: z.string(),
   OffsetInNanos: z.string().optional(),
 });
 
-export const AssetPropertyValueSchema = z.object({
+const AssetPropertyValueSchema = z.object({
   Value: AssetPropertyVariantSchema,
   Timestamp: AssetPropertyTimestampSchema,
   Quality: z.string().optional(),
 });
 
-export const PutAssetPropertyValueEntrySchema = z.object({
+const PutAssetPropertyValueEntrySchema = z.object({
   PropertyAlias: z.string().optional(),
   PropertyValues: z.array(AssetPropertyValueSchema),
   AssetId: z.string().optional(),
@@ -139,17 +148,17 @@ export const PutAssetPropertyValueEntrySchema = z.object({
   PropertyId: z.string().optional(),
 });
 
-export const IotSiteWiseActionSchema = z.object({
+const IotSiteWiseActionSchema = z.object({
   RoleArn: z.string(),
   PutAssetPropertyValueEntries: z.array(PutAssetPropertyValueEntrySchema),
 });
 
-export const KafkaActionHeaderSchema = z.object({
+const KafkaActionHeaderSchema = z.object({
   Value: z.string(),
   Key: z.string(),
 });
 
-export const KafkaActionSchema = z.object({
+const KafkaActionSchema = z.object({
   DestinationArn: z.string(),
   Topic: z.string(),
   Key: z.string().optional(),
@@ -158,22 +167,22 @@ export const KafkaActionSchema = z.object({
   Headers: z.array(KafkaActionHeaderSchema).optional(),
 });
 
-export const KinesisActionSchema = z.object({
+const KinesisActionSchema = z.object({
   PartitionKey: z.string().optional(),
   StreamName: z.string(),
   RoleArn: z.string(),
 });
 
-export const LambdaActionSchema = z.object({
+const LambdaActionSchema = z.object({
   FunctionArn: z.string().optional(),
 });
 
-export const TimestampSchema = z.object({
+const TimestampSchema = z.object({
   Value: z.string(),
   Unit: z.string().optional(),
 });
 
-export const LocationActionSchema = z.object({
+const LocationActionSchema = z.object({
   RoleArn: z.string(),
   TrackerName: z.string(),
   DeviceId: z.string(),
@@ -182,7 +191,7 @@ export const LocationActionSchema = z.object({
   Timestamp: TimestampSchema.optional(),
 });
 
-export const OpenSearchActionSchema = z.object({
+const OpenSearchActionSchema = z.object({
   Type: z.string(),
   Index: z.string(),
   Id: z.string(),
@@ -190,12 +199,12 @@ export const OpenSearchActionSchema = z.object({
   RoleArn: z.string(),
 });
 
-export const UserPropertySchema = z.object({
+const UserPropertySchema = z.object({
   Key: z.string().min(0).max(1024),
   Value: z.string().min(0).max(1024),
 });
 
-export const RepublishActionHeadersSchema = z.object({
+const RepublishActionHeadersSchema = z.object({
   PayloadFormatIndicator: z.string().min(0).max(1024).optional(),
   ContentType: z.string().min(0).max(1024).optional(),
   ResponseTopic: z.string().min(0).max(1024).optional(),
@@ -204,14 +213,14 @@ export const RepublishActionHeadersSchema = z.object({
   UserProperties: z.array(UserPropertySchema).optional(),
 });
 
-export const RepublishActionSchema = z.object({
+const RepublishActionSchema = z.object({
   Qos: z.number().int().optional(),
   Topic: z.string(),
   RoleArn: z.string(),
   Headers: RepublishActionHeadersSchema.optional(),
 });
 
-export const S3ActionSchema = z.object({
+const S3ActionSchema = z.object({
   BucketName: z.string(),
   Key: z.string(),
   RoleArn: z.string(),
@@ -227,35 +236,35 @@ export const S3ActionSchema = z.object({
   ]).optional(),
 });
 
-export const SnsActionSchema = z.object({
+const SnsActionSchema = z.object({
   TargetArn: z.string(),
   MessageFormat: z.string().optional(),
   RoleArn: z.string(),
 });
 
-export const SqsActionSchema = z.object({
+const SqsActionSchema = z.object({
   RoleArn: z.string(),
   UseBase64: z.boolean().optional(),
   QueueUrl: z.string(),
 });
 
-export const StepFunctionsActionSchema = z.object({
+const StepFunctionsActionSchema = z.object({
   ExecutionNamePrefix: z.string().optional(),
   StateMachineName: z.string(),
   RoleArn: z.string(),
 });
 
-export const TimestreamDimensionSchema = z.object({
+const TimestreamDimensionSchema = z.object({
   Name: z.string(),
   Value: z.string(),
 });
 
-export const TimestreamTimestampSchema = z.object({
+const TimestreamTimestampSchema = z.object({
   Value: z.string(),
   Unit: z.string(),
 });
 
-export const TimestreamActionSchema = z.object({
+const TimestreamActionSchema = z.object({
   RoleArn: z.string(),
   DatabaseName: z.string(),
   TableName: z.string(),
@@ -263,7 +272,7 @@ export const TimestreamActionSchema = z.object({
   Timestamp: TimestreamTimestampSchema.optional(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   CloudwatchAlarm: CloudwatchAlarmActionSchema.optional(),
   CloudwatchLogs: CloudwatchLogsActionSchema.optional(),
   CloudwatchMetric: CloudwatchMetricActionSchema.optional(),
@@ -288,7 +297,7 @@ export const ActionSchema = z.object({
   Timestream: TimestreamActionSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -335,9 +344,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for IoT TopicRule. Registered at `@swamp/aws/iot/topic-rule`. */
 export const model = {
   type: "@swamp/aws/iot/topic-rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -351,6 +361,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

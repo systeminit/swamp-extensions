@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore Memory (AWS::BedrockAgentCore::Memory).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SemanticMemoryStrategySchema = z.object({
+const SemanticMemoryStrategySchema = z.object({
   Name: z.string().regex(new RegExp("^[a-zA-Z][a-zA-Z0-9_]{0,47}$")).describe(
     "Name of the Memory resource",
   ),
@@ -51,7 +60,7 @@ export const SemanticMemoryStrategySchema = z.object({
     .optional(),
 });
 
-export const SummaryMemoryStrategySchema = z.object({
+const SummaryMemoryStrategySchema = z.object({
   Name: z.string().regex(new RegExp("^[a-zA-Z][a-zA-Z0-9_]{0,47}$")).describe(
     "Name of the Memory resource",
   ),
@@ -90,7 +99,7 @@ export const SummaryMemoryStrategySchema = z.object({
     .optional(),
 });
 
-export const UserPreferenceMemoryStrategySchema = z.object({
+const UserPreferenceMemoryStrategySchema = z.object({
   Name: z.string().regex(new RegExp("^[a-zA-Z][a-zA-Z0-9_]{0,47}$")).describe(
     "Name of the Memory resource",
   ),
@@ -129,80 +138,78 @@ export const UserPreferenceMemoryStrategySchema = z.object({
     .optional(),
 });
 
-export const SemanticOverrideExtractionConfigurationInputSchema = z.object({
+const SemanticOverrideExtractionConfigurationInputSchema = z.object({
   AppendToPrompt: z.string().min(1).max(30000).describe(
     "Text prompt for model instructions",
   ),
   ModelId: z.string(),
 });
 
-export const SemanticOverrideConsolidationConfigurationInputSchema = z.object({
+const SemanticOverrideConsolidationConfigurationInputSchema = z.object({
   AppendToPrompt: z.string().min(1).max(30000).describe(
     "Text prompt for model instructions",
   ),
   ModelId: z.string(),
 });
 
-export const SemanticOverrideSchema = z.object({
+const SemanticOverrideSchema = z.object({
   Extraction: SemanticOverrideExtractionConfigurationInputSchema.optional(),
   Consolidation: SemanticOverrideConsolidationConfigurationInputSchema
     .optional(),
 });
 
-export const SummaryOverrideConsolidationConfigurationInputSchema = z.object({
+const SummaryOverrideConsolidationConfigurationInputSchema = z.object({
   AppendToPrompt: z.string().min(1).max(30000).describe(
     "Text prompt for model instructions",
   ),
   ModelId: z.string(),
 });
 
-export const SummaryOverrideSchema = z.object({
+const SummaryOverrideSchema = z.object({
   Consolidation: SummaryOverrideConsolidationConfigurationInputSchema
     .optional(),
 });
 
-export const UserPreferenceOverrideExtractionConfigurationInputSchema = z
-  .object({
-    AppendToPrompt: z.string().min(1).max(30000).describe(
-      "Text prompt for model instructions",
-    ),
-    ModelId: z.string(),
-  });
+const UserPreferenceOverrideExtractionConfigurationInputSchema = z.object({
+  AppendToPrompt: z.string().min(1).max(30000).describe(
+    "Text prompt for model instructions",
+  ),
+  ModelId: z.string(),
+});
 
-export const UserPreferenceOverrideConsolidationConfigurationInputSchema = z
-  .object({
-    AppendToPrompt: z.string().min(1).max(30000).describe(
-      "Text prompt for model instructions",
-    ),
-    ModelId: z.string(),
-  });
+const UserPreferenceOverrideConsolidationConfigurationInputSchema = z.object({
+  AppendToPrompt: z.string().min(1).max(30000).describe(
+    "Text prompt for model instructions",
+  ),
+  ModelId: z.string(),
+});
 
-export const UserPreferenceOverrideSchema = z.object({
+const UserPreferenceOverrideSchema = z.object({
   Extraction: UserPreferenceOverrideExtractionConfigurationInputSchema
     .optional(),
   Consolidation: UserPreferenceOverrideConsolidationConfigurationInputSchema
     .optional(),
 });
 
-export const MessageBasedTriggerInputSchema = z.object({
+const MessageBasedTriggerInputSchema = z.object({
   MessageCount: z.number().int().min(1).max(50).optional(),
 });
 
-export const TokenBasedTriggerInputSchema = z.object({
+const TokenBasedTriggerInputSchema = z.object({
   TokenCount: z.number().int().min(100).max(500000).optional(),
 });
 
-export const TimeBasedTriggerInputSchema = z.object({
+const TimeBasedTriggerInputSchema = z.object({
   IdleSessionTimeout: z.number().int().min(10).max(3000).optional(),
 });
 
-export const TriggerConditionInputSchema = z.object({
+const TriggerConditionInputSchema = z.object({
   MessageBasedTrigger: MessageBasedTriggerInputSchema.optional(),
   TokenBasedTrigger: TokenBasedTriggerInputSchema.optional(),
   TimeBasedTrigger: TimeBasedTriggerInputSchema.optional(),
 });
 
-export const InvocationConfigurationInputSchema = z.object({
+const InvocationConfigurationInputSchema = z.object({
   TopicArn: z.string().regex(
     new RegExp(
       "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
@@ -213,27 +220,27 @@ export const InvocationConfigurationInputSchema = z.object({
   ).optional(),
 });
 
-export const SelfManagedConfigurationSchema = z.object({
+const SelfManagedConfigurationSchema = z.object({
   TriggerConditions: z.array(TriggerConditionInputSchema).optional(),
   InvocationConfiguration: InvocationConfigurationInputSchema.optional(),
   HistoricalContextWindowSize: z.number().int().min(0).max(50).optional(),
 });
 
-export const EpisodicOverrideExtractionConfigurationInputSchema = z.object({
+const EpisodicOverrideExtractionConfigurationInputSchema = z.object({
   AppendToPrompt: z.string().min(1).max(30000).describe(
     "Text prompt for model instructions",
   ),
   ModelId: z.string(),
 });
 
-export const EpisodicOverrideConsolidationConfigurationInputSchema = z.object({
+const EpisodicOverrideConsolidationConfigurationInputSchema = z.object({
   AppendToPrompt: z.string().min(1).max(30000).describe(
     "Text prompt for model instructions",
   ),
   ModelId: z.string(),
 });
 
-export const EpisodicOverrideReflectionConfigurationInputSchema = z.object({
+const EpisodicOverrideReflectionConfigurationInputSchema = z.object({
   AppendToPrompt: z.string().min(1).max(30000).describe(
     "Text prompt for model instructions",
   ),
@@ -254,14 +261,14 @@ export const EpisodicOverrideReflectionConfigurationInputSchema = z.object({
   ).describe("List of namespaces for memory strategy").optional(),
 });
 
-export const EpisodicOverrideSchema = z.object({
+const EpisodicOverrideSchema = z.object({
   Extraction: EpisodicOverrideExtractionConfigurationInputSchema.optional(),
   Consolidation: EpisodicOverrideConsolidationConfigurationInputSchema
     .optional(),
   Reflection: EpisodicOverrideReflectionConfigurationInputSchema.optional(),
 });
 
-export const CustomConfigurationInputSchema = z.object({
+const CustomConfigurationInputSchema = z.object({
   SemanticOverride: SemanticOverrideSchema.optional(),
   SummaryOverride: SummaryOverrideSchema.optional(),
   UserPreferenceOverride: UserPreferenceOverrideSchema.optional(),
@@ -269,7 +276,7 @@ export const CustomConfigurationInputSchema = z.object({
   EpisodicOverride: EpisodicOverrideSchema.optional(),
 });
 
-export const CustomMemoryStrategySchema = z.object({
+const CustomMemoryStrategySchema = z.object({
   Name: z.string().regex(new RegExp("^[a-zA-Z][a-zA-Z0-9_]{0,47}$")).describe(
     "Name of the Memory resource",
   ),
@@ -309,7 +316,7 @@ export const CustomMemoryStrategySchema = z.object({
     .optional(),
 });
 
-export const EpisodicReflectionConfigurationInputSchema = z.object({
+const EpisodicReflectionConfigurationInputSchema = z.object({
   Namespaces: z.array(
     z.string().regex(
       new RegExp(
@@ -326,7 +333,7 @@ export const EpisodicReflectionConfigurationInputSchema = z.object({
   ).describe("List of namespaces for memory strategy").optional(),
 });
 
-export const EpisodicMemoryStrategySchema = z.object({
+const EpisodicMemoryStrategySchema = z.object({
   Name: z.string().regex(new RegExp("^[a-zA-Z][a-zA-Z0-9_]{0,47}$")).describe(
     "Name of the Memory resource",
   ),
@@ -367,7 +374,7 @@ export const EpisodicMemoryStrategySchema = z.object({
     .optional(),
 });
 
-export const MemoryStrategySchema = z.object({
+const MemoryStrategySchema = z.object({
   SemanticMemoryStrategy: SemanticMemoryStrategySchema.optional(),
   SummaryMemoryStrategy: SummaryMemoryStrategySchema.optional(),
   UserPreferenceMemoryStrategy: UserPreferenceMemoryStrategySchema.optional(),
@@ -375,14 +382,14 @@ export const MemoryStrategySchema = z.object({
   EpisodicMemoryStrategy: EpisodicMemoryStrategySchema.optional(),
 });
 
-export const ContentConfigurationSchema = z.object({
+const ContentConfigurationSchema = z.object({
   Type: z.enum(["MEMORY_RECORDS"]).describe("The type of content to deliver"),
   Level: z.enum(["METADATA_ONLY", "FULL_CONTENT"]).describe(
     "The level of content detail to deliver",
   ).optional(),
 });
 
-export const KinesisResourceSchema = z.object({
+const KinesisResourceSchema = z.object({
   DataStreamArn: z.string().regex(
     new RegExp(
       "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
@@ -391,7 +398,7 @@ export const KinesisResourceSchema = z.object({
   ContentConfigurations: z.array(ContentConfigurationSchema),
 });
 
-export const StreamDeliveryResourceSchema = z.object({
+const StreamDeliveryResourceSchema = z.object({
   Kinesis: KinesisResourceSchema.optional(),
 });
 
@@ -482,9 +489,10 @@ const InputsSchema = z.object({
   ).describe("A map of tag keys and values").optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore Memory. Registered at `@swamp/aws/bedrockagentcore/memory`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/memory",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -503,6 +511,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

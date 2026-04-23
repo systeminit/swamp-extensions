@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataBrew Ruleset (AWS::DataBrew::Ruleset).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SubstitutionValueSchema = z.object({
+const SubstitutionValueSchema = z.object({
   ValueReference: z.string().min(2).max(128).regex(
     new RegExp("^:[A-Za-z0-9_]+$"),
   ).describe("Variable name"),
   Value: z.string().min(0).max(1024).describe("Value or column name"),
 });
 
-export const ThresholdSchema = z.object({
+const ThresholdSchema = z.object({
   Value: z.number().describe("Threshold value for a rule"),
   Type: z.enum([
     "GREATER_THAN_OR_EQUAL",
@@ -31,7 +40,7 @@ export const ThresholdSchema = z.object({
     .optional(),
 });
 
-export const ColumnSelectorSchema = z.object({
+const ColumnSelectorSchema = z.object({
   Regex: z.string().min(1).max(255).describe(
     "A regular expression for selecting a column from a dataset",
   ).optional(),
@@ -40,7 +49,7 @@ export const ColumnSelectorSchema = z.object({
   ).optional(),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   Name: z.string().min(1).max(128).describe("Name of the rule"),
   Disabled: z.boolean().describe("Boolean value to disable/enable a rule")
     .optional(),
@@ -52,7 +61,7 @@ export const RuleSchema = z.object({
   ColumnSelectors: z.array(ColumnSelectorSchema).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -93,9 +102,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for DataBrew Ruleset. Registered at `@swamp/aws/databrew/ruleset`. */
 export const model = {
   type: "@swamp/aws/databrew/ruleset",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -109,6 +119,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

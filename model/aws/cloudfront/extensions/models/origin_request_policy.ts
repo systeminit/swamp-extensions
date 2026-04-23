@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudFront OriginRequestPolicy (AWS::CloudFront::OriginRequestPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CookiesConfigSchema = z.object({
+const CookiesConfigSchema = z.object({
   CookieBehavior: z.string().regex(
     new RegExp("^(none|whitelist|all|allExcept)$"),
   ).describe(
@@ -22,7 +31,7 @@ export const CookiesConfigSchema = z.object({
     .optional(),
 });
 
-export const HeadersConfigSchema = z.object({
+const HeadersConfigSchema = z.object({
   HeaderBehavior: z.string().regex(
     new RegExp(
       "^(none|whitelist|allViewer|allViewerAndWhitelistCloudFront|allExcept)$",
@@ -34,7 +43,7 @@ export const HeadersConfigSchema = z.object({
     .optional(),
 });
 
-export const QueryStringsConfigSchema = z.object({
+const QueryStringsConfigSchema = z.object({
   QueryStringBehavior: z.string().regex(
     new RegExp("^(none|whitelist|all|allExcept)$"),
   ).describe(
@@ -103,9 +112,10 @@ const InputsSchema = z.object({
   }).describe("The origin request policy configuration.").optional(),
 });
 
+/** Swamp extension model for CloudFront OriginRequestPolicy. Registered at `@swamp/aws/cloudfront/origin-request-policy`. */
 export const model = {
   type: "@swamp/aws/cloudfront/origin-request-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -119,6 +129,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

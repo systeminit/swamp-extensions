@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AccessAnalyzer Analyzer (AWS::AccessAnalyzer::Analyzer).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   Contains: z.array(z.string()).optional(),
   Eq: z.array(z.string()).optional(),
   Exists: z.boolean().optional(),
@@ -20,12 +29,12 @@ export const FilterSchema = z.object({
   Neq: z.array(z.string()).optional(),
 });
 
-export const ArchiveRuleSchema = z.object({
+const ArchiveRuleSchema = z.object({
   Filter: z.array(FilterSchema),
   RuleName: z.string().describe("The archive rule name"),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(127).describe(
     "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -34,7 +43,7 @@ export const TagSchema = z.object({
   ).optional(),
 });
 
-export const AnalysisRuleCriteriaSchema = z.object({
+const AnalysisRuleCriteriaSchema = z.object({
   AccountIds: z.array(z.string()).describe(
     "A list of AWS account IDs to apply to the analysis rule criteria. The accounts cannot include the organization analyzer owner account. Account IDs can only be applied to the analysis rule criteria for organization-level analyzers.",
   ).optional(),
@@ -43,7 +52,7 @@ export const AnalysisRuleCriteriaSchema = z.object({
   ).optional(),
 });
 
-export const UnusedAccessConfigurationSchema = z.object({
+const UnusedAccessConfigurationSchema = z.object({
   UnusedAccessAge: z.number().int().min(1).max(365).describe(
     "The specified access age in days for which to generate findings for unused access. For example, if you specify 90 days, the analyzer will generate findings for IAM entities within the accounts of the selected organization for any access that hasn't been used in 90 or more days since the analyzer's last scan. You can choose a value between 1 and 365 days.",
   ).optional(),
@@ -54,7 +63,7 @@ export const UnusedAccessConfigurationSchema = z.object({
   }).describe("Contains information about rules for the analyzer.").optional(),
 });
 
-export const InternalAccessAnalysisRuleCriteriaSchema = z.object({
+const InternalAccessAnalysisRuleCriteriaSchema = z.object({
   AccountIds: z.array(z.string()).describe(
     "A list of AWS account IDs to apply to the internal access analysis rule criteria. Account IDs can only be applied to the analysis rule criteria for organization-level analyzers and cannot include the organization owner account.",
   ).optional(),
@@ -66,7 +75,7 @@ export const InternalAccessAnalysisRuleCriteriaSchema = z.object({
   ).optional(),
 });
 
-export const InternalAccessConfigurationSchema = z.object({
+const InternalAccessConfigurationSchema = z.object({
   InternalAccessAnalysisRule: z.object({
     Inclusions: z.array(InternalAccessAnalysisRuleCriteriaSchema).describe(
       "A list of rules for the internal access analyzer containing criteria to include in analysis. Only resources that meet the rule criteria will generate findings.",
@@ -134,9 +143,10 @@ const InputsSchema = z.object({
   }).describe("The configuration for the analyzer").optional(),
 });
 
+/** Swamp extension model for AccessAnalyzer Analyzer. Registered at `@swamp/aws/accessanalyzer/analyzer`. */
 export const model = {
   type: "@swamp/aws/accessanalyzer/analyzer",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -150,6 +160,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Cognito UserPool (AWS::Cognito::UserPool).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PasswordPolicySchema = z.object({
+const PasswordPolicySchema = z.object({
   MinimumLength: z.number().int().optional(),
   RequireLowercase: z.boolean().optional(),
   RequireNumbers: z.boolean().optional(),
@@ -22,52 +31,52 @@ export const PasswordPolicySchema = z.object({
   PasswordHistorySize: z.number().int().optional(),
 });
 
-export const SignInPolicySchema = z.object({
+const SignInPolicySchema = z.object({
   AllowedFirstAuthFactors: z.array(z.string()).optional(),
 });
 
-export const RecoveryOptionSchema = z.object({
+const RecoveryOptionSchema = z.object({
   Name: z.string().optional(),
   Priority: z.number().int().optional(),
 });
 
-export const InviteMessageTemplateSchema = z.object({
+const InviteMessageTemplateSchema = z.object({
   EmailMessage: z.string().optional(),
   EmailSubject: z.string().optional(),
   SMSMessage: z.string().optional(),
 });
 
-export const CustomEmailSenderSchema = z.object({
+const CustomEmailSenderSchema = z.object({
   LambdaVersion: z.string().optional(),
   LambdaArn: z.string().optional(),
 });
 
-export const CustomSMSSenderSchema = z.object({
+const CustomSMSSenderSchema = z.object({
   LambdaVersion: z.string().optional(),
   LambdaArn: z.string().optional(),
 });
 
-export const PreTokenGenerationConfigSchema = z.object({
+const PreTokenGenerationConfigSchema = z.object({
   LambdaVersion: z.string().optional(),
   LambdaArn: z.string().optional(),
 });
 
-export const InboundFederationSchema = z.object({
+const InboundFederationSchema = z.object({
   LambdaVersion: z.string().optional(),
   LambdaArn: z.string().optional(),
 });
 
-export const NumberAttributeConstraintsSchema = z.object({
+const NumberAttributeConstraintsSchema = z.object({
   MaxValue: z.string().optional(),
   MinValue: z.string().optional(),
 });
 
-export const StringAttributeConstraintsSchema = z.object({
+const StringAttributeConstraintsSchema = z.object({
   MaxLength: z.string().optional(),
   MinLength: z.string().optional(),
 });
 
-export const SchemaAttributeSchema = z.object({
+const SchemaAttributeSchema = z.object({
   AttributeDataType: z.string().optional(),
   DeveloperOnlyAttribute: z.boolean().optional(),
   Mutable: z.boolean().optional(),
@@ -77,7 +86,7 @@ export const SchemaAttributeSchema = z.object({
   Required: z.boolean().optional(),
 });
 
-export const AdvancedSecurityAdditionalFlowsSchema = z.object({
+const AdvancedSecurityAdditionalFlowsSchema = z.object({
   CustomAuthMode: z.string().optional(),
 });
 
@@ -345,9 +354,10 @@ const InputsSchema = z.object({
   UserPoolTier: z.enum(["LITE", "ESSENTIALS", "PLUS"]).optional(),
 });
 
+/** Swamp extension model for Cognito UserPool. Registered at `@swamp/aws/cognito/user-pool`. */
 export const model = {
   type: "@swamp/aws/cognito/user-pool",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -361,6 +371,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

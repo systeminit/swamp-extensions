@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CleanRoomsML TrainingDataset (AWS::CleanRoomsML::TrainingDataset).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
 
-export const ColumnSchemaSchema = z.object({
+const ColumnSchemaSchema = z.object({
   ColumnName: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"),
   ),
@@ -32,7 +41,7 @@ export const ColumnSchemaSchema = z.object({
   ),
 });
 
-export const GlueDataSourceSchema = z.object({
+const GlueDataSourceSchema = z.object({
   TableName: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"),
   ),
@@ -43,16 +52,16 @@ export const GlueDataSourceSchema = z.object({
     .optional(),
 });
 
-export const DataSourceSchema = z.object({
+const DataSourceSchema = z.object({
   GlueDataSource: GlueDataSourceSchema,
 });
 
-export const DatasetInputConfigSchema = z.object({
+const DatasetInputConfigSchema = z.object({
   Schema: z.array(ColumnSchemaSchema),
   DataSource: DataSourceSchema,
 });
 
-export const DatasetSchema = z.object({
+const DatasetSchema = z.object({
   Type: z.enum(["INTERACTIONS"]),
   InputConfig: DatasetInputConfigSchema,
 });
@@ -113,9 +122,10 @@ const InputsSchema = z.object({
   TrainingData: z.array(DatasetSchema).optional(),
 });
 
+/** Swamp extension model for CleanRoomsML TrainingDataset. Registered at `@swamp/aws/cleanroomsml/training-dataset`. */
 export const model = {
   type: "@swamp/aws/cleanroomsml/training-dataset",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -129,6 +139,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

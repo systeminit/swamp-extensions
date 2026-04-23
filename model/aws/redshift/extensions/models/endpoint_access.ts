@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Redshift EndpointAccess (AWS::Redshift::EndpointAccess).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const NetworkInterfaceSchema = z.object({
+const NetworkInterfaceSchema = z.object({
   PrivateIpAddress: z.string().describe(
     "The IPv4 address of the network interface within the subnet.",
   ).optional(),
@@ -97,9 +106,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Redshift EndpointAccess. Registered at `@swamp/aws/redshift/endpoint-access`. */
 export const model = {
   type: "@swamp/aws/redshift/endpoint-access",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -113,6 +123,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Events Rule (AWS::Events::Rule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,35 +21,35 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const HttpParametersSchema = z.object({
+const HttpParametersSchema = z.object({
   PathParameterValues: z.array(z.string()).optional(),
   HeaderParameters: z.record(z.string(), z.string()).optional(),
   QueryStringParameters: z.record(z.string(), z.string()).optional(),
 });
 
-export const DeadLetterConfigSchema = z.object({
+const DeadLetterConfigSchema = z.object({
   Arn: z.string().optional(),
 });
 
-export const RunCommandTargetSchema = z.object({
+const RunCommandTargetSchema = z.object({
   Values: z.array(z.string()),
   Key: z.string(),
 });
 
-export const RunCommandParametersSchema = z.object({
+const RunCommandParametersSchema = z.object({
   RunCommandTargets: z.array(RunCommandTargetSchema),
 });
 
-export const InputTransformerSchema = z.object({
+const InputTransformerSchema = z.object({
   InputPathsMap: z.record(z.string(), z.string()).optional(),
   InputTemplate: z.string(),
 });
 
-export const KinesisParametersSchema = z.object({
+const KinesisParametersSchema = z.object({
   PartitionKeyPath: z.string(),
 });
 
-export const RedshiftDataParametersSchema = z.object({
+const RedshiftDataParametersSchema = z.object({
   StatementName: z.string().optional(),
   Sqls: z.array(z.string()).optional(),
   Database: z.string(),
@@ -50,46 +59,46 @@ export const RedshiftDataParametersSchema = z.object({
   WithEvent: z.boolean().optional(),
 });
 
-export const AppSyncParametersSchema = z.object({
+const AppSyncParametersSchema = z.object({
   GraphQLOperation: z.string(),
 });
 
-export const SqsParametersSchema = z.object({
+const SqsParametersSchema = z.object({
   MessageGroupId: z.string(),
 });
 
-export const PlacementConstraintSchema = z.object({
+const PlacementConstraintSchema = z.object({
   Type: z.string().optional(),
   Expression: z.string().optional(),
 });
 
-export const PlacementStrategySchema = z.object({
+const PlacementStrategySchema = z.object({
   Field: z.string().optional(),
   Type: z.string().optional(),
 });
 
-export const CapacityProviderStrategyItemSchema = z.object({
+const CapacityProviderStrategyItemSchema = z.object({
   CapacityProvider: z.string(),
   Base: z.number().int().optional(),
   Weight: z.number().int().optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().optional(),
   Key: z.string().optional(),
 });
 
-export const AwsVpcConfigurationSchema = z.object({
+const AwsVpcConfigurationSchema = z.object({
   SecurityGroups: z.array(z.string()).optional(),
   Subnets: z.array(z.string()),
   AssignPublicIp: z.string().optional(),
 });
 
-export const NetworkConfigurationSchema = z.object({
+const NetworkConfigurationSchema = z.object({
   AwsVpcConfiguration: AwsVpcConfigurationSchema.optional(),
 });
 
-export const EcsParametersSchema = z.object({
+const EcsParametersSchema = z.object({
   PlatformVersion: z.string().optional(),
   Group: z.string().optional(),
   EnableECSManagedTags: z.boolean().optional(),
@@ -107,36 +116,36 @@ export const EcsParametersSchema = z.object({
   TaskDefinitionArn: z.string(),
 });
 
-export const BatchArrayPropertiesSchema = z.object({
+const BatchArrayPropertiesSchema = z.object({
   Size: z.number().int().optional(),
 });
 
-export const BatchRetryStrategySchema = z.object({
+const BatchRetryStrategySchema = z.object({
   Attempts: z.number().int().optional(),
 });
 
-export const BatchParametersSchema = z.object({
+const BatchParametersSchema = z.object({
   ArrayProperties: BatchArrayPropertiesSchema.optional(),
   JobName: z.string(),
   RetryStrategy: BatchRetryStrategySchema.optional(),
   JobDefinition: z.string(),
 });
 
-export const SageMakerPipelineParameterSchema = z.object({
+const SageMakerPipelineParameterSchema = z.object({
   Value: z.string(),
   Name: z.string(),
 });
 
-export const SageMakerPipelineParametersSchema = z.object({
+const SageMakerPipelineParametersSchema = z.object({
   PipelineParameterList: z.array(SageMakerPipelineParameterSchema).optional(),
 });
 
-export const RetryPolicySchema = z.object({
+const RetryPolicySchema = z.object({
   MaximumRetryAttempts: z.number().int().optional(),
   MaximumEventAgeInSeconds: z.number().int().optional(),
 });
 
-export const TargetSchema = z.object({
+const TargetSchema = z.object({
   InputPath: z.string().optional(),
   HttpParameters: HttpParametersSchema.optional(),
   DeadLetterConfig: DeadLetterConfigSchema.optional(),
@@ -229,9 +238,10 @@ const InputsSchema = z.object({
   Name: z.string().describe("The name of the rule.").optional(),
 });
 
+/** Swamp extension model for Events Rule. Registered at `@swamp/aws/events/rule`. */
 export const model = {
   type: "@swamp/aws/events/rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -245,6 +255,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

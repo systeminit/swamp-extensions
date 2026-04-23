@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for S3 StorageLens (AWS::S3::StorageLens).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,36 +21,36 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AdvancedDataProtectionMetricsSchema = z.object({
+const AdvancedDataProtectionMetricsSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether advanced data protection metrics are enabled or disabled.",
   ).optional(),
 });
 
-export const StorageLensGroupSelectionCriteriaSchema = z.object({
+const StorageLensGroupSelectionCriteriaSchema = z.object({
   Exclude: z.array(z.string()).optional(),
   Include: z.array(z.string()).optional(),
 });
 
-export const StorageLensGroupLevelSchema = z.object({
+const StorageLensGroupLevelSchema = z.object({
   StorageLensGroupSelectionCriteria: StorageLensGroupSelectionCriteriaSchema
     .describe("Selection criteria for Storage Lens Group level metrics")
     .optional(),
 });
 
-export const ActivityMetricsSchema = z.object({
+const ActivityMetricsSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether activity metrics are enabled or disabled.",
   ).optional(),
 });
 
-export const AdvancedPerformanceMetricsSchema = z.object({
+const AdvancedPerformanceMetricsSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether the Advanced Performance Metrics is enabled or disabled.",
   ).optional(),
 });
 
-export const SelectionCriteriaSchema = z.object({
+const SelectionCriteriaSchema = z.object({
   Delimiter: z.string().describe(
     "Delimiter to divide S3 key into hierarchy of prefixes.",
   ).optional(),
@@ -53,7 +62,7 @@ export const SelectionCriteriaSchema = z.object({
   ).optional(),
 });
 
-export const PrefixLevelStorageMetricsSchema = z.object({
+const PrefixLevelStorageMetricsSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether prefix-level storage metrics are enabled or disabled.",
   ).optional(),
@@ -62,23 +71,23 @@ export const PrefixLevelStorageMetricsSchema = z.object({
   ).optional(),
 });
 
-export const PrefixLevelSchema = z.object({
+const PrefixLevelSchema = z.object({
   StorageMetrics: PrefixLevelStorageMetricsSchema,
 });
 
-export const AdvancedCostOptimizationMetricsSchema = z.object({
+const AdvancedCostOptimizationMetricsSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether advanced cost optimization metrics are enabled or disabled.",
   ).optional(),
 });
 
-export const DetailedStatusCodesMetricsSchema = z.object({
+const DetailedStatusCodesMetricsSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether detailed status codes metrics are enabled or disabled.",
   ).optional(),
 });
 
-export const BucketLevelSchema = z.object({
+const BucketLevelSchema = z.object({
   AdvancedDataProtectionMetrics: AdvancedDataProtectionMetricsSchema.describe(
     "Enables advanced data protection metrics.",
   ).optional(),
@@ -97,7 +106,7 @@ export const BucketLevelSchema = z.object({
   ).optional(),
 });
 
-export const AccountLevelSchema = z.object({
+const AccountLevelSchema = z.object({
   AdvancedDataProtectionMetrics: AdvancedDataProtectionMetricsSchema.describe(
     "Enables advanced data protection metrics.",
   ).optional(),
@@ -119,18 +128,18 @@ export const AccountLevelSchema = z.object({
   ).optional(),
 });
 
-export const BucketsAndRegionsSchema = z.object({
+const BucketsAndRegionsSchema = z.object({
   Regions: z.array(z.string()).optional(),
   Buckets: z.array(z.string()).optional(),
 });
 
-export const AwsOrgSchema = z.object({
+const AwsOrgSchema = z.object({
   Arn: z.string().describe(
     "The Amazon Resource Name (ARN) of the specified resource.",
   ),
 });
 
-export const StorageLensTableDestinationSchema = z.object({
+const StorageLensTableDestinationSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether the export to S3 Tables is enabled or disabled.",
   ),
@@ -139,7 +148,7 @@ export const StorageLensTableDestinationSchema = z.object({
   ).optional(),
 });
 
-export const S3BucketDestinationSchema = z.object({
+const S3BucketDestinationSchema = z.object({
   OutputSchemaVersion: z.enum(["V_1"]).describe(
     "The version of the output schema to use when exporting Amazon S3 Storage Lens metrics.",
   ),
@@ -160,13 +169,13 @@ export const S3BucketDestinationSchema = z.object({
   ),
 });
 
-export const CloudWatchMetricsSchema = z.object({
+const CloudWatchMetricsSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether CloudWatch metrics are enabled or disabled.",
   ),
 });
 
-export const DataExportSchema = z.object({
+const DataExportSchema = z.object({
   StorageLensTableDestination: StorageLensTableDestinationSchema.describe(
     "S3 Tables destination settings for the Amazon S3 Storage Lens metrics export.",
   ).optional(),
@@ -178,7 +187,7 @@ export const DataExportSchema = z.object({
   ).optional(),
 });
 
-export const StorageLensExpandedPrefixesDataExportSchema = z.object({
+const StorageLensExpandedPrefixesDataExportSchema = z.object({
   StorageLensTableDestination: StorageLensTableDestinationSchema.describe(
     "S3 Tables destination settings for the Amazon S3 Storage Lens metrics export.",
   ).optional(),
@@ -187,7 +196,7 @@ export const StorageLensExpandedPrefixesDataExportSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(1).max(255).regex(
     new RegExp("^(?!aws:.*)[a-zA-Z0-9\\s\\_\\.\\/\\=\\+\\-\\@\\:]+$"),
   ),
@@ -289,9 +298,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for S3 StorageLens. Registered at `@swamp/aws/s3/storage-lens`. */
 export const model = {
   type: "@swamp/aws/s3/storage-lens",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -305,6 +315,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

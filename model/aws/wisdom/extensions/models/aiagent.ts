@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Wisdom AIAgent (AWS::Wisdom::AIAgent).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagConditionSchema = z.object({
+const TagConditionSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
   Value: z.string().min(1).max(256).optional(),
 });
 
-export const KnowledgeBaseAssociationConfigurationDataSchema = z.object({
+const KnowledgeBaseAssociationConfigurationDataSchema = z.object({
   ContentTagFilter: z.object({
     TagCondition: TagConditionSchema.optional(),
     AndConditions: z.array(TagConditionSchema).optional(),
@@ -32,7 +41,7 @@ export const KnowledgeBaseAssociationConfigurationDataSchema = z.object({
   OverrideKnowledgeBaseSearchType: z.enum(["HYBRID", "SEMANTIC"]).optional(),
 });
 
-export const AssociationConfigurationSchema = z.object({
+const AssociationConfigurationSchema = z.object({
   AssociationId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
@@ -45,7 +54,7 @@ export const AssociationConfigurationSchema = z.object({
   }).optional(),
 });
 
-export const ManualSearchAIAgentConfigurationSchema = z.object({
+const ManualSearchAIAgentConfigurationSchema = z.object({
   AnswerGenerationAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -60,7 +69,7 @@ export const ManualSearchAIAgentConfigurationSchema = z.object({
   Locale: z.string().min(1).optional(),
 });
 
-export const AnswerRecommendationAIAgentConfigurationSchema = z.object({
+const AnswerRecommendationAIAgentConfigurationSchema = z.object({
   IntentLabelingGenerationAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -85,7 +94,7 @@ export const AnswerRecommendationAIAgentConfigurationSchema = z.object({
   Locale: z.string().min(1).optional(),
 });
 
-export const SelfServiceAIAgentConfigurationSchema = z.object({
+const SelfServiceAIAgentConfigurationSchema = z.object({
   SelfServicePreProcessingAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -104,7 +113,7 @@ export const SelfServiceAIAgentConfigurationSchema = z.object({
   AssociationConfigurations: z.array(AssociationConfigurationSchema).optional(),
 });
 
-export const EmailResponseAIAgentConfigurationSchema = z.object({
+const EmailResponseAIAgentConfigurationSchema = z.object({
   EmailResponseAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -119,7 +128,7 @@ export const EmailResponseAIAgentConfigurationSchema = z.object({
   Locale: z.string().min(1).optional(),
 });
 
-export const EmailOverviewAIAgentConfigurationSchema = z.object({
+const EmailOverviewAIAgentConfigurationSchema = z.object({
   EmailOverviewAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -128,7 +137,7 @@ export const EmailOverviewAIAgentConfigurationSchema = z.object({
   Locale: z.string().min(1).optional(),
 });
 
-export const EmailGenerativeAnswerAIAgentConfigurationSchema = z.object({
+const EmailGenerativeAnswerAIAgentConfigurationSchema = z.object({
   EmailGenerativeAnswerAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -143,38 +152,38 @@ export const EmailGenerativeAnswerAIAgentConfigurationSchema = z.object({
   Locale: z.string().min(1).optional(),
 });
 
-export const ToolInstructionSchema = z.object({
+const ToolInstructionSchema = z.object({
   Instruction: z.string().optional(),
   Examples: z.array(z.string()).optional(),
 });
 
-export const ToolOverrideConstantInputValueSchema = z.object({
+const ToolOverrideConstantInputValueSchema = z.object({
   Type: z.enum(["STRING", "NUMBER", "JSON_STRING"]),
   Value: z.string().min(1),
 });
 
-export const ToolOverrideInputValueSchema = z.object({
+const ToolOverrideInputValueSchema = z.object({
   JsonPath: z.string().min(1),
   Value: z.object({
     Constant: ToolOverrideConstantInputValueSchema.optional(),
   }),
 });
 
-export const ToolOutputConfigurationSchema = z.object({
+const ToolOutputConfigurationSchema = z.object({
   OutputVariableNameOverride: z.string().min(1).optional(),
   SessionDataNamespace: z.string().min(1).optional(),
 });
 
-export const ToolOutputFilterSchema = z.object({
+const ToolOutputFilterSchema = z.object({
   JsonPath: z.string().min(1),
   OutputConfiguration: ToolOutputConfigurationSchema.optional(),
 });
 
-export const UserInteractionConfigurationSchema = z.object({
+const UserInteractionConfigurationSchema = z.object({
   IsUserConfirmationRequired: z.boolean().optional(),
 });
 
-export const ToolConfigurationSchema = z.object({
+const ToolConfigurationSchema = z.object({
   ToolName: z.string().min(1),
   ToolType: z.enum(["MODEL_CONTEXT_PROTOCOL", "RETURN_TO_CONTROL", "CONSTANT"]),
   Title: z.string().min(1).optional(),
@@ -189,7 +198,7 @@ export const ToolConfigurationSchema = z.object({
   UserInteractionConfiguration: UserInteractionConfigurationSchema.optional(),
 });
 
-export const OrchestrationAIAgentConfigurationSchema = z.object({
+const OrchestrationAIAgentConfigurationSchema = z.object({
   OrchestrationAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -209,7 +218,7 @@ export const OrchestrationAIAgentConfigurationSchema = z.object({
   ToolConfigurations: z.array(ToolConfigurationSchema).optional(),
 });
 
-export const NoteTakingAIAgentConfigurationSchema = z.object({
+const NoteTakingAIAgentConfigurationSchema = z.object({
   NoteTakingAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -223,7 +232,7 @@ export const NoteTakingAIAgentConfigurationSchema = z.object({
   Locale: z.string().min(1).optional(),
 });
 
-export const CaseSummarizationAIAgentConfigurationSchema = z.object({
+const CaseSummarizationAIAgentConfigurationSchema = z.object({
   CaseSummarizationAIPromptId: z.string().regex(
     new RegExp(
       "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$",
@@ -359,9 +368,10 @@ const InputsSchema = z.object({
   ]).optional(),
 });
 
+/** Swamp extension model for Wisdom AIAgent. Registered at `@swamp/aws/wisdom/aiagent`. */
 export const model = {
   type: "@swamp/aws/wisdom/aiagent",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -375,6 +385,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

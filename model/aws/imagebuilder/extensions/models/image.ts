@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ImageBuilder Image (AWS::ImageBuilder::Image).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EcrConfigurationSchema = z.object({
+const EcrConfigurationSchema = z.object({
   ContainerTags: z.array(z.string()).describe(
     "Tags for Image Builder to apply the output container image that is scanned. Tags can help you identify and manage your scanned images.",
   ).optional(),
@@ -21,12 +30,12 @@ export const EcrConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const WorkflowParameterSchema = z.object({
+const WorkflowParameterSchema = z.object({
   Value: z.array(z.string()).optional(),
   Name: z.string().optional(),
 });
 
-export const WorkflowConfigurationSchema = z.object({
+const WorkflowConfigurationSchema = z.object({
   ParallelGroup: z.string().describe("The parallel group name").optional(),
   Parameters: z.array(WorkflowParameterSchema).describe(
     "The parameters associated with the workflow",
@@ -208,9 +217,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ImageBuilder Image. Registered at `@swamp/aws/imagebuilder/image`. */
 export const model = {
   type: "@swamp/aws/imagebuilder/image",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -224,6 +234,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

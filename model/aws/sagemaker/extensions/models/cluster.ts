@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker Cluster (AWS::SageMaker::Cluster).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ClusterSlurmConfigSchema = z.object({
+const ClusterSlurmConfigSchema = z.object({
   PartitionNames: z.array(
     z.string().min(0).max(1024).regex(
       new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"),
@@ -25,12 +34,12 @@ export const ClusterSlurmConfigSchema = z.object({
   ),
 });
 
-export const ClusterCapacityRequirementsSchema = z.object({
+const ClusterCapacityRequirementsSchema = z.object({
   Spot: z.string().describe("Options for Spot capacity").optional(),
   OnDemand: z.string().describe("Options for OnDemand capacity").optional(),
 });
 
-export const ClusterKubernetesTaintSchema = z.object({
+const ClusterKubernetesTaintSchema = z.object({
   Value: z.string().describe("The value of the taint.").optional(),
   Effect: z.enum(["NoSchedule", "PreferNoSchedule", "NoExecute"]).describe(
     "The effect of the taint.",
@@ -38,7 +47,7 @@ export const ClusterKubernetesTaintSchema = z.object({
   Key: z.string().describe("The key of the taint."),
 });
 
-export const ClusterKubernetesConfigSchema = z.object({
+const ClusterKubernetesConfigSchema = z.object({
   Labels: z.record(z.string(), z.string()).describe(
     "A map of Kubernetes labels to apply to cluster nodes.",
   ).optional(),
@@ -47,7 +56,7 @@ export const ClusterKubernetesConfigSchema = z.object({
   ).optional(),
 });
 
-export const ClusterLifeCycleConfigSchema = z.object({
+const ClusterLifeCycleConfigSchema = z.object({
   OnInitComplete: z.string().min(1).max(128).regex(new RegExp("^[\\S\\s]+$"))
     .describe(
       "The file name of the extension script under SourceS3Uri. This script runs after HyperPod configures the default software on the instance. Mutually exclusive with OnCreate.",
@@ -63,7 +72,7 @@ export const ClusterLifeCycleConfigSchema = z.object({
     ).optional(),
 });
 
-export const VpcConfigSchema = z.object({
+const VpcConfigSchema = z.object({
   Subnets: z.array(z.string().max(32).regex(new RegExp("[-0-9a-zA-Z]+")))
     .describe(
       "The ID of the subnets in the VPC to which you want to connect your training job or model.",
@@ -75,12 +84,12 @@ export const VpcConfigSchema = z.object({
   ),
 });
 
-export const AlarmDetailsSchema = z.object({
+const AlarmDetailsSchema = z.object({
   AlarmName: z.string().min(1).max(256).regex(new RegExp("(?!\\s*$).+"))
     .describe("The name of the alarm."),
 });
 
-export const CapacitySizeConfigSchema = z.object({
+const CapacitySizeConfigSchema = z.object({
   Type: z.string().regex(new RegExp("INSTANCE_COUNT|CAPACITY_PERCENTAGE"))
     .describe(
       "Specifies whether SageMaker should process the update by amount or percentage of instances.",
@@ -90,7 +99,7 @@ export const CapacitySizeConfigSchema = z.object({
   ),
 });
 
-export const RollingUpdatePolicySchema = z.object({
+const RollingUpdatePolicySchema = z.object({
   MaximumBatchSize: CapacitySizeConfigSchema.describe(
     "The configuration of the size measurements of the AMI update. Using this configuration, you can specify whether SageMaker should update your instance group by an amount or percentage of instances.",
   ),
@@ -99,7 +108,7 @@ export const RollingUpdatePolicySchema = z.object({
   ).optional(),
 });
 
-export const DeploymentConfigSchema = z.object({
+const DeploymentConfigSchema = z.object({
   AutoRollbackConfiguration: z.array(AlarmDetailsSchema).describe(
     "An array that contains the alarms that SageMaker monitors to know whether to roll back the AMI update.",
   ).optional(),
@@ -111,7 +120,7 @@ export const DeploymentConfigSchema = z.object({
   ).optional(),
 });
 
-export const ScheduledUpdateConfigSchema = z.object({
+const ScheduledUpdateConfigSchema = z.object({
   ScheduleExpression: z.string().min(1).max(256).regex(
     new RegExp(
       "cron\\((?:[0-5][0-9]|[0-9]|) (?:[01][0-9]|2[0-3]|[0-9]) (?:[1-9]|0[1-9]|[12][0-9]|3[01]|\\?) (?:[1-9]|0[1-9]|1[0-2]|\\*|\\*/(?:[1-9]|1[0-2])|) (?:MON|TUE|WED|THU|FRI|SAT|SUN|[1-7]|\\?|L|(?:[1-7]#[1-5])|(?:[1-7]L)) (?:20[2-9][0-9]|\\*|)\\)",
@@ -124,7 +133,7 @@ export const ScheduledUpdateConfigSchema = z.object({
   ).optional(),
 });
 
-export const ClusterInstanceGroupSchema = z.object({
+const ClusterInstanceGroupSchema = z.object({
   SlurmConfig: ClusterSlurmConfigSchema.describe(
     "Slurm configuration for the instance group.",
   ).optional(),
@@ -186,7 +195,7 @@ export const ClusterInstanceGroupSchema = z.object({
   ).optional(),
 });
 
-export const FSxLustreConfigSchema = z.object({
+const FSxLustreConfigSchema = z.object({
   SizeInGiB: z.number().int().min(1200).max(100800).describe(
     "The storage capacity of the FSx for Lustre file system, specified in gibibytes (GiB).",
   ),
@@ -195,13 +204,13 @@ export const FSxLustreConfigSchema = z.object({
   ),
 });
 
-export const EnvironmentConfigSchema = z.object({
+const EnvironmentConfigSchema = z.object({
   FSxLustreConfig: FSxLustreConfigSchema.describe(
     "Configuration settings for an Amazon FSx for Lustre file system to be used with the cluster.",
   ).optional(),
 });
 
-export const ClusterRestrictedInstanceGroupSchema = z.object({
+const ClusterRestrictedInstanceGroupSchema = z.object({
   OverrideVpcConfig: VpcConfigSchema.describe(
     "Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs, hosted models, and compute resources have access to. You can control access to and from your resources by configuring a VPC.",
   ).optional(),
@@ -243,7 +252,7 @@ export const ClusterRestrictedInstanceGroupSchema = z.object({
   ).describe("The execution role for the instance group to assume."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(0).max(256).regex(
     new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$", "u"),
   ).describe(
@@ -402,9 +411,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker Cluster. Registered at `@swamp/aws/sagemaker/cluster`. */
 export const model = {
   type: "@swamp/aws/sagemaker/cluster",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -423,6 +433,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.19.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

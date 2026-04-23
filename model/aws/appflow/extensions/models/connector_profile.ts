@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppFlow ConnectorProfile (AWS::AppFlow::ConnectorProfile).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,31 +21,31 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DatadogConnectorProfilePropertiesSchema = z.object({
+const DatadogConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the Datadog resource",
   ),
 });
 
-export const DynatraceConnectorProfilePropertiesSchema = z.object({
+const DynatraceConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the Dynatrace resource",
   ),
 });
 
-export const InforNexusConnectorProfilePropertiesSchema = z.object({
+const InforNexusConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the InforNexus resource",
   ),
 });
 
-export const MarketoConnectorProfilePropertiesSchema = z.object({
+const MarketoConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the Marketo resource",
   ),
 });
 
-export const RedshiftConnectorProfilePropertiesSchema = z.object({
+const RedshiftConnectorProfilePropertiesSchema = z.object({
   DatabaseUrl: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The JDBC URL of the Amazon Redshift cluster.",
   ).optional(),
@@ -67,7 +76,7 @@ export const RedshiftConnectorProfilePropertiesSchema = z.object({
   ).optional(),
 });
 
-export const OAuthPropertiesSchema = z.object({
+const OAuthPropertiesSchema = z.object({
   AuthCodeUrl: z.string().max(256).regex(
     new RegExp(
       "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]",
@@ -82,7 +91,7 @@ export const OAuthPropertiesSchema = z.object({
     .optional(),
 });
 
-export const SAPODataConnectorProfilePropertiesSchema = z.object({
+const SAPODataConnectorProfilePropertiesSchema = z.object({
   ApplicationHostUrl: z.string().max(256).regex(
     new RegExp(
       "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]",
@@ -103,7 +112,7 @@ export const SAPODataConnectorProfilePropertiesSchema = z.object({
   ).optional(),
 });
 
-export const SalesforceConnectorProfilePropertiesSchema = z.object({
+const SalesforceConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the Salesforce resource",
   ).optional(),
@@ -115,7 +124,7 @@ export const SalesforceConnectorProfilePropertiesSchema = z.object({
   ).optional(),
 });
 
-export const PardotConnectorProfilePropertiesSchema = z.object({
+const PardotConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the Salesforce Pardot resource",
   ).optional(),
@@ -127,19 +136,19 @@ export const PardotConnectorProfilePropertiesSchema = z.object({
   ),
 });
 
-export const ServiceNowConnectorProfilePropertiesSchema = z.object({
+const ServiceNowConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the ServiceNow resource",
   ),
 });
 
-export const SlackConnectorProfilePropertiesSchema = z.object({
+const SlackConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the Slack resource",
   ),
 });
 
-export const SnowflakeConnectorProfilePropertiesSchema = z.object({
+const SnowflakeConnectorProfilePropertiesSchema = z.object({
   Warehouse: z.string().max(512).regex(new RegExp("[\\s\\w/!@#+=.-]*"))
     .describe("The name of the Snowﬂake warehouse."),
   Stage: z.string().max(512).regex(new RegExp("\\S+")).describe(
@@ -163,19 +172,19 @@ export const SnowflakeConnectorProfilePropertiesSchema = z.object({
   ).optional(),
 });
 
-export const VeevaConnectorProfilePropertiesSchema = z.object({
+const VeevaConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the Veeva resource",
   ),
 });
 
-export const ZendeskConnectorProfilePropertiesSchema = z.object({
+const ZendeskConnectorProfilePropertiesSchema = z.object({
   InstanceUrl: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The location of the Zendesk resource",
   ),
 });
 
-export const OAuth2PropertiesSchema = z.object({
+const OAuth2PropertiesSchema = z.object({
   TokenUrl: z.string().min(0).max(256).regex(
     new RegExp(
       "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]",
@@ -192,7 +201,7 @@ export const OAuth2PropertiesSchema = z.object({
   ).describe("A map for properties for custom connector Token Url.").optional(),
 });
 
-export const CustomConnectorProfilePropertiesSchema = z.object({
+const CustomConnectorProfilePropertiesSchema = z.object({
   ProfileProperties: z.record(
     z.string(),
     z.string().min(1).max(2048).regex(new RegExp("\\S+")),
@@ -200,7 +209,7 @@ export const CustomConnectorProfilePropertiesSchema = z.object({
   OAuth2Properties: OAuth2PropertiesSchema.optional(),
 });
 
-export const ConnectorProfilePropertiesSchema = z.object({
+const ConnectorProfilePropertiesSchema = z.object({
   Datadog: DatadogConnectorProfilePropertiesSchema.optional(),
   Dynatrace: DynatraceConnectorProfilePropertiesSchema.optional(),
   InforNexus: InforNexusConnectorProfilePropertiesSchema.optional(),
@@ -217,14 +226,14 @@ export const ConnectorProfilePropertiesSchema = z.object({
   CustomConnector: CustomConnectorProfilePropertiesSchema.optional(),
 });
 
-export const AmplitudeConnectorProfileCredentialsSchema = z.object({
+const AmplitudeConnectorProfileCredentialsSchema = z.object({
   ApiKey: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "A unique alphanumeric identiﬁer used to authenticate a user, developer, or calling program to your API.",
   ),
   SecretKey: z.string().max(256).regex(new RegExp("\\S+")),
 });
 
-export const DatadogConnectorProfileCredentialsSchema = z.object({
+const DatadogConnectorProfileCredentialsSchema = z.object({
   ApiKey: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "A unique alphanumeric identiﬁer used to authenticate a user, developer, or calling program to your API.",
   ),
@@ -233,13 +242,13 @@ export const DatadogConnectorProfileCredentialsSchema = z.object({
   ),
 });
 
-export const DynatraceConnectorProfileCredentialsSchema = z.object({
+const DynatraceConnectorProfileCredentialsSchema = z.object({
   ApiToken: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The API tokens used by Dynatrace API to authenticate various API calls.",
   ),
 });
 
-export const ConnectorOAuthRequestSchema = z.object({
+const ConnectorOAuthRequestSchema = z.object({
   AuthCode: z.string().describe(
     "The code provided by the connector when it has been authenticated via the connected app.",
   ).optional(),
@@ -248,7 +257,7 @@ export const ConnectorOAuthRequestSchema = z.object({
   ).optional(),
 });
 
-export const GoogleAnalyticsConnectorProfileCredentialsSchema = z.object({
+const GoogleAnalyticsConnectorProfileCredentialsSchema = z.object({
   ClientId: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The identiﬁer for the desired client.",
   ),
@@ -266,7 +275,7 @@ export const GoogleAnalyticsConnectorProfileCredentialsSchema = z.object({
   ).optional(),
 });
 
-export const InforNexusConnectorProfileCredentialsSchema = z.object({
+const InforNexusConnectorProfileCredentialsSchema = z.object({
   AccessKeyId: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The Access Key portion of the credentials.",
   ),
@@ -281,7 +290,7 @@ export const InforNexusConnectorProfileCredentialsSchema = z.object({
   ),
 });
 
-export const MarketoConnectorProfileCredentialsSchema = z.object({
+const MarketoConnectorProfileCredentialsSchema = z.object({
   ClientId: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The identiﬁer for the desired client.",
   ),
@@ -296,7 +305,7 @@ export const MarketoConnectorProfileCredentialsSchema = z.object({
   ).optional(),
 });
 
-export const RedshiftConnectorProfileCredentialsSchema = z.object({
+const RedshiftConnectorProfileCredentialsSchema = z.object({
   Username: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The name of the user.",
   ).optional(),
@@ -305,12 +314,12 @@ export const RedshiftConnectorProfileCredentialsSchema = z.object({
   ).optional(),
 });
 
-export const BasicAuthCredentialsSchema = z.object({
+const BasicAuthCredentialsSchema = z.object({
   Username: z.string().max(512).regex(new RegExp("\\S+")),
   Password: z.string().max(512).regex(new RegExp("\\S+")),
 });
 
-export const SAPODataConnectorProfileCredentialsSchema = z.object({
+const SAPODataConnectorProfileCredentialsSchema = z.object({
   BasicAuthCredentials: BasicAuthCredentialsSchema.optional(),
   OAuthCredentials: z.object({
     AccessToken: z.string().max(4096).regex(new RegExp("\\S+")).optional(),
@@ -321,7 +330,7 @@ export const SAPODataConnectorProfileCredentialsSchema = z.object({
   }).optional(),
 });
 
-export const SalesforceConnectorProfileCredentialsSchema = z.object({
+const SalesforceConnectorProfileCredentialsSchema = z.object({
   AccessToken: z.string().max(4096).regex(new RegExp("\\S+")).describe(
     "The credentials used to access protected resources.",
   ).optional(),
@@ -346,7 +355,7 @@ export const SalesforceConnectorProfileCredentialsSchema = z.object({
     .optional(),
 });
 
-export const PardotConnectorProfileCredentialsSchema = z.object({
+const PardotConnectorProfileCredentialsSchema = z.object({
   AccessToken: z.string().max(4096).regex(new RegExp("\\S+")).describe(
     "The credentials used to access protected resources.",
   ).optional(),
@@ -362,7 +371,7 @@ export const PardotConnectorProfileCredentialsSchema = z.object({
     .optional(),
 });
 
-export const OAuth2CredentialsSchema = z.object({
+const OAuth2CredentialsSchema = z.object({
   ClientId: z.string().max(512).regex(new RegExp("\\S+")).optional(),
   ClientSecret: z.string().max(512).regex(new RegExp("\\S+")).optional(),
   AccessToken: z.string().max(4096).regex(new RegExp("\\S+")).optional(),
@@ -370,7 +379,7 @@ export const OAuth2CredentialsSchema = z.object({
   OAuthRequest: ConnectorOAuthRequestSchema.optional(),
 });
 
-export const ServiceNowConnectorProfileCredentialsSchema = z.object({
+const ServiceNowConnectorProfileCredentialsSchema = z.object({
   Username: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The name of the user.",
   ).optional(),
@@ -382,13 +391,13 @@ export const ServiceNowConnectorProfileCredentialsSchema = z.object({
   ).optional(),
 });
 
-export const SingularConnectorProfileCredentialsSchema = z.object({
+const SingularConnectorProfileCredentialsSchema = z.object({
   ApiKey: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "A unique alphanumeric identiﬁer used to authenticate a user, developer, or calling program to your API.",
   ),
 });
 
-export const SlackConnectorProfileCredentialsSchema = z.object({
+const SlackConnectorProfileCredentialsSchema = z.object({
   ClientId: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The identiﬁer for the desired client.",
   ),
@@ -403,7 +412,7 @@ export const SlackConnectorProfileCredentialsSchema = z.object({
   ).optional(),
 });
 
-export const SnowflakeConnectorProfileCredentialsSchema = z.object({
+const SnowflakeConnectorProfileCredentialsSchema = z.object({
   Username: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The name of the user.",
   ),
@@ -412,13 +421,13 @@ export const SnowflakeConnectorProfileCredentialsSchema = z.object({
   ),
 });
 
-export const TrendmicroConnectorProfileCredentialsSchema = z.object({
+const TrendmicroConnectorProfileCredentialsSchema = z.object({
   ApiSecretKey: z.string().max(256).regex(new RegExp("\\S+")).describe(
     "The Secret Access Key portion of the credentials.",
   ),
 });
 
-export const VeevaConnectorProfileCredentialsSchema = z.object({
+const VeevaConnectorProfileCredentialsSchema = z.object({
   Username: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The name of the user.",
   ),
@@ -427,7 +436,7 @@ export const VeevaConnectorProfileCredentialsSchema = z.object({
   ),
 });
 
-export const ZendeskConnectorProfileCredentialsSchema = z.object({
+const ZendeskConnectorProfileCredentialsSchema = z.object({
   ClientId: z.string().max(512).regex(new RegExp("\\S+")).describe(
     "The identiﬁer for the desired client.",
   ),
@@ -442,12 +451,12 @@ export const ZendeskConnectorProfileCredentialsSchema = z.object({
   ).optional(),
 });
 
-export const ApiKeyCredentialsSchema = z.object({
+const ApiKeyCredentialsSchema = z.object({
   ApiKey: z.string().max(256).regex(new RegExp("\\S+")),
   ApiSecretKey: z.string().max(256).regex(new RegExp("\\S+")).optional(),
 });
 
-export const CustomAuthCredentialsSchema = z.object({
+const CustomAuthCredentialsSchema = z.object({
   CustomAuthenticationType: z.string().max(256).regex(new RegExp("\\S+")),
   CredentialsMap: z.record(
     z.string(),
@@ -455,7 +464,7 @@ export const CustomAuthCredentialsSchema = z.object({
   ).describe("A map for properties for custom authentication.").optional(),
 });
 
-export const CustomConnectorProfileCredentialsSchema = z.object({
+const CustomConnectorProfileCredentialsSchema = z.object({
   AuthenticationType: z.enum(["OAUTH2", "APIKEY", "BASIC", "CUSTOM"]),
   Basic: BasicAuthCredentialsSchema.optional(),
   Oauth2: OAuth2CredentialsSchema.optional(),
@@ -463,7 +472,7 @@ export const CustomConnectorProfileCredentialsSchema = z.object({
   Custom: CustomAuthCredentialsSchema.optional(),
 });
 
-export const ConnectorProfileCredentialsSchema = z.object({
+const ConnectorProfileCredentialsSchema = z.object({
   Amplitude: AmplitudeConnectorProfileCredentialsSchema.optional(),
   Datadog: DatadogConnectorProfileCredentialsSchema.optional(),
   Dynatrace: DynatraceConnectorProfileCredentialsSchema.optional(),
@@ -597,9 +606,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for AppFlow ConnectorProfile. Registered at `@swamp/aws/appflow/connector-profile`. */
 export const model = {
   type: "@swamp/aws/appflow/connector-profile",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -613,6 +623,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

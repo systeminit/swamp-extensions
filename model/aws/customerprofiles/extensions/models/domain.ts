@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CustomerProfiles Domain (AWS::CustomerProfiles::Domain).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ConflictResolutionSchema = z.object({
+const ConflictResolutionSchema = z.object({
   ConflictResolvingModel: z.enum(["RECENCY", "SOURCE"]).describe(
     "How the auto-merging process should resolve conflicts between different profiles.",
   ),
@@ -21,13 +30,13 @@ export const ConflictResolutionSchema = z.object({
   ).optional(),
 });
 
-export const ConsolidationSchema = z.object({
+const ConsolidationSchema = z.object({
   MatchingAttributesList: z.array(z.array(z.string().min(1).max(255))).describe(
     "A list of matching criteria.",
   ),
 });
 
-export const AutoMergingSchema = z.object({
+const AutoMergingSchema = z.object({
   Enabled: z.boolean().describe(
     "The flag that enables the auto-merging of duplicate profiles.",
   ),
@@ -42,7 +51,7 @@ export const AutoMergingSchema = z.object({
   ).optional(),
 });
 
-export const S3ExportingConfigSchema = z.object({
+const S3ExportingConfigSchema = z.object({
   S3BucketName: z.string().min(3).max(63).regex(new RegExp("^[a-z0-9.-]+$"))
     .describe(
       "The name of the S3 bucket where Identity Resolution Jobs write result files.",
@@ -52,13 +61,13 @@ export const S3ExportingConfigSchema = z.object({
   ).optional(),
 });
 
-export const ExportingConfigSchema = z.object({
+const ExportingConfigSchema = z.object({
   S3Exporting: S3ExportingConfigSchema.describe(
     "The S3 location where Identity Resolution Jobs write result files.",
   ).optional(),
 });
 
-export const JobScheduleSchema = z.object({
+const JobScheduleSchema = z.object({
   DayOfTheWeek: z.enum([
     "SUNDAY",
     "MONDAY",
@@ -77,7 +86,7 @@ export const JobScheduleSchema = z.object({
   ),
 });
 
-export const AttributeTypesSelectorSchema = z.object({
+const AttributeTypesSelectorSchema = z.object({
   AttributeMatchingModel: z.enum(["ONE_TO_ONE", "MANY_TO_MANY"]).describe(
     "Configures the AttributeMatchingModel, you can either choose ONE_TO_ONE or MANY_TO_MANY.",
   ),
@@ -92,13 +101,13 @@ export const AttributeTypesSelectorSchema = z.object({
   ).optional(),
 });
 
-export const MatchingRuleSchema = z.object({
+const MatchingRuleSchema = z.object({
   Rule: z.array(z.string().min(1).max(255)).describe(
     "A single rule level of the MatchRules. Configures how the rule-based matching process should match profiles.",
   ),
 });
 
-export const ReadinessSchema = z.object({
+const ReadinessSchema = z.object({
   ProgressPercentage: z.number().int().min(0).max(100).describe(
     "The percentage of progress completed.",
   ).optional(),
@@ -106,7 +115,7 @@ export const ReadinessSchema = z.object({
     .optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
@@ -309,9 +318,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CustomerProfiles Domain. Registered at `@swamp/aws/customerprofiles/domain`. */
 export const model = {
   type: "@swamp/aws/customerprofiles/domain",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -325,6 +335,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

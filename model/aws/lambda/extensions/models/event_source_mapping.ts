@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Lambda EventSourceMapping (AWS::Lambda::EventSourceMapping).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const OnFailureSchema = z.object({
+const OnFailureSchema = z.object({
   Destination: z.string().min(12).max(1024).regex(
     new RegExp(
       "^$|kafka://([^.]([a-zA-Z0-9\\-_.]{0,248}))|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
@@ -22,19 +31,19 @@ export const OnFailureSchema = z.object({
   ).optional(),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   Pattern: z.string().min(0).max(4096).regex(new RegExp(".*")).describe(
     "A filter pattern. For more information on the syntax of a filter pattern, see [Filter rule syntax](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-syntax).",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The key for this tag."),
   Value: z.string().min(0).max(256).describe("The value for this tag.")
     .optional(),
 });
 
-export const SourceAccessConfigurationSchema = z.object({
+const SourceAccessConfigurationSchema = z.object({
   Type: z.enum([
     "BASIC_AUTH",
     "VPC_SUBNET",
@@ -53,7 +62,7 @@ export const SourceAccessConfigurationSchema = z.object({
     ).optional(),
 });
 
-export const EndpointsSchema = z.object({
+const EndpointsSchema = z.object({
   KafkaBootstrapServers: z.array(
     z.string().min(1).max(300).regex(
       new RegExp(
@@ -65,7 +74,7 @@ export const EndpointsSchema = z.object({
   ).optional(),
 });
 
-export const SchemaRegistryAccessConfigSchema = z.object({
+const SchemaRegistryAccessConfigSchema = z.object({
   Type: z.enum([
     "BASIC_AUTH",
     "CLIENT_CERTIFICATE_TLS_AUTH",
@@ -82,13 +91,13 @@ export const SchemaRegistryAccessConfigSchema = z.object({
   ).optional(),
 });
 
-export const SchemaValidationConfigSchema = z.object({
+const SchemaValidationConfigSchema = z.object({
   Attribute: z.enum(["KEY", "VALUE"]).describe(
     "The attributes you want your schema registry to validate and filter for. If you selected JSON as the EventRecordFormat, Lambda also deserializes the selected message attributes.",
   ).optional(),
 });
 
-export const SchemaRegistryConfigSchema = z.object({
+const SchemaRegistryConfigSchema = z.object({
   SchemaRegistryURI: z.string().min(1).max(10000).regex(
     new RegExp("[a-zA-Z0-9-/*:_+=.@-]*"),
   ).describe(
@@ -483,9 +492,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for Lambda EventSourceMapping. Registered at `@swamp/aws/lambda/event-source-mapping`. */
 export const model = {
   type: "@swamp/aws/lambda/event-source-mapping",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -499,6 +509,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

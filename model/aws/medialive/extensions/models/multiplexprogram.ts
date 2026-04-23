@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaLive Multiplexprogram (AWS::MediaLive::Multiplexprogram).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MultiplexProgramServiceDescriptorSchema = z.object({
+const MultiplexProgramServiceDescriptorSchema = z.object({
   ProviderName: z.string().min(1).max(256).describe("Name of the provider."),
   ServiceName: z.string().min(1).max(256).describe("Name of the service."),
 });
 
-export const MultiplexProgramPipelineDetailSchema = z.object({
+const MultiplexProgramPipelineDetailSchema = z.object({
   ActiveChannelPipeline: z.string().describe(
     "Identifies the channel pipeline that is currently active for the pipeline (identified by PipelineId) in the multiplex.",
   ).optional(),
@@ -159,9 +168,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for MediaLive Multiplexprogram. Registered at `@swamp/aws/medialive/multiplexprogram`. */
 export const model = {
   type: "@swamp/aws/medialive/multiplexprogram",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -175,6 +185,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

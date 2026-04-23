@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EMRContainers SecurityConfiguration (AWS::EMRContainers::SecurityConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,21 +21,21 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EksInfoSchema = z.object({
+const EksInfoSchema = z.object({
   Namespace: z.string().describe("The EKS namespace.").optional(),
 });
 
-export const ContainerInfoSchema = z.object({
+const ContainerInfoSchema = z.object({
   EksInfo: EksInfoSchema.describe("EKS information.").optional(),
 });
 
-export const SecureNamespaceInfoSchema = z.object({
+const SecureNamespaceInfoSchema = z.object({
   ClusterId: z.string().min(1).max(100).describe("The ID of the cluster.")
     .optional(),
   Namespace: z.string().min(1).max(63).describe("The namespace.").optional(),
 });
 
-export const LakeFormationConfigurationSchema = z.object({
+const LakeFormationConfigurationSchema = z.object({
   AuthorizedSessionTagValue: z.string().min(1).max(256).describe(
     "The session tag to authorize Lake Formation access.",
   ).optional(),
@@ -43,13 +52,13 @@ export const LakeFormationConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const AuthorizationConfigurationSchema = z.object({
+const AuthorizationConfigurationSchema = z.object({
   LakeFormationConfiguration: LakeFormationConfigurationSchema.describe(
     "Lake Formation configuration.",
   ).optional(),
 });
 
-export const IdentityCenterConfigurationSchema = z.object({
+const IdentityCenterConfigurationSchema = z.object({
   EnableIdentityCenter: z.boolean().describe(
     "Whether to enable Identity Center integration.",
   ).optional(),
@@ -63,7 +72,7 @@ export const IdentityCenterConfigurationSchema = z.object({
   ).describe("The ARN of the Identity Center instance.").optional(),
 });
 
-export const IAMConfigurationSchema = z.object({
+const IAMConfigurationSchema = z.object({
   SystemRole: z.string().regex(
     new RegExp(
       "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::\\d{12}:role/.+$",
@@ -71,7 +80,7 @@ export const IAMConfigurationSchema = z.object({
   ).describe("The system role ARN.").optional(),
 });
 
-export const AuthenticationConfigurationSchema = z.object({
+const AuthenticationConfigurationSchema = z.object({
   IdentityCenterConfiguration: IdentityCenterConfigurationSchema.describe(
     "Identity Center configuration.",
   ).optional(),
@@ -79,7 +88,7 @@ export const AuthenticationConfigurationSchema = z.object({
     .optional(),
 });
 
-export const TLSCertificateConfigurationSchema = z.object({
+const TLSCertificateConfigurationSchema = z.object({
   CertificateProviderType: z.enum(["PEM"]).describe(
     "The certificate provider type.",
   ).optional(),
@@ -91,27 +100,27 @@ export const TLSCertificateConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const InTransitEncryptionConfigurationSchema = z.object({
+const InTransitEncryptionConfigurationSchema = z.object({
   TLSCertificateConfiguration: TLSCertificateConfigurationSchema.describe(
     "TLS certificate configuration for in-transit encryption.",
   ).optional(),
 });
 
-export const S3EncryptionConfigurationSchema = z.object({
+const S3EncryptionConfigurationSchema = z.object({
   EncryptionOption: z.enum(["SSE-S3", "SSE-KMS", "CSE-KMS"]).describe(
     "The S3 encryption option.",
   ).optional(),
   KMSKeyId: z.string().describe("The KMS key ID for encryption.").optional(),
 });
 
-export const LocalDiskEncryptionConfigurationSchema = z.object({
+const LocalDiskEncryptionConfigurationSchema = z.object({
   EncryptionKeyProviderType: z.enum(["AwsKms"]).describe(
     "The encryption key provider type.",
   ).optional(),
   AwsKmsKeyId: z.string().describe("The AWS KMS key ID.").optional(),
 });
 
-export const AtRestEncryptionConfigurationSchema = z.object({
+const AtRestEncryptionConfigurationSchema = z.object({
   S3EncryptionConfiguration: S3EncryptionConfigurationSchema.describe(
     "S3 encryption configuration.",
   ).optional(),
@@ -119,7 +128,7 @@ export const AtRestEncryptionConfigurationSchema = z.object({
     .describe("Local disk encryption configuration.").optional(),
 });
 
-export const EncryptionConfigurationSchema = z.object({
+const EncryptionConfigurationSchema = z.object({
   InTransitEncryptionConfiguration: InTransitEncryptionConfigurationSchema
     .describe("In-transit encryption configuration.").optional(),
   AtRestEncryptionConfiguration: AtRestEncryptionConfigurationSchema.describe(
@@ -127,7 +136,7 @@ export const EncryptionConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe("The key name of the tag."),
   Value: z.string().describe("The value for the tag."),
 });
@@ -202,9 +211,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EMRContainers SecurityConfiguration. Registered at `@swamp/aws/emrcontainers/security-configuration`. */
 export const model = {
   type: "@swamp/aws/emrcontainers/security-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -218,6 +228,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

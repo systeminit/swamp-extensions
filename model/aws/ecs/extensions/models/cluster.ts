@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ECS Cluster (AWS::ECS::Cluster).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ClusterSettingsSchema = z.object({
+const ClusterSettingsSchema = z.object({
   Value: z.string().describe(
     "The value to set for the cluster setting. The supported values are enhanced, enabled, and disabled. To use Container Insights with enhanced observability, set the containerInsights account setting to enhanced. To use Container Insights, set the containerInsights account setting to enabled. If a cluster value is specified, it will override the containerInsights value set with [PutAccountSetting](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutAccountSetting.html) or [PutAccountSettingDefault](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutAccountSettingDefault.html).",
   ).optional(),
@@ -21,7 +30,7 @@ export const ClusterSettingsSchema = z.object({
   ).optional(),
 });
 
-export const CapacityProviderStrategyItemSchema = z.object({
+const CapacityProviderStrategyItemSchema = z.object({
   CapacityProvider: z.string().describe(
     "The short name of the capacity provider. This can be either an AWS managed capacity provider ( FARGATE or FARGATE_SPOT) or the name of a custom capacity provider that you created.",
   ).optional(),
@@ -33,7 +42,7 @@ export const CapacityProviderStrategyItemSchema = z.object({
   ).optional(),
 });
 
-export const ManagedStorageConfigurationSchema = z.object({
+const ManagedStorageConfigurationSchema = z.object({
   FargateEphemeralStorageKmsKeyId: z.string().describe(
     "Specify the KMSlong key ID for Fargate ephemeral storage. When you specify a fargateEphemeralStorageKmsKeyId, AWS Fargate uses the key to encrypt data at rest in ephemeral storage. For more information about Fargate ephemeral storage encryption, see [Customer managed keys for Fargate ephemeral storage for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-storage-encryption.html) in the *Amazon Elastic Container Service Developer Guide*. The key must be a single Region key.",
   ).optional(),
@@ -42,7 +51,7 @@ export const ManagedStorageConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ExecuteCommandLogConfigurationSchema = z.object({
+const ExecuteCommandLogConfigurationSchema = z.object({
   S3EncryptionEnabled: z.boolean().describe(
     "Determines whether to use encryption on the S3 logs. If not specified, encryption is not used.",
   ).optional(),
@@ -60,7 +69,7 @@ export const ExecuteCommandLogConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ExecuteCommandConfigurationSchema = z.object({
+const ExecuteCommandConfigurationSchema = z.object({
   Logging: z.string().describe(
     "The log setting to use for redirecting logs for your execute command results. The following log settings are available. NONE: The execute command session is not logged. DEFAULT: The awslogs configuration in the task definition is used. If no logging parameter is specified, it defaults to this value. If no awslogs log driver is configured in the task definition, the output won't be logged. OVERRIDE: Specify the logging details as a part of logConfiguration. If the OVERRIDE logging option is specified, the logConfiguration is required.",
   ).optional(),
@@ -72,7 +81,7 @@ export const ExecuteCommandConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe(
     "The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).",
   ).optional(),
@@ -172,9 +181,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ECS Cluster. Registered at `@swamp/aws/ecs/cluster`. */
 export const model = {
   type: "@swamp/aws/ecs/cluster",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -188,6 +198,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

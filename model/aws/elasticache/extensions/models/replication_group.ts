@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ElastiCache ReplicationGroup (AWS::ElastiCache::ReplicationGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const NodeGroupConfigurationSchema = z.object({
+const NodeGroupConfigurationSchema = z.object({
   Slots: z.string().describe(
     "A string of comma-separated values where the first set of values are the slot numbers (zero based), and the second set of values are the keyspaces for each slot. The following example specifies three slots (numbered 0, 1, and 2): 0,1,2,0-4999,5000-9999,10000-16,383.",
   ).optional(),
@@ -30,17 +39,17 @@ export const NodeGroupConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const CloudWatchLogsDestinationDetailsSchema = z.object({
+const CloudWatchLogsDestinationDetailsSchema = z.object({
   LogGroup: z.string().describe("The name of the CloudWatch Logs log group."),
 });
 
-export const KinesisFirehoseDestinationDetailsSchema = z.object({
+const KinesisFirehoseDestinationDetailsSchema = z.object({
   DeliveryStream: z.string().describe(
     "The name of the Kinesis Data Firehose delivery stream.",
   ),
 });
 
-export const DestinationDetailsSchema = z.object({
+const DestinationDetailsSchema = z.object({
   CloudWatchLogsDetails: CloudWatchLogsDestinationDetailsSchema.describe(
     "The configuration details of the CloudWatch Logs destination. Note that this field is marked as required but only if CloudWatch Logs was chosen as the destination.",
   ).optional(),
@@ -49,7 +58,7 @@ export const DestinationDetailsSchema = z.object({
   ).optional(),
 });
 
-export const LogDeliveryConfigurationRequestSchema = z.object({
+const LogDeliveryConfigurationRequestSchema = z.object({
   DestinationDetails: DestinationDetailsSchema.describe(
     "Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.",
   ),
@@ -62,7 +71,7 @@ export const LogDeliveryConfigurationRequestSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -368,9 +377,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ElastiCache ReplicationGroup. Registered at `@swamp/aws/elasticache/replication-group`. */
 export const model = {
   type: "@swamp/aws/elasticache/replication-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -384,6 +394,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

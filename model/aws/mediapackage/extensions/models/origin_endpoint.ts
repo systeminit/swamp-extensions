@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaPackage OriginEndpoint (AWS::MediaPackage::OriginEndpoint).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EncryptionContractConfigurationSchema = z.object({
+const EncryptionContractConfigurationSchema = z.object({
   PresetSpeke20Audio: z.enum([
     "PRESET-AUDIO-1",
     "PRESET-AUDIO-2",
@@ -34,7 +43,7 @@ export const EncryptionContractConfigurationSchema = z.object({
   ]).describe("A collection of video encryption presets."),
 });
 
-export const SpekeKeyProviderSchema = z.object({
+const SpekeKeyProviderSchema = z.object({
   ResourceId: z.string().describe(
     "The resource ID to include in key requests.",
   ),
@@ -53,7 +62,7 @@ export const SpekeKeyProviderSchema = z.object({
     ).optional(),
 });
 
-export const HlsEncryptionSchema = z.object({
+const HlsEncryptionSchema = z.object({
   EncryptionMethod: z.enum(["AES_128", "SAMPLE_AES"]).describe(
     "The encryption method to use.",
   ).optional(),
@@ -71,7 +80,7 @@ export const HlsEncryptionSchema = z.object({
   ),
 });
 
-export const StreamSelectionSchema = z.object({
+const StreamSelectionSchema = z.object({
   MinVideoBitsPerSecond: z.number().int().describe(
     "The minimum video bitrate (bps) to include in output.",
   ).optional(),
@@ -86,7 +95,7 @@ export const StreamSelectionSchema = z.object({
     .optional(),
 });
 
-export const DashEncryptionSchema = z.object({
+const DashEncryptionSchema = z.object({
   KeyRotationIntervalSeconds: z.number().int().describe(
     "Time (in seconds) between each encryption key rotation.",
   ).optional(),
@@ -95,13 +104,13 @@ export const DashEncryptionSchema = z.object({
   ),
 });
 
-export const MssEncryptionSchema = z.object({
+const MssEncryptionSchema = z.object({
   SpekeKeyProvider: SpekeKeyProviderSchema.describe(
     "A configuration for accessing an external Secure Packager and Encoder Key Exchange (SPEKE) service that will provide encryption keys.",
   ),
 });
 
-export const CmafEncryptionSchema = z.object({
+const CmafEncryptionSchema = z.object({
   KeyRotationIntervalSeconds: z.number().int().describe(
     "Time (in seconds) between each encryption key rotation.",
   ).optional(),
@@ -118,7 +127,7 @@ export const CmafEncryptionSchema = z.object({
   ).optional(),
 });
 
-export const HlsManifestSchema = z.object({
+const HlsManifestSchema = z.object({
   Id: z.string().describe(
     "The ID of the manifest. The ID must be unique within the OriginEndpoint and it cannot be changed after it is created.",
   ),
@@ -168,7 +177,7 @@ export const HlsManifestSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -644,9 +653,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for MediaPackage OriginEndpoint. Registered at `@swamp/aws/mediapackage/origin-endpoint`. */
 export const model = {
   type: "@swamp/aws/mediapackage/origin-endpoint",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -660,6 +670,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

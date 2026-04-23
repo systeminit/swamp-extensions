@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BCMDataExports Export (AWS::BCMDataExports::Export).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DataQuerySchema = z.object({
+const DataQuerySchema = z.object({
   QueryStatement: z.string().min(1).max(36000).regex(new RegExp("^[\\S\\s]*$")),
   TableConfigurations: z.record(
     z.string(),
@@ -23,14 +32,14 @@ export const DataQuerySchema = z.object({
   ).optional(),
 });
 
-export const S3OutputConfigurationsSchema = z.object({
+const S3OutputConfigurationsSchema = z.object({
   OutputType: z.enum(["CUSTOM"]),
   Format: z.enum(["TEXT_OR_CSV", "PARQUET"]),
   Compression: z.enum(["GZIP", "PARQUET"]),
   Overwrite: z.enum(["CREATE_NEW_REPORT", "OVERWRITE_REPORT"]),
 });
 
-export const S3DestinationSchema = z.object({
+const S3DestinationSchema = z.object({
   S3Bucket: z.string().min(0).max(1024).regex(new RegExp("^[\\S\\s]*$")),
   S3BucketOwner: z.string().min(12).max(12).regex(new RegExp("^[0-9]{12}$"))
     .optional(),
@@ -39,15 +48,15 @@ export const S3DestinationSchema = z.object({
   S3OutputConfigurations: S3OutputConfigurationsSchema,
 });
 
-export const DestinationConfigurationsSchema = z.object({
+const DestinationConfigurationsSchema = z.object({
   S3Destination: S3DestinationSchema,
 });
 
-export const RefreshCadenceSchema = z.object({
+const RefreshCadenceSchema = z.object({
   Frequency: z.enum(["SYNCHRONOUS"]),
 });
 
-export const ResourceTagSchema = z.object({
+const ResourceTagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -96,9 +105,10 @@ const InputsSchema = z.object({
   Tags: z.array(ResourceTagSchema).optional(),
 });
 
+/** Swamp extension model for BCMDataExports Export. Registered at `@swamp/aws/bcmdataexports/export`. */
 export const model = {
   type: "@swamp/aws/bcmdataexports/export",
-  version: "2026.04.11.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -117,6 +127,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.11.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

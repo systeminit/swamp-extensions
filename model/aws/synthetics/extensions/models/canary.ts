@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Synthetics Canary (AWS::Synthetics::Canary).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DependencySchema = z.object({
+const DependencySchema = z.object({
   Type: z.enum(["LambdaLayer"]).describe("Type of dependency").optional(),
   Reference: z.string().min(1).max(140).regex(
     new RegExp(
@@ -21,7 +30,7 @@ export const DependencySchema = z.object({
   ).describe("ARN of the Lambda layer"),
 });
 
-export const S3EncryptionSchema = z.object({
+const S3EncryptionSchema = z.object({
   EncryptionMode: z.string().describe(
     "Encryption mode for encrypting artifacts when uploading to S3. Valid values: SSE_S3 and SSE_KMS.",
   ).optional(),
@@ -30,13 +39,13 @@ export const S3EncryptionSchema = z.object({
   ).optional(),
 });
 
-export const RetryConfigSchema = z.object({
+const RetryConfigSchema = z.object({
   MaxRetries: z.number().int().describe(
     "maximum times the canary will be retried upon the scheduled run failure",
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -45,7 +54,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const BaseScreenshotSchema = z.object({
+const BaseScreenshotSchema = z.object({
   ScreenshotName: z.string().describe(
     "Name of the screenshot to be used as base reference for visual testing",
   ),
@@ -54,11 +63,11 @@ export const BaseScreenshotSchema = z.object({
   ).optional(),
 });
 
-export const BrowserConfigSchema = z.object({
+const BrowserConfigSchema = z.object({
   BrowserType: z.enum(["CHROME", "FIREFOX"]),
 });
 
-export const VisualReferenceSchema = z.object({
+const VisualReferenceSchema = z.object({
   BaseCanaryRunId: z.string().describe(
     "Canary run id to be used as base reference for visual testing",
   ),
@@ -316,9 +325,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Synthetics Canary. Registered at `@swamp/aws/synthetics/canary`. */
 export const model = {
   type: "@swamp/aws/synthetics/canary",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -332,6 +342,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

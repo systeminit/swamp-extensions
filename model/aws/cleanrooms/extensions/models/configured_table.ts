@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CleanRooms ConfiguredTable (AWS::CleanRooms::ConfiguredTable).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
 
-export const AnalysisRuleListSchema = z.object({
+const AnalysisRuleListSchema = z.object({
   JoinColumns: z.array(
     z.string().min(1).max(127).regex(
       new RegExp("^[a-z0-9_](([a-z0-9_ ]+-)*([a-z0-9_ ]+))?$"),
@@ -32,7 +41,7 @@ export const AnalysisRuleListSchema = z.object({
   AdditionalAnalyses: z.enum(["ALLOWED", "REQUIRED", "NOT_ALLOWED"]).optional(),
 });
 
-export const AggregateColumnSchema = z.object({
+const AggregateColumnSchema = z.object({
   ColumnNames: z.array(
     z.string().min(1).max(127).regex(
       new RegExp("^[a-z0-9_](([a-z0-9_ ]+-)*([a-z0-9_ ]+))?$"),
@@ -41,7 +50,7 @@ export const AggregateColumnSchema = z.object({
   Function: z.enum(["SUM", "SUM_DISTINCT", "COUNT", "COUNT_DISTINCT", "AVG"]),
 });
 
-export const AggregationConstraintSchema = z.object({
+const AggregationConstraintSchema = z.object({
   ColumnName: z.string().min(1).max(127).regex(
     new RegExp("^[a-z0-9_](([a-z0-9_ ]+-)*([a-z0-9_ ]+))?$"),
   ),
@@ -49,7 +58,7 @@ export const AggregationConstraintSchema = z.object({
   Type: z.enum(["COUNT_DISTINCT"]),
 });
 
-export const AnalysisRuleAggregationSchema = z.object({
+const AnalysisRuleAggregationSchema = z.object({
   AggregateColumns: z.array(AggregateColumnSchema),
   JoinColumns: z.array(
     z.string().min(1).max(127).regex(
@@ -95,15 +104,15 @@ export const AnalysisRuleAggregationSchema = z.object({
   AdditionalAnalyses: z.enum(["ALLOWED", "REQUIRED", "NOT_ALLOWED"]).optional(),
 });
 
-export const DifferentialPrivacyColumnSchema = z.object({
+const DifferentialPrivacyColumnSchema = z.object({
   Name: z.string(),
 });
 
-export const DifferentialPrivacySchema = z.object({
+const DifferentialPrivacySchema = z.object({
   Columns: z.array(DifferentialPrivacyColumnSchema),
 });
 
-export const AnalysisRuleCustomSchema = z.object({
+const AnalysisRuleCustomSchema = z.object({
   AllowedAnalyses: z.array(
     z.string().min(0).max(200).regex(
       new RegExp(
@@ -123,7 +132,7 @@ export const AnalysisRuleCustomSchema = z.object({
   AdditionalAnalyses: z.enum(["ALLOWED", "REQUIRED", "NOT_ALLOWED"]).optional(),
 });
 
-export const V1Schema = z.object({
+const V1Schema = z.object({
   V1: z.object({
     List: AnalysisRuleListSchema.optional(),
     Aggregation: AnalysisRuleAggregationSchema.optional(),
@@ -131,12 +140,12 @@ export const V1Schema = z.object({
   }),
 });
 
-export const AnalysisRuleSchema = z.object({
+const AnalysisRuleSchema = z.object({
   Type: z.enum(["AGGREGATION", "LIST", "CUSTOM"]),
   Policy: V1Schema,
 });
 
-export const GlueTableReferenceSchema = z.object({
+const GlueTableReferenceSchema = z.object({
   TableName: z.string().max(128).regex(
     new RegExp("^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"),
   ),
@@ -179,12 +188,12 @@ export const GlueTableReferenceSchema = z.object({
   ]).optional(),
 });
 
-export const SnowflakeTableSchemaV1Schema = z.object({
+const SnowflakeTableSchemaV1Schema = z.object({
   ColumnName: z.string().max(128),
   ColumnType: z.string().max(255),
 });
 
-export const SnowflakeTableReferenceSchema = z.object({
+const SnowflakeTableReferenceSchema = z.object({
   SecretArn: z.string().max(256),
   AccountIdentifier: z.string().min(3).max(256),
   DatabaseName: z.string().min(1).max(256),
@@ -195,7 +204,7 @@ export const SnowflakeTableReferenceSchema = z.object({
   }),
 });
 
-export const AthenaTableReferenceSchema = z.object({
+const AthenaTableReferenceSchema = z.object({
   WorkGroup: z.string().min(1).max(128),
   OutputLocation: z.string().min(8).max(1024).optional(),
   DatabaseName: z.string().max(128),
@@ -321,9 +330,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for CleanRooms ConfiguredTable. Registered at `@swamp/aws/cleanrooms/configured-table`. */
 export const model = {
   type: "@swamp/aws/cleanrooms/configured-table",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -337,6 +347,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

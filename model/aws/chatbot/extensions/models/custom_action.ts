@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Chatbot CustomAction (AWS::Chatbot::CustomAction).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CustomActionAttachmentCriteriaSchema = z.object({
+const CustomActionAttachmentCriteriaSchema = z.object({
   Operator: z.enum(["HAS_VALUE", "EQUALS"]),
   VariableName: z.string(),
   Value: z.string().min(0).max(1024).optional(),
 });
 
-export const CustomActionAttachmentSchema = z.object({
+const CustomActionAttachmentSchema = z.object({
   NotificationType: z.string().min(1).max(100).regex(
     new RegExp("^[a-zA-Z0-9-]+$"),
   ).optional(),
@@ -28,7 +37,7 @@ export const CustomActionAttachmentSchema = z.object({
   Variables: z.record(z.string(), z.string()).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -76,9 +85,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for Chatbot CustomAction. Registered at `@swamp/aws/chatbot/custom-action`. */
 export const model = {
   type: "@swamp/aws/chatbot/custom-action",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -92,6 +102,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

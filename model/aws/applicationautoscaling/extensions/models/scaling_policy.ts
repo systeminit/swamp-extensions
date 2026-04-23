@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ApplicationAutoScaling ScalingPolicy (AWS::ApplicationAutoScaling::ScalingPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TargetTrackingMetricDimensionSchema = z.object({
+const TargetTrackingMetricDimensionSchema = z.object({
   Value: z.string().describe("The value of the dimension.").optional(),
   Name: z.string().describe("The name of the dimension.").optional(),
 });
 
-export const TargetTrackingMetricSchema = z.object({
+const TargetTrackingMetricSchema = z.object({
   MetricName: z.string().describe("The name of the metric.").optional(),
   Dimensions: z.array(TargetTrackingMetricDimensionSchema).describe(
     "The dimensions for the metric. For the list of available dimensions, see the AWS documentation available from the table in [services that publish CloudWatch metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html) in the *Amazon CloudWatch User Guide*. Conditional: If you published your metric with dimensions, you must specify the same dimensions in your scaling policy.",
@@ -27,7 +36,7 @@ export const TargetTrackingMetricSchema = z.object({
   ).optional(),
 });
 
-export const TargetTrackingMetricStatSchema = z.object({
+const TargetTrackingMetricStatSchema = z.object({
   Stat: z.string().describe(
     "The statistic to return. It can include any CloudWatch statistic or extended statistic. For a list of valid values, see the table in [Statistics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Statistic) in the *Amazon CloudWatch User Guide*. The most commonly used metric for scaling is Average.",
   ).optional(),
@@ -39,7 +48,7 @@ export const TargetTrackingMetricStatSchema = z.object({
   ).optional(),
 });
 
-export const TargetTrackingMetricDataQuerySchema = z.object({
+const TargetTrackingMetricDataQuerySchema = z.object({
   ReturnData: z.boolean().describe(
     "Indicates whether to return the timestamps and raw data values of this metric. If you use any math expressions, specify true for this value for only the final math expression that the metric specification is based on. You must specify false for ReturnData for all the other metrics and expressions used in the metric specification. If you are only retrieving metrics and not performing any math expressions, do not specify anything for ReturnData. This sets it to its default ( true).",
   ).optional(),
@@ -57,12 +66,12 @@ export const TargetTrackingMetricDataQuerySchema = z.object({
   ).optional(),
 });
 
-export const MetricDimensionSchema = z.object({
+const MetricDimensionSchema = z.object({
   Value: z.string().describe("The value of the dimension."),
   Name: z.string().describe("The name of the dimension."),
 });
 
-export const CustomizedMetricSpecificationSchema = z.object({
+const CustomizedMetricSpecificationSchema = z.object({
   MetricName: z.string().describe(
     "The name of the metric. To get the exact metric name, namespace, and dimensions, inspect the [Metric](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_Metric.html) object that's returned by a call to [ListMetrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_ListMetrics.html).",
   ).optional(),
@@ -79,7 +88,7 @@ export const CustomizedMetricSpecificationSchema = z.object({
   Namespace: z.string().describe("The namespace of the metric.").optional(),
 });
 
-export const PredefinedMetricSpecificationSchema = z.object({
+const PredefinedMetricSpecificationSchema = z.object({
   PredefinedMetricType: z.string().describe(
     "The metric type. The ALBRequestCountPerTarget metric type applies only to Spot fleet requests and ECS services.",
   ),
@@ -88,7 +97,7 @@ export const PredefinedMetricSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const StepAdjustmentSchema = z.object({
+const StepAdjustmentSchema = z.object({
   MetricIntervalUpperBound: z.number().describe(
     "The upper bound for the difference between the alarm threshold and the CloudWatch metric. If the metric value is above the breach threshold, the upper bound is exclusive (the metric must be less than the threshold plus the upper bound). Otherwise, it is inclusive (the metric must be less than or equal to the threshold plus the upper bound). A null value indicates positive infinity. You must specify at least one upper or lower bound.",
   ).optional(),
@@ -100,12 +109,12 @@ export const StepAdjustmentSchema = z.object({
   ),
 });
 
-export const PredictiveScalingMetricDimensionSchema = z.object({
+const PredictiveScalingMetricDimensionSchema = z.object({
   Value: z.string().describe("The value of the dimension.").optional(),
   Name: z.string().describe("The name of the dimension.").optional(),
 });
 
-export const PredictiveScalingMetricSchema = z.object({
+const PredictiveScalingMetricSchema = z.object({
   MetricName: z.string().describe("The name of the metric.").optional(),
   Dimensions: z.array(PredictiveScalingMetricDimensionSchema).describe(
     "Describes the dimensions of the metric.",
@@ -113,7 +122,7 @@ export const PredictiveScalingMetricSchema = z.object({
   Namespace: z.string().describe("The namespace of the metric.").optional(),
 });
 
-export const PredictiveScalingMetricStatSchema = z.object({
+const PredictiveScalingMetricStatSchema = z.object({
   Stat: z.string().describe(
     "The statistic to return. It can include any CloudWatch statistic or extended statistic. For a list of valid values, see the table in [Statistics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Statistic) in the *Amazon CloudWatch User Guide*. The most commonly used metrics for predictive scaling are Average and Sum.",
   ).optional(),
@@ -125,7 +134,7 @@ export const PredictiveScalingMetricStatSchema = z.object({
   ).optional(),
 });
 
-export const PredictiveScalingMetricDataQuerySchema = z.object({
+const PredictiveScalingMetricDataQuerySchema = z.object({
   ReturnData: z.boolean().describe(
     "Indicates whether to return the timestamps and raw data values of this metric. If you use any math expressions, specify true for this value for only the final math expression that the metric specification is based on. You must specify false for ReturnData for all the other metrics and expressions used in the metric specification. If you are only retrieving metrics and not performing any math expressions, do not specify anything for ReturnData. This sets it to its default ( true).",
   ).optional(),
@@ -143,37 +152,37 @@ export const PredictiveScalingMetricDataQuerySchema = z.object({
   ).optional(),
 });
 
-export const PredictiveScalingCustomizedLoadMetricSchema = z.object({
+const PredictiveScalingCustomizedLoadMetricSchema = z.object({
   MetricDataQueries: z.array(PredictiveScalingMetricDataQuerySchema),
 });
 
-export const PredictiveScalingPredefinedLoadMetricSchema = z.object({
+const PredictiveScalingPredefinedLoadMetricSchema = z.object({
   PredefinedMetricType: z.string().describe("The metric type."),
   ResourceLabel: z.string().describe(
     "A label that uniquely identifies a target group.",
   ).optional(),
 });
 
-export const PredictiveScalingPredefinedScalingMetricSchema = z.object({
+const PredictiveScalingPredefinedScalingMetricSchema = z.object({
   PredefinedMetricType: z.string().describe("The metric type."),
   ResourceLabel: z.string().describe(
     "A label that uniquely identifies a specific target group from which to determine the average request count.",
   ).optional(),
 });
 
-export const PredictiveScalingCustomizedCapacityMetricSchema = z.object({
+const PredictiveScalingCustomizedCapacityMetricSchema = z.object({
   MetricDataQueries: z.array(PredictiveScalingMetricDataQuerySchema).describe(
     "One or more metric data queries to provide data points for a metric specification.",
   ),
 });
 
-export const PredictiveScalingCustomizedScalingMetricSchema = z.object({
+const PredictiveScalingCustomizedScalingMetricSchema = z.object({
   MetricDataQueries: z.array(PredictiveScalingMetricDataQuerySchema).describe(
     "One or more metric data queries to provide data points for a metric specification.",
   ),
 });
 
-export const PredictiveScalingPredefinedMetricPairSchema = z.object({
+const PredictiveScalingPredefinedMetricPairSchema = z.object({
   PredefinedMetricType: z.string().describe(
     "Indicates which metrics to use. There are two different types of metrics for each metric type: one is a load metric and one is a scaling metric.",
   ),
@@ -182,7 +191,7 @@ export const PredictiveScalingPredefinedMetricPairSchema = z.object({
   ).optional(),
 });
 
-export const PredictiveScalingMetricSpecificationSchema = z.object({
+const PredictiveScalingMetricSpecificationSchema = z.object({
   CustomizedLoadMetricSpecification: PredictiveScalingCustomizedLoadMetricSchema
     .describe("The customized load metric specification.").optional(),
   PredefinedLoadMetricSpecification: PredictiveScalingPredefinedLoadMetricSchema
@@ -396,9 +405,10 @@ const InputsSchema = z.object({
   }).describe("The predictive scaling policy configuration.").optional(),
 });
 
+/** Swamp extension model for ApplicationAutoScaling ScalingPolicy. Registered at `@swamp/aws/applicationautoscaling/scaling-policy`. */
 export const model = {
   type: "@swamp/aws/applicationautoscaling/scaling-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -412,6 +422,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GameLift ContainerFleet (AWS::GameLift::ContainerFleet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IpPermissionSchema = z.object({
+const IpPermissionSchema = z.object({
   FromPort: z.number().int().min(1).max(60000).describe(
     "A starting value for a range of allowed port numbers.",
   ),
@@ -31,7 +40,7 @@ export const IpPermissionSchema = z.object({
   ),
 });
 
-export const ManagedCapacityConfigurationSchema = z.object({
+const ManagedCapacityConfigurationSchema = z.object({
   ZeroCapacityStrategy: z.enum(["SCALE_TO_AND_FROM_ZERO", "MANUAL"]).describe(
     "The strategy Amazon GameLift Servers will use to automatically scale your capacity to and from zero in response to game session activity. Game session activity refers to any active running sessions or game session requests. When set to SCALE_TO_AND_FROM_ZERO, MinSize must not be specified and will be managed automatically. When set to MANUAL, MinSize is required.",
   ),
@@ -40,7 +49,7 @@ export const ManagedCapacityConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const LocationCapacitySchema = z.object({
+const LocationCapacitySchema = z.object({
   DesiredEC2Instances: z.number().int().min(0).describe(
     "Defaults to MinSize if not defined. The number of EC2 instances you want to maintain in the specified fleet location. This value must fall between the minimum and maximum size limits. If any auto-scaling policy is defined for the container fleet, the desired instance will only be applied once during fleet creation and will be ignored in updates to avoid conflicts with auto-scaling. During updates with any auto-scaling policy defined, if current desired instance is lower than the new MinSize, it will be increased to the new MinSize; if current desired instance is larger than the new MaxSize, it will be decreased to the new MaxSize.",
   ).optional(),
@@ -55,7 +64,7 @@ export const LocationCapacitySchema = z.object({
   ).optional(),
 });
 
-export const LocationConfigurationSchema = z.object({
+const LocationConfigurationSchema = z.object({
   Location: z.string().min(1).max(64).regex(new RegExp("^[A-Za-z0-9\\-]+")),
   LocationCapacity: LocationCapacitySchema.describe(
     "Current resource capacity settings in a specified fleet or location. The location value might refer to a fleet's remote location or its home Region.",
@@ -68,13 +77,13 @@ export const LocationConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const TargetConfigurationSchema = z.object({
+const TargetConfigurationSchema = z.object({
   TargetValue: z.number().describe(
     "Desired value to use with a target-based scaling policy. The value must be relevant for whatever metric the scaling policy is using. For example, in a policy using the metric PercentAvailableGameSessions, the target value should be the preferred size of the fleet's buffer (the percent of capacity that should be idle and ready for new game sessions).",
   ),
 });
 
-export const ScalingPolicySchema = z.object({
+const ScalingPolicySchema = z.object({
   ComparisonOperator: z.enum([
     "GreaterThanOrEqualToThreshold",
     "GreaterThanThreshold",
@@ -125,7 +134,7 @@ export const ScalingPolicySchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length.",
   ),
@@ -409,9 +418,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for GameLift ContainerFleet. Registered at `@swamp/aws/gamelift/container-fleet`. */
 export const model = {
   type: "@swamp/aws/gamelift/container-fleet",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -425,6 +435,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

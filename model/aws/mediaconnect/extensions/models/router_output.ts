@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaConnect RouterOutput (AWS::MediaConnect::RouterOutput).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const RtpRouterOutputConfigurationSchema = z.object({
+const RtpRouterOutputConfigurationSchema = z.object({
   DestinationAddress: z.string().describe(
     "The destination IP address for the RTP protocol in the router output configuration.",
   ),
@@ -22,7 +31,7 @@ export const RtpRouterOutputConfigurationSchema = z.object({
   ForwardErrorCorrection: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const RistRouterOutputConfigurationSchema = z.object({
+const RistRouterOutputConfigurationSchema = z.object({
   DestinationAddress: z.string().describe(
     "The destination IP address for the RIST protocol in the router output configuration.",
   ),
@@ -31,7 +40,7 @@ export const RistRouterOutputConfigurationSchema = z.object({
   ),
 });
 
-export const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
+const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
   SecretArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$",
@@ -46,13 +55,13 @@ export const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
   ),
 });
 
-export const SrtEncryptionConfigurationSchema = z.object({
+const SrtEncryptionConfigurationSchema = z.object({
   EncryptionKey: SecretsManagerEncryptionKeyConfigurationSchema.describe(
     "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
   ),
 });
 
-export const SrtListenerRouterOutputConfigurationSchema = z.object({
+const SrtListenerRouterOutputConfigurationSchema = z.object({
   Port: z.number().int().min(3000).max(30000).describe(
     "The port number for the SRT protocol in listener mode.",
   ),
@@ -64,7 +73,7 @@ export const SrtListenerRouterOutputConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SrtCallerRouterOutputConfigurationSchema = z.object({
+const SrtCallerRouterOutputConfigurationSchema = z.object({
   DestinationAddress: z.string().describe(
     "The destination IP address for the SRT protocol in caller mode.",
   ),
@@ -82,7 +91,7 @@ export const SrtCallerRouterOutputConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const StandardRouterOutputConfigurationSchema = z.object({
+const StandardRouterOutputConfigurationSchema = z.object({
   NetworkInterfaceArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:routerNetworkInterface:[a-z0-9]{12}$",
@@ -107,7 +116,7 @@ export const StandardRouterOutputConfigurationSchema = z.object({
   Protocol: z.enum(["RTP", "RIST", "SRT_CALLER", "SRT_LISTENER"]).optional(),
 });
 
-export const FlowTransitEncryptionSchema = z.object({
+const FlowTransitEncryptionSchema = z.object({
   EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
   EncryptionKeyConfiguration: z.object({
     SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
@@ -119,7 +128,7 @@ export const FlowTransitEncryptionSchema = z.object({
   }).describe("Configuration settings for flow transit encryption keys."),
 });
 
-export const MediaConnectFlowRouterOutputConfigurationSchema = z.object({
+const MediaConnectFlowRouterOutputConfigurationSchema = z.object({
   FlowArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:flow:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
@@ -137,7 +146,7 @@ export const MediaConnectFlowRouterOutputConfigurationSchema = z.object({
   ),
 });
 
-export const MediaLiveTransitEncryptionSchema = z.object({
+const MediaLiveTransitEncryptionSchema = z.object({
   EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
   EncryptionKeyConfiguration: z.object({
     SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
@@ -151,7 +160,7 @@ export const MediaLiveTransitEncryptionSchema = z.object({
   ),
 });
 
-export const MediaLiveInputRouterOutputConfigurationSchema = z.object({
+const MediaLiveInputRouterOutputConfigurationSchema = z.object({
   MediaLiveInputArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):medialive:[a-z0-9-]+:[0-9]{12}:input:[a-zA-Z0-9]+$",
@@ -164,7 +173,7 @@ export const MediaLiveInputRouterOutputConfigurationSchema = z.object({
   ),
 });
 
-export const PreferredDayTimeMaintenanceConfigurationSchema = z.object({
+const PreferredDayTimeMaintenanceConfigurationSchema = z.object({
   Day: z.enum([
     "MONDAY",
     "TUESDAY",
@@ -177,7 +186,7 @@ export const PreferredDayTimeMaintenanceConfigurationSchema = z.object({
   Time: z.string().describe("The preferred time for maintenance operations."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -295,9 +304,10 @@ const InputsSchema = z.object({
   Tier: z.enum(["OUTPUT_100", "OUTPUT_50", "OUTPUT_20"]).optional(),
 });
 
+/** Swamp extension model for MediaConnect RouterOutput. Registered at `@swamp/aws/mediaconnect/router-output`. */
 export const model = {
   type: "@swamp/aws/mediaconnect/router-output",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -311,6 +321,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

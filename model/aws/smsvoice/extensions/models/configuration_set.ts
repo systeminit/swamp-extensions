@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SMSVOICE ConfigurationSet (AWS::SMSVOICE::ConfigurationSet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CloudWatchLogsDestinationSchema = z.object({
+const CloudWatchLogsDestinationSchema = z.object({
   IamRoleArn: z.string().regex(new RegExp("^arn:\\S+$")).describe(
     "The Amazon Resource Name (ARN) of an AWS Identity and Access Management role that is able to write event data to an Amazon CloudWatch destination.",
   ),
@@ -21,7 +30,7 @@ export const CloudWatchLogsDestinationSchema = z.object({
   ),
 });
 
-export const KinesisFirehoseDestinationSchema = z.object({
+const KinesisFirehoseDestinationSchema = z.object({
   IamRoleArn: z.string().regex(new RegExp("^arn:\\S+$")).describe(
     "The Amazon Resource Name (ARN) of an AWS Identity and Access Management role that is able to write event data to an Amazon CloudWatch destination.",
   ),
@@ -30,13 +39,13 @@ export const KinesisFirehoseDestinationSchema = z.object({
   ),
 });
 
-export const SnsDestinationSchema = z.object({
+const SnsDestinationSchema = z.object({
   TopicArn: z.string().regex(new RegExp("^arn:\\S+$")).describe(
     "The Amazon Resource Name (ARN) of the Amazon SNS topic that you want to publish events to.",
   ),
 });
 
-export const EventDestinationSchema = z.object({
+const EventDestinationSchema = z.object({
   EventDestinationName: z.string().min(1).max(64).regex(
     new RegExp("^[A-Za-z0-9_-]+$"),
   ).describe("The name that identifies the event destination."),
@@ -57,7 +66,7 @@ export const EventDestinationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -124,9 +133,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SMSVOICE ConfigurationSet. Registered at `@swamp/aws/smsvoice/configuration-set`. */
 export const model = {
   type: "@swamp/aws/smsvoice/configuration-set",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -140,6 +150,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

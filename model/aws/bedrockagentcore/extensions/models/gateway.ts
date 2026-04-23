@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore Gateway (AWS::BedrockAgentCore::Gateway).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ClaimMatchValueTypeSchema = z.object({
+const ClaimMatchValueTypeSchema = z.object({
   MatchValueString: z.string().regex(new RegExp("[A-Za-z0-9_.-]+")).describe(
     "The string value to match for",
   ).optional(),
@@ -20,7 +29,7 @@ export const ClaimMatchValueTypeSchema = z.object({
     .describe("The list of strings to check for a match").optional(),
 });
 
-export const AuthorizingClaimMatchValueTypeSchema = z.object({
+const AuthorizingClaimMatchValueTypeSchema = z.object({
   ClaimMatchOperator: z.enum(["EQUALS", "CONTAINS", "CONTAINS_ANY"]).describe(
     "The relationship between the claim field value and the value or values being matched",
   ),
@@ -29,7 +38,7 @@ export const AuthorizingClaimMatchValueTypeSchema = z.object({
   ),
 });
 
-export const CustomClaimValidationTypeSchema = z.object({
+const CustomClaimValidationTypeSchema = z.object({
   AuthorizingClaimMatchValue: AuthorizingClaimMatchValueTypeSchema.describe(
     "The value or values in the custom claim to match and relationship of match",
   ),
@@ -40,7 +49,7 @@ export const CustomClaimValidationTypeSchema = z.object({
   ),
 });
 
-export const CustomJWTAuthorizerConfigurationSchema = z.object({
+const CustomJWTAuthorizerConfigurationSchema = z.object({
   DiscoveryUrl: z.string().regex(
     new RegExp("^.+/\\.well-known/openid-configuration$"),
   ),
@@ -52,7 +61,7 @@ export const CustomJWTAuthorizerConfigurationSchema = z.object({
   CustomClaims: z.array(CustomClaimValidationTypeSchema).optional(),
 });
 
-export const LambdaInterceptorConfigurationSchema = z.object({
+const LambdaInterceptorConfigurationSchema = z.object({
   Arn: z.string().min(1).max(170).regex(
     new RegExp(
       "^arn:[a-z0-9-]{1,20}:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$",
@@ -60,11 +69,11 @@ export const LambdaInterceptorConfigurationSchema = z.object({
   ),
 });
 
-export const InterceptorInputConfigurationSchema = z.object({
+const InterceptorInputConfigurationSchema = z.object({
   PassRequestHeaders: z.boolean(),
 });
 
-export const GatewayInterceptorConfigurationSchema = z.object({
+const GatewayInterceptorConfigurationSchema = z.object({
   Interceptor: z.object({
     Lambda: LambdaInterceptorConfigurationSchema.optional(),
   }),
@@ -72,7 +81,7 @@ export const GatewayInterceptorConfigurationSchema = z.object({
   InputConfiguration: InterceptorInputConfigurationSchema.optional(),
 });
 
-export const MCPGatewayConfigurationSchema = z.object({
+const MCPGatewayConfigurationSchema = z.object({
   SupportedVersions: z.array(z.string()).optional(),
   Instructions: z.string().min(1).max(2048).optional(),
   SearchType: z.enum(["SEMANTIC"]).optional(),
@@ -207,9 +216,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore Gateway. Registered at `@swamp/aws/bedrockagentcore/gateway`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/gateway",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -233,6 +243,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

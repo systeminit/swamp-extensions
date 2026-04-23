@@ -288,6 +288,30 @@ async function generateAwsProvider(options: {
       await Deno.writeTextFile(modelPath, model.sourceCode);
     }
 
+    // Remove orphan model files — .ts files in extensions/models/ that
+    // aren't in the manifest's models: list any more (typically because the
+    // CF schema dropped the resource or it lost its read handler). Without
+    // this, stale files sit in the repo with outdated codegen output.
+    const generatedFileNames = new Set(
+      serviceResult.models.map((m) => m.filePath.split("/").pop()!),
+    );
+    const modelsDir = `${serviceOutputDir}/extensions/models`;
+    try {
+      for await (const entry of Deno.readDir(modelsDir)) {
+        if (
+          entry.isFile && entry.name.endsWith(".ts") &&
+          !generatedFileNames.has(entry.name)
+        ) {
+          await Deno.remove(`${modelsDir}/${entry.name}`);
+          console.log(
+            `  [${serviceName}] removed orphan model: ${entry.name}`,
+          );
+        }
+      }
+    } catch {
+      // extensions/models/ doesn't exist yet — nothing to prune
+    }
+
     // Write README, LICENSE, and deno.json
     await Deno.writeTextFile(
       `${serviceOutputDir}/README.md`,
@@ -412,6 +436,30 @@ async function generateGcpProvider(options: {
       const modelDir = modelPath.substring(0, modelPath.lastIndexOf("/"));
       await Deno.mkdir(modelDir, { recursive: true });
       await Deno.writeTextFile(modelPath, model.sourceCode);
+    }
+
+    // Remove orphan model files — .ts files in extensions/models/ that
+    // aren't in the manifest's models: list any more (typically because the
+    // CF schema dropped the resource or it lost its read handler). Without
+    // this, stale files sit in the repo with outdated codegen output.
+    const generatedFileNames = new Set(
+      serviceResult.models.map((m) => m.filePath.split("/").pop()!),
+    );
+    const modelsDir = `${serviceOutputDir}/extensions/models`;
+    try {
+      for await (const entry of Deno.readDir(modelsDir)) {
+        if (
+          entry.isFile && entry.name.endsWith(".ts") &&
+          !generatedFileNames.has(entry.name)
+        ) {
+          await Deno.remove(`${modelsDir}/${entry.name}`);
+          console.log(
+            `  [${serviceName}] removed orphan model: ${entry.name}`,
+          );
+        }
+      }
+    } catch {
+      // extensions/models/ doesn't exist yet — nothing to prune
     }
 
     // Write README, LICENSE, and deno.json

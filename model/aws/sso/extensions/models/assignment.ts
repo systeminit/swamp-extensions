@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SSO Assignment (AWS::SSO::Assignment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -81,9 +90,10 @@ const InputsSchema = z.object({
   ).describe("The assignee's identifier, user id/group id").optional(),
 });
 
+/** Swamp extension model for SSO Assignment. Registered at `@swamp/aws/sso/assignment`. */
 export const model = {
   type: "@swamp/aws/sso/assignment",
-  version: "2026.04.07.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -102,6 +112,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SES MailManagerIngressPoint (AWS::SES::MailManagerIngressPoint).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TrustStoreSchema = z.object({
+const TrustStoreSchema = z.object({
   CAContent: z.string().min(1).max(500000).regex(new RegExp("^[\\P{C}\\s]*$")),
   CrlContent: z.string().min(1).max(500000).regex(new RegExp("^[\\P{C}\\s]*$"))
     .optional(),
@@ -23,19 +32,19 @@ export const TrustStoreSchema = z.object({
   ).optional(),
 });
 
-export const TlsAuthConfigurationSchema = z.object({
+const TlsAuthConfigurationSchema = z.object({
   TrustStore: TrustStoreSchema,
 });
 
-export const PublicNetworkConfigurationSchema = z.object({
+const PublicNetworkConfigurationSchema = z.object({
   IpType: z.unknown(),
 });
 
-export const PrivateNetworkConfigurationSchema = z.object({
+const PrivateNetworkConfigurationSchema = z.object({
   VpcEndpointId: z.string().regex(new RegExp("^vpce-[a-zA-Z0-9]{17}$")),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z0-9/_\\+=\\.:@\\-]+$"),
   ),
@@ -127,9 +136,10 @@ const InputsSchema = z.object({
   Type: z.enum(["OPEN", "AUTH", "MTLS"]).optional(),
 });
 
+/** Swamp extension model for SES MailManagerIngressPoint. Registered at `@swamp/aws/ses/mail-manager-ingress-point`. */
 export const model = {
   type: "@swamp/aws/ses/mail-manager-ingress-point",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -154,6 +164,16 @@ export const model = {
     {
       toVersion: "2026.04.19.1",
       description: "Added: TlsPolicy",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

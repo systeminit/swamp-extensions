@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ElasticLoadBalancingV2 TargetGroup (AWS::ElasticLoadBalancingV2::TargetGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TargetDescriptionSchema = z.object({
+const TargetDescriptionSchema = z.object({
   AvailabilityZone: z.string().describe(
     "An Availability Zone or all. This determines whether the target receives traffic from the load balancer nodes in the specified Availability Zone or from all enabled Availability Zones for the load balancer.",
   ).optional(),
@@ -27,12 +36,12 @@ export const TargetDescriptionSchema = z.object({
   ).optional(),
 });
 
-export const TargetGroupAttributeSchema = z.object({
+const TargetGroupAttributeSchema = z.object({
   Value: z.string().describe("The name of the attribute.").optional(),
   Key: z.string().describe("The value of the attribute.").optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe("The key name of the tag."),
   Key: z.string().describe("The value for the tag."),
 });
@@ -201,9 +210,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ElasticLoadBalancingV2 TargetGroup. Registered at `@swamp/aws/elasticloadbalancingv2/target-group`. */
 export const model = {
   type: "@swamp/aws/elasticloadbalancingv2/target-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -217,6 +227,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

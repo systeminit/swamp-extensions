@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for WAFv2 LoggingConfiguration (AWS::WAFv2::LoggingConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FieldToMatchSchema = z.object({
+const FieldToMatchSchema = z.object({
   Method: z.string().describe(
     "Inspect the HTTP method. The method indicates the type of operation that the request is asking the origin to perform.",
   ).optional(),
@@ -29,7 +38,7 @@ export const FieldToMatchSchema = z.object({
   ).optional(),
 });
 
-export const ConditionSchema = z.object({
+const ConditionSchema = z.object({
   ActionCondition: z.object({
     Action: z.enum([
       "ALLOW",
@@ -49,7 +58,7 @@ export const ConditionSchema = z.object({
   }).describe("A single label name condition.").optional(),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   Behavior: z.enum(["KEEP", "DROP"]).describe(
     "How to handle logs that satisfy the filter's conditions and requirement.",
   ),
@@ -118,9 +127,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for WAFv2 LoggingConfiguration. Registered at `@swamp/aws/wafv2/logging-configuration`. */
 export const model = {
   type: "@swamp/aws/wafv2/logging-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -134,6 +144,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

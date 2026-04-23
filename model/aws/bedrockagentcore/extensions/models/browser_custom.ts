@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore BrowserCustom (AWS::BedrockAgentCore::BrowserCustom).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const VpcConfigSchema = z.object({
+const VpcConfigSchema = z.object({
   SecurityGroups: z.array(
     z.string().regex(new RegExp("^sg-[0-9a-zA-Z]{8,17}$")),
   ).describe("Security groups for VPC"),
@@ -20,7 +29,7 @@ export const VpcConfigSchema = z.object({
     .describe("Subnets for VPC"),
 });
 
-export const S3LocationSchema = z.object({
+const S3LocationSchema = z.object({
   Bucket: z.string().regex(new RegExp("^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$")),
   Prefix: z.string().min(1),
 });
@@ -119,9 +128,10 @@ const InputsSchema = z.object({
   ).describe("A map of tag keys and values").optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore BrowserCustom. Registered at `@swamp/aws/bedrockagentcore/browser-custom`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/browser-custom",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -140,6 +150,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

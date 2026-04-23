@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Glue Trigger (AWS::Glue::Trigger).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const NotificationPropertySchema = z.object({
+const NotificationPropertySchema = z.object({
   NotifyDelayAfter: z.number().int().describe(
     "After a job run starts, the number of minutes to wait before sending a job run delay notification",
   ).optional(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   NotificationProperty: NotificationPropertySchema.describe(
     "Specifies configuration properties of a job run notification.",
   ).optional(),
@@ -37,7 +46,7 @@ export const ActionSchema = z.object({
   ).optional(),
 });
 
-export const ConditionSchema = z.object({
+const ConditionSchema = z.object({
   JobName: z.string().describe(
     "The name of the job whose JobRuns this condition applies to, and on which this trigger waits.",
   ).optional(),
@@ -150,9 +159,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for Glue Trigger. Registered at `@swamp/aws/glue/trigger`. */
 export const model = {
   type: "@swamp/aws/glue/trigger",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -166,6 +176,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

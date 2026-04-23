@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataZone SubscriptionTarget (AWS::DataZone::SubscriptionTarget).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SubscriptionTargetFormSchema = z.object({
+const SubscriptionTargetFormSchema = z.object({
   FormName: z.string().min(1).max(128).regex(
     new RegExp("^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"),
   ).describe(
@@ -111,9 +120,10 @@ const InputsSchema = z.object({
   Type: z.string().describe("The type of the subscription target.").optional(),
 });
 
+/** Swamp extension model for DataZone SubscriptionTarget. Registered at `@swamp/aws/datazone/subscription-target`. */
 export const model = {
   type: "@swamp/aws/datazone/subscription-target",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -127,6 +137,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

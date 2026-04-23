@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaTailor PlaybackConfiguration (AWS::MediaTailor::PlaybackConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AdMarkerPassthroughSchema = z.object({
+const AdMarkerPassthroughSchema = z.object({
   Enabled: z.boolean().describe(
     "Enables ad marker passthrough for your configuration.",
   ).optional(),
 });
 
-export const AdsInteractionLogSchema = z.object({
+const AdsInteractionLogSchema = z.object({
   ExcludeEventTypes: z.array(z.string()).describe(
     "Indicates that MediaTailor won't emit the selected events in the logs for playback sessions that are initialized with this configuration.",
   ).optional(),
@@ -27,18 +36,18 @@ export const AdsInteractionLogSchema = z.object({
   ).optional(),
 });
 
-export const ManifestServiceInteractionLogSchema = z.object({
+const ManifestServiceInteractionLogSchema = z.object({
   ExcludeEventTypes: z.array(z.string()).describe(
     "Indicates that MediaTailor won't emit the selected events in the logs for playback sessions that are initialized with this configuration.",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
 
-export const HttpRequestSchema = z.object({
+const HttpRequestSchema = z.object({
   HttpMethod: z.enum(["GET", "POST"]).describe(
     "Supported HTTP Methods for the request to the Ad Decision Server URL.",
   ).optional(),
@@ -323,9 +332,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for MediaTailor PlaybackConfiguration. Registered at `@swamp/aws/mediatailor/playback-configuration`. */
 export const model = {
   type: "@swamp/aws/mediatailor/playback-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -339,6 +349,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTEvents AlarmModel (AWS::IoTEvents::AlarmModel).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SimpleRuleSchema = z.object({
+const SimpleRuleSchema = z.object({
   InputProperty: z.string().min(1).max(512).describe(
     "The value on the left side of the comparison operator. You can specify an ITE input attribute as an input property.",
   ),
@@ -29,7 +38,7 @@ export const SimpleRuleSchema = z.object({
   ),
 });
 
-export const PayloadSchema = z.object({
+const PayloadSchema = z.object({
   ContentExpression: z.string().min(1).describe(
     "The content of the payload. You can use a string expression that includes quoted strings ( ''), variables ( $variable.), input values ( $input..), string concatenations, and quoted strings that contain ${} as the content. The recommended maximum size of a content expression is 1 KB.",
   ),
@@ -38,7 +47,7 @@ export const PayloadSchema = z.object({
   ),
 });
 
-export const DynamoDBSchema = z.object({
+const DynamoDBSchema = z.object({
   HashKeyField: z.string().describe(
     "The name of the hash key (also called the partition key). The hashKeyField value must match the partition key of the target DynamoDB table.",
   ),
@@ -71,14 +80,14 @@ export const DynamoDBSchema = z.object({
   ),
 });
 
-export const DynamoDBv2Schema = z.object({
+const DynamoDBv2Schema = z.object({
   Payload: PayloadSchema.describe(
     "Information needed to configure the payload. By default, ITE generates a standard payload in JSON for any action. This action payload contains all attribute-value pairs that have the information about the detector model instance and the event triggered the action. To configure the action payload, you can use contentExpression.",
   ).optional(),
   TableName: z.string().describe("The name of the DynamoDB table."),
 });
 
-export const FirehoseSchema = z.object({
+const FirehoseSchema = z.object({
   DeliveryStreamName: z.string().describe(
     "The name of the Kinesis Data Firehose delivery stream where the data is written.",
   ),
@@ -90,7 +99,7 @@ export const FirehoseSchema = z.object({
   ).optional(),
 });
 
-export const IotEventsSchema = z.object({
+const IotEventsSchema = z.object({
   InputName: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$"),
   ).describe("The name of the ITE input where the data is sent."),
@@ -99,7 +108,7 @@ export const IotEventsSchema = z.object({
   ).optional(),
 });
 
-export const AssetPropertyTimestampSchema = z.object({
+const AssetPropertyTimestampSchema = z.object({
   OffsetInNanos: z.string().describe(
     "The nanosecond offset converted from timeInSeconds. The valid range is between 0-999999999.",
   ).optional(),
@@ -108,7 +117,7 @@ export const AssetPropertyTimestampSchema = z.object({
   ),
 });
 
-export const AssetPropertyVariantSchema = z.object({
+const AssetPropertyVariantSchema = z.object({
   BooleanValue: z.string().describe(
     "The asset property value is a Boolean value that must be 'TRUE' or 'FALSE'. You must use an expression, and the evaluated result should be a Boolean value.",
   ).optional(),
@@ -123,7 +132,7 @@ export const AssetPropertyVariantSchema = z.object({
   ).optional(),
 });
 
-export const AssetPropertyValueSchema = z.object({
+const AssetPropertyValueSchema = z.object({
   Quality: z.string().describe(
     "The quality of the asset property value. The value must be 'GOOD', 'BAD', or 'UNCERTAIN'.",
   ).optional(),
@@ -135,7 +144,7 @@ export const AssetPropertyValueSchema = z.object({
   ),
 });
 
-export const IotSiteWiseSchema = z.object({
+const IotSiteWiseSchema = z.object({
   AssetId: z.string().describe(
     "The ID of the asset that has the specified property.",
   ).optional(),
@@ -150,7 +159,7 @@ export const IotSiteWiseSchema = z.object({
   ).optional(),
 });
 
-export const IotTopicPublishSchema = z.object({
+const IotTopicPublishSchema = z.object({
   MqttTopic: z.string().min(1).max(128).describe(
     "The MQTT topic of the message. You can use a string expression that includes variables ( $variable.) and input values ( $input..) as the topic string.",
   ),
@@ -159,7 +168,7 @@ export const IotTopicPublishSchema = z.object({
   ).optional(),
 });
 
-export const LambdaSchema = z.object({
+const LambdaSchema = z.object({
   FunctionArn: z.string().min(1).max(2048).describe(
     "The ARN of the Lambda function that is executed.",
   ),
@@ -168,7 +177,7 @@ export const LambdaSchema = z.object({
   ).optional(),
 });
 
-export const SnsSchema = z.object({
+const SnsSchema = z.object({
   Payload: PayloadSchema.describe(
     "You can configure the action payload when you send a message as an Amazon SNS push notification.",
   ).optional(),
@@ -177,7 +186,7 @@ export const SnsSchema = z.object({
   ),
 });
 
-export const SqsSchema = z.object({
+const SqsSchema = z.object({
   Payload: PayloadSchema.describe(
     "You can configure the action payload when you send a message to an Amazon SQS queue.",
   ).optional(),
@@ -189,7 +198,7 @@ export const SqsSchema = z.object({
   ).optional(),
 });
 
-export const AlarmActionSchema = z.object({
+const AlarmActionSchema = z.object({
   DynamoDB: DynamoDBSchema.describe(
     "Defines an action to write to the Amazon DynamoDB table that you created. The standard action payload contains all the information about the detector model instance and the event that triggered the action. You can customize the [payload](https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html). One column of the DynamoDB table receives all attribute-value pairs in the payload that you specify. You must use expressions for all parameters in DynamoDBAction. The expressions accept literals, operators, functions, references, and substitution templates. **Examples** For literal values, the expressions must contain single quotes. For example, the value for the hashKeyType parameter can be 'STRING'. For references, you must specify either variables or input values. For example, the value for the hashKeyField parameter can be $input.GreenhouseInput.name. For a substitution template, you must use ${}, and the template must be in single quotes. A substitution template can also contain a combination of literals, operators, functions, references, and substitution templates. In the following example, the value for the hashKeyValue parameter uses a substitution template. '${$input.GreenhouseInput.temperature * 6 / 5 + 32} in Fahrenheit' For a string concatenation, you must use +. A string concatenation can also contain a combination of literals, operators, functions, references, and substitution templates. In the following example, the value for the tableName parameter uses a string concatenation. 'GreenhouseTemperatureTable ' + $input.GreenhouseInput.date For more information, see [Expressions](https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-expressions.html) in the *Developer Guide*. If the defined payload type is a string, DynamoDBAction writes non-JSON data to the DynamoDB table as binary data. The DynamoDB console displays the data as Base64-encoded text. The value for the payloadField parameter is _raw.",
   ).optional(),
@@ -219,19 +228,19 @@ export const AlarmActionSchema = z.object({
   ).optional(),
 });
 
-export const InitializationConfigurationSchema = z.object({
+const InitializationConfigurationSchema = z.object({
   DisabledOnInitialization: z.boolean().describe(
     "The value must be TRUE or FALSE. If FALSE, all alarm instances created based on the alarm model are activated. The default value is TRUE.",
   ),
 });
 
-export const AcknowledgeFlowSchema = z.object({
+const AcknowledgeFlowSchema = z.object({
   Enabled: z.boolean().describe(
     "The value must be TRUE or FALSE. If TRUE, you receive a notification when the alarm state changes. You must choose to acknowledge the notification before the alarm state can return to NORMAL. If FALSE, you won't receive notifications. The alarm automatically changes to the NORMAL state when the input property value returns to the specified range.",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe("The tag's key."),
   Value: z.string().describe("The tag's value."),
 });
@@ -347,9 +356,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoTEvents AlarmModel. Registered at `@swamp/aws/iotevents/alarm-model`. */
 export const model = {
   type: "@swamp/aws/iotevents/alarm-model",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -363,6 +373,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

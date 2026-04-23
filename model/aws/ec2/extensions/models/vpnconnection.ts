@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EC2 VPNConnection (AWS::EC2::VPNConnection).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const Phase2EncryptionAlgorithmsRequestListValueSchema = z.object({
+const Phase2EncryptionAlgorithmsRequestListValueSchema = z.object({
   Value: z.enum(["AES128", "AES256", "AES128-GCM-16", "AES256-GCM-16"])
     .describe("The encryption algorithm.").optional(),
 });
 
-export const Phase2DHGroupNumbersRequestListValueSchema = z.object({
+const Phase2DHGroupNumbersRequestListValueSchema = z.object({
   Value: z.union([
     z.literal(2),
     z.literal(5),
@@ -35,11 +44,11 @@ export const Phase2DHGroupNumbersRequestListValueSchema = z.object({
   ]).describe("The Diffie-Hellmann group number.").optional(),
 });
 
-export const IKEVersionsRequestListValueSchema = z.object({
+const IKEVersionsRequestListValueSchema = z.object({
   Value: z.enum(["ikev1", "ikev2"]).describe("The IKE version.").optional(),
 });
 
-export const CloudwatchLogOptionsSpecificationSchema = z.object({
+const CloudwatchLogOptionsSpecificationSchema = z.object({
   BgpLogEnabled: z.boolean().describe(
     "Specifies whether to enable BGP logging for the VPN connection. Default value is False. Valid values: True | False",
   ).optional(),
@@ -60,13 +69,13 @@ export const CloudwatchLogOptionsSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const VpnTunnelLogOptionsSpecificationSchema = z.object({
+const VpnTunnelLogOptionsSpecificationSchema = z.object({
   CloudwatchLogOptions: CloudwatchLogOptionsSpecificationSchema.describe(
     "Options for sending VPN tunnel logs to CloudWatch.",
   ).optional(),
 });
 
-export const Phase1DHGroupNumbersRequestListValueSchema = z.object({
+const Phase1DHGroupNumbersRequestListValueSchema = z.object({
   Value: z.union([
     z.literal(2),
     z.literal(14),
@@ -83,24 +92,24 @@ export const Phase1DHGroupNumbersRequestListValueSchema = z.object({
   ]).describe("The Diffie-Hellmann group number.").optional(),
 });
 
-export const Phase2IntegrityAlgorithmsRequestListValueSchema = z.object({
+const Phase2IntegrityAlgorithmsRequestListValueSchema = z.object({
   Value: z.enum(["SHA1", "SHA2-256", "SHA2-384", "SHA2-512"]).describe(
     "The integrity algorithm.",
   ).optional(),
 });
 
-export const Phase1IntegrityAlgorithmsRequestListValueSchema = z.object({
+const Phase1IntegrityAlgorithmsRequestListValueSchema = z.object({
   Value: z.enum(["SHA1", "SHA2-256", "SHA2-384", "SHA2-512"]).describe(
     "The value for the integrity algorithm.",
   ).optional(),
 });
 
-export const Phase1EncryptionAlgorithmsRequestListValueSchema = z.object({
+const Phase1EncryptionAlgorithmsRequestListValueSchema = z.object({
   Value: z.enum(["AES128", "AES256", "AES128-GCM-16", "AES256-GCM-16"])
     .describe("The value for the encryption algorithm.").optional(),
 });
 
-export const VpnTunnelOptionsSpecificationSchema = z.object({
+const VpnTunnelOptionsSpecificationSchema = z.object({
   Phase2EncryptionAlgorithms: z.array(
     Phase2EncryptionAlgorithmsRequestListValueSchema,
   ).describe(
@@ -173,7 +182,7 @@ export const VpnTunnelOptionsSpecificationSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe("The tag value."),
   Key: z.string().describe("The tag key."),
 });
@@ -313,9 +322,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for EC2 VPNConnection. Registered at `@swamp/aws/ec2/vpnconnection`. */
 export const model = {
   type: "@swamp/aws/ec2/vpnconnection",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -329,6 +339,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

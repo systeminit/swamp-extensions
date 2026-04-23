@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ECS CapacityProvider (AWS::ECS::CapacityProvider).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ManagedScalingSchema = z.object({
+const ManagedScalingSchema = z.object({
   Status: z.enum(["DISABLED", "ENABLED"]).optional(),
   MinimumScalingStepSize: z.number().int().optional(),
   InstanceWarmupPeriod: z.number().int().optional(),
@@ -20,66 +29,70 @@ export const ManagedScalingSchema = z.object({
   MaximumScalingStepSize: z.number().int().optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(1).optional(),
   Key: z.string().min(1).optional(),
 });
 
-export const ManagedInstancesStorageConfigurationSchema = z.object({
+const AutoRepairConfigurationSchema = z.object({
+  ActionsStatus: z.enum(["ENABLED", "DISABLED"]).optional(),
+});
+
+const ManagedInstancesStorageConfigurationSchema = z.object({
   StorageSizeGiB: z.number().int(),
 });
 
-export const ManagedInstancesNetworkConfigurationSchema = z.object({
+const ManagedInstancesNetworkConfigurationSchema = z.object({
   SecurityGroups: z.array(z.string()),
   Subnets: z.array(z.string()),
 });
 
-export const NetworkInterfaceCountRequestSchema = z.object({
+const NetworkInterfaceCountRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const MemoryGiBPerVCpuRequestSchema = z.object({
+const MemoryGiBPerVCpuRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const VCpuCountRangeRequestSchema = z.object({
+const VCpuCountRangeRequestSchema = z.object({
   Min: z.number().int(),
   Max: z.number().int().optional(),
 });
 
-export const NetworkBandwidthGbpsRequestSchema = z.object({
+const NetworkBandwidthGbpsRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const AcceleratorCountRequestSchema = z.object({
+const AcceleratorCountRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const BaselineEbsBandwidthMbpsRequestSchema = z.object({
+const BaselineEbsBandwidthMbpsRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const AcceleratorTotalMemoryMiBRequestSchema = z.object({
+const AcceleratorTotalMemoryMiBRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const MemoryMiBRequestSchema = z.object({
+const MemoryMiBRequestSchema = z.object({
   Min: z.number().int(),
   Max: z.number().int().optional(),
 });
 
-export const TotalLocalStorageGBRequestSchema = z.object({
+const TotalLocalStorageGBRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const InstanceRequirementsRequestSchema = z.object({
+const InstanceRequirementsRequestSchema = z.object({
   LocalStorageTypes: z.array(z.enum(["hdd", "ssd"])).optional(),
   InstanceGenerations: z.array(z.enum(["current", "previous"])).optional(),
   NetworkInterfaceCount: NetworkInterfaceCountRequestSchema.optional(),
@@ -129,7 +142,7 @@ export const InstanceRequirementsRequestSchema = z.object({
   TotalLocalStorageGB: TotalLocalStorageGBRequestSchema.optional(),
 });
 
-export const CapacityReservationRequestSchema = z.object({
+const CapacityReservationRequestSchema = z.object({
   ReservationGroupArn: z.string().optional(),
   ReservationPreference: z.enum([
     "RESERVATIONS_ONLY",
@@ -138,11 +151,11 @@ export const CapacityReservationRequestSchema = z.object({
   ]).optional(),
 });
 
-export const ManagedInstancesLocalStorageConfigurationSchema = z.object({
+const ManagedInstancesLocalStorageConfigurationSchema = z.object({
   UseLocalStorage: z.boolean().optional(),
 });
 
-export const InstanceLaunchTemplateSchema = z.object({
+const InstanceLaunchTemplateSchema = z.object({
   Ec2InstanceProfileArn: z.string(),
   CapacityOptionType: z.enum(["ON_DEMAND", "SPOT", "RESERVED"]).optional(),
   FipsEnabled: z.boolean().optional(),
@@ -170,6 +183,7 @@ const GlobalArgsSchema = z.object({
   Name: z.string().optional(),
   ManagedInstancesProvider: z.object({
     InfrastructureRoleArn: z.string(),
+    AutoRepairConfiguration: AutoRepairConfigurationSchema.optional(),
     PropagateTags: z.enum(["CAPACITY_PROVIDER", "NONE"]).optional(),
     InfrastructureOptimization: z.object({
       ScaleInAfter: z.number().int().min(-1).max(3600).describe(
@@ -194,6 +208,7 @@ const StateSchema = z.object({
   Name: z.string(),
   ManagedInstancesProvider: z.object({
     InfrastructureRoleArn: z.string(),
+    AutoRepairConfiguration: AutoRepairConfigurationSchema,
     PropagateTags: z.string(),
     InfrastructureOptimization: z.object({
       ScaleInAfter: z.number(),
@@ -218,6 +233,7 @@ const InputsSchema = z.object({
   Name: z.string().optional(),
   ManagedInstancesProvider: z.object({
     InfrastructureRoleArn: z.string().optional(),
+    AutoRepairConfiguration: AutoRepairConfigurationSchema.optional(),
     PropagateTags: z.enum(["CAPACITY_PROVIDER", "NONE"]).optional(),
     InfrastructureOptimization: z.object({
       ScaleInAfter: z.number().int().min(-1).max(3600).describe(
@@ -230,9 +246,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for ECS CapacityProvider. Registered at `@swamp/aws/ecs/capacity-provider`. */
 export const model = {
   type: "@swamp/aws/ecs/capacity-provider",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -256,6 +273,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

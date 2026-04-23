@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EFS FileSystem (AWS::EFS::FileSystem).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ElasticFileSystemTagSchema = z.object({
+const ElasticFileSystemTagSchema = z.object({
   Key: z.string().describe(
     "The tag key (String). The key can't start with aws:.",
   ),
   Value: z.string().describe("The value of the tag key."),
 });
 
-export const LifecyclePolicySchema = z.object({
+const LifecyclePolicySchema = z.object({
   TransitionToIA: z.string().describe(
     "The number of days after files were last accessed in primary storage (the Standard storage class) at which to move them to Infrequent Access (IA) storage. Metadata operations such as listing the contents of a directory don't count as file access events.",
   ).optional(),
@@ -31,7 +40,7 @@ export const LifecyclePolicySchema = z.object({
   ).optional(),
 });
 
-export const ReplicationDestinationSchema = z.object({
+const ReplicationDestinationSchema = z.object({
   Status: z.string().describe(
     "Describes the status of the replication configuration. For more information about replication status, see [Viewing replication details](https://docs.aws.amazon.com//efs/latest/ug/awsbackup.html#restoring-backup-efsmonitoring-replication-status.html) in the *Amazon EFS User Guide*.",
   ).optional(),
@@ -177,9 +186,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EFS FileSystem. Registered at `@swamp/aws/efs/file-system`. */
 export const model = {
   type: "@swamp/aws/efs/file-system",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -193,6 +203,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

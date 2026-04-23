@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SSM Association (AWS::SSM::Association).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TargetSchema = z.object({
+const TargetSchema = z.object({
   Values: z.array(z.string()),
   Key: z.string().regex(
     new RegExp(
@@ -22,7 +31,7 @@ export const TargetSchema = z.object({
   ),
 });
 
-export const S3OutputLocationSchema = z.object({
+const S3OutputLocationSchema = z.object({
   OutputS3KeyPrefix: z.string().max(1024).optional(),
   OutputS3Region: z.string().min(3).max(20).optional(),
   OutputS3BucketName: z.string().min(3).max(63).optional(),
@@ -151,9 +160,10 @@ const InputsSchema = z.object({
   AutomationTargetParameterName: z.string().min(1).max(50).optional(),
 });
 
+/** Swamp extension model for SSM Association. Registered at `@swamp/aws/ssm/association`. */
 export const model = {
   type: "@swamp/aws/ssm/association",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -167,6 +177,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

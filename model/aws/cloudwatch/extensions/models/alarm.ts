@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudWatch Alarm (AWS::CloudWatch::Alarm).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DimensionSchema = z.object({
+const DimensionSchema = z.object({
   Value: z.string().describe(
     "The value for the dimension, from 1–255 characters in length.",
   ),
@@ -21,7 +30,7 @@ export const DimensionSchema = z.object({
   ),
 });
 
-export const MetricSchema = z.object({
+const MetricSchema = z.object({
   MetricName: z.string().describe(
     "The name of the metric that you want the alarm to watch. This is a required field.",
   ).optional(),
@@ -33,7 +42,7 @@ export const MetricSchema = z.object({
   ).optional(),
 });
 
-export const MetricStatSchema = z.object({
+const MetricStatSchema = z.object({
   Period: z.number().int().describe(
     "The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 20, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a PutMetricData call that includes a StorageResolution of 1 second. If the StartTime parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned: Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute). Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes). Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).",
   ),
@@ -48,7 +57,7 @@ export const MetricStatSchema = z.object({
   ).optional(),
 });
 
-export const MetricDataQuerySchema = z.object({
+const MetricDataQuerySchema = z.object({
   Label: z.string().describe(
     "A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CW dashboard widget, the label is shown. If Label is omitted, CW generates a default.",
   ).optional(),
@@ -72,7 +81,7 @@ export const MetricDataQuerySchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "A string that you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.",
   ),
@@ -81,7 +90,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const AlarmPromQLCriteriaSchema = z.object({
+const AlarmPromQLCriteriaSchema = z.object({
   Query: z.string().describe("The PromQL query string.").optional(),
   PendingPeriod: z.number().int().describe("The pending period for the alarm.")
     .optional(),
@@ -266,9 +275,10 @@ const InputsSchema = z.object({
   EvaluationInterval: z.number().int().optional(),
 });
 
+/** Swamp extension model for CloudWatch Alarm. Registered at `@swamp/aws/cloudwatch/alarm`. */
 export const model = {
   type: "@swamp/aws/cloudwatch/alarm",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -288,6 +298,16 @@ export const model = {
     {
       toVersion: "2026.04.19.1",
       description: "Added: EvaluationCriteria, EvaluationInterval",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

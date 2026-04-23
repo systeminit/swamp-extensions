@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AmplifyUIBuilder Form (AWS::AmplifyUIBuilder::Form).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FormButtonSchema = z.object({
+const FormButtonSchema = z.object({
   Excluded: z.boolean().optional(),
   Children: z.string().optional(),
   Position: z.object({
@@ -22,7 +31,7 @@ export const FormButtonSchema = z.object({
   }).optional(),
 });
 
-export const SectionalElementSchema = z.object({
+const SectionalElementSchema = z.object({
   Type: z.string(),
   Position: z.object({
     Fixed: z.enum(["first"]).optional(),
@@ -147,9 +156,10 @@ const InputsSchema = z.object({
   Tags: z.record(z.string(), z.string().min(1).max(256)).optional(),
 });
 
+/** Swamp extension model for AmplifyUIBuilder Form. Registered at `@swamp/aws/amplifyuibuilder/form`. */
 export const model = {
   type: "@swamp/aws/amplifyuibuilder/form",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -163,6 +173,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

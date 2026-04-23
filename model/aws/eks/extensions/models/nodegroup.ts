@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EKS Nodegroup (AWS::EKS::Nodegroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TaintSchema = z.object({
+const TaintSchema = z.object({
   Key: z.string().min(1).optional(),
   Value: z.string().min(0).optional(),
   Effect: z.string().min(1).optional(),
 });
 
-export const NodeRepairConfigOverridesSchema = z.object({
+const NodeRepairConfigOverridesSchema = z.object({
   NodeMonitoringCondition: z.string().describe(
     "Specify an unhealthy condition reported by the node monitoring agent that this override would apply to.",
   ).optional(),
@@ -320,9 +329,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EKS Nodegroup. Registered at `@swamp/aws/eks/nodegroup`. */
 export const model = {
   type: "@swamp/aws/eks/nodegroup",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -346,6 +356,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

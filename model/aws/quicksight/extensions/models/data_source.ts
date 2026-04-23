@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for QuickSight DataSource (AWS::QuickSight::DataSource).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const S3TablesParametersSchema = z.object({
+const S3TablesParametersSchema = z.object({
   TableBucketArn: z.string().regex(
     new RegExp(
       "^(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-zA-Z0-9-_]{3,63})$",
@@ -20,7 +29,7 @@ export const S3TablesParametersSchema = z.object({
   ).optional(),
 });
 
-export const AuroraPostgreSqlParametersSchema = z.object({
+const AuroraPostgreSqlParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe(
     "The port that Amazon Aurora PostgreSQL is listening on.",
   ),
@@ -32,24 +41,24 @@ export const AuroraPostgreSqlParametersSchema = z.object({
   ),
 });
 
-export const TeradataParametersSchema = z.object({
+const TeradataParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe("Port."),
   Database: z.string().min(1).max(128).describe("Database."),
   Host: z.string().min(1).max(256).describe("Host."),
 });
 
-export const RdsParametersSchema = z.object({
+const RdsParametersSchema = z.object({
   InstanceId: z.string().min(1).max(64).describe("Instance ID."),
   Database: z.string().min(1).max(128).describe("Database."),
 });
 
-export const IdentityCenterConfigurationSchema = z.object({
+const IdentityCenterConfigurationSchema = z.object({
   EnableIdentityPropagation: z.boolean().describe(
     "A Boolean option that controls whether Trusted Identity Propagation should be used.",
   ).optional(),
 });
 
-export const AthenaParametersSchema = z.object({
+const AthenaParametersSchema = z.object({
   WorkGroup: z.string().min(1).max(128).describe(
     "The workgroup that Amazon Athena uses.",
   ).optional(),
@@ -61,37 +70,37 @@ export const AthenaParametersSchema = z.object({
   ).optional(),
 });
 
-export const SparkParametersSchema = z.object({
+const SparkParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe("Port."),
   Host: z.string().min(1).max(256).describe("Host."),
 });
 
-export const MariaDbParametersSchema = z.object({
+const MariaDbParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe("Port."),
   Database: z.string().min(1).max(128).describe("Database."),
   Host: z.string().min(1).max(256).describe("Host."),
 });
 
-export const OracleParametersSchema = z.object({
+const OracleParametersSchema = z.object({
   UseServiceName: z.boolean().optional(),
   Port: z.number().min(1).max(65535).describe("The port."),
   Database: z.string().min(1).max(128).describe("The database."),
   Host: z.string().min(1).max(256).describe("An Oracle host."),
 });
 
-export const PrestoParametersSchema = z.object({
+const PrestoParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe("Port."),
   Host: z.string().min(1).max(256).describe("Host."),
   Catalog: z.string().min(0).max(128).describe("Catalog."),
 });
 
-export const VpcConnectionPropertiesSchema = z.object({
+const VpcConnectionPropertiesSchema = z.object({
   VpcConnectionArn: z.string().describe(
     "The Amazon Resource Name (ARN) for the VPC connection.",
   ),
 });
 
-export const OAuthParametersSchema = z.object({
+const OAuthParametersSchema = z.object({
   TokenProviderUrl: z.string().min(1).max(2048),
   OAuthScope: z.string().min(1).max(128).optional(),
   IdentityProviderVpcConnectionProperties: VpcConnectionPropertiesSchema
@@ -99,7 +108,7 @@ export const OAuthParametersSchema = z.object({
   IdentityProviderResourceUri: z.string().min(1).max(2048).optional(),
 });
 
-export const StarburstParametersSchema = z.object({
+const StarburstParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe(
     "The port for the Starburst data source.",
   ),
@@ -116,7 +125,7 @@ export const StarburstParametersSchema = z.object({
     .optional(),
 });
 
-export const RedshiftIAMParametersSchema = z.object({
+const RedshiftIAMParametersSchema = z.object({
   AutoCreateDatabaseUser: z.boolean().describe(
     "Automatically creates a database user. If your database doesn't have a DatabaseUser, set this parameter to True. If there is no DatabaseUser, Amazon QuickSight can't connect to your cluster. The RoleArn that you use for this operation must grant access to redshift:CreateClusterUser to successfully create the user.",
   ).optional(),
@@ -131,7 +140,7 @@ export const RedshiftIAMParametersSchema = z.object({
   ).optional(),
 });
 
-export const RedshiftParametersSchema = z.object({
+const RedshiftParametersSchema = z.object({
   IAMParameters: RedshiftIAMParametersSchema.describe(
     "A structure that grants Amazon QuickSight access to your cluster and make a call to the redshift:GetClusterCredentials API. For more information on the redshift:GetClusterCredentials API, see  GetClusterCredentials .",
   ).optional(),
@@ -150,19 +159,19 @@ export const RedshiftParametersSchema = z.object({
   ).optional(),
 });
 
-export const MySqlParametersSchema = z.object({
+const MySqlParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe("Port."),
   Database: z.string().min(1).max(128).describe("Database."),
   Host: z.string().min(1).max(256).describe("Host."),
 });
 
-export const SqlServerParametersSchema = z.object({
+const SqlServerParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe("Port."),
   Database: z.string().min(1).max(128).describe("Database."),
   Host: z.string().min(1).max(256).describe("Host."),
 });
 
-export const SnowflakeParametersSchema = z.object({
+const SnowflakeParametersSchema = z.object({
   Warehouse: z.string().min(0).max(128).describe("Warehouse."),
   DatabaseAccessControlRole: z.string().min(0).max(128).optional(),
   Database: z.string().min(1).max(128).describe("Database."),
@@ -172,34 +181,34 @@ export const SnowflakeParametersSchema = z.object({
     .optional(),
 });
 
-export const AmazonElasticsearchParametersSchema = z.object({
+const AmazonElasticsearchParametersSchema = z.object({
   Domain: z.string().min(1).max(64).describe("The OpenSearch domain."),
 });
 
-export const AmazonOpenSearchParametersSchema = z.object({
+const AmazonOpenSearchParametersSchema = z.object({
   Domain: z.string().min(1).max(64).describe("The OpenSearch domain."),
 });
 
-export const PostgreSqlParametersSchema = z.object({
+const PostgreSqlParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe("Port."),
   Database: z.string().min(1).max(128).describe("Database."),
   Host: z.string().min(1).max(256).describe("Host."),
 });
 
-export const AuroraParametersSchema = z.object({
+const AuroraParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe("Port."),
   Database: z.string().min(1).max(128).describe("Database."),
   Host: z.string().min(1).max(256).describe("Host."),
 });
 
-export const ManifestFileLocationSchema = z.object({
+const ManifestFileLocationSchema = z.object({
   Bucket: z.string().min(1).max(1024).describe("Amazon S3 bucket."),
   Key: z.string().min(1).max(1024).describe(
     "Amazon S3 key that identifies an object.",
   ),
 });
 
-export const S3ParametersSchema = z.object({
+const S3ParametersSchema = z.object({
   ManifestFileLocation: ManifestFileLocationSchema.describe(
     "Amazon S3 manifest file location.",
   ),
@@ -208,7 +217,7 @@ export const S3ParametersSchema = z.object({
   ).optional(),
 });
 
-export const TrinoParametersSchema = z.object({
+const TrinoParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe(
     "The port for the Trino data source.",
   ),
@@ -220,7 +229,7 @@ export const TrinoParametersSchema = z.object({
   ),
 });
 
-export const DatabricksParametersSchema = z.object({
+const DatabricksParametersSchema = z.object({
   Port: z.number().min(1).max(65535).describe(
     "The port for the Databricks data source.",
   ),
@@ -232,7 +241,7 @@ export const DatabricksParametersSchema = z.object({
   ),
 });
 
-export const DataSourceParametersSchema = z.object({
+const DataSourceParametersSchema = z.object({
   S3TablesParameters: S3TablesParametersSchema.optional(),
   AuroraPostgreSqlParameters: AuroraPostgreSqlParametersSchema.describe(
     "Parameters for Amazon Aurora PostgreSQL-Compatible Edition.",
@@ -292,7 +301,7 @@ export const DataSourceParametersSchema = z.object({
   ).optional(),
 });
 
-export const ResourcePermissionSchema = z.object({
+const ResourcePermissionSchema = z.object({
   Actions: z.array(z.string()).describe(
     "The IAM action to grant or revoke permissions on.",
   ),
@@ -302,7 +311,7 @@ export const ResourcePermissionSchema = z.object({
   ),
 });
 
-export const CredentialPairSchema = z.object({
+const CredentialPairSchema = z.object({
   AlternateDataSourceParameters: z.array(DataSourceParametersSchema).describe(
     "A set of alternate data source parameters that you want to share for these credentials. The credentials are applied in tandem with the data source parameters when you copy a data source by using a create or update request. The API operation compares the DataSourceParameters structure that's in the request with the structures in the AlternateDataSourceParameters allow list. If the structures are an exact match, the request is allowed to use the new data source with the existing credentials. If the AlternateDataSourceParameters list is null, the DataSourceParameters originally used with these Credentials is automatically allowed.",
   ).optional(),
@@ -310,7 +319,7 @@ export const CredentialPairSchema = z.object({
   Password: z.string().min(1).max(1024).describe("Password."),
 });
 
-export const KeyPairCredentialsSchema = z.object({
+const KeyPairCredentialsSchema = z.object({
   KeyPairUsername: z.string().min(1).max(64),
   PrivateKey: z.string().min(1600).max(8000).regex(
     new RegExp(
@@ -320,7 +329,7 @@ export const KeyPairCredentialsSchema = z.object({
   PrivateKeyPassphrase: z.string().min(0).max(256).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(1).max(256).describe("Tag value."),
   Key: z.string().min(1).max(128).describe("Tag key."),
 });
@@ -717,9 +726,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for QuickSight DataSource. Registered at `@swamp/aws/quicksight/data-source`. */
 export const model = {
   type: "@swamp/aws/quicksight/data-source",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -743,6 +753,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

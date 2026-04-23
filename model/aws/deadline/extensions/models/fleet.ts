@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Deadline Fleet (AWS::Deadline::Fleet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FleetAmountCapabilitySchema = z.object({
+const FleetAmountCapabilitySchema = z.object({
   Name: z.string().min(1).max(100).regex(
     new RegExp(
       "^([a-zA-Z][a-zA-Z0-9]{0,63}:)?amount(\\.[a-zA-Z][a-zA-Z0-9]{0,63})+$",
@@ -22,7 +31,7 @@ export const FleetAmountCapabilitySchema = z.object({
   Max: z.number().optional(),
 });
 
-export const FleetAttributeCapabilitySchema = z.object({
+const FleetAttributeCapabilitySchema = z.object({
   Name: z.string().min(1).max(100).regex(
     new RegExp(
       "^([a-zA-Z][a-zA-Z0-9]{0,63}:)?attr(\\.[a-zA-Z][a-zA-Z0-9]{0,63})+$",
@@ -35,33 +44,33 @@ export const FleetAttributeCapabilitySchema = z.object({
   ),
 });
 
-export const CustomerManagedAutoScalingConfigurationSchema = z.object({
+const CustomerManagedAutoScalingConfigurationSchema = z.object({
   StandbyWorkerCount: z.number().int().min(0).max(2147483647).optional(),
   WorkerIdleDurationSeconds: z.number().int().min(0).max(2147483647).optional(),
   ScaleOutWorkersPerMinute: z.number().int().min(1).max(2147483647).optional(),
 });
 
-export const VCpuCountRangeSchema = z.object({
+const VCpuCountRangeSchema = z.object({
   Min: z.number().int().min(1).max(10000),
   Max: z.number().int().min(1).max(10000).optional(),
 });
 
-export const MemoryMiBRangeSchema = z.object({
+const MemoryMiBRangeSchema = z.object({
   Min: z.number().int().min(512).max(2147483647),
   Max: z.number().int().min(512).max(2147483647).optional(),
 });
 
-export const AcceleratorCountRangeSchema = z.object({
+const AcceleratorCountRangeSchema = z.object({
   Min: z.number().int().min(0).max(2147483647),
   Max: z.number().int().min(0).max(2147483647).optional(),
 });
 
-export const AcceleratorTotalMemoryMiBRangeSchema = z.object({
+const AcceleratorTotalMemoryMiBRangeSchema = z.object({
   Min: z.number().int().min(0).max(2147483647),
   Max: z.number().int().min(0).max(2147483647).optional(),
 });
 
-export const CustomerManagedWorkerCapabilitiesSchema = z.object({
+const CustomerManagedWorkerCapabilitiesSchema = z.object({
   VCpuCount: VCpuCountRangeSchema,
   MemoryMiB: MemoryMiBRangeSchema,
   AcceleratorTypes: z.array(z.enum(["gpu"])).optional(),
@@ -73,7 +82,7 @@ export const CustomerManagedWorkerCapabilitiesSchema = z.object({
   CustomAttributes: z.array(FleetAttributeCapabilitySchema).optional(),
 });
 
-export const CustomerManagedFleetConfigurationSchema = z.object({
+const CustomerManagedFleetConfigurationSchema = z.object({
   Mode: z.enum(["NO_SCALING", "EVENT_BASED_AUTO_SCALING"]),
   AutoScalingConfiguration: CustomerManagedAutoScalingConfigurationSchema
     .optional(),
@@ -86,23 +95,23 @@ export const CustomerManagedFleetConfigurationSchema = z.object({
   ]).optional(),
 });
 
-export const Ec2EbsVolumeSchema = z.object({
+const Ec2EbsVolumeSchema = z.object({
   SizeGiB: z.number().int().optional(),
   Iops: z.number().int().min(3000).max(16000).optional(),
   ThroughputMiB: z.number().int().min(125).max(1000).optional(),
 });
 
-export const AcceleratorSelectionSchema = z.object({
+const AcceleratorSelectionSchema = z.object({
   Name: z.enum(["t4", "a10g", "l4", "l40s"]),
   Runtime: z.string().min(1).max(100).optional(),
 });
 
-export const AcceleratorCapabilitiesSchema = z.object({
+const AcceleratorCapabilitiesSchema = z.object({
   Selections: z.array(AcceleratorSelectionSchema),
   Count: AcceleratorCountRangeSchema.optional(),
 });
 
-export const ServiceManagedEc2InstanceCapabilitiesSchema = z.object({
+const ServiceManagedEc2InstanceCapabilitiesSchema = z.object({
   VCpuCount: VCpuCountRangeSchema,
   MemoryMiB: MemoryMiBRangeSchema,
   OsFamily: z.enum(["LINUX", "WINDOWS"]),
@@ -115,21 +124,21 @@ export const ServiceManagedEc2InstanceCapabilitiesSchema = z.object({
   CustomAttributes: z.array(FleetAttributeCapabilitySchema).optional(),
 });
 
-export const ServiceManagedEc2InstanceMarketOptionsSchema = z.object({
+const ServiceManagedEc2InstanceMarketOptionsSchema = z.object({
   Type: z.enum(["on-demand", "spot", "wait-and-save"]),
 });
 
-export const VpcConfigurationSchema = z.object({
+const VpcConfigurationSchema = z.object({
   ResourceConfigurationArns: z.array(z.string().min(1).max(2048)).optional(),
 });
 
-export const ServiceManagedEc2AutoScalingConfigurationSchema = z.object({
+const ServiceManagedEc2AutoScalingConfigurationSchema = z.object({
   StandbyWorkerCount: z.number().int().min(0).max(2147483647).optional(),
   WorkerIdleDurationSeconds: z.number().int().min(0).max(86400).optional(),
   ScaleOutWorkersPerMinute: z.number().int().min(1).max(2147483647).optional(),
 });
 
-export const ServiceManagedEc2FleetConfigurationSchema = z.object({
+const ServiceManagedEc2FleetConfigurationSchema = z.object({
   InstanceCapabilities: ServiceManagedEc2InstanceCapabilitiesSchema,
   InstanceMarketOptions: ServiceManagedEc2InstanceMarketOptionsSchema,
   VpcConfiguration: VpcConfigurationSchema.optional(),
@@ -139,7 +148,7 @@ export const ServiceManagedEc2FleetConfigurationSchema = z.object({
     .optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(127).describe(
     "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -237,9 +246,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Deadline Fleet. Registered at `@swamp/aws/deadline/fleet`. */
 export const model = {
   type: "@swamp/aws/deadline/fleet",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -258,6 +268,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

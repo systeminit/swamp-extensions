@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Backup BackupPlan (AWS::Backup::BackupPlan).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,32 +21,32 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AdvancedBackupSettingResourceTypeSchema = z.object({
+const AdvancedBackupSettingResourceTypeSchema = z.object({
   BackupOptions: z.string(),
   ResourceType: z.string(),
 });
 
-export const IndexActionsResourceTypeSchema = z.object({
+const IndexActionsResourceTypeSchema = z.object({
   ResourceTypes: z.array(z.string()).optional(),
 });
 
-export const ScanActionResourceTypeSchema = z.object({
+const ScanActionResourceTypeSchema = z.object({
   MalwareScanner: z.enum(["GUARDDUTY"]).optional(),
   ScanMode: z.enum(["FULL_SCAN", "INCREMENTAL_SCAN"]).optional(),
 });
 
-export const LifecycleResourceTypeSchema = z.object({
+const LifecycleResourceTypeSchema = z.object({
   MoveToColdStorageAfterDays: z.number().optional(),
   DeleteAfterDays: z.number().optional(),
   OptInToArchiveForSupportedResources: z.boolean().optional(),
 });
 
-export const CopyActionResourceTypeSchema = z.object({
+const CopyActionResourceTypeSchema = z.object({
   Lifecycle: LifecycleResourceTypeSchema.optional(),
   DestinationBackupVaultArn: z.string(),
 });
 
-export const BackupRuleResourceTypeSchema = z.object({
+const BackupRuleResourceTypeSchema = z.object({
   RuleName: z.string(),
   TargetBackupVault: z.string(),
   TargetLogicallyAirGappedBackupVaultArn: z.string().optional(),
@@ -53,7 +62,7 @@ export const BackupRuleResourceTypeSchema = z.object({
   EnableContinuousBackup: z.boolean().optional(),
 });
 
-export const ScanSettingResourceTypeSchema = z.object({
+const ScanSettingResourceTypeSchema = z.object({
   MalwareScanner: z.enum(["GUARDDUTY"]).optional(),
   ResourceTypes: z.array(z.string()).optional(),
   ScannerRoleArn: z.string().optional(),
@@ -100,9 +109,10 @@ const InputsSchema = z.object({
   BackupPlanTags: z.record(z.string(), z.string()).optional(),
 });
 
+/** Swamp extension model for Backup BackupPlan. Registered at `@swamp/aws/backup/backup-plan`. */
 export const model = {
   type: "@swamp/aws/backup/backup-plan",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -116,6 +126,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

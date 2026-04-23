@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ACMPCA Certificate (AWS::ACMPCA::Certificate).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,13 +20,13 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const QualifierSchema = z.object({
+const QualifierSchema = z.object({
   CpsUri: z.string().describe(
     "Contains a pointer to a certification practice statement (CPS) published by the CA.",
   ),
 });
 
-export const PolicyQualifierInfoSchema = z.object({
+const PolicyQualifierInfoSchema = z.object({
   PolicyQualifierId: z.string().describe(
     "Identifies the qualifier modifying a CertPolicyId.",
   ),
@@ -26,7 +35,7 @@ export const PolicyQualifierInfoSchema = z.object({
   ),
 });
 
-export const PolicyInformationSchema = z.object({
+const PolicyInformationSchema = z.object({
   CertPolicyId: z.string().describe(
     "Specifies the object identifier (OID) of the certificate policy under which the certificate was issued. For more information, see NIST's definition of [Object Identifier (OID)](https://docs.aws.amazon.com/https://csrc.nist.gov/glossary/term/Object_Identifier).",
   ),
@@ -35,7 +44,7 @@ export const PolicyInformationSchema = z.object({
   ).optional(),
 });
 
-export const ExtendedKeyUsageSchema = z.object({
+const ExtendedKeyUsageSchema = z.object({
   ExtendedKeyUsageType: z.string().describe(
     "Specifies a standard ExtendedKeyUsage as defined as in [RFC 5280](https://docs.aws.amazon.com/https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.12).",
   ).optional(),
@@ -44,7 +53,7 @@ export const ExtendedKeyUsageSchema = z.object({
   ).optional(),
 });
 
-export const KeyUsageSchema = z.object({
+const KeyUsageSchema = z.object({
   DigitalSignature: z.boolean().describe("Key can be used for digital signing.")
     .optional(),
   NonRepudiation: z.boolean().describe("Key can be used for non-repudiation.")
@@ -65,12 +74,12 @@ export const KeyUsageSchema = z.object({
     .optional(),
 });
 
-export const OtherNameSchema = z.object({
+const OtherNameSchema = z.object({
   TypeId: z.string().describe("Specifies an OID."),
   Value: z.string().describe("Specifies an OID value."),
 });
 
-export const CustomAttributeSchema = z.object({
+const CustomAttributeSchema = z.object({
   ObjectIdentifier: z.string().describe(
     "Specifies the object identifier (OID) of the attribute type of the relative distinguished name (RDN).",
   ),
@@ -79,7 +88,7 @@ export const CustomAttributeSchema = z.object({
   ),
 });
 
-export const SubjectSchema = z.object({
+const SubjectSchema = z.object({
   Country: z.string().describe(
     "Two-digit code that specifies the country in which the certificate subject located.",
   ).optional(),
@@ -124,12 +133,12 @@ export const SubjectSchema = z.object({
   ).optional(),
 });
 
-export const EdiPartyNameSchema = z.object({
+const EdiPartyNameSchema = z.object({
   PartyName: z.string().describe("Specifies the party name."),
   NameAssigner: z.string().describe("Specifies the name assigner."),
 });
 
-export const GeneralNameSchema = z.object({
+const GeneralNameSchema = z.object({
   OtherName: OtherNameSchema.describe(
     "Represents GeneralName using an OtherName object.",
   ).optional(),
@@ -155,7 +164,7 @@ export const GeneralNameSchema = z.object({
   ).optional(),
 });
 
-export const CustomExtensionSchema = z.object({
+const CustomExtensionSchema = z.object({
   Critical: z.boolean().describe(
     "Specifies the critical flag of the X.509 extension.",
   ).optional(),
@@ -167,7 +176,7 @@ export const CustomExtensionSchema = z.object({
   ),
 });
 
-export const ExtensionsSchema = z.object({
+const ExtensionsSchema = z.object({
   CertificatePolicies: z.array(PolicyInformationSchema).describe(
     "Contains a sequence of one or more policy information terms, each of which consists of an object identifier (OID) and optional qualifiers. For more information, see NIST's definition of [Object Identifier (OID)](https://docs.aws.amazon.com/https://csrc.nist.gov/glossary/term/Object_Identifier). In an end-entity certificate, these terms indicate the policy under which the certificate was issued and the purposes for which it may be used. In a CA certificate, these terms limit the set of policies for certification paths that include this certificate.",
   ).optional(),
@@ -299,9 +308,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ACMPCA Certificate. Registered at `@swamp/aws/acmpca/certificate`. */
 export const model = {
   type: "@swamp/aws/acmpca/certificate",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -315,6 +325,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

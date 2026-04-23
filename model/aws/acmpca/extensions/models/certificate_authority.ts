@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ACMPCA CertificateAuthority (AWS::ACMPCA::CertificateAuthority).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,18 +21,18 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CustomAttributeSchema = z.object({
+const CustomAttributeSchema = z.object({
   ObjectIdentifier: z.string().describe(
     "String that contains X.509 ObjectIdentifier information.",
   ),
   Value: z.string(),
 });
 
-export const CrlDistributionPointExtensionConfigurationSchema = z.object({
+const CrlDistributionPointExtensionConfigurationSchema = z.object({
   OmitExtension: z.boolean(),
 });
 
-export const CrlConfigurationSchema = z.object({
+const CrlConfigurationSchema = z.object({
   Enabled: z.boolean(),
   ExpirationInDays: z.number().int().optional(),
   CustomCname: z.string().optional(),
@@ -37,17 +46,17 @@ export const CrlConfigurationSchema = z.object({
   CustomPath: z.string().optional(),
 });
 
-export const OcspConfigurationSchema = z.object({
+const OcspConfigurationSchema = z.object({
   Enabled: z.boolean(),
   OcspCustomCname: z.string().optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string().optional(),
 });
 
-export const KeyUsageSchema = z.object({
+const KeyUsageSchema = z.object({
   DigitalSignature: z.boolean().optional(),
   NonRepudiation: z.boolean().optional(),
   KeyEncipherment: z.boolean().optional(),
@@ -59,7 +68,7 @@ export const KeyUsageSchema = z.object({
   DecipherOnly: z.boolean().optional(),
 });
 
-export const AccessMethodSchema = z.object({
+const AccessMethodSchema = z.object({
   CustomObjectIdentifier: z.string().describe(
     "String that contains X.509 ObjectIdentifier information.",
   ).optional(),
@@ -68,14 +77,14 @@ export const AccessMethodSchema = z.object({
   ).optional(),
 });
 
-export const OtherNameSchema = z.object({
+const OtherNameSchema = z.object({
   TypeId: z.string().describe(
     "String that contains X.509 ObjectIdentifier information.",
   ),
   Value: z.string(),
 });
 
-export const SubjectSchema = z.object({
+const SubjectSchema = z.object({
   Country: z.string().optional(),
   Organization: z.string().optional(),
   OrganizationalUnit: z.string().optional(),
@@ -95,12 +104,12 @@ export const SubjectSchema = z.object({
   ).optional(),
 });
 
-export const EdiPartyNameSchema = z.object({
+const EdiPartyNameSchema = z.object({
   PartyName: z.string(),
   NameAssigner: z.string().optional(),
 });
 
-export const GeneralNameSchema = z.object({
+const GeneralNameSchema = z.object({
   OtherName: OtherNameSchema.describe(
     "Structure that contains X.509 OtherName information.",
   ).optional(),
@@ -127,7 +136,7 @@ export const GeneralNameSchema = z.object({
   ).optional(),
 });
 
-export const AccessDescriptionSchema = z.object({
+const AccessDescriptionSchema = z.object({
   AccessMethod: AccessMethodSchema.describe(
     "Structure that contains X.509 AccessMethod information. Assign one and ONLY one field.",
   ),
@@ -277,9 +286,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for ACMPCA CertificateAuthority. Registered at `@swamp/aws/acmpca/certificate-authority`. */
 export const model = {
   type: "@swamp/aws/acmpca/certificate-authority",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -293,6 +303,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

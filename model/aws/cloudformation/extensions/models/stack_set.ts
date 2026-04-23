@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudFormation StackSet (AWS::CloudFormation::StackSet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DeploymentTargetsSchema = z.object({
+const DeploymentTargetsSchema = z.object({
   Accounts: z.array(z.string().regex(new RegExp("^[0-9]{12}$"))).describe(
     "AWS accounts that you want to create stack instances in the specified Region(s) for.",
   ).optional(),
@@ -32,7 +41,7 @@ export const DeploymentTargetsSchema = z.object({
     ).optional(),
 });
 
-export const ParameterSchema = z.object({
+const ParameterSchema = z.object({
   ParameterKey: z.string().describe(
     "The key associated with the parameter. If you don't specify a key and value for a particular parameter, AWS CloudFormation uses the default value that is specified in your template.",
   ),
@@ -41,7 +50,7 @@ export const ParameterSchema = z.object({
   ),
 });
 
-export const StackInstancesSchema = z.object({
+const StackInstancesSchema = z.object({
   DeploymentTargets: DeploymentTargetsSchema.describe(
     "The AWS OrganizationalUnitIds or Accounts for which to create stack instances in the specified Regions.",
   ),
@@ -54,7 +63,7 @@ export const StackInstancesSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:.*)[a-zA-Z0-9\\s\\:\\_\\.\\/\\=\\+\\-]+$"),
   ).describe(
@@ -276,9 +285,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CloudFormation StackSet. Registered at `@swamp/aws/cloudformation/stack-set`. */
 export const model = {
   type: "@swamp/aws/cloudformation/stack-set",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -292,6 +302,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

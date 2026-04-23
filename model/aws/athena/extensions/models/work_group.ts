@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Athena WorkGroup (AWS::Athena::WorkGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
 
-export const EncryptionConfigurationSchema = z.object({
+const EncryptionConfigurationSchema = z.object({
   EncryptionOption: z.enum(["SSE_S3", "SSE_KMS", "CSE_KMS"]).describe(
     "Indicates whether Amazon S3 server-side encryption with Amazon S3-managed keys (SSE-S3), server-side encryption with KMS-managed keys (SSE-KMS), or client-side encryption with KMS-managed keys (CSE-KMS) is used.",
   ),
@@ -26,13 +35,13 @@ export const EncryptionConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const AclConfigurationSchema = z.object({
+const AclConfigurationSchema = z.object({
   S3AclOption: z.enum(["BUCKET_OWNER_FULL_CONTROL"]).describe(
     "The Amazon S3 canned ACL that Athena should specify when storing query results. Currently the only supported canned ACL is BUCKET_OWNER_FULL_CONTROL",
   ),
 });
 
-export const ResultConfigurationSchema = z.object({
+const ResultConfigurationSchema = z.object({
   EncryptionConfiguration: EncryptionConfigurationSchema.describe(
     "If query results are encrypted in Amazon S3, indicates the encryption option used (for example, SSE-KMS or CSE-KMS) and key information.",
   ).optional(),
@@ -47,32 +56,32 @@ export const ResultConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const EngineVersionSchema = z.object({
+const EngineVersionSchema = z.object({
   SelectedEngineVersion: z.string().describe(
     "The engine version requested by the user. Possible values are determined by the output of ListEngineVersions, including Auto. The default is Auto.",
   ).optional(),
 });
 
-export const CustomerContentEncryptionConfigurationSchema = z.object({
+const CustomerContentEncryptionConfigurationSchema = z.object({
   KmsKey: z.string().describe(
     "For SSE-KMS and CSE-KMS, this is the KMS key ARN or ID.",
   ),
 });
 
-export const ManagedStorageEncryptionConfigurationSchema = z.object({
+const ManagedStorageEncryptionConfigurationSchema = z.object({
   KmsKey: z.string().describe(
     "For SSE-KMS and CSE-KMS, this is the KMS key ARN or ID.",
   ).optional(),
 });
 
-export const ManagedQueryResultsConfigurationSchema = z.object({
+const ManagedQueryResultsConfigurationSchema = z.object({
   EncryptionConfiguration: ManagedStorageEncryptionConfigurationSchema.describe(
     "Indicates the encryption configuration for Athena Managed Storage. If not setting this field, Managed Storage will encrypt the query results with Athena's encryption key",
   ).optional(),
   Enabled: z.boolean().optional(),
 });
 
-export const ClassificationSchema = z.object({
+const ClassificationSchema = z.object({
   Name: z.string().describe("The name of the configuration classification.")
     .optional(),
   Properties: z.record(z.string(), z.string()).describe(
@@ -80,7 +89,7 @@ export const ClassificationSchema = z.object({
   ).optional(),
 });
 
-export const EngineConfigurationSchema = z.object({
+const EngineConfigurationSchema = z.object({
   CoordinatorDpuSize: z.number().int().describe(
     "The number of DPUs to use for the coordinator. A coordinator is a special executor that orchestrates processing work and manages other executors in a notebook session. The default is 1.",
   ).optional(),
@@ -101,7 +110,7 @@ export const EngineConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const CloudWatchLoggingConfigurationSchema = z.object({
+const CloudWatchLoggingConfigurationSchema = z.object({
   Enabled: z.boolean().describe("Enables CloudWatch logging.").optional(),
   LogGroup: z.string().describe(
     "The name of the log group in Amazon CloudWatch Logs where you want to publish your logs.",
@@ -114,14 +123,14 @@ export const CloudWatchLoggingConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ManagedLoggingConfigurationSchema = z.object({
+const ManagedLoggingConfigurationSchema = z.object({
   Enabled: z.boolean().describe("Enables managed log persistence.").optional(),
   KmsKey: z.string().describe(
     "The KMS key ARN to encrypt the logs stored in managed log persistence.",
   ).optional(),
 });
 
-export const S3LoggingConfigurationSchema = z.object({
+const S3LoggingConfigurationSchema = z.object({
   Enabled: z.boolean().describe("Enables S3 log delivery.").optional(),
   LogLocation: z.string().describe(
     "The Amazon S3 destination URI for log publishing.",
@@ -131,7 +140,7 @@ export const S3LoggingConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const MonitoringConfigurationSchema = z.object({
+const MonitoringConfigurationSchema = z.object({
   CloudWatchLoggingConfiguration: CloudWatchLoggingConfigurationSchema.describe(
     "Configuration settings for delivering logs to Amazon CloudWatch log groups.",
   ).optional(),
@@ -143,7 +152,7 @@ export const MonitoringConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ResultConfigurationUpdatesSchema = z.object({
+const ResultConfigurationUpdatesSchema = z.object({
   EncryptionConfiguration: EncryptionConfigurationSchema.describe(
     "If query results are encrypted in Amazon S3, indicates the encryption option used (for example, SSE-KMS or CSE-KMS) and key information.",
   ).optional(),
@@ -409,9 +418,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Athena WorkGroup. Registered at `@swamp/aws/athena/work-group`. */
 export const model = {
   type: "@swamp/aws/athena/work-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -425,6 +435,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

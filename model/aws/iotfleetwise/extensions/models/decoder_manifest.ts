@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTFleetWise DecoderManifest (AWS::IoTFleetWise::DecoderManifest).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CanInterfaceSchema = z.object({
+const CanInterfaceSchema = z.object({
   Name: z.string().min(1).max(100),
   ProtocolName: z.string().min(1).max(50).optional(),
   ProtocolVersion: z.string().min(1).max(50).optional(),
 });
 
-export const ObdInterfaceSchema = z.object({
+const ObdInterfaceSchema = z.object({
   Name: z.string().min(1).max(100),
   RequestMessageId: z.number().int(),
   ObdStandard: z.string().min(1).max(50).optional(),
@@ -28,11 +37,11 @@ export const ObdInterfaceSchema = z.object({
   HasTransmissionEcu: z.boolean().optional(),
 });
 
-export const CustomDecodingInterfaceSchema = z.object({
+const CustomDecodingInterfaceSchema = z.object({
   Name: z.string().min(1).max(100).regex(new RegExp("^[a-zA-Z\\d\\-_:]+$")),
 });
 
-export const CanSignalSchema = z.object({
+const CanSignalSchema = z.object({
   MessageId: z.number().int(),
   IsBigEndian: z.boolean(),
   IsSigned: z.boolean(),
@@ -44,7 +53,7 @@ export const CanSignalSchema = z.object({
   SignalValueType: z.enum(["INTEGER", "FLOATING_POINT"]).optional(),
 });
 
-export const ObdSignalSchema = z.object({
+const ObdSignalSchema = z.object({
   PidResponseLength: z.number().int(),
   ServiceMode: z.number().int(),
   Pid: z.number().int(),
@@ -58,13 +67,13 @@ export const ObdSignalSchema = z.object({
   SignalValueType: z.enum(["INTEGER", "FLOATING_POINT"]).optional(),
 });
 
-export const CustomDecodingSignalSchema = z.object({
+const CustomDecodingSignalSchema = z.object({
   Id: z.string().min(1).max(150).regex(
     new RegExp("^(?!.*\\.\\.)[a-zA-Z0-9_\\-#:.]+$"),
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -151,9 +160,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for IoTFleetWise DecoderManifest. Registered at `@swamp/aws/iotfleetwise/decoder-manifest`. */
 export const model = {
   type: "@swamp/aws/iotfleetwise/decoder-manifest",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -167,6 +177,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

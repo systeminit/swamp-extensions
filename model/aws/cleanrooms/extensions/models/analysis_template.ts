@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CleanRooms AnalysisTemplate (AWS::CleanRooms::AnalysisTemplate).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(1).max(256),
 });
 
-export const AnalysisParameterSchema = z.object({
+const AnalysisParameterSchema = z.object({
   DefaultValue: z.string().min(0).max(1000).optional(),
   Name: z.string().min(1).max(100).regex(new RegExp("[0-9a-zA-Z_]+")),
   Type: z.enum([
@@ -52,31 +61,31 @@ export const AnalysisParameterSchema = z.object({
   ]),
 });
 
-export const S3LocationSchema = z.object({
+const S3LocationSchema = z.object({
   Bucket: z.string().min(3).max(63),
   Key: z.string(),
 });
 
-export const AnalysisTemplateArtifactSchema = z.object({
+const AnalysisTemplateArtifactSchema = z.object({
   Location: S3LocationSchema,
 });
 
-export const AnalysisTemplateArtifactsSchema = z.object({
+const AnalysisTemplateArtifactsSchema = z.object({
   EntryPoint: AnalysisTemplateArtifactSchema,
   AdditionalArtifacts: z.array(AnalysisTemplateArtifactSchema).optional(),
   RoleArn: z.string().min(32).max(512),
 });
 
-export const HashSchema = z.object({
+const HashSchema = z.object({
   Sha256: z.string().optional(),
 });
 
-export const AnalysisTemplateArtifactMetadataSchema = z.object({
+const AnalysisTemplateArtifactMetadataSchema = z.object({
   EntryPointHash: HashSchema,
   AdditionalArtifactHashes: z.array(HashSchema).optional(),
 });
 
-export const SyntheticDataColumnPropertiesSchema = z.object({
+const SyntheticDataColumnPropertiesSchema = z.object({
   ColumnName: z.string().max(128).regex(
     new RegExp("^[a-z0-9_](([a-z0-9_]+-)*([a-z0-9_]+))?$"),
   ),
@@ -84,11 +93,11 @@ export const SyntheticDataColumnPropertiesSchema = z.object({
   IsPredictiveValue: z.boolean(),
 });
 
-export const ColumnClassificationDetailsSchema = z.object({
+const ColumnClassificationDetailsSchema = z.object({
   ColumnMapping: z.array(SyntheticDataColumnPropertiesSchema),
 });
 
-export const MLSyntheticDataParametersSchema = z.object({
+const MLSyntheticDataParametersSchema = z.object({
   Epsilon: z.number().min(0.0001).max(10),
   MaxMembershipInferenceAttackScore: z.number().min(0.5).max(1),
   ColumnClassification: ColumnClassificationDetailsSchema,
@@ -212,9 +221,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for CleanRooms AnalysisTemplate. Registered at `@swamp/aws/cleanrooms/analysis-template`. */
 export const model = {
   type: "@swamp/aws/cleanrooms/analysis-template",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -228,6 +238,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

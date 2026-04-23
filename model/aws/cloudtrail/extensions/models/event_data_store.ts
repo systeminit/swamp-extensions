@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudTrail EventDataStore (AWS::CloudTrail::EventDataStore).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AdvancedFieldSelectorSchema = z.object({
+const AdvancedFieldSelectorSchema = z.object({
   Field: z.string().min(1).max(1000).regex(new RegExp("([\\w|\\d|\\.|_]+)"))
     .describe(
       "A field in an event record on which to filter events to be logged. Supported fields include readOnly, eventCategory, eventSource (for management events), eventName, resources.type, and resources.ARN.",
@@ -43,7 +52,7 @@ export const AdvancedFieldSelectorSchema = z.object({
     ).optional(),
 });
 
-export const AdvancedEventSelectorSchema = z.object({
+const AdvancedEventSelectorSchema = z.object({
   Name: z.string().min(1).max(1000).describe(
     'An optional, descriptive name for an advanced event selector, such as "Log data events for only two S3 buckets".',
   ).optional(),
@@ -52,7 +61,7 @@ export const AdvancedEventSelectorSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe(
     "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -61,13 +70,13 @@ export const TagSchema = z.object({
   ),
 });
 
-export const InsightSelectorSchema = z.object({
+const InsightSelectorSchema = z.object({
   InsightType: z.string().describe(
     "The type of Insights to log on an event data store.",
   ).optional(),
 });
 
-export const ContextKeySelectorSchema = z.object({
+const ContextKeySelectorSchema = z.object({
   Type: z.enum(["RequestContext", "TagContext"]).describe(
     "Specifies the type of the event record field in ContextKeySelector. Valid values include RequestContext, TagContext.",
   ),
@@ -198,9 +207,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for CloudTrail EventDataStore. Registered at `@swamp/aws/cloudtrail/event-data-store`. */
 export const model = {
   type: "@swamp/aws/cloudtrail/event-data-store",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -214,6 +224,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

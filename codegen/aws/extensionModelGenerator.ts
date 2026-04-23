@@ -89,6 +89,24 @@ export function generateAwsExtensionModel(
   lines.push(`// deno-lint-ignore-file ${lintIgnores.join(" ")}`);
   lines.push("");
 
+  // Module-level JSDoc
+  const resourceDescription = typeNameToDescription(typeName);
+  lines.push(`/**`);
+  lines.push(
+    ` * Swamp extension model for ${resourceDescription} (${typeName}).`,
+  );
+  lines.push(` *`);
+  lines.push(
+    ` * Wraps the CloudFormation resource type as a swamp model so create,`,
+  );
+  lines.push(
+    ` * get, update, delete, and sync can be driven through \`swamp model\`.`,
+  );
+  lines.push(` *`);
+  lines.push(` * @module`);
+  lines.push(` */`);
+  lines.push("");
+
   // Imports. The `npm:` prefix is required so `deno doc --lint` can resolve
   // zod standalone — it doesn't read the package's deno.json import map.
   lines.push(`import { z } from "npm:zod@4.3.6";`);
@@ -175,6 +193,9 @@ export function generateAwsExtensionModel(
   const resourceDesc = typeNameToDescription(typeName);
 
   // Model export
+  lines.push(
+    `/** Swamp extension model for ${resourceDesc}. Registered at \`${modelType}\`. */`,
+  );
   lines.push(`export const model = {`);
   lines.push(`  type: "${modelType}",`);
   lines.push(`  version: "${version}",`);

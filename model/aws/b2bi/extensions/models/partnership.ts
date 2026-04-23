@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for B2BI Partnership (AWS::B2BI::Partnership).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const X12InterchangeControlHeadersSchema = z.object({
+const X12InterchangeControlHeadersSchema = z.object({
   SenderIdQualifier: z.string().min(2).max(2).regex(
     new RegExp("^[a-zA-Z0-9]*$"),
   ).optional(),
@@ -32,7 +41,7 @@ export const X12InterchangeControlHeadersSchema = z.object({
   ).optional(),
 });
 
-export const X12FunctionalGroupHeadersSchema = z.object({
+const X12FunctionalGroupHeadersSchema = z.object({
   ApplicationSenderCode: z.string().min(2).max(15).regex(
     new RegExp("^[a-zA-Z0-9 ]*$"),
   ).optional(),
@@ -44,7 +53,7 @@ export const X12FunctionalGroupHeadersSchema = z.object({
   ).optional(),
 });
 
-export const X12DelimitersSchema = z.object({
+const X12DelimitersSchema = z.object({
   ComponentSeparator: z.string().min(1).max(1).regex(
     new RegExp("^[!&'()*+,\\-./:;?=%@\\[\\]_{}|<>~^`\"]$"),
   ).optional(),
@@ -56,7 +65,7 @@ export const X12DelimitersSchema = z.object({
   ).optional(),
 });
 
-export const X12ControlNumbersSchema = z.object({
+const X12ControlNumbersSchema = z.object({
   StartingInterchangeControlNumber: z.number().min(1).max(999999999).optional(),
   StartingFunctionalGroupControlNumber: z.number().min(1).max(999999999)
     .optional(),
@@ -64,7 +73,7 @@ export const X12ControlNumbersSchema = z.object({
     .optional(),
 });
 
-export const X12OutboundEdiHeadersSchema = z.object({
+const X12OutboundEdiHeadersSchema = z.object({
   InterchangeControlHeaders: X12InterchangeControlHeadersSchema.optional(),
   FunctionalGroupHeaders: X12FunctionalGroupHeadersSchema.optional(),
   Delimiters: X12DelimitersSchema.optional(),
@@ -73,18 +82,18 @@ export const X12OutboundEdiHeadersSchema = z.object({
   Gs05TimeFormat: z.enum(["HHMM", "HHMMSS", "HHMMSSDD"]).optional(),
 });
 
-export const WrapOptionsSchema = z.object({
+const WrapOptionsSchema = z.object({
   WrapBy: z.enum(["SEGMENT", "ONE_LINE", "LINE_LENGTH"]).optional(),
   LineTerminator: z.enum(["CRLF", "LF", "CR"]).optional(),
   LineLength: z.number().min(1).optional(),
 });
 
-export const X12EnvelopeSchema = z.object({
+const X12EnvelopeSchema = z.object({
   Common: X12OutboundEdiHeadersSchema.optional(),
   WrapOptions: WrapOptionsSchema.optional(),
 });
 
-export const X12AcknowledgmentOptionsSchema = z.object({
+const X12AcknowledgmentOptionsSchema = z.object({
   FunctionalAcknowledgment: z.enum([
     "DO_NOT_GENERATE",
     "GENERATE_ALL_SEGMENTS",
@@ -93,15 +102,15 @@ export const X12AcknowledgmentOptionsSchema = z.object({
   TechnicalAcknowledgment: z.enum(["DO_NOT_GENERATE", "GENERATE_ALL_SEGMENTS"]),
 });
 
-export const X12InboundEdiOptionsSchema = z.object({
+const X12InboundEdiOptionsSchema = z.object({
   AcknowledgmentOptions: X12AcknowledgmentOptionsSchema.optional(),
 });
 
-export const InboundEdiOptionsSchema = z.object({
+const InboundEdiOptionsSchema = z.object({
   X12: X12InboundEdiOptionsSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -179,9 +188,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for B2BI Partnership. Registered at `@swamp/aws/b2bi/partnership`. */
 export const model = {
   type: "@swamp/aws/b2bi/partnership",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -195,6 +205,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

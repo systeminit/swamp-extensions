@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker Model (AWS::SageMaker::Model).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const RepositoryAuthConfigSchema = z.object({
+const RepositoryAuthConfigSchema = z.object({
   RepositoryCredentialsProviderArn: z.string().describe(
     "The Amazon Resource Name (ARN) of an AWS Lambda function that provides credentials to authenticate to the private Docker registry where your model image is hosted. For information about how to create an AWS Lambda function, see [Create a Lambda function with the console](https://docs.aws.amazon.com/lambda/latest/dg/getting-started-create-function.html) in the AWS Lambda Developer Guide",
   ),
 });
 
-export const ImageConfigSchema = z.object({
+const ImageConfigSchema = z.object({
   RepositoryAccessMode: z.enum(["Platform", "Vpc"]).describe(
     "Set this to one of the following values: Platform - The model image is hosted in Amazon ECR. Vpc - The model image is hosted in a private Docker registry in your VPC.",
   ),
@@ -27,19 +36,19 @@ export const ImageConfigSchema = z.object({
   ).optional(),
 });
 
-export const HubAccessConfigSchema = z.object({
+const HubAccessConfigSchema = z.object({
   HubContentArn: z.string().describe(
     "The ARN of the hub content for which deployment access is allowed.",
   ),
 });
 
-export const ModelAccessConfigSchema = z.object({
+const ModelAccessConfigSchema = z.object({
   AcceptEula: z.boolean().describe(
     "Specifies agreement to the model end-user license agreement (EULA). The `AcceptEula` value must be explicitly defined as `True` in order to accept the EULA that this model requires. You are responsible for reviewing and complying with any applicable license terms and making sure they are acceptable for your use case before downloading or using a model.",
   ),
 });
 
-export const S3DataSourceSchema = z.object({
+const S3DataSourceSchema = z.object({
   CompressionType: z.enum(["None", "Gzip"]).describe(
     "Specifies how the ML model data is prepared.",
   ),
@@ -57,19 +66,19 @@ export const S3DataSourceSchema = z.object({
   ),
 });
 
-export const ModelDataSourceSchema = z.object({
+const ModelDataSourceSchema = z.object({
   S3DataSource: S3DataSourceSchema.describe(
     "Specifies the S3 location of ML model data to deploy.",
   ),
 });
 
-export const MultiModelConfigSchema = z.object({
+const MultiModelConfigSchema = z.object({
   ModelCacheSetting: z.enum(["Enabled", "Disabled"]).describe(
     "Whether to cache models for a multi-model endpoint. By default, multi-model endpoints cache models so that a model does not have to be loaded into memory each time it is invoked. Some use cases do not benefit from model caching. For example, if an endpoint hosts a large number of models that are each invoked infrequently, the endpoint might perform better if you disable model caching. To disable model caching, set the value of this parameter to `Disabled`.",
   ).optional(),
 });
 
-export const ContainerDefinitionSchema = z.object({
+const ContainerDefinitionSchema = z.object({
   ContainerHostname: z.string().describe(
     "This parameter is ignored for models that contain only a PrimaryContainer. When a ContainerDefinition is part of an inference pipeline, the value of the parameter uniquely identifies the container for the purposes of logging and metrics. For information, see [Use Logs and Metrics to Monitor an Inference Pipeline](https://docs.aws.amazon.com/sagemaker/latest/dg/inference-pipeline-logs-metrics.html). If you don't specify a value for this parameter for a ContainerDefinition that is part of an inference pipeline, a unique name is automatically assigned based on the position of the ContainerDefinition in the pipeline. If you specify a value for the ContainerHostName for any ContainerDefinition that is part of an inference pipeline, you must specify a value for the ContainerHostName parameter of every ContainerDefinition in that pipeline.",
   ).optional(),
@@ -102,7 +111,7 @@ export const ContainerDefinitionSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe(
     "The tag key. Tag keys must be unique per resource.",
   ),
@@ -264,9 +273,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker Model. Registered at `@swamp/aws/sagemaker/model`. */
 export const model = {
   type: "@swamp/aws/sagemaker/model",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -280,6 +290,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

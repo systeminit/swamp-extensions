@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ElasticLoadBalancingV2 Listener (AWS::ElasticLoadBalancingV2::Listener).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ListenerAttributeSchema = z.object({
+const ListenerAttributeSchema = z.object({
   Value: z.string().describe("The value of the attribute.").optional(),
   Key: z.string().describe(
     "The name of the attribute. The following attribute is supported by Network Load Balancers, and Gateway Load Balancers. tcp.idle_timeout.seconds - The tcp idle timeout value, in seconds. The valid range is 60-6000 seconds. The default is 350 seconds. The following attributes are only supported by Application Load Balancers. routing.http.request.x_amzn_mtls_clientcert_serial_number.header_name - Enables you to modify the header name of the *X-Amzn-Mtls-Clientcert-Serial-Number* HTTP request header. routing.http.request.x_amzn_mtls_clientcert_issuer.header_name - Enables you to modify the header name of the *X-Amzn-Mtls-Clientcert-Issuer* HTTP request header. routing.http.request.x_amzn_mtls_clientcert_subject.header_name - Enables you to modify the header name of the *X-Amzn-Mtls-Clientcert-Subject* HTTP request header. routing.http.request.x_amzn_mtls_clientcert_validity.header_name - Enables you to modify the header name of the *X-Amzn-Mtls-Clientcert-Validity* HTTP request header. routing.http.request.x_amzn_mtls_clientcert_leaf.header_name - Enables you to modify the header name of the *X-Amzn-Mtls-Clientcert-Leaf* HTTP request header. routing.http.request.x_amzn_mtls_clientcert.header_name - Enables you to modify the header name of the *X-Amzn-Mtls-Clientcert* HTTP request header. routing.http.request.x_amzn_tls_version.header_name - Enables you to modify the header name of the *X-Amzn-Tls-Version* HTTP request header. routing.http.request.x_amzn_tls_cipher_suite.header_name - Enables you to modify the header name of the *X-Amzn-Tls-Cipher-Suite* HTTP request header. routing.http.response.server.enabled - Enables you to allow or remove the HTTP response server header. routing.http.response.strict_transport_security.header_value - Informs browsers that the site should only be accessed using HTTPS, and that any future attempts to access it using HTTP should automatically be converted to HTTPS. routing.http.response.access_control_allow_origin.header_value - Specifies which origins are allowed to access the server. routing.http.response.access_control_allow_methods.header_value - Returns which HTTP methods are allowed when accessing the server from a different origin. routing.http.response.access_control_allow_headers.header_value - Specifies which headers can be used during the request. routing.http.response.access_control_allow_credentials.header_value - Indicates whether the browser should include credentials such as cookies or authentication when making requests. routing.http.response.access_control_expose_headers.header_value - Returns which headers the browser can expose to the requesting client. routing.http.response.access_control_max_age.header_value - Specifies how long the results of a preflight request can be cached, in seconds. routing.http.response.content_security_policy.header_value - Specifies restrictions enforced by the browser to help minimize the risk of certain types of security threats. routing.http.response.x_content_type_options.header_value - Indicates whether the MIME types advertised in the *Content-Type* headers should be followed and not be changed. routing.http.response.x_frame_options.header_value - Indicates whether the browser is allowed to render a page in a *frame*, *iframe*, *embed* or *object*.",
   ).optional(),
 });
 
-export const FixedResponseConfigSchema = z.object({
+const FixedResponseConfigSchema = z.object({
   ContentType: z.string().describe(
     "The content type. Valid Values: text/plain | text/css | text/html | application/javascript | application/json",
   ).optional(),
@@ -27,7 +36,7 @@ export const FixedResponseConfigSchema = z.object({
   MessageBody: z.string().describe("The message.").optional(),
 });
 
-export const AuthenticateCognitoConfigSchema = z.object({
+const AuthenticateCognitoConfigSchema = z.object({
   OnUnauthenticatedRequest: z.string().describe(
     "The behavior if the user is not authenticated. The following are possible values: deny`` - Return an HTTP 401 Unauthorized error. allow - Allow the request to be forwarded to the target. authenticate `` - Redirect the request to the IdP authorization endpoint. This is the default value.",
   ).optional(),
@@ -54,7 +63,7 @@ export const AuthenticateCognitoConfigSchema = z.object({
   ).optional(),
 });
 
-export const RedirectConfigSchema = z.object({
+const RedirectConfigSchema = z.object({
   Path: z.string().describe(
     'The absolute path, starting with the leading "/". This component is not percent-encoded. The path can contain #{host}, #{path}, and #{port}.',
   ).optional(),
@@ -75,7 +84,7 @@ export const RedirectConfigSchema = z.object({
   ),
 });
 
-export const JwtValidationActionAdditionalClaimSchema = z.object({
+const JwtValidationActionAdditionalClaimSchema = z.object({
   Format: z.string().describe("The format of the claim value."),
   Values: z.array(z.string()).describe(
     "The claim value. The maximum size of the list is 10. Each value can be up to 256 characters in length. If the format is space-separated-values, the values can't include spaces.",
@@ -85,14 +94,14 @@ export const JwtValidationActionAdditionalClaimSchema = z.object({
   ),
 });
 
-export const JwtValidationConfigSchema = z.object({
+const JwtValidationConfigSchema = z.object({
   JwksEndpoint: z.string(),
   Issuer: z.string(),
   AdditionalClaims: z.array(JwtValidationActionAdditionalClaimSchema)
     .optional(),
 });
 
-export const TargetGroupStickinessConfigSchema = z.object({
+const TargetGroupStickinessConfigSchema = z.object({
   Enabled: z.boolean().describe(
     "Indicates whether target group stickiness is enabled.",
   ).optional(),
@@ -101,7 +110,7 @@ export const TargetGroupStickinessConfigSchema = z.object({
   ).optional(),
 });
 
-export const TargetGroupTupleSchema = z.object({
+const TargetGroupTupleSchema = z.object({
   TargetGroupArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the target group.",
   ).optional(),
@@ -109,7 +118,7 @@ export const TargetGroupTupleSchema = z.object({
     .optional(),
 });
 
-export const ForwardConfigSchema = z.object({
+const ForwardConfigSchema = z.object({
   TargetGroupStickinessConfig: TargetGroupStickinessConfigSchema.describe(
     "Information about the target group stickiness for a rule.",
   ).optional(),
@@ -118,7 +127,7 @@ export const ForwardConfigSchema = z.object({
   ).optional(),
 });
 
-export const AuthenticateOidcConfigSchema = z.object({
+const AuthenticateOidcConfigSchema = z.object({
   OnUnauthenticatedRequest: z.string().describe(
     "The behavior if the user is not authenticated. The following are possible values: deny`` - Return an HTTP 401 Unauthorized error. allow - Allow the request to be forwarded to the target. authenticate `` - Redirect the request to the IdP authorization endpoint. This is the default value.",
   ).optional(),
@@ -155,7 +164,7 @@ export const AuthenticateOidcConfigSchema = z.object({
   ).optional(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   Order: z.number().int().describe(
     "The order for the action. This value is required for rules with multiple actions. The action with the lowest value for order is performed first.",
   ).optional(),
@@ -183,7 +192,7 @@ export const ActionSchema = z.object({
   ).optional(),
 });
 
-export const CertificateSchema = z.object({
+const CertificateSchema = z.object({
   CertificateArn: z.string().describe(
     "The Amazon Resource Name (ARN) of the certificate.",
   ).optional(),
@@ -297,9 +306,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ElasticLoadBalancingV2 Listener. Registered at `@swamp/aws/elasticloadbalancingv2/listener`. */
 export const model = {
   type: "@swamp/aws/elasticloadbalancingv2/listener",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -318,6 +328,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.19.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

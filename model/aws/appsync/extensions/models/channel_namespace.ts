@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppSync ChannelNamespace (AWS::AppSync::ChannelNamespace).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AuthModeSchema = z.object({
+const AuthModeSchema = z.object({
   AuthType: z.enum([
     "AMAZON_COGNITO_USER_POOLS",
     "AWS_IAM",
@@ -22,7 +31,7 @@ export const AuthModeSchema = z.object({
   ]).describe("Security configuration for your AppSync API.").optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[ a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -34,20 +43,20 @@ export const TagSchema = z.object({
     ),
 });
 
-export const LambdaConfigSchema = z.object({
+const LambdaConfigSchema = z.object({
   InvokeType: z.enum(["REQUEST_RESPONSE", "EVENT"]).describe(
     "Invocation type for direct lambda integrations.",
   ),
 });
 
-export const IntegrationSchema = z.object({
+const IntegrationSchema = z.object({
   DataSourceName: z.string().min(1).max(512).regex(
     new RegExp("([_A-Za-z][_0-9A-Za-z]{0,511})?"),
   ).describe("Data source to invoke for this integration."),
   LambdaConfig: LambdaConfigSchema.optional(),
 });
 
-export const HandlerConfigSchema = z.object({
+const HandlerConfigSchema = z.object({
   Behavior: z.enum(["CODE", "DIRECT"]).describe(
     "Integration behavior for a handler configuration.",
   ),
@@ -131,9 +140,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for AppSync ChannelNamespace. Registered at `@swamp/aws/appsync/channel-namespace`. */
 export const model = {
   type: "@swamp/aws/appsync/channel-namespace",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -147,6 +157,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

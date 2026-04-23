@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker InferenceComponent (AWS::SageMaker::InferenceComponent).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DeployedImageSchema = z.object({
+const DeployedImageSchema = z.object({
   SpecifiedImage: z.string().max(255).regex(new RegExp("[\\S]+")).describe(
     "The image to use for the container that will be materialized for the inference component",
   ).optional(),
@@ -22,7 +31,7 @@ export const DeployedImageSchema = z.object({
   ResolutionTime: z.string().optional(),
 });
 
-export const InferenceComponentContainerSpecificationSchema = z.object({
+const InferenceComponentContainerSpecificationSchema = z.object({
   DeployedImage: DeployedImageSchema.optional(),
   Image: z.string().max(255).regex(new RegExp("[\\S]+")).describe(
     "The image to use for the container that will be materialized for the inference component",
@@ -36,7 +45,7 @@ export const InferenceComponentContainerSpecificationSchema = z.object({
   ).describe("Environment variables to specify on the container").optional(),
 });
 
-export const InferenceComponentStartupParametersSchema = z.object({
+const InferenceComponentStartupParametersSchema = z.object({
   ModelDataDownloadTimeoutInSeconds: z.number().int().min(60).max(3600)
     .optional(),
   ContainerStartupHealthCheckTimeoutInSeconds: z.number().int().min(60).max(
@@ -44,21 +53,21 @@ export const InferenceComponentStartupParametersSchema = z.object({
   ).optional(),
 });
 
-export const InferenceComponentComputeResourceRequirementsSchema = z.object({
+const InferenceComponentComputeResourceRequirementsSchema = z.object({
   NumberOfCpuCoresRequired: z.number().min(0.25).optional(),
   NumberOfAcceleratorDevicesRequired: z.number().min(1).optional(),
   MinMemoryRequiredInMb: z.number().int().min(128).optional(),
   MaxMemoryRequiredInMb: z.number().int().min(128).optional(),
 });
 
-export const InferenceComponentCapacitySizeSchema = z.object({
+const InferenceComponentCapacitySizeSchema = z.object({
   Type: z.enum(["COPY_COUNT", "CAPACITY_PERCENT"]),
   Value: z.number().int().describe(
     "The number of copies for the inference component",
   ),
 });
 
-export const InferenceComponentRollingUpdatePolicySchema = z.object({
+const InferenceComponentRollingUpdatePolicySchema = z.object({
   MaximumBatchSize: InferenceComponentCapacitySizeSchema.describe(
     "Capacity size configuration for the inference component",
   ).optional(),
@@ -70,15 +79,15 @@ export const InferenceComponentRollingUpdatePolicySchema = z.object({
     .optional(),
 });
 
-export const AlarmSchema = z.object({
+const AlarmSchema = z.object({
   AlarmName: z.string().min(1).max(255).regex(new RegExp("^(?!\\s*$).+")),
 });
 
-export const AutoRollbackConfigurationSchema = z.object({
+const AutoRollbackConfigurationSchema = z.object({
   Alarms: z.array(AlarmSchema),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -",
   ),
@@ -213,9 +222,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for SageMaker InferenceComponent. Registered at `@swamp/aws/sagemaker/inference-component`. */
 export const model = {
   type: "@swamp/aws/sagemaker/inference-component",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -229,6 +239,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

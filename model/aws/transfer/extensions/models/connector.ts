@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Transfer Connector (AWS::Transfer::Connector).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ConnectorAsyncMdnConfigSchema = z.object({
+const ConnectorAsyncMdnConfigSchema = z.object({
   Url: z.string().describe("URL of the server to receive the MDN response on"),
   ServerIds: z.array(
     z.string().min(19).max(19).regex(new RegExp("^s-([0-9a-f]{17})$")),
   ),
 });
 
-export const ConnectorVpcLatticeEgressConfigSchema = z.object({
+const ConnectorVpcLatticeEgressConfigSchema = z.object({
   ResourceConfigurationArn: z.string().min(1).max(2048).regex(
     new RegExp(
       "^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}$",
@@ -30,7 +39,7 @@ export const ConnectorVpcLatticeEgressConfigSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The name assigned to the tag that you create.",
   ),
@@ -243,9 +252,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Transfer Connector. Registered at `@swamp/aws/transfer/connector`. */
 export const model = {
   type: "@swamp/aws/transfer/connector",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -265,6 +275,16 @@ export const model = {
     {
       toVersion: "2026.04.19.1",
       description: "Added: IpAddressType",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

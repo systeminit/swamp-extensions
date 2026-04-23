@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EntityResolution IdNamespace (AWS::EntityResolution::IdNamespace).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IdNamespaceInputSourceSchema = z.object({
+const IdNamespaceInputSourceSchema = z.object({
   InputSourceARN: z.string().regex(
     new RegExp(
       "^arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(matchingworkflow/[a-zA-Z_0-9-]{1,255})$|^arn:(aws|aws-us-gov|aws-cn):glue:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(table/[a-zA-Z_0-9-]{1,255}/[a-zA-Z_0-9-]{1,255})$",
@@ -22,7 +31,7 @@ export const IdNamespaceInputSourceSchema = z.object({
     .optional(),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   RuleName: z.string().min(0).max(255).regex(
     new RegExp("^[a-zA-Z_0-9- \\t]*$"),
   ),
@@ -31,7 +40,7 @@ export const RuleSchema = z.object({
   ),
 });
 
-export const NamespaceRuleBasedPropertiesSchema = z.object({
+const NamespaceRuleBasedPropertiesSchema = z.object({
   Rules: z.array(RuleSchema).optional(),
   RuleDefinitionTypes: z.array(z.enum(["SOURCE", "TARGET"])).optional(),
   AttributeMatchingModel: z.enum(["ONE_TO_ONE", "MANY_TO_MANY"]).optional(),
@@ -40,7 +49,7 @@ export const NamespaceRuleBasedPropertiesSchema = z.object({
   ).optional(),
 });
 
-export const NamespaceProviderPropertiesSchema = z.object({
+const NamespaceProviderPropertiesSchema = z.object({
   ProviderServiceArn: z.string().min(20).max(255).regex(
     new RegExp(
       "^arn:(aws|aws-us-gov|aws-cn):(entityresolution):([a-z]{2}-[a-z]{1,10}-[0-9])::providerservice/([a-zA-Z0-9_-]{1,255})/([a-zA-Z0-9_-]{1,255})$",
@@ -51,13 +60,13 @@ export const NamespaceProviderPropertiesSchema = z.object({
   ).optional(),
 });
 
-export const IdNamespaceIdMappingWorkflowPropertiesSchema = z.object({
+const IdNamespaceIdMappingWorkflowPropertiesSchema = z.object({
   IdMappingType: z.enum(["PROVIDER", "RULE_BASED"]),
   RuleBasedProperties: NamespaceRuleBasedPropertiesSchema.optional(),
   ProviderProperties: NamespaceProviderPropertiesSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -119,9 +128,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for EntityResolution IdNamespace. Registered at `@swamp/aws/entityresolution/id-namespace`. */
 export const model = {
   type: "@swamp/aws/entityresolution/id-namespace",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -135,6 +145,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

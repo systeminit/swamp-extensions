@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Bedrock DataSource (AWS::Bedrock::DataSource).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const S3DataSourceConfigurationSchema = z.object({
+const S3DataSourceConfigurationSchema = z.object({
   BucketArn: z.string().min(1).max(2048).regex(
     new RegExp(
       "^arn:aws(-cn|-us-gov|-eusc|-iso(-[b-f])?)?:s3:::[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
@@ -26,7 +35,7 @@ export const S3DataSourceConfigurationSchema = z.object({
   ).describe("The account ID for the owner of the S3 bucket.").optional(),
 });
 
-export const ConfluenceSourceConfigurationSchema = z.object({
+const ConfluenceSourceConfigurationSchema = z.object({
   HostUrl: z.string().min(1).max(2048).regex(
     new RegExp("^https://[A-Za-z0-9][^\\s]*$"),
   ).describe("The Confluence host URL or instance URL."),
@@ -45,7 +54,7 @@ export const ConfluenceSourceConfigurationSchema = z.object({
   ),
 });
 
-export const PatternObjectFilterSchema = z.object({
+const PatternObjectFilterSchema = z.object({
   ObjectType: z.string().min(1).max(50).describe(
     "The supported object type or content type of the data source.",
   ),
@@ -57,24 +66,24 @@ export const PatternObjectFilterSchema = z.object({
   ).optional(),
 });
 
-export const PatternObjectFilterConfigurationSchema = z.object({
+const PatternObjectFilterConfigurationSchema = z.object({
   Filters: z.array(PatternObjectFilterSchema).describe("Contains information"),
 });
 
-export const CrawlFilterConfigurationSchema = z.object({
+const CrawlFilterConfigurationSchema = z.object({
   Type: z.enum(["PATTERN"]).describe("The crawl filter type."),
   PatternObjectFilter: PatternObjectFilterConfigurationSchema.describe(
     "The configuration of specific filters applied to your data source content. You can filter out or include certain content.",
   ).optional(),
 });
 
-export const ConfluenceCrawlerConfigurationSchema = z.object({
+const ConfluenceCrawlerConfigurationSchema = z.object({
   FilterConfiguration: CrawlFilterConfigurationSchema.describe(
     "The type of filtering that you want to apply to certain objects or content of the data source. For example, the PATTERN type is regular expression patterns you can apply to filter your content.",
   ).optional(),
 });
 
-export const ConfluenceDataSourceConfigurationSchema = z.object({
+const ConfluenceDataSourceConfigurationSchema = z.object({
   SourceConfiguration: ConfluenceSourceConfigurationSchema.describe(
     "The endpoint information to connect to your Confluence data source.",
   ),
@@ -83,7 +92,7 @@ export const ConfluenceDataSourceConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SalesforceSourceConfigurationSchema = z.object({
+const SalesforceSourceConfigurationSchema = z.object({
   HostUrl: z.string().min(1).max(2048).regex(
     new RegExp("^https://[A-Za-z0-9][^\\s]*$"),
   ).describe("The Salesforce host URL or instance URL."),
@@ -99,13 +108,13 @@ export const SalesforceSourceConfigurationSchema = z.object({
   ),
 });
 
-export const SalesforceCrawlerConfigurationSchema = z.object({
+const SalesforceCrawlerConfigurationSchema = z.object({
   FilterConfiguration: CrawlFilterConfigurationSchema.describe(
     "The type of filtering that you want to apply to certain objects or content of the data source. For example, the PATTERN type is regular expression patterns you can apply to filter your content.",
   ).optional(),
 });
 
-export const SalesforceDataSourceConfigurationSchema = z.object({
+const SalesforceDataSourceConfigurationSchema = z.object({
   SourceConfiguration: SalesforceSourceConfigurationSchema.describe(
     "The endpoint information to connect to your Salesforce data source.",
   ),
@@ -114,7 +123,7 @@ export const SalesforceDataSourceConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SharePointSourceConfigurationSchema = z.object({
+const SharePointSourceConfigurationSchema = z.object({
   SiteUrls: z.array(
     z.string().regex(new RegExp("^https://[A-Za-z0-9][^\\s]*$")),
   ).describe("A list of one or more SharePoint site URLs."),
@@ -144,13 +153,13 @@ export const SharePointSourceConfigurationSchema = z.object({
   ),
 });
 
-export const SharePointCrawlerConfigurationSchema = z.object({
+const SharePointCrawlerConfigurationSchema = z.object({
   FilterConfiguration: CrawlFilterConfigurationSchema.describe(
     "The type of filtering that you want to apply to certain objects or content of the data source. For example, the PATTERN type is regular expression patterns you can apply to filter your content.",
   ).optional(),
 });
 
-export const SharePointDataSourceConfigurationSchema = z.object({
+const SharePointDataSourceConfigurationSchema = z.object({
   SourceConfiguration: SharePointSourceConfigurationSchema.describe(
     "The endpoint information to connect to your SharePoint data source.",
   ),
@@ -159,21 +168,21 @@ export const SharePointDataSourceConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SeedUrlSchema = z.object({
+const SeedUrlSchema = z.object({
   Url: z.string().regex(new RegExp("^https?://[A-Za-z0-9][^\\s]*$")).describe(
     "A web url.",
   ),
 });
 
-export const UrlConfigurationSchema = z.object({
+const UrlConfigurationSchema = z.object({
   SeedUrls: z.array(SeedUrlSchema).describe("A list of web urls."),
 });
 
-export const WebSourceConfigurationSchema = z.object({
+const WebSourceConfigurationSchema = z.object({
   UrlConfiguration: UrlConfigurationSchema.describe("A url configuration."),
 });
 
-export const WebCrawlerLimitsSchema = z.object({
+const WebCrawlerLimitsSchema = z.object({
   RateLimit: z.number().int().min(1).max(300).describe(
     "Rate of web URLs retrieved per minute.",
   ).optional(),
@@ -182,7 +191,7 @@ export const WebCrawlerLimitsSchema = z.object({
   ).optional(),
 });
 
-export const WebCrawlerConfigurationSchema = z.object({
+const WebCrawlerConfigurationSchema = z.object({
   CrawlerLimits: WebCrawlerLimitsSchema.describe(
     "Limit settings for the web crawler.",
   ).optional(),
@@ -200,7 +209,7 @@ export const WebCrawlerConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const WebDataSourceConfigurationSchema = z.object({
+const WebDataSourceConfigurationSchema = z.object({
   SourceConfiguration: WebSourceConfigurationSchema.describe(
     "A web source configuration.",
   ),
@@ -209,7 +218,7 @@ export const WebDataSourceConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const FixedSizeChunkingConfigurationSchema = z.object({
+const FixedSizeChunkingConfigurationSchema = z.object({
   MaxTokens: z.number().int().min(1).describe(
     "The maximum number of tokens to include in a chunk.",
   ),
@@ -218,13 +227,13 @@ export const FixedSizeChunkingConfigurationSchema = z.object({
   ),
 });
 
-export const HierarchicalChunkingLevelConfigurationSchema = z.object({
+const HierarchicalChunkingLevelConfigurationSchema = z.object({
   MaxTokens: z.number().int().min(1).max(8192).describe(
     "The maximum number of tokens that a chunk can contain in this layer.",
   ),
 });
 
-export const HierarchicalChunkingConfigurationSchema = z.object({
+const HierarchicalChunkingConfigurationSchema = z.object({
   LevelConfigurations: z.array(HierarchicalChunkingLevelConfigurationSchema)
     .describe("Token settings for each layer."),
   OverlapTokens: z.number().int().min(1).describe(
@@ -232,7 +241,7 @@ export const HierarchicalChunkingConfigurationSchema = z.object({
   ),
 });
 
-export const SemanticChunkingConfigurationSchema = z.object({
+const SemanticChunkingConfigurationSchema = z.object({
   BreakpointPercentileThreshold: z.number().int().min(50).max(99).describe(
     "The dissimilarity threshold for splitting chunks.",
   ),
@@ -242,7 +251,7 @@ export const SemanticChunkingConfigurationSchema = z.object({
   ),
 });
 
-export const ChunkingConfigurationSchema = z.object({
+const ChunkingConfigurationSchema = z.object({
   ChunkingStrategy: z.enum(["FIXED_SIZE", "NONE", "HIERARCHICAL", "SEMANTIC"])
     .describe(
       "Knowledge base can split your source data into chunks. A chunk refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried. You have the following options for chunking your data. If you opt for NONE, then you may want to pre-process your files by splitting them up such that each file corresponds to a chunk.",
@@ -259,16 +268,16 @@ export const ChunkingConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const S3LocationSchema = z.object({
+const S3LocationSchema = z.object({
   URI: z.string().min(1).max(2048).regex(new RegExp("^s3://.{1,128}$"))
     .describe("The location's URI"),
 });
 
-export const IntermediateStorageSchema = z.object({
+const IntermediateStorageSchema = z.object({
   S3Location: S3LocationSchema.describe("An Amazon S3 location."),
 });
 
-export const TransformationLambdaConfigurationSchema = z.object({
+const TransformationLambdaConfigurationSchema = z.object({
   LambdaArn: z.string().min(0).max(2048).regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$",
@@ -276,12 +285,12 @@ export const TransformationLambdaConfigurationSchema = z.object({
   ).describe("The function's ARN identifier."),
 });
 
-export const TransformationFunctionSchema = z.object({
+const TransformationFunctionSchema = z.object({
   TransformationLambdaConfiguration: TransformationLambdaConfigurationSchema
     .describe("A Lambda function that processes documents."),
 });
 
-export const TransformationSchema = z.object({
+const TransformationSchema = z.object({
   StepToApply: z.enum(["POST_CHUNKING"]).describe(
     "When the service applies the transformation.",
   ),
@@ -290,7 +299,7 @@ export const TransformationSchema = z.object({
   ),
 });
 
-export const CustomTransformationConfigurationSchema = z.object({
+const CustomTransformationConfigurationSchema = z.object({
   IntermediateStorage: IntermediateStorageSchema.describe(
     "A location for storing content from data sources temporarily as it is processed by custom components in the ingestion pipeline.",
   ),
@@ -299,13 +308,13 @@ export const CustomTransformationConfigurationSchema = z.object({
   ),
 });
 
-export const ParsingPromptSchema = z.object({
+const ParsingPromptSchema = z.object({
   ParsingPromptText: z.string().min(1).max(10000).describe(
     "Instructions for interpreting the contents of a document.",
   ),
 });
 
-export const BedrockFoundationModelConfigurationSchema = z.object({
+const BedrockFoundationModelConfigurationSchema = z.object({
   ModelArn: z.string().min(1).max(2048).regex(
     new RegExp(
       "^(arn:aws(-cn|-us-gov|-eusc|-iso(-[b-f])?)?:(bedrock):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-zA-Z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$",
@@ -319,13 +328,13 @@ export const BedrockFoundationModelConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const BedrockDataAutomationConfigurationSchema = z.object({
+const BedrockDataAutomationConfigurationSchema = z.object({
   ParsingModality: z.enum(["MULTIMODAL"]).describe(
     "Determine how will parsed content be stored.",
   ).optional(),
 });
 
-export const ParsingConfigurationSchema = z.object({
+const ParsingConfigurationSchema = z.object({
   ParsingStrategy: z.enum([
     "BEDROCK_FOUNDATION_MODEL",
     "BEDROCK_DATA_AUTOMATION",
@@ -340,26 +349,25 @@ export const ParsingConfigurationSchema = z.object({
     ).optional(),
 });
 
-export const EnrichmentStrategyConfigurationSchema = z.object({
+const EnrichmentStrategyConfigurationSchema = z.object({
   Method: z.enum(["CHUNK_ENTITY_EXTRACTION"]).describe(
     "Enrichment Strategy method.",
   ),
 });
 
-export const BedrockFoundationModelContextEnrichmentConfigurationSchema = z
-  .object({
-    EnrichmentStrategyConfiguration: EnrichmentStrategyConfigurationSchema
-      .describe(
-        "Strategy to be used when using Bedrock Foundation Model for Context Enrichment.",
-      ),
-    ModelArn: z.string().min(1).max(2048).regex(
-      new RegExp(
-        "^(arn:aws(-cn|-us-gov|-eusc|-iso(-[b-f])?)?:(bedrock):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-zA-Z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$",
-      ),
-    ).describe("The model's ARN."),
-  });
+const BedrockFoundationModelContextEnrichmentConfigurationSchema = z.object({
+  EnrichmentStrategyConfiguration: EnrichmentStrategyConfigurationSchema
+    .describe(
+      "Strategy to be used when using Bedrock Foundation Model for Context Enrichment.",
+    ),
+  ModelArn: z.string().min(1).max(2048).regex(
+    new RegExp(
+      "^(arn:aws(-cn|-us-gov|-eusc|-iso(-[b-f])?)?:(bedrock):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-zA-Z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$",
+    ),
+  ).describe("The model's ARN."),
+});
 
-export const ContextEnrichmentConfigurationSchema = z.object({
+const ContextEnrichmentConfigurationSchema = z.object({
   Type: z.enum(["BEDROCK_FOUNDATION_MODEL"]).describe(
     "Enrichment type to be used for the vector database.",
   ),
@@ -542,9 +550,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Bedrock DataSource. Registered at `@swamp/aws/bedrock/data-source`. */
 export const model = {
   type: "@swamp/aws/bedrock/data-source",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -558,6 +567,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

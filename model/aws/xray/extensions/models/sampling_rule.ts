@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for XRay SamplingRule (AWS::XRay::SamplingRule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SamplingRateBoostSchema = z.object({
+const SamplingRateBoostSchema = z.object({
   MaxRate: z.number().min(0).max(1).describe(
     "The maximum sampling rate X-Ray will apply when it detects anomalies. X-Ray determines the appropriate rate between your baseline and the maximum, depending on anomaly activity.",
   ),
@@ -21,7 +30,7 @@ export const SamplingRateBoostSchema = z.object({
   ),
 });
 
-export const SamplingRuleSchema = z.object({
+const SamplingRuleSchema = z.object({
   Attributes: z.record(z.string(), z.string()).describe(
     "Matches attributes derived from the request.",
   ).optional(),
@@ -57,7 +66,7 @@ export const SamplingRuleSchema = z.object({
   SamplingRateBoost: SamplingRateBoostSchema.optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe("The key name of the tag."),
   Value: z.string().describe("The value for the tag."),
 });
@@ -281,9 +290,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for XRay SamplingRule. Registered at `@swamp/aws/xray/sampling-rule`. */
 export const model = {
   type: "@swamp/aws/xray/sampling-rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -297,6 +307,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

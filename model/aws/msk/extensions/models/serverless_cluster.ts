@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MSK ServerlessCluster (AWS::MSK::ServerlessCluster).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,16 +20,16 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const VpcConfigSchema = z.object({
+const VpcConfigSchema = z.object({
   SecurityGroups: z.array(z.string()).optional(),
   SubnetIds: z.array(z.string()),
 });
 
-export const IamSchema = z.object({
+const IamSchema = z.object({
   Enabled: z.boolean(),
 });
 
-export const SaslSchema = z.object({
+const SaslSchema = z.object({
   Iam: IamSchema,
 });
 
@@ -62,9 +71,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for MSK ServerlessCluster. Registered at `@swamp/aws/msk/serverless-cluster`. */
 export const model = {
   type: "@swamp/aws/msk/serverless-cluster",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -78,6 +88,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

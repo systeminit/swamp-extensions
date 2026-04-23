@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any no-control-regex
 
-import { z } from "zod";
+/**
+ * Swamp extension model for QuickSight Analysis (AWS::QuickSight::Analysis).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,28 +21,28 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const StringParameterSchema = z.object({
+const StringParameterSchema = z.object({
   Values: z.array(z.string()).describe("The values of a string parameter."),
   Name: z.string().regex(new RegExp("\\S")).describe(
     "A display name for a string parameter.",
   ),
 });
 
-export const DecimalParameterSchema = z.object({
+const DecimalParameterSchema = z.object({
   Values: z.array(z.number()).describe("The values for the decimal parameter."),
   Name: z.string().regex(new RegExp("\\S")).describe(
     "A display name for the decimal parameter.",
   ),
 });
 
-export const IntegerParameterSchema = z.object({
+const IntegerParameterSchema = z.object({
   Values: z.array(z.number()).describe("The values for the integer parameter."),
   Name: z.string().regex(new RegExp("\\S")).describe(
     "The name of the integer parameter.",
   ),
 });
 
-export const DateTimeParameterSchema = z.object({
+const DateTimeParameterSchema = z.object({
   Values: z.array(z.string()).describe(
     "The values for the date-time parameter.",
   ),
@@ -42,20 +51,20 @@ export const DateTimeParameterSchema = z.object({
   ),
 });
 
-export const DataSetReferenceSchema = z.object({
+const DataSetReferenceSchema = z.object({
   DataSetArn: z.string().describe("Dataset Amazon Resource Name (ARN)."),
   DataSetPlaceholder: z.string().regex(new RegExp("\\S")).describe(
     "Dataset placeholder.",
   ),
 });
 
-export const AnalysisSourceTemplateSchema = z.object({
+const AnalysisSourceTemplateSchema = z.object({
   DataSetReferences: z.array(DataSetReferenceSchema).describe(
     "The dataset references of the source template of an analysis.",
   ),
 });
 
-export const AssetOptionsSchema = z.object({
+const AssetOptionsSchema = z.object({
   Timezone: z.string().optional(),
   WeekStart: z.enum([
     "SUNDAY",
@@ -68,12 +77,12 @@ export const AssetOptionsSchema = z.object({
   ]).optional(),
 });
 
-export const ColumnIdentifierSchema = z.object({
+const ColumnIdentifierSchema = z.object({
   ColumnName: z.string().min(1).max(127),
   DataSetIdentifier: z.string().min(1).max(2048),
 });
 
-export const CustomFilterListConfigurationSchema = z.object({
+const CustomFilterListConfigurationSchema = z.object({
   CategoryValues: z.array(z.string().min(0).max(512)).optional(),
   NullOption: z.enum(["ALL_VALUES", "NULLS_ONLY", "NON_NULLS_ONLY"]),
   MatchOperator: z.enum([
@@ -87,7 +96,7 @@ export const CustomFilterListConfigurationSchema = z.object({
   SelectAllOptions: z.enum(["FILTER_ALL_VALUES"]).optional(),
 });
 
-export const CustomFilterConfigurationSchema = z.object({
+const CustomFilterConfigurationSchema = z.object({
   CategoryValue: z.string().min(0).max(512).optional(),
   ParameterName: z.string().min(1).max(2048).regex(new RegExp("^[a-zA-Z0-9]+$"))
     .optional(),
@@ -103,7 +112,7 @@ export const CustomFilterConfigurationSchema = z.object({
   SelectAllOptions: z.enum(["FILTER_ALL_VALUES"]).optional(),
 });
 
-export const FilterListConfigurationSchema = z.object({
+const FilterListConfigurationSchema = z.object({
   CategoryValues: z.array(z.string().min(0).max(512)).optional(),
   NullOption: z.enum(["ALL_VALUES", "NULLS_ONLY", "NON_NULLS_ONLY"]).optional(),
   MatchOperator: z.enum([
@@ -117,13 +126,13 @@ export const FilterListConfigurationSchema = z.object({
   SelectAllOptions: z.enum(["FILTER_ALL_VALUES"]).optional(),
 });
 
-export const CategoryFilterConfigurationSchema = z.object({
+const CategoryFilterConfigurationSchema = z.object({
   CustomFilterListConfiguration: CustomFilterListConfigurationSchema.optional(),
   CustomFilterConfiguration: CustomFilterConfigurationSchema.optional(),
   FilterListConfiguration: FilterListConfigurationSchema.optional(),
 });
 
-export const FontSizeSchema = z.object({
+const FontSizeSchema = z.object({
   Relative: z.enum(["EXTRA_SMALL", "SMALL", "MEDIUM", "LARGE", "EXTRA_LARGE"])
     .optional(),
   Absolute: z.string().describe(
@@ -131,11 +140,11 @@ export const FontSizeSchema = z.object({
   ).optional(),
 });
 
-export const FontWeightSchema = z.object({
+const FontWeightSchema = z.object({
   Name: z.enum(["NORMAL", "BOLD"]).optional(),
 });
 
-export const FontConfigurationSchema = z.object({
+const FontConfigurationSchema = z.object({
   FontFamily: z.string().optional(),
   FontStyle: z.enum(["NORMAL", "ITALIC"]).optional(),
   FontSize: FontSizeSchema.optional(),
@@ -144,23 +153,23 @@ export const FontConfigurationSchema = z.object({
   FontWeight: FontWeightSchema.optional(),
 });
 
-export const LabelOptionsSchema = z.object({
+const LabelOptionsSchema = z.object({
   CustomLabel: z.string().optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   FontConfiguration: FontConfigurationSchema.optional(),
 });
 
-export const SheetControlInfoIconLabelOptionsSchema = z.object({
+const SheetControlInfoIconLabelOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   InfoIconText: z.string().min(1).max(100).optional(),
 });
 
-export const SliderControlDisplayOptionsSchema = z.object({
+const SliderControlDisplayOptionsSchema = z.object({
   TitleOptions: LabelOptionsSchema.optional(),
   InfoIconLabelOptions: SheetControlInfoIconLabelOptionsSchema.optional(),
 });
 
-export const DefaultSliderControlOptionsSchema = z.object({
+const DefaultSliderControlOptionsSchema = z.object({
   Type: z.enum(["SINGLE_POINT", "RANGE"]).optional(),
   StepSize: z.number(),
   DisplayOptions: SliderControlDisplayOptionsSchema.optional(),
@@ -168,64 +177,64 @@ export const DefaultSliderControlOptionsSchema = z.object({
   MinimumValue: z.number(),
 });
 
-export const RelativeDateTimeControlDisplayOptionsSchema = z.object({
+const RelativeDateTimeControlDisplayOptionsSchema = z.object({
   TitleOptions: LabelOptionsSchema.optional(),
   InfoIconLabelOptions: SheetControlInfoIconLabelOptionsSchema.optional(),
   DateTimeFormat: z.string().min(1).max(128).optional(),
 });
 
-export const DefaultRelativeDateTimeControlOptionsSchema = z.object({
+const DefaultRelativeDateTimeControlOptionsSchema = z.object({
   DisplayOptions: RelativeDateTimeControlDisplayOptionsSchema.optional(),
   CommitMode: z.enum(["AUTO", "MANUAL"]).optional(),
 });
 
-export const TextControlPlaceholderOptionsSchema = z.object({
+const TextControlPlaceholderOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const TextFieldControlDisplayOptionsSchema = z.object({
+const TextFieldControlDisplayOptionsSchema = z.object({
   TitleOptions: LabelOptionsSchema.optional(),
   PlaceholderOptions: TextControlPlaceholderOptionsSchema.optional(),
   InfoIconLabelOptions: SheetControlInfoIconLabelOptionsSchema.optional(),
 });
 
-export const DefaultTextFieldControlOptionsSchema = z.object({
+const DefaultTextFieldControlOptionsSchema = z.object({
   DisplayOptions: TextFieldControlDisplayOptionsSchema.optional(),
 });
 
-export const TextAreaControlDisplayOptionsSchema = z.object({
+const TextAreaControlDisplayOptionsSchema = z.object({
   TitleOptions: LabelOptionsSchema.optional(),
   PlaceholderOptions: TextControlPlaceholderOptionsSchema.optional(),
   InfoIconLabelOptions: SheetControlInfoIconLabelOptionsSchema.optional(),
 });
 
-export const DefaultTextAreaControlOptionsSchema = z.object({
+const DefaultTextAreaControlOptionsSchema = z.object({
   Delimiter: z.string().min(1).max(2048).optional(),
   DisplayOptions: TextAreaControlDisplayOptionsSchema.optional(),
 });
 
-export const ListControlSelectAllOptionsSchema = z.object({
+const ListControlSelectAllOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const DropDownControlDisplayOptionsSchema = z.object({
+const DropDownControlDisplayOptionsSchema = z.object({
   TitleOptions: LabelOptionsSchema.optional(),
   SelectAllOptions: ListControlSelectAllOptionsSchema.optional(),
   InfoIconLabelOptions: SheetControlInfoIconLabelOptionsSchema.optional(),
 });
 
-export const FilterSelectableValuesSchema = z.object({
+const FilterSelectableValuesSchema = z.object({
   Values: z.array(z.string()).optional(),
 });
 
-export const DefaultFilterDropDownControlOptionsSchema = z.object({
+const DefaultFilterDropDownControlOptionsSchema = z.object({
   Type: z.enum(["MULTI_SELECT", "SINGLE_SELECT"]).optional(),
   DisplayOptions: DropDownControlDisplayOptionsSchema.optional(),
   CommitMode: z.enum(["AUTO", "MANUAL"]).optional(),
   SelectableValues: FilterSelectableValuesSchema.optional(),
 });
 
-export const DateTimePickerControlDisplayOptionsSchema = z.object({
+const DateTimePickerControlDisplayOptionsSchema = z.object({
   TitleOptions: LabelOptionsSchema.optional(),
   InfoIconLabelOptions: SheetControlInfoIconLabelOptionsSchema.optional(),
   HelperTextVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
@@ -233,30 +242,30 @@ export const DateTimePickerControlDisplayOptionsSchema = z.object({
   DateTimeFormat: z.string().min(1).max(128).optional(),
 });
 
-export const DefaultDateTimePickerControlOptionsSchema = z.object({
+const DefaultDateTimePickerControlOptionsSchema = z.object({
   Type: z.enum(["SINGLE_VALUED", "DATE_RANGE"]).optional(),
   DisplayOptions: DateTimePickerControlDisplayOptionsSchema.optional(),
   CommitMode: z.enum(["AUTO", "MANUAL"]).optional(),
 });
 
-export const ListControlSearchOptionsSchema = z.object({
+const ListControlSearchOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const ListControlDisplayOptionsSchema = z.object({
+const ListControlDisplayOptionsSchema = z.object({
   TitleOptions: LabelOptionsSchema.optional(),
   SearchOptions: ListControlSearchOptionsSchema.optional(),
   SelectAllOptions: ListControlSelectAllOptionsSchema.optional(),
   InfoIconLabelOptions: SheetControlInfoIconLabelOptionsSchema.optional(),
 });
 
-export const DefaultFilterListControlOptionsSchema = z.object({
+const DefaultFilterListControlOptionsSchema = z.object({
   Type: z.enum(["MULTI_SELECT", "SINGLE_SELECT"]).optional(),
   DisplayOptions: ListControlDisplayOptionsSchema.optional(),
   SelectableValues: FilterSelectableValuesSchema.optional(),
 });
 
-export const DefaultFilterControlOptionsSchema = z.object({
+const DefaultFilterControlOptionsSchema = z.object({
   DefaultSliderOptions: DefaultSliderControlOptionsSchema.optional(),
   DefaultRelativeDateTimeOptions: DefaultRelativeDateTimeControlOptionsSchema
     .optional(),
@@ -268,39 +277,39 @@ export const DefaultFilterControlOptionsSchema = z.object({
   DefaultListOptions: DefaultFilterListControlOptionsSchema.optional(),
 });
 
-export const DefaultFilterControlConfigurationSchema = z.object({
+const DefaultFilterControlConfigurationSchema = z.object({
   ControlOptions: DefaultFilterControlOptionsSchema,
   Title: z.string().min(1).max(2048),
 });
 
-export const CategoryInnerFilterSchema = z.object({
+const CategoryInnerFilterSchema = z.object({
   Configuration: CategoryFilterConfigurationSchema,
   Column: ColumnIdentifierSchema,
   DefaultFilterControlConfiguration: DefaultFilterControlConfigurationSchema
     .optional(),
 });
 
-export const InnerFilterSchema = z.object({
+const InnerFilterSchema = z.object({
   CategoryInnerFilter: CategoryInnerFilterSchema.optional(),
 });
 
-export const NestedFilterSchema = z.object({
+const NestedFilterSchema = z.object({
   Column: ColumnIdentifierSchema,
   InnerFilter: InnerFilterSchema,
   IncludeInnerSet: z.boolean(),
   FilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const AttributeAggregationFunctionSchema = z.object({
+const AttributeAggregationFunctionSchema = z.object({
   SimpleAttributeAggregation: z.enum(["UNIQUE_VALUE"]).optional(),
   ValueForMultipleValues: z.string().optional(),
 });
 
-export const PercentileAggregationSchema = z.object({
+const PercentileAggregationSchema = z.object({
   PercentileValue: z.number().min(0).max(100).optional(),
 });
 
-export const NumericalAggregationFunctionSchema = z.object({
+const NumericalAggregationFunctionSchema = z.object({
   PercentileAggregation: PercentileAggregationSchema.optional(),
   SimpleNumericalAggregation: z.enum([
     "SUM",
@@ -317,7 +326,7 @@ export const NumericalAggregationFunctionSchema = z.object({
   ]).optional(),
 });
 
-export const AggregationFunctionSchema = z.object({
+const AggregationFunctionSchema = z.object({
   AttributeAggregationFunction: AttributeAggregationFunctionSchema.optional(),
   DateAggregationFunction: z.enum(["COUNT", "DISTINCT_COUNT", "MIN", "MAX"])
     .optional(),
@@ -326,7 +335,7 @@ export const AggregationFunctionSchema = z.object({
     .optional(),
 });
 
-export const NumericEqualityFilterSchema = z.object({
+const NumericEqualityFilterSchema = z.object({
   AggregationFunction: AggregationFunctionSchema.optional(),
   Column: ColumnIdentifierSchema,
   Value: z.number().optional(),
@@ -340,13 +349,13 @@ export const NumericEqualityFilterSchema = z.object({
   FilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const NumericRangeFilterValueSchema = z.object({
+const NumericRangeFilterValueSchema = z.object({
   StaticValue: z.number().optional(),
   Parameter: z.string().min(1).max(2048).regex(new RegExp("^[a-zA-Z0-9]+$"))
     .optional(),
 });
 
-export const NumericRangeFilterSchema = z.object({
+const NumericRangeFilterSchema = z.object({
   AggregationFunction: AggregationFunctionSchema.optional(),
   Column: ColumnIdentifierSchema,
   IncludeMaximum: z.boolean().optional(),
@@ -360,19 +369,19 @@ export const NumericRangeFilterSchema = z.object({
   IncludeMinimum: z.boolean().optional(),
 });
 
-export const RollingDateConfigurationSchema = z.object({
+const RollingDateConfigurationSchema = z.object({
   Expression: z.string().min(1).max(4096),
   DataSetIdentifier: z.string().min(1).max(2048).optional(),
 });
 
-export const TimeRangeFilterValueSchema = z.object({
+const TimeRangeFilterValueSchema = z.object({
   RollingDate: RollingDateConfigurationSchema.optional(),
   StaticValue: z.string().optional(),
   Parameter: z.string().min(1).max(2048).regex(new RegExp("^[a-zA-Z0-9]+$"))
     .optional(),
 });
 
-export const ExcludePeriodConfigurationSchema = z.object({
+const ExcludePeriodConfigurationSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   Amount: z.number(),
   Granularity: z.enum([
@@ -388,7 +397,7 @@ export const ExcludePeriodConfigurationSchema = z.object({
   ]),
 });
 
-export const TimeRangeFilterSchema = z.object({
+const TimeRangeFilterSchema = z.object({
   RangeMinimumValue: TimeRangeFilterValueSchema.optional(),
   Column: ColumnIdentifierSchema,
   RangeMaximumValue: TimeRangeFilterValueSchema.optional(),
@@ -412,13 +421,13 @@ export const TimeRangeFilterSchema = z.object({
   ExcludePeriodConfiguration: ExcludePeriodConfigurationSchema.optional(),
 });
 
-export const AnchorDateConfigurationSchema = z.object({
+const AnchorDateConfigurationSchema = z.object({
   AnchorOption: z.enum(["NOW"]).optional(),
   ParameterName: z.string().min(1).max(2048).regex(new RegExp("^[a-zA-Z0-9]+$"))
     .optional(),
 });
 
-export const RelativeDatesFilterSchema = z.object({
+const RelativeDatesFilterSchema = z.object({
   RelativeDateValue: z.number().optional(),
   Column: ColumnIdentifierSchema,
   RelativeDateType: z.enum(["PREVIOUS", "THIS", "LAST", "NOW", "NEXT"]),
@@ -454,13 +463,13 @@ export const RelativeDatesFilterSchema = z.object({
   ExcludePeriodConfiguration: ExcludePeriodConfigurationSchema.optional(),
 });
 
-export const AggregationSortConfigurationSchema = z.object({
+const AggregationSortConfigurationSchema = z.object({
   AggregationFunction: AggregationFunctionSchema.optional(),
   SortDirection: z.enum(["ASC", "DESC"]),
   Column: ColumnIdentifierSchema,
 });
 
-export const TopBottomFilterSchema = z.object({
+const TopBottomFilterSchema = z.object({
   AggregationSortConfigurations: z.array(AggregationSortConfigurationSchema),
   Column: ColumnIdentifierSchema,
   TimeGranularity: z.enum([
@@ -482,7 +491,7 @@ export const TopBottomFilterSchema = z.object({
   FilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const TimeEqualityFilterSchema = z.object({
+const TimeEqualityFilterSchema = z.object({
   Column: ColumnIdentifierSchema,
   RollingDate: RollingDateConfigurationSchema.optional(),
   Value: z.string().optional(),
@@ -504,7 +513,7 @@ export const TimeEqualityFilterSchema = z.object({
   FilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const CategoryFilterSchema = z.object({
+const CategoryFilterSchema = z.object({
   Configuration: CategoryFilterConfigurationSchema,
   Column: ColumnIdentifierSchema,
   DefaultFilterControlConfiguration: DefaultFilterControlConfigurationSchema
@@ -512,7 +521,7 @@ export const CategoryFilterSchema = z.object({
   FilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   NestedFilter: NestedFilterSchema.optional(),
   NumericEqualityFilter: NumericEqualityFilterSchema.optional(),
   NumericRangeFilter: NumericRangeFilterSchema.optional(),
@@ -523,7 +532,7 @@ export const FilterSchema = z.object({
   CategoryFilter: CategoryFilterSchema.optional(),
 });
 
-export const SheetVisualScopingConfigurationSchema = z.object({
+const SheetVisualScopingConfigurationSchema = z.object({
   Scope: z.enum(["ALL_VISUALS", "SELECTED_VISUALS"]),
   SheetId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   VisualIds: z.array(
@@ -531,18 +540,18 @@ export const SheetVisualScopingConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SelectedSheetsFilterScopeConfigurationSchema = z.object({
+const SelectedSheetsFilterScopeConfigurationSchema = z.object({
   SheetVisualScopingConfigurations: z.array(
     SheetVisualScopingConfigurationSchema,
   ).optional(),
 });
 
-export const FilterScopeConfigurationSchema = z.object({
+const FilterScopeConfigurationSchema = z.object({
   AllSheets: z.string().optional(),
   SelectedSheets: SelectedSheetsFilterScopeConfigurationSchema.optional(),
 });
 
-export const FilterGroupSchema = z.object({
+const FilterGroupSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   Filters: z.array(FilterSchema),
   CrossDataset: z.enum(["ALL_DATASETS", "SINGLE_DATASET"]),
@@ -550,75 +559,75 @@ export const FilterGroupSchema = z.object({
   FilterGroupId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const QueryExecutionOptionsSchema = z.object({
+const QueryExecutionOptionsSchema = z.object({
   QueryExecutionMode: z.enum(["AUTO", "MANUAL"]).optional(),
 });
 
-export const StaticFileUrlSourceOptionsSchema = z.object({
+const StaticFileUrlSourceOptionsSchema = z.object({
   Url: z.string(),
 });
 
-export const StaticFileS3SourceOptionsSchema = z.object({
+const StaticFileS3SourceOptionsSchema = z.object({
   BucketName: z.string(),
   ObjectKey: z.string(),
   Region: z.string(),
 });
 
-export const StaticFileSourceSchema = z.object({
+const StaticFileSourceSchema = z.object({
   UrlOptions: StaticFileUrlSourceOptionsSchema.optional(),
   S3Options: StaticFileS3SourceOptionsSchema.optional(),
 });
 
-export const ImageStaticFileSchema = z.object({
+const ImageStaticFileSchema = z.object({
   StaticFileId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Source: StaticFileSourceSchema.optional(),
 });
 
-export const SpatialStaticFileSchema = z.object({
+const SpatialStaticFileSchema = z.object({
   StaticFileId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Source: StaticFileSourceSchema.optional(),
 });
 
-export const StaticFileSchema = z.object({
+const StaticFileSchema = z.object({
   ImageStaticFile: ImageStaticFileSchema.optional(),
   SpatialStaticFile: SpatialStaticFileSchema.optional(),
 });
 
-export const CalculatedFieldSchema = z.object({
+const CalculatedFieldSchema = z.object({
   Expression: z.string().min(1).max(32000),
   DataSetIdentifier: z.string().min(1).max(2048),
   Name: z.string().min(1).max(127),
 });
 
-export const DataSetIdentifierDeclarationSchema = z.object({
+const DataSetIdentifierDeclarationSchema = z.object({
   Identifier: z.string().min(1).max(2048),
   DataSetArn: z.string(),
 });
 
-export const NegativeValueConfigurationSchema = z.object({
+const NegativeValueConfigurationSchema = z.object({
   DisplayMode: z.enum(["POSITIVE", "NEGATIVE"]),
 });
 
-export const DecimalPlacesConfigurationSchema = z.object({
+const DecimalPlacesConfigurationSchema = z.object({
   DecimalPlaces: z.number().min(0).max(20),
 });
 
-export const NullValueFormatConfigurationSchema = z.object({
+const NullValueFormatConfigurationSchema = z.object({
   NullString: z.string().min(1).max(128),
 });
 
-export const ThousandSeparatorOptionsSchema = z.object({
+const ThousandSeparatorOptionsSchema = z.object({
   Symbol: z.enum(["COMMA", "DOT", "SPACE"]).optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   GroupingStyle: z.enum(["DEFAULT", "LAKHS"]).optional(),
 });
 
-export const NumericSeparatorConfigurationSchema = z.object({
+const NumericSeparatorConfigurationSchema = z.object({
   DecimalSeparator: z.enum(["COMMA", "DOT", "SPACE"]).optional(),
   ThousandsSeparator: ThousandSeparatorOptionsSchema.optional(),
 });
 
-export const NumberDisplayFormatConfigurationSchema = z.object({
+const NumberDisplayFormatConfigurationSchema = z.object({
   NegativeValueConfiguration: NegativeValueConfigurationSchema.optional(),
   DecimalPlacesConfiguration: DecimalPlacesConfigurationSchema.optional(),
   NumberScale: z.enum([
@@ -637,7 +646,7 @@ export const NumberDisplayFormatConfigurationSchema = z.object({
   Prefix: z.string().min(1).max(128).optional(),
 });
 
-export const CurrencyDisplayFormatConfigurationSchema = z.object({
+const CurrencyDisplayFormatConfigurationSchema = z.object({
   NegativeValueConfiguration: NegativeValueConfigurationSchema.optional(),
   DecimalPlacesConfiguration: DecimalPlacesConfigurationSchema.optional(),
   NumberScale: z.enum([
@@ -657,7 +666,7 @@ export const CurrencyDisplayFormatConfigurationSchema = z.object({
   Prefix: z.string().min(1).max(128).optional(),
 });
 
-export const PercentageDisplayFormatConfigurationSchema = z.object({
+const PercentageDisplayFormatConfigurationSchema = z.object({
   NegativeValueConfiguration: NegativeValueConfigurationSchema.optional(),
   DecimalPlacesConfiguration: DecimalPlacesConfigurationSchema.optional(),
   NullValueFormatConfiguration: NullValueFormatConfigurationSchema.optional(),
@@ -666,7 +675,7 @@ export const PercentageDisplayFormatConfigurationSchema = z.object({
   Prefix: z.string().min(1).max(128).optional(),
 });
 
-export const NumericFormatConfigurationSchema = z.object({
+const NumericFormatConfigurationSchema = z.object({
   NumberDisplayFormatConfiguration: NumberDisplayFormatConfigurationSchema
     .optional(),
   CurrencyDisplayFormatConfiguration: CurrencyDisplayFormatConfigurationSchema
@@ -675,80 +684,80 @@ export const NumericFormatConfigurationSchema = z.object({
     PercentageDisplayFormatConfigurationSchema.optional(),
 });
 
-export const NumberFormatConfigurationSchema = z.object({
+const NumberFormatConfigurationSchema = z.object({
   FormatConfiguration: NumericFormatConfigurationSchema.optional(),
 });
 
-export const DateTimeFormatConfigurationSchema = z.object({
+const DateTimeFormatConfigurationSchema = z.object({
   NumericFormatConfiguration: NumericFormatConfigurationSchema.optional(),
   NullValueFormatConfiguration: NullValueFormatConfigurationSchema.optional(),
   DateTimeFormat: z.string().min(1).max(128).optional(),
 });
 
-export const StringFormatConfigurationSchema = z.object({
+const StringFormatConfigurationSchema = z.object({
   NumericFormatConfiguration: NumericFormatConfigurationSchema.optional(),
   NullValueFormatConfiguration: NullValueFormatConfigurationSchema.optional(),
 });
 
-export const FormatConfigurationSchema = z.object({
+const FormatConfigurationSchema = z.object({
   NumberFormatConfiguration: NumberFormatConfigurationSchema.optional(),
   DateTimeFormatConfiguration: DateTimeFormatConfigurationSchema.optional(),
   StringFormatConfiguration: StringFormatConfigurationSchema.optional(),
 });
 
-export const CustomColorSchema = z.object({
+const CustomColorSchema = z.object({
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")),
   FieldValue: z.string().min(0).max(2048).optional(),
   SpecialValue: z.enum(["EMPTY", "NULL", "OTHER"]).optional(),
 });
 
-export const ColorsConfigurationSchema = z.object({
+const ColorsConfigurationSchema = z.object({
   CustomColors: z.array(CustomColorSchema).optional(),
 });
 
-export const ColumnConfigurationSchema = z.object({
+const ColumnConfigurationSchema = z.object({
   Role: z.enum(["DIMENSION", "MEASURE"]).optional(),
   FormatConfiguration: FormatConfigurationSchema.optional(),
   Column: ColumnIdentifierSchema,
   ColorsConfiguration: ColorsConfigurationSchema.optional(),
 });
 
-export const FreeFormLayoutScreenCanvasSizeOptionsSchema = z.object({
+const FreeFormLayoutScreenCanvasSizeOptionsSchema = z.object({
   OptimizedViewPortWidth: z.string().describe(
     "String based length that is composed of value and unit in px",
   ),
 });
 
-export const FreeFormLayoutCanvasSizeOptionsSchema = z.object({
+const FreeFormLayoutCanvasSizeOptionsSchema = z.object({
   ScreenCanvasSizeOptions: FreeFormLayoutScreenCanvasSizeOptionsSchema
     .optional(),
 });
 
-export const DefaultFreeFormLayoutConfigurationSchema = z.object({
+const DefaultFreeFormLayoutConfigurationSchema = z.object({
   CanvasSizeOptions: FreeFormLayoutCanvasSizeOptionsSchema,
 });
 
-export const GridLayoutScreenCanvasSizeOptionsSchema = z.object({
+const GridLayoutScreenCanvasSizeOptionsSchema = z.object({
   OptimizedViewPortWidth: z.string().describe(
     "String based length that is composed of value and unit in px",
   ).optional(),
   ResizeOption: z.enum(["FIXED", "RESPONSIVE"]),
 });
 
-export const GridLayoutCanvasSizeOptionsSchema = z.object({
+const GridLayoutCanvasSizeOptionsSchema = z.object({
   ScreenCanvasSizeOptions: GridLayoutScreenCanvasSizeOptionsSchema.optional(),
 });
 
-export const DefaultGridLayoutConfigurationSchema = z.object({
+const DefaultGridLayoutConfigurationSchema = z.object({
   CanvasSizeOptions: GridLayoutCanvasSizeOptionsSchema,
 });
 
-export const DefaultInteractiveLayoutConfigurationSchema = z.object({
+const DefaultInteractiveLayoutConfigurationSchema = z.object({
   FreeForm: DefaultFreeFormLayoutConfigurationSchema.optional(),
   Grid: DefaultGridLayoutConfigurationSchema.optional(),
 });
 
-export const SpacingSchema = z.object({
+const SpacingSchema = z.object({
   Left: z.string().describe(
     "String based length that is composed of value and unit",
   ).optional(),
@@ -763,7 +772,7 @@ export const SpacingSchema = z.object({
   ).optional(),
 });
 
-export const SectionBasedLayoutPaperCanvasSizeOptionsSchema = z.object({
+const SectionBasedLayoutPaperCanvasSizeOptionsSchema = z.object({
   PaperMargin: SpacingSchema.optional(),
   PaperSize: z.enum([
     "US_LETTER",
@@ -781,20 +790,20 @@ export const SectionBasedLayoutPaperCanvasSizeOptionsSchema = z.object({
   PaperOrientation: z.enum(["PORTRAIT", "LANDSCAPE"]).optional(),
 });
 
-export const SectionBasedLayoutCanvasSizeOptionsSchema = z.object({
+const SectionBasedLayoutCanvasSizeOptionsSchema = z.object({
   PaperCanvasSizeOptions: SectionBasedLayoutPaperCanvasSizeOptionsSchema
     .optional(),
 });
 
-export const DefaultSectionBasedLayoutConfigurationSchema = z.object({
+const DefaultSectionBasedLayoutConfigurationSchema = z.object({
   CanvasSizeOptions: SectionBasedLayoutCanvasSizeOptionsSchema,
 });
 
-export const DefaultPaginatedLayoutConfigurationSchema = z.object({
+const DefaultPaginatedLayoutConfigurationSchema = z.object({
   SectionBased: DefaultSectionBasedLayoutConfigurationSchema.optional(),
 });
 
-export const DefaultNewSheetConfigurationSchema = z.object({
+const DefaultNewSheetConfigurationSchema = z.object({
   SheetContentType: z.enum(["PAGINATED", "INTERACTIVE"]).optional(),
   InteractiveLayoutConfiguration: DefaultInteractiveLayoutConfigurationSchema
     .optional(),
@@ -802,11 +811,11 @@ export const DefaultNewSheetConfigurationSchema = z.object({
     .optional(),
 });
 
-export const AnalysisDefaultsSchema = z.object({
+const AnalysisDefaultsSchema = z.object({
   DefaultNewSheetConfiguration: DefaultNewSheetConfigurationSchema,
 });
 
-export const ParameterSliderControlSchema = z.object({
+const ParameterSliderControlSchema = z.object({
   ParameterControlId: z.string().min(1).max(512).regex(
     new RegExp("^[\\w\\-]+$"),
   ),
@@ -820,7 +829,7 @@ export const ParameterSliderControlSchema = z.object({
   MinimumValue: z.number(),
 });
 
-export const ParameterTextAreaControlSchema = z.object({
+const ParameterTextAreaControlSchema = z.object({
   ParameterControlId: z.string().min(1).max(512).regex(
     new RegExp("^[\\w\\-]+$"),
   ),
@@ -832,21 +841,21 @@ export const ParameterTextAreaControlSchema = z.object({
   Title: z.string().min(1).max(2048),
 });
 
-export const CascadingControlSourceSchema = z.object({
+const CascadingControlSourceSchema = z.object({
   SourceSheetControlId: z.string().optional(),
   ColumnToMatch: ColumnIdentifierSchema.optional(),
 });
 
-export const CascadingControlConfigurationSchema = z.object({
+const CascadingControlConfigurationSchema = z.object({
   SourceControls: z.array(CascadingControlSourceSchema).optional(),
 });
 
-export const ParameterSelectableValuesSchema = z.object({
+const ParameterSelectableValuesSchema = z.object({
   LinkToDataSetColumn: ColumnIdentifierSchema.optional(),
   Values: z.array(z.string()).optional(),
 });
 
-export const ParameterDropDownControlSchema = z.object({
+const ParameterDropDownControlSchema = z.object({
   ParameterControlId: z.string().min(1).max(512).regex(
     new RegExp("^[\\w\\-]+$"),
   ),
@@ -861,7 +870,7 @@ export const ParameterDropDownControlSchema = z.object({
   SelectableValues: ParameterSelectableValuesSchema.optional(),
 });
 
-export const ParameterTextFieldControlSchema = z.object({
+const ParameterTextFieldControlSchema = z.object({
   ParameterControlId: z.string().min(1).max(512).regex(
     new RegExp("^[\\w\\-]+$"),
   ),
@@ -872,7 +881,7 @@ export const ParameterTextFieldControlSchema = z.object({
   Title: z.string().min(1).max(2048),
 });
 
-export const ParameterListControlSchema = z.object({
+const ParameterListControlSchema = z.object({
   ParameterControlId: z.string().min(1).max(512).regex(
     new RegExp("^[\\w\\-]+$"),
   ),
@@ -886,7 +895,7 @@ export const ParameterListControlSchema = z.object({
   SelectableValues: ParameterSelectableValuesSchema.optional(),
 });
 
-export const ParameterDateTimePickerControlSchema = z.object({
+const ParameterDateTimePickerControlSchema = z.object({
   ParameterControlId: z.string().min(1).max(512).regex(
     new RegExp("^[\\w\\-]+$"),
   ),
@@ -897,7 +906,7 @@ export const ParameterDateTimePickerControlSchema = z.object({
   Title: z.string().min(1).max(2048),
 });
 
-export const ParameterControlSchema = z.object({
+const ParameterControlSchema = z.object({
   Slider: ParameterSliderControlSchema.optional(),
   TextArea: ParameterTextAreaControlSchema.optional(),
   Dropdown: ParameterDropDownControlSchema.optional(),
@@ -906,27 +915,27 @@ export const ParameterControlSchema = z.object({
   DateTimePicker: ParameterDateTimePickerControlSchema.optional(),
 });
 
-export const LocalNavigationConfigurationSchema = z.object({
+const LocalNavigationConfigurationSchema = z.object({
   TargetSheetId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const CustomActionNavigationOperationSchema = z.object({
+const CustomActionNavigationOperationSchema = z.object({
   LocalNavigationConfiguration: LocalNavigationConfigurationSchema.optional(),
 });
 
-export const CustomParameterValuesSchema = z.object({
+const CustomParameterValuesSchema = z.object({
   DecimalValues: z.array(z.number()).optional(),
   IntegerValues: z.array(z.number()).optional(),
   StringValues: z.array(z.string()).optional(),
   DateTimeValues: z.array(z.string()).optional(),
 });
 
-export const CustomValuesConfigurationSchema = z.object({
+const CustomValuesConfigurationSchema = z.object({
   IncludeNullValue: z.boolean().optional(),
   CustomValues: CustomParameterValuesSchema,
 });
 
-export const DestinationParameterValueConfigurationSchema = z.object({
+const DestinationParameterValueConfigurationSchema = z.object({
   CustomValuesConfiguration: CustomValuesConfigurationSchema.optional(),
   SourceParameterName: z.string().optional(),
   SelectAllValueOptions: z.enum(["ALL_VALUES"]).optional(),
@@ -934,29 +943,29 @@ export const DestinationParameterValueConfigurationSchema = z.object({
   SourceColumn: ColumnIdentifierSchema.optional(),
 });
 
-export const SetParameterValueConfigurationSchema = z.object({
+const SetParameterValueConfigurationSchema = z.object({
   DestinationParameterName: z.string().min(1).max(2048).regex(
     new RegExp("^[a-zA-Z0-9]+$"),
   ),
   Value: DestinationParameterValueConfigurationSchema,
 });
 
-export const CustomActionSetParametersOperationSchema = z.object({
+const CustomActionSetParametersOperationSchema = z.object({
   ParameterValueConfigurations: z.array(SetParameterValueConfigurationSchema),
 });
 
-export const CustomActionURLOperationSchema = z.object({
+const CustomActionURLOperationSchema = z.object({
   URLTemplate: z.string().min(1).max(2048),
   URLTarget: z.enum(["NEW_TAB", "NEW_WINDOW", "SAME_TAB"]),
 });
 
-export const ImageCustomActionOperationSchema = z.object({
+const ImageCustomActionOperationSchema = z.object({
   NavigationOperation: CustomActionNavigationOperationSchema.optional(),
   SetParametersOperation: CustomActionSetParametersOperationSchema.optional(),
   URLOperation: CustomActionURLOperationSchema.optional(),
 });
 
-export const ImageCustomActionSchema = z.object({
+const ImageCustomActionSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   Trigger: z.enum(["CLICK", "MENU"]),
   CustomActionId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -964,16 +973,16 @@ export const ImageCustomActionSchema = z.object({
   ActionOperations: z.array(ImageCustomActionOperationSchema),
 });
 
-export const SheetImageTooltipTextSchema = z.object({
+const SheetImageTooltipTextSchema = z.object({
   PlainText: z.string().min(1).max(1024).optional(),
 });
 
-export const SheetImageTooltipConfigurationSchema = z.object({
+const SheetImageTooltipConfigurationSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   TooltipText: SheetImageTooltipTextSchema.optional(),
 });
 
-export const SheetImageScalingConfigurationSchema = z.object({
+const SheetImageScalingConfigurationSchema = z.object({
   ScalingType: z.enum([
     "SCALE_TO_WIDTH",
     "SCALE_TO_HEIGHT",
@@ -982,23 +991,23 @@ export const SheetImageScalingConfigurationSchema = z.object({
   ]).optional(),
 });
 
-export const ImageMenuOptionSchema = z.object({
+const ImageMenuOptionSchema = z.object({
   AvailabilityStatus: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const ImageInteractionOptionsSchema = z.object({
+const ImageInteractionOptionsSchema = z.object({
   ImageMenuOption: ImageMenuOptionSchema.optional(),
 });
 
-export const SheetImageStaticFileSourceSchema = z.object({
+const SheetImageStaticFileSourceSchema = z.object({
   StaticFileId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const SheetImageSourceSchema = z.object({
+const SheetImageSourceSchema = z.object({
   SheetImageStaticFileSource: SheetImageStaticFileSourceSchema.optional(),
 });
 
-export const SheetImageSchema = z.object({
+const SheetImageSchema = z.object({
   Actions: z.array(ImageCustomActionSchema).optional(),
   SheetImageId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Tooltip: SheetImageTooltipConfigurationSchema.optional(),
@@ -1008,7 +1017,7 @@ export const SheetImageSchema = z.object({
   ImageContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const GridLayoutElementSchema = z.object({
+const GridLayoutElementSchema = z.object({
   ElementType: z.enum([
     "VISUAL",
     "FILTER_CONTROL",
@@ -1023,50 +1032,50 @@ export const GridLayoutElementSchema = z.object({
   ElementId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const GridLayoutConfigurationSchema = z.object({
+const GridLayoutConfigurationSchema = z.object({
   CanvasSizeOptions: GridLayoutCanvasSizeOptionsSchema.optional(),
   Elements: z.array(GridLayoutElementSchema),
 });
 
-export const SheetControlLayoutConfigurationSchema = z.object({
+const SheetControlLayoutConfigurationSchema = z.object({
   GridLayout: GridLayoutConfigurationSchema.optional(),
 });
 
-export const SheetControlLayoutSchema = z.object({
+const SheetControlLayoutSchema = z.object({
   Configuration: SheetControlLayoutConfigurationSchema,
 });
 
-export const SheetTextBoxSchema = z.object({
+const SheetTextBoxSchema = z.object({
   SheetTextBoxId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Content: z.string().min(0).max(150000).optional(),
 });
 
-export const FreeFormLayoutElementBorderStyleSchema = z.object({
+const FreeFormLayoutElementBorderStyleSchema = z.object({
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}(?:[A-F0-9]{2})?$"))
     .optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const SheetElementConfigurationOverridesSchema = z.object({
+const SheetElementConfigurationOverridesSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const SheetElementRenderingRuleSchema = z.object({
+const SheetElementRenderingRuleSchema = z.object({
   Expression: z.string().min(1).max(4096),
   ConfigurationOverrides: SheetElementConfigurationOverridesSchema,
 });
 
-export const LoadingAnimationSchema = z.object({
+const LoadingAnimationSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const FreeFormLayoutElementBackgroundStyleSchema = z.object({
+const FreeFormLayoutElementBackgroundStyleSchema = z.object({
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}(?:[A-F0-9]{2})?$"))
     .optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const FreeFormLayoutElementSchema = z.object({
+const FreeFormLayoutElementSchema = z.object({
   ElementType: z.enum([
     "VISUAL",
     "FILTER_CONTROL",
@@ -1095,74 +1104,74 @@ export const FreeFormLayoutElementSchema = z.object({
   SelectedBorderStyle: FreeFormLayoutElementBorderStyleSchema.optional(),
 });
 
-export const FreeFormLayoutConfigurationSchema = z.object({
+const FreeFormLayoutConfigurationSchema = z.object({
   CanvasSizeOptions: FreeFormLayoutCanvasSizeOptionsSchema.optional(),
   Elements: z.array(FreeFormLayoutElementSchema),
 });
 
-export const FreeFormSectionLayoutConfigurationSchema = z.object({
+const FreeFormSectionLayoutConfigurationSchema = z.object({
   Elements: z.array(FreeFormLayoutElementSchema),
 });
 
-export const SectionLayoutConfigurationSchema = z.object({
+const SectionLayoutConfigurationSchema = z.object({
   FreeFormLayout: FreeFormSectionLayoutConfigurationSchema,
 });
 
-export const SectionStyleSchema = z.object({
+const SectionStyleSchema = z.object({
   Padding: SpacingSchema.optional(),
   Height: z.string().describe(
     "String based length that is composed of value and unit in px",
   ).optional(),
 });
 
-export const HeaderFooterSectionConfigurationSchema = z.object({
+const HeaderFooterSectionConfigurationSchema = z.object({
   Layout: SectionLayoutConfigurationSchema,
   Style: SectionStyleSchema.optional(),
   SectionId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const BodySectionContentSchema = z.object({
+const BodySectionContentSchema = z.object({
   Layout: SectionLayoutConfigurationSchema.optional(),
 });
 
-export const SectionAfterPageBreakSchema = z.object({
+const SectionAfterPageBreakSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const SectionPageBreakConfigurationSchema = z.object({
+const SectionPageBreakConfigurationSchema = z.object({
   After: SectionAfterPageBreakSchema.optional(),
 });
 
-export const ColumnSortSchema = z.object({
+const ColumnSortSchema = z.object({
   AggregationFunction: AggregationFunctionSchema.optional(),
   SortBy: ColumnIdentifierSchema,
   Direction: z.enum(["ASC", "DESC"]),
 });
 
-export const BodySectionDynamicNumericDimensionConfigurationSchema = z.object({
+const BodySectionDynamicNumericDimensionConfigurationSchema = z.object({
   Column: ColumnIdentifierSchema,
   SortByMetrics: z.array(ColumnSortSchema).optional(),
   Limit: z.number().min(1).max(1000).optional(),
 });
 
-export const BodySectionDynamicCategoryDimensionConfigurationSchema = z.object({
+const BodySectionDynamicCategoryDimensionConfigurationSchema = z.object({
   Column: ColumnIdentifierSchema,
   SortByMetrics: z.array(ColumnSortSchema).optional(),
   Limit: z.number().min(1).max(1000).optional(),
 });
 
-export const BodySectionRepeatDimensionConfigurationSchema = z.object({
+const BodySectionRepeatDimensionConfigurationSchema = z.object({
   DynamicNumericDimensionConfiguration:
     BodySectionDynamicNumericDimensionConfigurationSchema.optional(),
   DynamicCategoryDimensionConfiguration:
     BodySectionDynamicCategoryDimensionConfigurationSchema.optional(),
 });
 
-export const BodySectionRepeatPageBreakConfigurationSchema = z.object({
+const BodySectionRepeatPageBreakConfigurationSchema = z.object({
   After: SectionAfterPageBreakSchema.optional(),
 });
 
-export const BodySectionRepeatConfigurationSchema = z.object({
+const BodySectionRepeatConfigurationSchema = z.object({
   DimensionConfigurations: z.array(
     BodySectionRepeatDimensionConfigurationSchema,
   ).optional(),
@@ -1173,7 +1182,7 @@ export const BodySectionRepeatConfigurationSchema = z.object({
     .optional(),
 });
 
-export const BodySectionConfigurationSchema = z.object({
+const BodySectionConfigurationSchema = z.object({
   Content: BodySectionContentSchema,
   Style: SectionStyleSchema.optional(),
   PageBreakConfiguration: SectionPageBreakConfigurationSchema.optional(),
@@ -1181,24 +1190,24 @@ export const BodySectionConfigurationSchema = z.object({
   RepeatConfiguration: BodySectionRepeatConfigurationSchema.optional(),
 });
 
-export const SectionBasedLayoutConfigurationSchema = z.object({
+const SectionBasedLayoutConfigurationSchema = z.object({
   CanvasSizeOptions: SectionBasedLayoutCanvasSizeOptionsSchema,
   FooterSections: z.array(HeaderFooterSectionConfigurationSchema),
   BodySections: z.array(BodySectionConfigurationSchema),
   HeaderSections: z.array(HeaderFooterSectionConfigurationSchema),
 });
 
-export const LayoutConfigurationSchema = z.object({
+const LayoutConfigurationSchema = z.object({
   GridLayout: GridLayoutConfigurationSchema.optional(),
   FreeFormLayout: FreeFormLayoutConfigurationSchema.optional(),
   SectionBasedLayout: SectionBasedLayoutConfigurationSchema.optional(),
 });
 
-export const LayoutSchema = z.object({
+const LayoutSchema = z.object({
   Configuration: LayoutConfigurationSchema,
 });
 
-export const FilterSliderControlSchema = z.object({
+const FilterSliderControlSchema = z.object({
   FilterControlId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Type: z.enum(["SINGLE_POINT", "RANGE"]).optional(),
   StepSize: z.number(),
@@ -1209,7 +1218,7 @@ export const FilterSliderControlSchema = z.object({
   MinimumValue: z.number(),
 });
 
-export const FilterTextAreaControlSchema = z.object({
+const FilterTextAreaControlSchema = z.object({
   FilterControlId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Delimiter: z.string().min(1).max(2048).optional(),
   DisplayOptions: TextAreaControlDisplayOptionsSchema.optional(),
@@ -1217,7 +1226,7 @@ export const FilterTextAreaControlSchema = z.object({
   SourceFilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const FilterDropDownControlSchema = z.object({
+const FilterDropDownControlSchema = z.object({
   FilterControlId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Type: z.enum(["MULTI_SELECT", "SINGLE_SELECT"]).optional(),
   DisplayOptions: DropDownControlDisplayOptionsSchema.optional(),
@@ -1228,14 +1237,14 @@ export const FilterDropDownControlSchema = z.object({
   SelectableValues: FilterSelectableValuesSchema.optional(),
 });
 
-export const FilterTextFieldControlSchema = z.object({
+const FilterTextFieldControlSchema = z.object({
   FilterControlId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   DisplayOptions: TextFieldControlDisplayOptionsSchema.optional(),
   Title: z.string().min(1).max(2048),
   SourceFilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const FilterListControlSchema = z.object({
+const FilterListControlSchema = z.object({
   FilterControlId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Type: z.enum(["MULTI_SELECT", "SINGLE_SELECT"]).optional(),
   DisplayOptions: ListControlDisplayOptionsSchema.optional(),
@@ -1245,7 +1254,7 @@ export const FilterListControlSchema = z.object({
   SelectableValues: FilterSelectableValuesSchema.optional(),
 });
 
-export const FilterDateTimePickerControlSchema = z.object({
+const FilterDateTimePickerControlSchema = z.object({
   FilterControlId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Type: z.enum(["SINGLE_VALUED", "DATE_RANGE"]).optional(),
   DisplayOptions: DateTimePickerControlDisplayOptionsSchema.optional(),
@@ -1254,7 +1263,7 @@ export const FilterDateTimePickerControlSchema = z.object({
   SourceFilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const FilterRelativeDateTimeControlSchema = z.object({
+const FilterRelativeDateTimeControlSchema = z.object({
   FilterControlId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   DisplayOptions: RelativeDateTimeControlDisplayOptionsSchema.optional(),
   Title: z.string().min(1).max(2048),
@@ -1262,13 +1271,13 @@ export const FilterRelativeDateTimeControlSchema = z.object({
   SourceFilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const FilterCrossSheetControlSchema = z.object({
+const FilterCrossSheetControlSchema = z.object({
   FilterControlId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   CascadingControlConfiguration: CascadingControlConfigurationSchema.optional(),
   SourceFilterId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const FilterControlSchema = z.object({
+const FilterControlSchema = z.object({
   Slider: FilterSliderControlSchema.optional(),
   TextArea: FilterTextAreaControlSchema.optional(),
   Dropdown: FilterDropDownControlSchema.optional(),
@@ -1279,37 +1288,37 @@ export const FilterControlSchema = z.object({
   CrossSheet: FilterCrossSheetControlSchema.optional(),
 });
 
-export const LongFormatTextSchema = z.object({
+const LongFormatTextSchema = z.object({
   RichText: z.string().min(1).max(2048).optional(),
   PlainText: z.string().min(1).max(1024).optional(),
 });
 
-export const VisualSubtitleLabelOptionsSchema = z.object({
+const VisualSubtitleLabelOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   FormatText: LongFormatTextSchema.optional(),
 });
 
-export const ItemsLimitConfigurationSchema = z.object({
+const ItemsLimitConfigurationSchema = z.object({
   ItemsLimit: z.number().optional(),
   OtherCategories: z.enum(["INCLUDE", "EXCLUDE"]).optional(),
 });
 
-export const FieldSortSchema = z.object({
+const FieldSortSchema = z.object({
   FieldId: z.string().min(1).max(512),
   Direction: z.enum(["ASC", "DESC"]),
 });
 
-export const FieldSortOptionsSchema = z.object({
+const FieldSortOptionsSchema = z.object({
   FieldSort: FieldSortSchema.optional(),
   ColumnSort: ColumnSortSchema.optional(),
 });
 
-export const FunnelChartSortConfigurationSchema = z.object({
+const FunnelChartSortConfigurationSchema = z.object({
   CategoryItemsLimit: ItemsLimitConfigurationSchema.optional(),
   CategorySort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const FunnelChartDataLabelOptionsSchema = z.object({
+const FunnelChartDataLabelOptionsSchema = z.object({
   MeasureLabelVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   Position: z.enum(["INSIDE", "OUTSIDE", "LEFT", "TOP", "BOTTOM", "RIGHT"])
     .optional(),
@@ -1326,24 +1335,24 @@ export const FunnelChartDataLabelOptionsSchema = z.object({
   LabelFontConfiguration: FontConfigurationSchema.optional(),
 });
 
-export const AxisLabelReferenceOptionsSchema = z.object({
+const AxisLabelReferenceOptionsSchema = z.object({
   Column: ColumnIdentifierSchema,
   FieldId: z.string().min(1).max(512),
 });
 
-export const AxisLabelOptionsSchema = z.object({
+const AxisLabelOptionsSchema = z.object({
   CustomLabel: z.string().optional(),
   ApplyTo: AxisLabelReferenceOptionsSchema.optional(),
   FontConfiguration: FontConfigurationSchema.optional(),
 });
 
-export const ChartAxisLabelOptionsSchema = z.object({
+const ChartAxisLabelOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   SortIconVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   AxisLabelOptions: z.array(AxisLabelOptionsSchema).optional(),
 });
 
-export const DateDimensionFieldSchema = z.object({
+const DateDimensionFieldSchema = z.object({
   HierarchyId: z.string().min(1).max(512).optional(),
   FormatConfiguration: DateTimeFormatConfigurationSchema.optional(),
   Column: ColumnIdentifierSchema,
@@ -1361,27 +1370,27 @@ export const DateDimensionFieldSchema = z.object({
   ]).optional(),
 });
 
-export const NumericalDimensionFieldSchema = z.object({
+const NumericalDimensionFieldSchema = z.object({
   HierarchyId: z.string().min(1).max(512).optional(),
   FormatConfiguration: NumberFormatConfigurationSchema.optional(),
   Column: ColumnIdentifierSchema,
   FieldId: z.string().min(1).max(512),
 });
 
-export const CategoricalDimensionFieldSchema = z.object({
+const CategoricalDimensionFieldSchema = z.object({
   HierarchyId: z.string().min(1).max(512).optional(),
   FormatConfiguration: StringFormatConfigurationSchema.optional(),
   Column: ColumnIdentifierSchema,
   FieldId: z.string().min(1).max(512),
 });
 
-export const DimensionFieldSchema = z.object({
+const DimensionFieldSchema = z.object({
   DateDimensionField: DateDimensionFieldSchema.optional(),
   NumericalDimensionField: NumericalDimensionFieldSchema.optional(),
   CategoricalDimensionField: CategoricalDimensionFieldSchema.optional(),
 });
 
-export const DateMeasureFieldSchema = z.object({
+const DateMeasureFieldSchema = z.object({
   AggregationFunction: z.enum(["COUNT", "DISTINCT_COUNT", "MIN", "MAX"])
     .optional(),
   FormatConfiguration: DateTimeFormatConfigurationSchema.optional(),
@@ -1389,50 +1398,50 @@ export const DateMeasureFieldSchema = z.object({
   FieldId: z.string().min(1).max(512),
 });
 
-export const NumericalMeasureFieldSchema = z.object({
+const NumericalMeasureFieldSchema = z.object({
   AggregationFunction: NumericalAggregationFunctionSchema.optional(),
   FormatConfiguration: NumberFormatConfigurationSchema.optional(),
   Column: ColumnIdentifierSchema,
   FieldId: z.string().min(1).max(512),
 });
 
-export const CategoricalMeasureFieldSchema = z.object({
+const CategoricalMeasureFieldSchema = z.object({
   AggregationFunction: z.enum(["COUNT", "DISTINCT_COUNT"]).optional(),
   FormatConfiguration: StringFormatConfigurationSchema.optional(),
   Column: ColumnIdentifierSchema,
   FieldId: z.string().min(1).max(512),
 });
 
-export const CalculatedMeasureFieldSchema = z.object({
+const CalculatedMeasureFieldSchema = z.object({
   Expression: z.string().min(1).max(4096),
   FieldId: z.string().min(1).max(512),
 });
 
-export const MeasureFieldSchema = z.object({
+const MeasureFieldSchema = z.object({
   DateMeasureField: DateMeasureFieldSchema.optional(),
   NumericalMeasureField: NumericalMeasureFieldSchema.optional(),
   CategoricalMeasureField: CategoricalMeasureFieldSchema.optional(),
   CalculatedMeasureField: CalculatedMeasureFieldSchema.optional(),
 });
 
-export const FunnelChartAggregatedFieldWellsSchema = z.object({
+const FunnelChartAggregatedFieldWellsSchema = z.object({
   Category: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
 });
 
-export const FunnelChartFieldWellsSchema = z.object({
+const FunnelChartFieldWellsSchema = z.object({
   FunnelChartAggregatedFieldWells: FunnelChartAggregatedFieldWellsSchema
     .optional(),
 });
 
-export const FieldTooltipItemSchema = z.object({
+const FieldTooltipItemSchema = z.object({
   TooltipTarget: z.enum(["BOTH", "BAR", "LINE"]).optional(),
   FieldId: z.string().min(1).max(512),
   Label: z.string().optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const ColumnTooltipItemSchema = z.object({
+const ColumnTooltipItemSchema = z.object({
   Aggregation: AggregationFunctionSchema.optional(),
   TooltipTarget: z.enum(["BOTH", "BAR", "LINE"]).optional(),
   Column: ColumnIdentifierSchema,
@@ -1440,37 +1449,37 @@ export const ColumnTooltipItemSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const TooltipItemSchema = z.object({
+const TooltipItemSchema = z.object({
   FieldTooltipItem: FieldTooltipItemSchema.optional(),
   ColumnTooltipItem: ColumnTooltipItemSchema.optional(),
 });
 
-export const FieldBasedTooltipSchema = z.object({
+const FieldBasedTooltipSchema = z.object({
   TooltipFields: z.array(TooltipItemSchema).optional(),
   AggregationVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   TooltipTitleType: z.enum(["NONE", "PRIMARY_VALUE"]).optional(),
 });
 
-export const TooltipOptionsSchema = z.object({
+const TooltipOptionsSchema = z.object({
   SelectedTooltipType: z.enum(["BASIC", "DETAILED"]).optional(),
   TooltipVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   FieldBasedTooltip: FieldBasedTooltipSchema.optional(),
 });
 
-export const ContextMenuOptionSchema = z.object({
+const ContextMenuOptionSchema = z.object({
   AvailabilityStatus: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const VisualMenuOptionSchema = z.object({
+const VisualMenuOptionSchema = z.object({
   AvailabilityStatus: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const VisualInteractionOptionsSchema = z.object({
+const VisualInteractionOptionsSchema = z.object({
   ContextMenuOption: ContextMenuOptionSchema.optional(),
   VisualMenuOption: VisualMenuOptionSchema.optional(),
 });
 
-export const DataPathTypeSchema = z.object({
+const DataPathTypeSchema = z.object({
   PivotTableDataPathType: z.enum([
     "HIERARCHY_ROWS_LAYOUT_COLUMN",
     "MULTIPLE_ROW_METRICS_COLUMN",
@@ -1479,13 +1488,13 @@ export const DataPathTypeSchema = z.object({
   ]).optional(),
 });
 
-export const DataPathValueSchema = z.object({
+const DataPathValueSchema = z.object({
   DataPathType: DataPathTypeSchema.optional(),
   FieldId: z.string().min(1).max(512).optional(),
   FieldValue: z.string().min(0).max(2048).optional(),
 });
 
-export const DataPathColorSchema = z.object({
+const DataPathColorSchema = z.object({
   Element: DataPathValueSchema,
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")),
   TimeGranularity: z.enum([
@@ -1501,12 +1510,12 @@ export const DataPathColorSchema = z.object({
   ]).optional(),
 });
 
-export const VisualPaletteSchema = z.object({
+const VisualPaletteSchema = z.object({
   ChartColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
   ColorMap: z.array(DataPathColorSchema).optional(),
 });
 
-export const FunnelChartConfigurationSchema = z.object({
+const FunnelChartConfigurationSchema = z.object({
   SortConfiguration: FunnelChartSortConfigurationSchema.optional(),
   DataLabelOptions: FunnelChartDataLabelOptionsSchema.optional(),
   CategoryLabelOptions: ChartAxisLabelOptionsSchema.optional(),
@@ -1517,7 +1526,7 @@ export const FunnelChartConfigurationSchema = z.object({
   VisualPalette: VisualPaletteSchema.optional(),
 });
 
-export const FilterOperationSelectedFieldsConfigurationSchema = z.object({
+const FilterOperationSelectedFieldsConfigurationSchema = z.object({
   SelectedColumns: z.array(ColumnIdentifierSchema).describe(
     "The selected columns of a dataset.",
   ).optional(),
@@ -1525,31 +1534,31 @@ export const FilterOperationSelectedFieldsConfigurationSchema = z.object({
   SelectedFieldOptions: z.enum(["ALL_FIELDS"]).optional(),
 });
 
-export const SameSheetTargetVisualConfigurationSchema = z.object({
+const SameSheetTargetVisualConfigurationSchema = z.object({
   TargetVisualOptions: z.enum(["ALL_VISUALS"]).optional(),
   TargetVisuals: z.array(
     z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ).optional(),
 });
 
-export const FilterOperationTargetVisualsConfigurationSchema = z.object({
+const FilterOperationTargetVisualsConfigurationSchema = z.object({
   SameSheetTargetVisualConfiguration: SameSheetTargetVisualConfigurationSchema
     .optional(),
 });
 
-export const CustomActionFilterOperationSchema = z.object({
+const CustomActionFilterOperationSchema = z.object({
   SelectedFieldsConfiguration: FilterOperationSelectedFieldsConfigurationSchema,
   TargetVisualsConfiguration: FilterOperationTargetVisualsConfigurationSchema,
 });
 
-export const VisualCustomActionOperationSchema = z.object({
+const VisualCustomActionOperationSchema = z.object({
   NavigationOperation: CustomActionNavigationOperationSchema.optional(),
   SetParametersOperation: CustomActionSetParametersOperationSchema.optional(),
   FilterOperation: CustomActionFilterOperationSchema.optional(),
   URLOperation: CustomActionURLOperationSchema.optional(),
 });
 
-export const VisualCustomActionSchema = z.object({
+const VisualCustomActionSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   Trigger: z.enum(["DATA_POINT_CLICK", "DATA_POINT_MENU"]),
   CustomActionId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -1557,22 +1566,22 @@ export const VisualCustomActionSchema = z.object({
   ActionOperations: z.array(VisualCustomActionOperationSchema),
 });
 
-export const ShortFormatTextSchema = z.object({
+const ShortFormatTextSchema = z.object({
   RichText: z.string().min(1).max(1024).optional(),
   PlainText: z.string().min(1).max(512).optional(),
 });
 
-export const VisualTitleLabelOptionsSchema = z.object({
+const VisualTitleLabelOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   FormatText: ShortFormatTextSchema.optional(),
 });
 
-export const NumericEqualityDrillDownFilterSchema = z.object({
+const NumericEqualityDrillDownFilterSchema = z.object({
   Column: ColumnIdentifierSchema,
   Value: z.number(),
 });
 
-export const TimeRangeDrillDownFilterSchema = z.object({
+const TimeRangeDrillDownFilterSchema = z.object({
   Column: ColumnIdentifierSchema,
   RangeMinimum: z.string(),
   TimeGranularity: z.enum([
@@ -1589,41 +1598,41 @@ export const TimeRangeDrillDownFilterSchema = z.object({
   RangeMaximum: z.string(),
 });
 
-export const CategoryDrillDownFilterSchema = z.object({
+const CategoryDrillDownFilterSchema = z.object({
   Column: ColumnIdentifierSchema,
   CategoryValues: z.array(z.string().min(0).max(512)),
 });
 
-export const DrillDownFilterSchema = z.object({
+const DrillDownFilterSchema = z.object({
   NumericEqualityFilter: NumericEqualityDrillDownFilterSchema.optional(),
   TimeRangeFilter: TimeRangeDrillDownFilterSchema.optional(),
   CategoryFilter: CategoryDrillDownFilterSchema.optional(),
 });
 
-export const DateTimeHierarchySchema = z.object({
+const DateTimeHierarchySchema = z.object({
   HierarchyId: z.string().min(1).max(512),
   DrillDownFilters: z.array(DrillDownFilterSchema).optional(),
 });
 
-export const ExplicitHierarchySchema = z.object({
-  HierarchyId: z.string().min(1).max(512),
-  DrillDownFilters: z.array(DrillDownFilterSchema).optional(),
-  Columns: z.array(ColumnIdentifierSchema),
-});
-
-export const PredefinedHierarchySchema = z.object({
+const ExplicitHierarchySchema = z.object({
   HierarchyId: z.string().min(1).max(512),
   DrillDownFilters: z.array(DrillDownFilterSchema).optional(),
   Columns: z.array(ColumnIdentifierSchema),
 });
 
-export const ColumnHierarchySchema = z.object({
+const PredefinedHierarchySchema = z.object({
+  HierarchyId: z.string().min(1).max(512),
+  DrillDownFilters: z.array(DrillDownFilterSchema).optional(),
+  Columns: z.array(ColumnIdentifierSchema),
+});
+
+const ColumnHierarchySchema = z.object({
   DateTimeHierarchy: DateTimeHierarchySchema.optional(),
   ExplicitHierarchy: ExplicitHierarchySchema.optional(),
   PredefinedHierarchy: PredefinedHierarchySchema.optional(),
 });
 
-export const FunnelChartVisualSchema = z.object({
+const FunnelChartVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: FunnelChartConfigurationSchema.optional(),
@@ -1633,17 +1642,17 @@ export const FunnelChartVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const PaginationConfigurationSchema = z.object({
+const PaginationConfigurationSchema = z.object({
   PageSize: z.number(),
   PageNumber: z.number().min(0),
 });
 
-export const BoxPlotSortConfigurationSchema = z.object({
+const BoxPlotSortConfigurationSchema = z.object({
   CategorySort: z.array(FieldSortOptionsSchema).optional(),
   PaginationConfiguration: PaginationConfigurationSchema.optional(),
 });
 
-export const LegendOptionsSchema = z.object({
+const LegendOptionsSchema = z.object({
   Position: z.enum(["AUTO", "RIGHT", "BOTTOM", "TOP"]).optional(),
   ValueFontConfiguration: FontConfigurationSchema.optional(),
   Title: LabelOptionsSchema.optional(),
@@ -1656,34 +1665,34 @@ export const LegendOptionsSchema = z.object({
   ).optional(),
 });
 
-export const ReferenceLineDynamicDataConfigurationSchema = z.object({
+const ReferenceLineDynamicDataConfigurationSchema = z.object({
   Column: ColumnIdentifierSchema,
   MeasureAggregationFunction: AggregationFunctionSchema.optional(),
   Calculation: NumericalAggregationFunctionSchema,
 });
 
-export const ReferenceLineStaticDataConfigurationSchema = z.object({
+const ReferenceLineStaticDataConfigurationSchema = z.object({
   Value: z.number(),
 });
 
-export const ReferenceLineDataConfigurationSchema = z.object({
+const ReferenceLineDataConfigurationSchema = z.object({
   DynamicConfiguration: ReferenceLineDynamicDataConfigurationSchema.optional(),
   AxisBinding: z.enum(["PRIMARY_YAXIS", "SECONDARY_YAXIS"]).optional(),
   SeriesType: z.enum(["BAR", "LINE"]).optional(),
   StaticConfiguration: ReferenceLineStaticDataConfigurationSchema.optional(),
 });
 
-export const ReferenceLineValueLabelConfigurationSchema = z.object({
+const ReferenceLineValueLabelConfigurationSchema = z.object({
   FormatConfiguration: NumericFormatConfigurationSchema.optional(),
   RelativePosition: z.enum(["BEFORE_CUSTOM_LABEL", "AFTER_CUSTOM_LABEL"])
     .optional(),
 });
 
-export const ReferenceLineCustomLabelConfigurationSchema = z.object({
+const ReferenceLineCustomLabelConfigurationSchema = z.object({
   CustomLabel: z.string().regex(new RegExp("\\S")),
 });
 
-export const ReferenceLineLabelConfigurationSchema = z.object({
+const ReferenceLineLabelConfigurationSchema = z.object({
   HorizontalPosition: z.enum(["LEFT", "CENTER", "RIGHT"]).optional(),
   ValueLabelConfiguration: ReferenceLineValueLabelConfigurationSchema
     .optional(),
@@ -1694,76 +1703,76 @@ export const ReferenceLineLabelConfigurationSchema = z.object({
   VerticalPosition: z.enum(["ABOVE", "BELOW"]).optional(),
 });
 
-export const ReferenceLineStyleConfigurationSchema = z.object({
+const ReferenceLineStyleConfigurationSchema = z.object({
   Pattern: z.enum(["SOLID", "DASHED", "DOTTED"]).optional(),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const ReferenceLineSchema = z.object({
+const ReferenceLineSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   DataConfiguration: ReferenceLineDataConfigurationSchema,
   LabelConfiguration: ReferenceLineLabelConfigurationSchema.optional(),
   StyleConfiguration: ReferenceLineStyleConfigurationSchema.optional(),
 });
 
-export const DateAxisOptionsSchema = z.object({
+const DateAxisOptionsSchema = z.object({
   MissingDateVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const AxisLogarithmicScaleSchema = z.object({
+const AxisLogarithmicScaleSchema = z.object({
   Base: z.number().optional(),
 });
 
-export const AxisLinearScaleSchema = z.object({
+const AxisLinearScaleSchema = z.object({
   StepSize: z.number().optional(),
   StepCount: z.number().optional(),
 });
 
-export const AxisScaleSchema = z.object({
+const AxisScaleSchema = z.object({
   Logarithmic: AxisLogarithmicScaleSchema.optional(),
   Linear: AxisLinearScaleSchema.optional(),
 });
 
-export const AxisDisplayMinMaxRangeSchema = z.object({
+const AxisDisplayMinMaxRangeSchema = z.object({
   Minimum: z.number().optional(),
   Maximum: z.number().optional(),
 });
 
-export const AxisDisplayRangeSchema = z.object({
+const AxisDisplayRangeSchema = z.object({
   DataDriven: z.string().optional(),
   MinMax: AxisDisplayMinMaxRangeSchema.optional(),
 });
 
-export const NumericAxisOptionsSchema = z.object({
+const NumericAxisOptionsSchema = z.object({
   Scale: AxisScaleSchema.optional(),
   Range: AxisDisplayRangeSchema.optional(),
 });
 
-export const AxisDataOptionsSchema = z.object({
+const AxisDataOptionsSchema = z.object({
   DateAxisOptions: DateAxisOptionsSchema.optional(),
   NumericAxisOptions: NumericAxisOptionsSchema.optional(),
 });
 
-export const AxisTickLabelOptionsSchema = z.object({
+const AxisTickLabelOptionsSchema = z.object({
   RotationAngle: z.number().optional(),
   LabelOptions: LabelOptionsSchema.optional(),
 });
 
-export const PercentVisibleRangeSchema = z.object({
+const PercentVisibleRangeSchema = z.object({
   From: z.number().min(0).max(100).optional(),
   To: z.number().min(0).max(100).optional(),
 });
 
-export const VisibleRangeOptionsSchema = z.object({
+const VisibleRangeOptionsSchema = z.object({
   PercentRange: PercentVisibleRangeSchema.optional(),
 });
 
-export const ScrollBarOptionsSchema = z.object({
+const ScrollBarOptionsSchema = z.object({
   VisibleRange: VisibleRangeOptionsSchema.optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const AxisDisplayOptionsSchema = z.object({
+const AxisDisplayOptionsSchema = z.object({
   DataOptions: AxisDataOptionsSchema.optional(),
   TickLabelOptions: AxisTickLabelOptionsSchema.optional(),
   AxisOffset: z.string().describe(
@@ -1774,26 +1783,26 @@ export const AxisDisplayOptionsSchema = z.object({
   ScrollbarOptions: ScrollBarOptionsSchema.optional(),
 });
 
-export const BoxPlotAggregatedFieldWellsSchema = z.object({
+const BoxPlotAggregatedFieldWellsSchema = z.object({
   GroupBy: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
 });
 
-export const BoxPlotFieldWellsSchema = z.object({
+const BoxPlotFieldWellsSchema = z.object({
   BoxPlotAggregatedFieldWells: BoxPlotAggregatedFieldWellsSchema.optional(),
 });
 
-export const BoxPlotStyleOptionsSchema = z.object({
+const BoxPlotStyleOptionsSchema = z.object({
   FillStyle: z.enum(["SOLID", "TRANSPARENT"]).optional(),
 });
 
-export const BoxPlotOptionsSchema = z.object({
+const BoxPlotOptionsSchema = z.object({
   StyleOptions: BoxPlotStyleOptionsSchema.optional(),
   OutlierVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   AllDataPointsVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const BoxPlotChartConfigurationSchema = z.object({
+const BoxPlotChartConfigurationSchema = z.object({
   SortConfiguration: BoxPlotSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
   ReferenceLines: z.array(ReferenceLineSchema).optional(),
@@ -1808,7 +1817,7 @@ export const BoxPlotChartConfigurationSchema = z.object({
   VisualPalette: VisualPaletteSchema.optional(),
 });
 
-export const BoxPlotVisualSchema = z.object({
+const BoxPlotVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: BoxPlotChartConfigurationSchema.optional(),
@@ -1818,19 +1827,19 @@ export const BoxPlotVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const GeospatialCoordinateBoundsSchema = z.object({
+const GeospatialCoordinateBoundsSchema = z.object({
   West: z.number().min(-1800).max(1800),
   South: z.number().min(-90).max(90),
   North: z.number().min(-90).max(90),
   East: z.number().min(-1800).max(1800),
 });
 
-export const GeospatialMapStateSchema = z.object({
+const GeospatialMapStateSchema = z.object({
   Bounds: GeospatialCoordinateBoundsSchema.optional(),
   MapNavigation: z.enum(["ENABLED", "DISABLED"]).optional(),
 });
 
-export const GeospatialMapStyleSchema = z.object({
+const GeospatialMapStyleSchema = z.object({
   BaseMapStyle: z.enum(["LIGHT_GRAY", "DARK_GRAY", "STREET", "IMAGERY"])
     .optional(),
   BaseMapVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
@@ -1839,31 +1848,31 @@ export const GeospatialMapStyleSchema = z.object({
   ).optional(),
 });
 
-export const GeospatialLayerColorFieldSchema = z.object({
+const GeospatialLayerColorFieldSchema = z.object({
   ColorValuesFields: z.array(MeasureFieldSchema).optional(),
   ColorDimensionsFields: z.array(DimensionFieldSchema).optional(),
 });
 
-export const UnaggregatedFieldSchema = z.object({
+const UnaggregatedFieldSchema = z.object({
   FormatConfiguration: FormatConfigurationSchema.optional(),
   Column: ColumnIdentifierSchema,
   FieldId: z.string().min(1).max(512),
 });
 
-export const GeospatialLayerJoinDefinitionSchema = z.object({
+const GeospatialLayerJoinDefinitionSchema = z.object({
   ColorField: GeospatialLayerColorFieldSchema.optional(),
   ShapeKeyField: z.string().optional(),
   DatasetKeyField: UnaggregatedFieldSchema.optional(),
 });
 
-export const LayerCustomActionOperationSchema = z.object({
+const LayerCustomActionOperationSchema = z.object({
   NavigationOperation: CustomActionNavigationOperationSchema.optional(),
   SetParametersOperation: CustomActionSetParametersOperationSchema.optional(),
   FilterOperation: CustomActionFilterOperationSchema.optional(),
   URLOperation: CustomActionURLOperationSchema.optional(),
 });
 
-export const LayerCustomActionSchema = z.object({
+const LayerCustomActionSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   Trigger: z.enum(["DATA_POINT_CLICK", "DATA_POINT_MENU"]),
   CustomActionId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -1871,12 +1880,12 @@ export const LayerCustomActionSchema = z.object({
   ActionOperations: z.array(LayerCustomActionOperationSchema),
 });
 
-export const GeospatialGradientStepColorSchema = z.object({
+const GeospatialGradientStepColorSchema = z.object({
   DataValue: z.number(),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}(?:[A-F0-9]{2})?$")),
 });
 
-export const GeospatialNullSymbolStyleSchema = z.object({
+const GeospatialNullSymbolStyleSchema = z.object({
   FillColor: z.string().regex(new RegExp("^#[A-F0-9]{6}(?:[A-F0-9]{2})?$"))
     .optional(),
   StrokeWidth: z.number().min(0).optional(),
@@ -1884,37 +1893,37 @@ export const GeospatialNullSymbolStyleSchema = z.object({
     .optional(),
 });
 
-export const GeospatialNullDataSettingsSchema = z.object({
+const GeospatialNullDataSettingsSchema = z.object({
   SymbolStyle: GeospatialNullSymbolStyleSchema,
 });
 
-export const GeospatialGradientColorSchema = z.object({
+const GeospatialGradientColorSchema = z.object({
   DefaultOpacity: z.number().min(0).max(1).optional(),
   StepColors: z.array(GeospatialGradientStepColorSchema),
   NullDataVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   NullDataSettings: GeospatialNullDataSettingsSchema.optional(),
 });
 
-export const GeospatialCategoricalDataColorSchema = z.object({
+const GeospatialCategoricalDataColorSchema = z.object({
   DataValue: z.string(),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}(?:[A-F0-9]{2})?$")),
 });
 
-export const GeospatialCategoricalColorSchema = z.object({
+const GeospatialCategoricalColorSchema = z.object({
   CategoryDataColors: z.array(GeospatialCategoricalDataColorSchema),
   DefaultOpacity: z.number().min(0).max(1).optional(),
   NullDataVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   NullDataSettings: GeospatialNullDataSettingsSchema.optional(),
 });
 
-export const GeospatialSolidColorSchema = z.object({
+const GeospatialSolidColorSchema = z.object({
   State: z.enum(["ENABLED", "DISABLED"]).describe(
     "Defines view state of the color",
   ).optional(),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}(?:[A-F0-9]{2})?$")),
 });
 
-export const GeospatialColorSchema = z.object({
+const GeospatialColorSchema = z.object({
   Gradient: GeospatialGradientColorSchema.optional(),
   Categorical: GeospatialCategoricalColorSchema.optional(),
   Solid: GeospatialSolidColorSchema.describe(
@@ -1922,71 +1931,71 @@ export const GeospatialColorSchema = z.object({
   ).optional(),
 });
 
-export const GeospatialLineWidthSchema = z.object({
+const GeospatialLineWidthSchema = z.object({
   LineWidth: z.number().min(0).optional(),
 });
 
-export const GeospatialCircleRadiusSchema = z.object({
+const GeospatialCircleRadiusSchema = z.object({
   Radius: z.number().min(0).optional(),
 });
 
-export const GeospatialCircleSymbolStyleSchema = z.object({
+const GeospatialCircleSymbolStyleSchema = z.object({
   FillColor: GeospatialColorSchema.optional(),
   StrokeWidth: GeospatialLineWidthSchema.optional(),
   StrokeColor: GeospatialColorSchema.optional(),
   CircleRadius: GeospatialCircleRadiusSchema.optional(),
 });
 
-export const GeospatialPointStyleSchema = z.object({
+const GeospatialPointStyleSchema = z.object({
   CircleSymbolStyle: GeospatialCircleSymbolStyleSchema.optional(),
 });
 
-export const GeospatialPointLayerSchema = z.object({
+const GeospatialPointLayerSchema = z.object({
   Style: GeospatialPointStyleSchema,
 });
 
-export const GeospatialPolygonSymbolStyleSchema = z.object({
+const GeospatialPolygonSymbolStyleSchema = z.object({
   FillColor: GeospatialColorSchema.optional(),
   StrokeWidth: GeospatialLineWidthSchema.optional(),
   StrokeColor: GeospatialColorSchema.optional(),
 });
 
-export const GeospatialPolygonStyleSchema = z.object({
+const GeospatialPolygonStyleSchema = z.object({
   PolygonSymbolStyle: GeospatialPolygonSymbolStyleSchema.optional(),
 });
 
-export const GeospatialPolygonLayerSchema = z.object({
+const GeospatialPolygonLayerSchema = z.object({
   Style: GeospatialPolygonStyleSchema,
 });
 
-export const GeospatialLineSymbolStyleSchema = z.object({
+const GeospatialLineSymbolStyleSchema = z.object({
   FillColor: GeospatialColorSchema.optional(),
   LineWidth: GeospatialLineWidthSchema.optional(),
 });
 
-export const GeospatialLineStyleSchema = z.object({
+const GeospatialLineStyleSchema = z.object({
   LineSymbolStyle: GeospatialLineSymbolStyleSchema.optional(),
 });
 
-export const GeospatialLineLayerSchema = z.object({
+const GeospatialLineLayerSchema = z.object({
   Style: GeospatialLineStyleSchema,
 });
 
-export const GeospatialLayerDefinitionSchema = z.object({
+const GeospatialLayerDefinitionSchema = z.object({
   PointLayer: GeospatialPointLayerSchema.optional(),
   PolygonLayer: GeospatialPolygonLayerSchema.optional(),
   LineLayer: GeospatialLineLayerSchema.optional(),
 });
 
-export const GeospatialStaticFileSourceSchema = z.object({
+const GeospatialStaticFileSourceSchema = z.object({
   StaticFileId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
 });
 
-export const GeospatialDataSourceItemSchema = z.object({
+const GeospatialDataSourceItemSchema = z.object({
   StaticFileDataSource: GeospatialStaticFileSourceSchema.optional(),
 });
 
-export const GeospatialLayerItemSchema = z.object({
+const GeospatialLayerItemSchema = z.object({
   LayerId: z.string(),
   JoinDefinition: GeospatialLayerJoinDefinitionSchema.optional(),
   Actions: z.array(LayerCustomActionSchema).optional(),
@@ -1998,7 +2007,7 @@ export const GeospatialLayerItemSchema = z.object({
   DataSource: GeospatialDataSourceItemSchema.optional(),
 });
 
-export const GeospatialLayerMapConfigurationSchema = z.object({
+const GeospatialLayerMapConfigurationSchema = z.object({
   Legend: LegendOptionsSchema.optional(),
   MapState: GeospatialMapStateSchema.optional(),
   MapStyle: GeospatialMapStyleSchema.optional(),
@@ -2006,7 +2015,7 @@ export const GeospatialLayerMapConfigurationSchema = z.object({
   MapLayers: z.array(GeospatialLayerItemSchema).optional(),
 });
 
-export const LayerMapVisualSchema = z.object({
+const LayerMapVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: GeospatialLayerMapConfigurationSchema.optional(),
@@ -2015,58 +2024,58 @@ export const LayerMapVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const GeospatialMapStyleOptionsSchema = z.object({
+const GeospatialMapStyleOptionsSchema = z.object({
   BaseMapStyle: z.enum(["LIGHT_GRAY", "DARK_GRAY", "STREET", "IMAGERY"])
     .optional(),
 });
 
-export const GeospatialMapAggregatedFieldWellsSchema = z.object({
+const GeospatialMapAggregatedFieldWellsSchema = z.object({
   Colors: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
   Geospatial: z.array(DimensionFieldSchema).optional(),
 });
 
-export const GeospatialMapFieldWellsSchema = z.object({
+const GeospatialMapFieldWellsSchema = z.object({
   GeospatialMapAggregatedFieldWells: GeospatialMapAggregatedFieldWellsSchema
     .optional(),
 });
 
-export const GeospatialWindowOptionsSchema = z.object({
+const GeospatialWindowOptionsSchema = z.object({
   Bounds: GeospatialCoordinateBoundsSchema.optional(),
   MapZoomMode: z.enum(["AUTO", "MANUAL"]).optional(),
 });
 
-export const SimpleClusterMarkerSchema = z.object({
+const SimpleClusterMarkerSchema = z.object({
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const ClusterMarkerSchema = z.object({
+const ClusterMarkerSchema = z.object({
   SimpleClusterMarker: SimpleClusterMarkerSchema.optional(),
 });
 
-export const ClusterMarkerConfigurationSchema = z.object({
+const ClusterMarkerConfigurationSchema = z.object({
   ClusterMarker: ClusterMarkerSchema.optional(),
 });
 
-export const GeospatialHeatmapDataColorSchema = z.object({
+const GeospatialHeatmapDataColorSchema = z.object({
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")),
 });
 
-export const GeospatialHeatmapColorScaleSchema = z.object({
+const GeospatialHeatmapColorScaleSchema = z.object({
   Colors: z.array(GeospatialHeatmapDataColorSchema).optional(),
 });
 
-export const GeospatialHeatmapConfigurationSchema = z.object({
+const GeospatialHeatmapConfigurationSchema = z.object({
   HeatmapColor: GeospatialHeatmapColorScaleSchema.optional(),
 });
 
-export const GeospatialPointStyleOptionsSchema = z.object({
+const GeospatialPointStyleOptionsSchema = z.object({
   SelectedPointStyle: z.enum(["POINT", "CLUSTER", "HEATMAP"]).optional(),
   ClusterMarkerConfiguration: ClusterMarkerConfigurationSchema.optional(),
   HeatmapConfiguration: GeospatialHeatmapConfigurationSchema.optional(),
 });
 
-export const GeospatialMapConfigurationSchema = z.object({
+const GeospatialMapConfigurationSchema = z.object({
   Legend: LegendOptionsSchema.optional(),
   MapStyleOptions: GeospatialMapStyleOptionsSchema.optional(),
   FieldWells: GeospatialMapFieldWellsSchema.optional(),
@@ -2077,7 +2086,7 @@ export const GeospatialMapConfigurationSchema = z.object({
   VisualPalette: VisualPaletteSchema.optional(),
 });
 
-export const GeospatialMapVisualSchema = z.object({
+const GeospatialMapVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: GeospatialMapConfigurationSchema.optional(),
@@ -2087,34 +2096,34 @@ export const GeospatialMapVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const ScatterPlotSortConfigurationSchema = z.object({
+const ScatterPlotSortConfigurationSchema = z.object({
   ScatterPlotLimitConfiguration: ItemsLimitConfigurationSchema.optional(),
 });
 
-export const MaximumLabelTypeSchema = z.object({
+const MaximumLabelTypeSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const DataPathLabelTypeSchema = z.object({
+const DataPathLabelTypeSchema = z.object({
   FieldId: z.string().min(1).max(512).optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   FieldValue: z.string().min(0).max(2048).optional(),
 });
 
-export const RangeEndsLabelTypeSchema = z.object({
+const RangeEndsLabelTypeSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const FieldLabelTypeSchema = z.object({
+const FieldLabelTypeSchema = z.object({
   FieldId: z.string().min(1).max(512).optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const MinimumLabelTypeSchema = z.object({
+const MinimumLabelTypeSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const DataLabelTypeSchema = z.object({
+const DataLabelTypeSchema = z.object({
   MaximumLabelType: MaximumLabelTypeSchema.optional(),
   DataPathLabelType: DataPathLabelTypeSchema.optional(),
   RangeEndsLabelType: RangeEndsLabelTypeSchema.optional(),
@@ -2122,7 +2131,7 @@ export const DataLabelTypeSchema = z.object({
   MinimumLabelType: MinimumLabelTypeSchema.optional(),
 });
 
-export const DataLabelOptionsSchema = z.object({
+const DataLabelOptionsSchema = z.object({
   DataLabelTypes: z.array(DataLabelTypeSchema).optional(),
   MeasureLabelVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   Position: z.enum(["INSIDE", "OUTSIDE", "LEFT", "TOP", "BOTTOM", "RIGHT"])
@@ -2136,7 +2145,7 @@ export const DataLabelOptionsSchema = z.object({
   LabelFontConfiguration: FontConfigurationSchema.optional(),
 });
 
-export const ScatterPlotUnaggregatedFieldWellsSchema = z.object({
+const ScatterPlotUnaggregatedFieldWellsSchema = z.object({
   Category: z.array(DimensionFieldSchema).optional(),
   Size: z.array(MeasureFieldSchema).optional(),
   Label: z.array(DimensionFieldSchema).optional(),
@@ -2144,7 +2153,7 @@ export const ScatterPlotUnaggregatedFieldWellsSchema = z.object({
   YAxis: z.array(DimensionFieldSchema).optional(),
 });
 
-export const ScatterPlotCategoricallyAggregatedFieldWellsSchema = z.object({
+const ScatterPlotCategoricallyAggregatedFieldWellsSchema = z.object({
   Category: z.array(DimensionFieldSchema).optional(),
   Size: z.array(MeasureFieldSchema).optional(),
   Label: z.array(DimensionFieldSchema).optional(),
@@ -2152,14 +2161,14 @@ export const ScatterPlotCategoricallyAggregatedFieldWellsSchema = z.object({
   YAxis: z.array(MeasureFieldSchema).optional(),
 });
 
-export const ScatterPlotFieldWellsSchema = z.object({
+const ScatterPlotFieldWellsSchema = z.object({
   ScatterPlotUnaggregatedFieldWells: ScatterPlotUnaggregatedFieldWellsSchema
     .optional(),
   ScatterPlotCategoricallyAggregatedFieldWells:
     ScatterPlotCategoricallyAggregatedFieldWellsSchema.optional(),
 });
 
-export const ScatterPlotConfigurationSchema = z.object({
+const ScatterPlotConfigurationSchema = z.object({
   YAxisLabelOptions: ChartAxisLabelOptionsSchema.optional(),
   SortConfiguration: ScatterPlotSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
@@ -2173,7 +2182,7 @@ export const ScatterPlotConfigurationSchema = z.object({
   XAxisDisplayOptions: AxisDisplayOptionsSchema.optional(),
 });
 
-export const ScatterPlotVisualSchema = z.object({
+const ScatterPlotVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: ScatterPlotConfigurationSchema.optional(),
@@ -2183,33 +2192,33 @@ export const ScatterPlotVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const RadarChartSortConfigurationSchema = z.object({
+const RadarChartSortConfigurationSchema = z.object({
   ColorSort: z.array(FieldSortOptionsSchema).optional(),
   ColorItemsLimit: ItemsLimitConfigurationSchema.optional(),
   CategoryItemsLimit: ItemsLimitConfigurationSchema.optional(),
   CategorySort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const RadarChartAreaStyleSettingsSchema = z.object({
+const RadarChartAreaStyleSettingsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const RadarChartSeriesSettingsSchema = z.object({
+const RadarChartSeriesSettingsSchema = z.object({
   AreaStyleSettings: RadarChartAreaStyleSettingsSchema.optional(),
 });
 
-export const RadarChartAggregatedFieldWellsSchema = z.object({
+const RadarChartAggregatedFieldWellsSchema = z.object({
   Category: z.array(DimensionFieldSchema).optional(),
   Color: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
 });
 
-export const RadarChartFieldWellsSchema = z.object({
+const RadarChartFieldWellsSchema = z.object({
   RadarChartAggregatedFieldWells: RadarChartAggregatedFieldWellsSchema
     .optional(),
 });
 
-export const RadarChartConfigurationSchema = z.object({
+const RadarChartConfigurationSchema = z.object({
   SortConfiguration: RadarChartSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
   Shape: z.enum(["CIRCLE", "POLYGON"]).optional(),
@@ -2230,7 +2239,7 @@ export const RadarChartConfigurationSchema = z.object({
     .optional(),
 });
 
-export const RadarChartVisualSchema = z.object({
+const RadarChartVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: RadarChartConfigurationSchema.optional(),
@@ -2240,34 +2249,34 @@ export const RadarChartVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const ComboChartSortConfigurationSchema = z.object({
+const ComboChartSortConfigurationSchema = z.object({
   ColorSort: z.array(FieldSortOptionsSchema).optional(),
   ColorItemsLimit: ItemsLimitConfigurationSchema.optional(),
   CategoryItemsLimit: ItemsLimitConfigurationSchema.optional(),
   CategorySort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const YAxisOptionsSchema = z.object({
+const YAxisOptionsSchema = z.object({
   YAxis: z.enum(["PRIMARY_Y_AXIS"]),
 });
 
-export const SingleAxisOptionsSchema = z.object({
+const SingleAxisOptionsSchema = z.object({
   YAxisOptions: YAxisOptionsSchema.optional(),
 });
 
-export const ComboChartAggregatedFieldWellsSchema = z.object({
+const ComboChartAggregatedFieldWellsSchema = z.object({
   BarValues: z.array(MeasureFieldSchema).optional(),
   Category: z.array(DimensionFieldSchema).optional(),
   Colors: z.array(DimensionFieldSchema).optional(),
   LineValues: z.array(MeasureFieldSchema).optional(),
 });
 
-export const ComboChartFieldWellsSchema = z.object({
+const ComboChartFieldWellsSchema = z.object({
   ComboChartAggregatedFieldWells: ComboChartAggregatedFieldWellsSchema
     .optional(),
 });
 
-export const ComboChartConfigurationSchema = z.object({
+const ComboChartConfigurationSchema = z.object({
   SortConfiguration: ComboChartSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
   ReferenceLines: z.array(ReferenceLineSchema).optional(),
@@ -2289,7 +2298,7 @@ export const ComboChartConfigurationSchema = z.object({
   Interactions: VisualInteractionOptionsSchema.optional(),
 });
 
-export const ComboChartVisualSchema = z.object({
+const ComboChartVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: ComboChartConfigurationSchema.optional(),
@@ -2299,21 +2308,21 @@ export const ComboChartVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const WordCloudSortConfigurationSchema = z.object({
+const WordCloudSortConfigurationSchema = z.object({
   CategoryItemsLimit: ItemsLimitConfigurationSchema.optional(),
   CategorySort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const WordCloudAggregatedFieldWellsSchema = z.object({
+const WordCloudAggregatedFieldWellsSchema = z.object({
   GroupBy: z.array(DimensionFieldSchema).optional(),
   Size: z.array(MeasureFieldSchema).optional(),
 });
 
-export const WordCloudFieldWellsSchema = z.object({
+const WordCloudFieldWellsSchema = z.object({
   WordCloudAggregatedFieldWells: WordCloudAggregatedFieldWellsSchema.optional(),
 });
 
-export const WordCloudOptionsSchema = z.object({
+const WordCloudOptionsSchema = z.object({
   WordOrientation: z.enum(["HORIZONTAL", "HORIZONTAL_AND_VERTICAL"]).optional(),
   WordScaling: z.enum(["EMPHASIZE", "NORMAL"]).optional(),
   CloudLayout: z.enum(["FLUID", "NORMAL"]).optional(),
@@ -2322,7 +2331,7 @@ export const WordCloudOptionsSchema = z.object({
   WordPadding: z.enum(["NONE", "SMALL", "MEDIUM", "LARGE"]).optional(),
 });
 
-export const WordCloudChartConfigurationSchema = z.object({
+const WordCloudChartConfigurationSchema = z.object({
   SortConfiguration: WordCloudSortConfigurationSchema.optional(),
   CategoryLabelOptions: ChartAxisLabelOptionsSchema.optional(),
   FieldWells: WordCloudFieldWellsSchema.optional(),
@@ -2330,7 +2339,7 @@ export const WordCloudChartConfigurationSchema = z.object({
   Interactions: VisualInteractionOptionsSchema.optional(),
 });
 
-export const WordCloudVisualSchema = z.object({
+const WordCloudVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: WordCloudChartConfigurationSchema.optional(),
@@ -2340,31 +2349,31 @@ export const WordCloudVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const SankeyDiagramSortConfigurationSchema = z.object({
+const SankeyDiagramSortConfigurationSchema = z.object({
   WeightSort: z.array(FieldSortOptionsSchema).optional(),
   SourceItemsLimit: ItemsLimitConfigurationSchema.optional(),
   DestinationItemsLimit: ItemsLimitConfigurationSchema.optional(),
 });
 
-export const SankeyDiagramAggregatedFieldWellsSchema = z.object({
+const SankeyDiagramAggregatedFieldWellsSchema = z.object({
   Destination: z.array(DimensionFieldSchema).optional(),
   Source: z.array(DimensionFieldSchema).optional(),
   Weight: z.array(MeasureFieldSchema).optional(),
 });
 
-export const SankeyDiagramFieldWellsSchema = z.object({
+const SankeyDiagramFieldWellsSchema = z.object({
   SankeyDiagramAggregatedFieldWells: SankeyDiagramAggregatedFieldWellsSchema
     .optional(),
 });
 
-export const SankeyDiagramChartConfigurationSchema = z.object({
+const SankeyDiagramChartConfigurationSchema = z.object({
   SortConfiguration: SankeyDiagramSortConfigurationSchema.optional(),
   DataLabels: DataLabelOptionsSchema.optional(),
   FieldWells: SankeyDiagramFieldWellsSchema.optional(),
   Interactions: VisualInteractionOptionsSchema.optional(),
 });
 
-export const SankeyDiagramVisualSchema = z.object({
+const SankeyDiagramVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: SankeyDiagramChartConfigurationSchema.optional(),
@@ -2373,40 +2382,40 @@ export const SankeyDiagramVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const GradientStopSchema = z.object({
+const GradientStopSchema = z.object({
   GradientOffset: z.number(),
   DataValue: z.number().optional(),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const GradientColorSchema = z.object({
+const GradientColorSchema = z.object({
   Stops: z.array(GradientStopSchema).optional(),
 });
 
-export const ConditionalFormattingGradientColorSchema = z.object({
+const ConditionalFormattingGradientColorSchema = z.object({
   Expression: z.string().min(1).max(4096),
   Color: GradientColorSchema,
 });
 
-export const ConditionalFormattingSolidColorSchema = z.object({
+const ConditionalFormattingSolidColorSchema = z.object({
   Expression: z.string().min(1).max(4096),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const ConditionalFormattingColorSchema = z.object({
+const ConditionalFormattingColorSchema = z.object({
   Gradient: ConditionalFormattingGradientColorSchema.optional(),
   Solid: ConditionalFormattingSolidColorSchema.optional(),
 });
 
-export const GaugeChartArcConditionalFormattingSchema = z.object({
+const GaugeChartArcConditionalFormattingSchema = z.object({
   ForegroundColor: ConditionalFormattingColorSchema.optional(),
 });
 
-export const ConditionalFormattingIconDisplayConfigurationSchema = z.object({
+const ConditionalFormattingIconDisplayConfigurationSchema = z.object({
   IconDisplayOption: z.enum(["ICON_ONLY"]).optional(),
 });
 
-export const ConditionalFormattingCustomIconOptionsSchema = z.object({
+const ConditionalFormattingCustomIconOptionsSchema = z.object({
   UnicodeIcon: z.string().regex(new RegExp("^[^\\u0000-\\u00FF]$")).optional(),
   Icon: z.enum([
     "CARET_UP",
@@ -2438,7 +2447,7 @@ export const ConditionalFormattingCustomIconOptionsSchema = z.object({
   ]).optional(),
 });
 
-export const ConditionalFormattingCustomIconConditionSchema = z.object({
+const ConditionalFormattingCustomIconConditionSchema = z.object({
   Expression: z.string().min(1).max(4096),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
   DisplayConfiguration: ConditionalFormattingIconDisplayConfigurationSchema
@@ -2446,7 +2455,7 @@ export const ConditionalFormattingCustomIconConditionSchema = z.object({
   IconOptions: ConditionalFormattingCustomIconOptionsSchema,
 });
 
-export const ConditionalFormattingIconSetSchema = z.object({
+const ConditionalFormattingIconSetSchema = z.object({
   Expression: z.string().min(1).max(4096),
   IconSetType: z.enum([
     "PLUS_MINUS",
@@ -2463,61 +2472,61 @@ export const ConditionalFormattingIconSetSchema = z.object({
   ]).optional(),
 });
 
-export const ConditionalFormattingIconSchema = z.object({
+const ConditionalFormattingIconSchema = z.object({
   CustomCondition: ConditionalFormattingCustomIconConditionSchema.optional(),
   IconSet: ConditionalFormattingIconSetSchema.optional(),
 });
 
-export const GaugeChartPrimaryValueConditionalFormattingSchema = z.object({
+const GaugeChartPrimaryValueConditionalFormattingSchema = z.object({
   TextColor: ConditionalFormattingColorSchema.optional(),
   Icon: ConditionalFormattingIconSchema.optional(),
 });
 
-export const GaugeChartConditionalFormattingOptionSchema = z.object({
+const GaugeChartConditionalFormattingOptionSchema = z.object({
   Arc: GaugeChartArcConditionalFormattingSchema.optional(),
   PrimaryValue: GaugeChartPrimaryValueConditionalFormattingSchema.optional(),
 });
 
-export const GaugeChartConditionalFormattingSchema = z.object({
+const GaugeChartConditionalFormattingSchema = z.object({
   ConditionalFormattingOptions: z.array(
     GaugeChartConditionalFormattingOptionSchema,
   ).optional(),
 });
 
-export const GaugeChartFieldWellsSchema = z.object({
+const GaugeChartFieldWellsSchema = z.object({
   TargetValues: z.array(MeasureFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
 });
 
-export const ArcConfigurationSchema = z.object({
+const ArcConfigurationSchema = z.object({
   ArcAngle: z.number().optional(),
   ArcThickness: z.enum(["SMALL", "MEDIUM", "LARGE"]).optional(),
 });
 
-export const ComparisonFormatConfigurationSchema = z.object({
+const ComparisonFormatConfigurationSchema = z.object({
   NumberDisplayFormatConfiguration: NumberDisplayFormatConfigurationSchema
     .optional(),
   PercentageDisplayFormatConfiguration:
     PercentageDisplayFormatConfigurationSchema.optional(),
 });
 
-export const ComparisonConfigurationSchema = z.object({
+const ComparisonConfigurationSchema = z.object({
   ComparisonMethod: z.enum(["DIFFERENCE", "PERCENT_DIFFERENCE", "PERCENT"])
     .optional(),
   ComparisonFormat: ComparisonFormatConfigurationSchema.optional(),
 });
 
-export const ArcAxisDisplayRangeSchema = z.object({
+const ArcAxisDisplayRangeSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const ArcAxisConfigurationSchema = z.object({
+const ArcAxisConfigurationSchema = z.object({
   Range: ArcAxisDisplayRangeSchema.optional(),
   ReserveRange: z.number().optional(),
 });
 
-export const GaugeChartOptionsSchema = z.object({
+const GaugeChartOptionsSchema = z.object({
   Arc: ArcConfigurationSchema.optional(),
   Comparison: ComparisonConfigurationSchema.optional(),
   PrimaryValueDisplayType: z.enum(["HIDDEN", "COMPARISON", "ACTUAL"])
@@ -2526,12 +2535,12 @@ export const GaugeChartOptionsSchema = z.object({
   PrimaryValueFontConfiguration: FontConfigurationSchema.optional(),
 });
 
-export const GaugeChartColorConfigurationSchema = z.object({
+const GaugeChartColorConfigurationSchema = z.object({
   ForegroundColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
   BackgroundColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const GaugeChartConfigurationSchema = z.object({
+const GaugeChartConfigurationSchema = z.object({
   DataLabels: DataLabelOptionsSchema.optional(),
   FieldWells: GaugeChartFieldWellsSchema.optional(),
   TooltipOptions: TooltipOptionsSchema.optional(),
@@ -2541,7 +2550,7 @@ export const GaugeChartConfigurationSchema = z.object({
   VisualPalette: VisualPaletteSchema.optional(),
 });
 
-export const GaugeChartVisualSchema = z.object({
+const GaugeChartVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   ConditionalFormatting: GaugeChartConditionalFormattingSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -2551,39 +2560,39 @@ export const GaugeChartVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const ShapeConditionalFormatSchema = z.object({
+const ShapeConditionalFormatSchema = z.object({
   BackgroundColor: ConditionalFormattingColorSchema,
 });
 
-export const FilledMapShapeConditionalFormattingSchema = z.object({
+const FilledMapShapeConditionalFormattingSchema = z.object({
   Format: ShapeConditionalFormatSchema.optional(),
   FieldId: z.string().min(1).max(512),
 });
 
-export const FilledMapConditionalFormattingOptionSchema = z.object({
+const FilledMapConditionalFormattingOptionSchema = z.object({
   Shape: FilledMapShapeConditionalFormattingSchema,
 });
 
-export const FilledMapConditionalFormattingSchema = z.object({
+const FilledMapConditionalFormattingSchema = z.object({
   ConditionalFormattingOptions: z.array(
     FilledMapConditionalFormattingOptionSchema,
   ),
 });
 
-export const FilledMapSortConfigurationSchema = z.object({
+const FilledMapSortConfigurationSchema = z.object({
   CategorySort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const FilledMapAggregatedFieldWellsSchema = z.object({
+const FilledMapAggregatedFieldWellsSchema = z.object({
   Values: z.array(MeasureFieldSchema).optional(),
   Geospatial: z.array(DimensionFieldSchema).optional(),
 });
 
-export const FilledMapFieldWellsSchema = z.object({
+const FilledMapFieldWellsSchema = z.object({
   FilledMapAggregatedFieldWells: FilledMapAggregatedFieldWellsSchema.optional(),
 });
 
-export const FilledMapConfigurationSchema = z.object({
+const FilledMapConfigurationSchema = z.object({
   SortConfiguration: FilledMapSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
   MapStyleOptions: GeospatialMapStyleOptionsSchema.optional(),
@@ -2593,7 +2602,7 @@ export const FilledMapConfigurationSchema = z.object({
   WindowOptions: GeospatialWindowOptionsSchema.optional(),
 });
 
-export const FilledMapVisualSchema = z.object({
+const FilledMapVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   ConditionalFormatting: FilledMapConditionalFormattingSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -2604,38 +2613,38 @@ export const FilledMapVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const WaterfallChartSortConfigurationSchema = z.object({
+const WaterfallChartSortConfigurationSchema = z.object({
   BreakdownItemsLimit: ItemsLimitConfigurationSchema.optional(),
   CategorySort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const WaterfallChartAggregatedFieldWellsSchema = z.object({
+const WaterfallChartAggregatedFieldWellsSchema = z.object({
   Categories: z.array(DimensionFieldSchema).optional(),
   Breakdowns: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
 });
 
-export const WaterfallChartFieldWellsSchema = z.object({
+const WaterfallChartFieldWellsSchema = z.object({
   WaterfallChartAggregatedFieldWells: WaterfallChartAggregatedFieldWellsSchema
     .optional(),
 });
 
-export const WaterfallChartOptionsSchema = z.object({
+const WaterfallChartOptionsSchema = z.object({
   TotalBarLabel: z.string().optional(),
 });
 
-export const WaterfallChartGroupColorConfigurationSchema = z.object({
+const WaterfallChartGroupColorConfigurationSchema = z.object({
   NegativeBarColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
   TotalBarColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
   PositiveBarColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const WaterfallChartColorConfigurationSchema = z.object({
+const WaterfallChartColorConfigurationSchema = z.object({
   GroupColorConfiguration: WaterfallChartGroupColorConfigurationSchema
     .optional(),
 });
 
-export const WaterfallChartConfigurationSchema = z.object({
+const WaterfallChartConfigurationSchema = z.object({
   CategoryAxisLabelOptions: ChartAxisLabelOptionsSchema.optional(),
   SortConfiguration: WaterfallChartSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
@@ -2650,7 +2659,7 @@ export const WaterfallChartConfigurationSchema = z.object({
   VisualPalette: VisualPaletteSchema.optional(),
 });
 
-export const WaterfallVisualSchema = z.object({
+const WaterfallVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: WaterfallChartConfigurationSchema.optional(),
@@ -2660,7 +2669,7 @@ export const WaterfallVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const CustomContentConfigurationSchema = z.object({
+const CustomContentConfigurationSchema = z.object({
   ContentUrl: z.string().min(1).max(2048).optional(),
   ContentType: z.enum(["IMAGE", "OTHER_EMBEDDED_CONTENT"]).optional(),
   ImageScaling: z.enum([
@@ -2672,7 +2681,7 @@ export const CustomContentConfigurationSchema = z.object({
   Interactions: VisualInteractionOptionsSchema.optional(),
 });
 
-export const CustomContentVisualSchema = z.object({
+const CustomContentVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: CustomContentConfigurationSchema.optional(),
@@ -2682,49 +2691,49 @@ export const CustomContentVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const PieChartSortConfigurationSchema = z.object({
+const PieChartSortConfigurationSchema = z.object({
   SmallMultiplesSort: z.array(FieldSortOptionsSchema).optional(),
   CategoryItemsLimit: ItemsLimitConfigurationSchema.optional(),
   CategorySort: z.array(FieldSortOptionsSchema).optional(),
   SmallMultiplesLimitConfiguration: ItemsLimitConfigurationSchema.optional(),
 });
 
-export const ContributionAnalysisDefaultSchema = z.object({
+const ContributionAnalysisDefaultSchema = z.object({
   MeasureFieldId: z.string().min(1).max(512),
   ContributorDimensions: z.array(ColumnIdentifierSchema),
 });
 
-export const PieChartAggregatedFieldWellsSchema = z.object({
+const PieChartAggregatedFieldWellsSchema = z.object({
   Category: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
   SmallMultiples: z.array(DimensionFieldSchema).optional(),
 });
 
-export const PieChartFieldWellsSchema = z.object({
+const PieChartFieldWellsSchema = z.object({
   PieChartAggregatedFieldWells: PieChartAggregatedFieldWellsSchema.optional(),
 });
 
-export const DonutCenterOptionsSchema = z.object({
+const DonutCenterOptionsSchema = z.object({
   LabelVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const ArcOptionsSchema = z.object({
+const ArcOptionsSchema = z.object({
   ArcThickness: z.enum(["SMALL", "MEDIUM", "LARGE", "WHOLE"]).optional(),
 });
 
-export const DonutOptionsSchema = z.object({
+const DonutOptionsSchema = z.object({
   DonutCenterOptions: DonutCenterOptionsSchema.optional(),
   ArcOptions: ArcOptionsSchema.optional(),
 });
 
-export const PanelTitleOptionsSchema = z.object({
+const PanelTitleOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   FontConfiguration: FontConfigurationSchema.optional(),
   HorizontalTextAlignment: z.enum(["LEFT", "CENTER", "RIGHT", "AUTO"])
     .optional(),
 });
 
-export const PanelConfigurationSchema = z.object({
+const PanelConfigurationSchema = z.object({
   BorderThickness: z.string().describe(
     "String based length that is composed of value and unit in px",
   ).optional(),
@@ -2743,12 +2752,12 @@ export const PanelConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SmallMultiplesAxisPropertiesSchema = z.object({
+const SmallMultiplesAxisPropertiesSchema = z.object({
   Placement: z.enum(["OUTSIDE", "INSIDE"]).optional(),
   Scale: z.enum(["SHARED", "INDEPENDENT"]).optional(),
 });
 
-export const SmallMultiplesOptionsSchema = z.object({
+const SmallMultiplesOptionsSchema = z.object({
   MaxVisibleRows: z.number().min(1).max(10).optional(),
   PanelConfiguration: PanelConfigurationSchema.optional(),
   MaxVisibleColumns: z.number().min(1).max(10).optional(),
@@ -2756,7 +2765,7 @@ export const SmallMultiplesOptionsSchema = z.object({
   YAxis: SmallMultiplesAxisPropertiesSchema.optional(),
 });
 
-export const PieChartConfigurationSchema = z.object({
+const PieChartConfigurationSchema = z.object({
   SortConfiguration: PieChartSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
   DataLabels: DataLabelOptionsSchema.optional(),
@@ -2772,7 +2781,7 @@ export const PieChartConfigurationSchema = z.object({
   VisualPalette: VisualPaletteSchema.optional(),
 });
 
-export const PieChartVisualSchema = z.object({
+const PieChartVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: PieChartConfigurationSchema.optional(),
@@ -2782,69 +2791,69 @@ export const PieChartVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const KPIPrimaryValueConditionalFormattingSchema = z.object({
+const KPIPrimaryValueConditionalFormattingSchema = z.object({
   TextColor: ConditionalFormattingColorSchema.optional(),
   Icon: ConditionalFormattingIconSchema.optional(),
 });
 
-export const KPIActualValueConditionalFormattingSchema = z.object({
+const KPIActualValueConditionalFormattingSchema = z.object({
   TextColor: ConditionalFormattingColorSchema.optional(),
   Icon: ConditionalFormattingIconSchema.optional(),
 });
 
-export const KPIComparisonValueConditionalFormattingSchema = z.object({
+const KPIComparisonValueConditionalFormattingSchema = z.object({
   TextColor: ConditionalFormattingColorSchema.optional(),
   Icon: ConditionalFormattingIconSchema.optional(),
 });
 
-export const KPIProgressBarConditionalFormattingSchema = z.object({
+const KPIProgressBarConditionalFormattingSchema = z.object({
   ForegroundColor: ConditionalFormattingColorSchema.optional(),
 });
 
-export const KPIConditionalFormattingOptionSchema = z.object({
+const KPIConditionalFormattingOptionSchema = z.object({
   PrimaryValue: KPIPrimaryValueConditionalFormattingSchema.optional(),
   ActualValue: KPIActualValueConditionalFormattingSchema.optional(),
   ComparisonValue: KPIComparisonValueConditionalFormattingSchema.optional(),
   ProgressBar: KPIProgressBarConditionalFormattingSchema.optional(),
 });
 
-export const KPIConditionalFormattingSchema = z.object({
+const KPIConditionalFormattingSchema = z.object({
   ConditionalFormattingOptions: z.array(KPIConditionalFormattingOptionSchema)
     .optional(),
 });
 
-export const KPISortConfigurationSchema = z.object({
+const KPISortConfigurationSchema = z.object({
   TrendGroupSort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const KPIVisualStandardLayoutSchema = z.object({
+const KPIVisualStandardLayoutSchema = z.object({
   Type: z.enum(["CLASSIC", "VERTICAL"]),
 });
 
-export const KPIVisualLayoutOptionsSchema = z.object({
+const KPIVisualLayoutOptionsSchema = z.object({
   StandardLayout: KPIVisualStandardLayoutSchema.optional(),
 });
 
-export const TrendArrowOptionsSchema = z.object({
+const TrendArrowOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const SecondaryValueOptionsSchema = z.object({
+const SecondaryValueOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const ProgressBarOptionsSchema = z.object({
+const ProgressBarOptionsSchema = z.object({
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const KPISparklineOptionsSchema = z.object({
+const KPISparklineOptionsSchema = z.object({
   Type: z.enum(["LINE", "AREA"]),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
   TooltipVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const KPIOptionsSchema = z.object({
+const KPIOptionsSchema = z.object({
   SecondaryValueFontConfiguration: FontConfigurationSchema.optional(),
   VisualLayoutOptions: KPIVisualLayoutOptionsSchema.optional(),
   TrendArrows: TrendArrowOptionsSchema.optional(),
@@ -2857,20 +2866,20 @@ export const KPIOptionsSchema = z.object({
   Sparkline: KPISparklineOptionsSchema.optional(),
 });
 
-export const KPIFieldWellsSchema = z.object({
+const KPIFieldWellsSchema = z.object({
   TargetValues: z.array(MeasureFieldSchema).optional(),
   TrendGroups: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
 });
 
-export const KPIConfigurationSchema = z.object({
+const KPIConfigurationSchema = z.object({
   SortConfiguration: KPISortConfigurationSchema.optional(),
   KPIOptions: KPIOptionsSchema.optional(),
   FieldWells: KPIFieldWellsSchema.optional(),
   Interactions: VisualInteractionOptionsSchema.optional(),
 });
 
-export const KPIVisualSchema = z.object({
+const KPIVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   ConditionalFormatting: KPIConditionalFormattingSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -2881,31 +2890,31 @@ export const KPIVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const BinWidthOptionsSchema = z.object({
+const BinWidthOptionsSchema = z.object({
   BinCountLimit: z.number().min(0).max(1000).optional(),
   Value: z.number().min(0).optional(),
 });
 
-export const BinCountOptionsSchema = z.object({
+const BinCountOptionsSchema = z.object({
   Value: z.number().min(0).optional(),
 });
 
-export const HistogramBinOptionsSchema = z.object({
+const HistogramBinOptionsSchema = z.object({
   BinWidth: BinWidthOptionsSchema.optional(),
   StartValue: z.number().optional(),
   SelectedBinType: z.enum(["BIN_COUNT", "BIN_WIDTH"]).optional(),
   BinCount: BinCountOptionsSchema.optional(),
 });
 
-export const HistogramAggregatedFieldWellsSchema = z.object({
+const HistogramAggregatedFieldWellsSchema = z.object({
   Values: z.array(MeasureFieldSchema).optional(),
 });
 
-export const HistogramFieldWellsSchema = z.object({
+const HistogramFieldWellsSchema = z.object({
   HistogramAggregatedFieldWells: HistogramAggregatedFieldWellsSchema.optional(),
 });
 
-export const HistogramConfigurationSchema = z.object({
+const HistogramConfigurationSchema = z.object({
   YAxisDisplayOptions: AxisDisplayOptionsSchema.optional(),
   DataLabels: DataLabelOptionsSchema.optional(),
   BinOptions: HistogramBinOptionsSchema.optional(),
@@ -2917,7 +2926,7 @@ export const HistogramConfigurationSchema = z.object({
   XAxisDisplayOptions: AxisDisplayOptionsSchema.optional(),
 });
 
-export const HistogramVisualSchema = z.object({
+const HistogramVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: HistogramConfigurationSchema.optional(),
@@ -2926,42 +2935,42 @@ export const HistogramVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const PluginVisualItemsLimitConfigurationSchema = z.object({
+const PluginVisualItemsLimitConfigurationSchema = z.object({
   ItemsLimit: z.number().optional(),
 });
 
-export const PluginVisualTableQuerySortSchema = z.object({
+const PluginVisualTableQuerySortSchema = z.object({
   ItemsLimitConfiguration: PluginVisualItemsLimitConfigurationSchema.optional(),
   RowSort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const PluginVisualSortConfigurationSchema = z.object({
+const PluginVisualSortConfigurationSchema = z.object({
   PluginVisualTableQuerySort: PluginVisualTableQuerySortSchema.optional(),
 });
 
-export const PluginVisualPropertySchema = z.object({
+const PluginVisualPropertySchema = z.object({
   Value: z.string().optional(),
   Name: z.string().optional(),
 });
 
-export const PluginVisualOptionsSchema = z.object({
+const PluginVisualOptionsSchema = z.object({
   VisualProperties: z.array(PluginVisualPropertySchema).optional(),
 });
 
-export const PluginVisualFieldWellSchema = z.object({
+const PluginVisualFieldWellSchema = z.object({
   Unaggregated: z.array(UnaggregatedFieldSchema).optional(),
   AxisName: z.enum(["GROUP_BY", "VALUE"]).optional(),
   Measures: z.array(MeasureFieldSchema).optional(),
   Dimensions: z.array(DimensionFieldSchema).optional(),
 });
 
-export const PluginVisualConfigurationSchema = z.object({
+const PluginVisualConfigurationSchema = z.object({
   SortConfiguration: PluginVisualSortConfigurationSchema.optional(),
   VisualOptions: PluginVisualOptionsSchema.optional(),
   FieldWells: z.array(PluginVisualFieldWellSchema).optional(),
 });
 
-export const PluginVisualSchema = z.object({
+const PluginVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   PluginArn: z.string(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -2970,49 +2979,49 @@ export const PluginVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const TableRowConditionalFormattingSchema = z.object({
+const TableRowConditionalFormattingSchema = z.object({
   TextColor: ConditionalFormattingColorSchema.optional(),
   BackgroundColor: ConditionalFormattingColorSchema.optional(),
 });
 
-export const TextConditionalFormatSchema = z.object({
+const TextConditionalFormatSchema = z.object({
   TextColor: ConditionalFormattingColorSchema.optional(),
   Icon: ConditionalFormattingIconSchema.optional(),
   BackgroundColor: ConditionalFormattingColorSchema.optional(),
 });
 
-export const TableCellConditionalFormattingSchema = z.object({
+const TableCellConditionalFormattingSchema = z.object({
   FieldId: z.string().min(1).max(512),
   TextFormat: TextConditionalFormatSchema.optional(),
 });
 
-export const TableConditionalFormattingOptionSchema = z.object({
+const TableConditionalFormattingOptionSchema = z.object({
   Row: TableRowConditionalFormattingSchema.optional(),
   Cell: TableCellConditionalFormattingSchema.optional(),
 });
 
-export const TableConditionalFormattingSchema = z.object({
+const TableConditionalFormattingSchema = z.object({
   ConditionalFormattingOptions: z.array(TableConditionalFormattingOptionSchema)
     .optional(),
 });
 
-export const TableSortConfigurationSchema = z.object({
+const TableSortConfigurationSchema = z.object({
   RowSort: z.array(FieldSortOptionsSchema).optional(),
   PaginationConfiguration: PaginationConfigurationSchema.optional(),
 });
 
-export const TablePaginatedReportOptionsSchema = z.object({
+const TablePaginatedReportOptionsSchema = z.object({
   OverflowColumnHeaderVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   VerticalOverflowVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const TableBorderOptionsSchema = z.object({
+const TableBorderOptionsSchema = z.object({
   Thickness: z.number().min(1).max(4).optional(),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
   Style: z.enum(["NONE", "SOLID"]).optional(),
 });
 
-export const TableSideBorderOptionsSchema = z.object({
+const TableSideBorderOptionsSchema = z.object({
   Left: TableBorderOptionsSchema.optional(),
   Top: TableBorderOptionsSchema.optional(),
   InnerHorizontal: TableBorderOptionsSchema.optional(),
@@ -3021,12 +3030,12 @@ export const TableSideBorderOptionsSchema = z.object({
   InnerVertical: TableBorderOptionsSchema.optional(),
 });
 
-export const GlobalTableBorderOptionsSchema = z.object({
+const GlobalTableBorderOptionsSchema = z.object({
   UniformBorder: TableBorderOptionsSchema.optional(),
   SideSpecificBorder: TableSideBorderOptionsSchema.optional(),
 });
 
-export const TableCellStyleSchema = z.object({
+const TableCellStyleSchema = z.object({
   VerticalTextAlignment: z.enum(["TOP", "MIDDLE", "BOTTOM", "AUTO"]).optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   Height: z.number().min(8).max(500).optional(),
@@ -3038,49 +3047,49 @@ export const TableCellStyleSchema = z.object({
   BackgroundColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const RowAlternateColorOptionsSchema = z.object({
+const RowAlternateColorOptionsSchema = z.object({
   Status: z.enum(["ENABLED", "DISABLED"]).optional(),
   UsePrimaryBackgroundColor: z.enum(["ENABLED", "DISABLED"]).optional(),
   RowAlternateColors: z.array(z.string().regex(new RegExp("^#[A-F0-9]{6}$")))
     .optional(),
 });
 
-export const TableOptionsSchema = z.object({
+const TableOptionsSchema = z.object({
   HeaderStyle: TableCellStyleSchema.optional(),
   CellStyle: TableCellStyleSchema.optional(),
   Orientation: z.enum(["VERTICAL", "HORIZONTAL"]).optional(),
   RowAlternateColorOptions: RowAlternateColorOptionsSchema.optional(),
 });
 
-export const DataBarsOptionsSchema = z.object({
+const DataBarsOptionsSchema = z.object({
   PositiveColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
   FieldId: z.string().min(1).max(512),
   NegativeColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const TableInlineVisualizationSchema = z.object({
+const TableInlineVisualizationSchema = z.object({
   DataBars: DataBarsOptionsSchema.optional(),
 });
 
-export const TableUnaggregatedFieldWellsSchema = z.object({
+const TableUnaggregatedFieldWellsSchema = z.object({
   Values: z.array(UnaggregatedFieldSchema).optional(),
 });
 
-export const TableAggregatedFieldWellsSchema = z.object({
+const TableAggregatedFieldWellsSchema = z.object({
   GroupBy: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
 });
 
-export const TableFieldWellsSchema = z.object({
+const TableFieldWellsSchema = z.object({
   TableUnaggregatedFieldWells: TableUnaggregatedFieldWellsSchema.optional(),
   TableAggregatedFieldWells: TableAggregatedFieldWellsSchema.optional(),
 });
 
-export const TablePinnedFieldOptionsSchema = z.object({
+const TablePinnedFieldOptionsSchema = z.object({
   PinnedLeftFields: z.array(z.string().min(1).max(512)).optional(),
 });
 
-export const TransposedTableOptionSchema = z.object({
+const TransposedTableOptionSchema = z.object({
   ColumnWidth: z.string().describe(
     "String based length that is composed of value and unit in px",
   ).optional(),
@@ -3088,26 +3097,26 @@ export const TransposedTableOptionSchema = z.object({
   ColumnType: z.enum(["ROW_HEADER_COLUMN", "VALUE_COLUMN"]),
 });
 
-export const TableFieldCustomIconContentSchema = z.object({
+const TableFieldCustomIconContentSchema = z.object({
   Icon: z.enum(["LINK"]).optional(),
 });
 
-export const TableFieldCustomTextContentSchema = z.object({
+const TableFieldCustomTextContentSchema = z.object({
   Value: z.string().optional(),
   FontConfiguration: FontConfigurationSchema,
 });
 
-export const TableFieldLinkContentConfigurationSchema = z.object({
+const TableFieldLinkContentConfigurationSchema = z.object({
   CustomIconContent: TableFieldCustomIconContentSchema.optional(),
   CustomTextContent: TableFieldCustomTextContentSchema.optional(),
 });
 
-export const TableFieldLinkConfigurationSchema = z.object({
+const TableFieldLinkConfigurationSchema = z.object({
   Target: z.enum(["NEW_TAB", "NEW_WINDOW", "SAME_TAB"]),
   Content: TableFieldLinkContentConfigurationSchema,
 });
 
-export const TableCellImageSizingConfigurationSchema = z.object({
+const TableCellImageSizingConfigurationSchema = z.object({
   TableCellImageScalingConfiguration: z.enum([
     "FIT_TO_CELL_HEIGHT",
     "FIT_TO_CELL_WIDTH",
@@ -3115,16 +3124,16 @@ export const TableCellImageSizingConfigurationSchema = z.object({
   ]).optional(),
 });
 
-export const TableFieldImageConfigurationSchema = z.object({
+const TableFieldImageConfigurationSchema = z.object({
   SizingOptions: TableCellImageSizingConfigurationSchema.optional(),
 });
 
-export const TableFieldURLConfigurationSchema = z.object({
+const TableFieldURLConfigurationSchema = z.object({
   LinkConfiguration: TableFieldLinkConfigurationSchema.optional(),
   ImageConfiguration: TableFieldImageConfigurationSchema.optional(),
 });
 
-export const TableFieldOptionSchema = z.object({
+const TableFieldOptionSchema = z.object({
   CustomLabel: z.string().min(1).max(2048).optional(),
   URLStyling: TableFieldURLConfigurationSchema.optional(),
   FieldId: z.string().min(1).max(512),
@@ -3134,14 +3143,14 @@ export const TableFieldOptionSchema = z.object({
   ).optional(),
 });
 
-export const TableFieldOptionsSchema = z.object({
+const TableFieldOptionsSchema = z.object({
   Order: z.array(z.string().min(1).max(512)).optional(),
   PinnedFieldOptions: TablePinnedFieldOptionsSchema.optional(),
   TransposedTableOptions: z.array(TransposedTableOptionSchema).optional(),
   SelectedFieldOptions: z.array(TableFieldOptionSchema).optional(),
 });
 
-export const TotalAggregationFunctionSchema = z.object({
+const TotalAggregationFunctionSchema = z.object({
   SimpleTotalAggregationFunction: z.enum([
     "DEFAULT",
     "SUM",
@@ -3152,12 +3161,12 @@ export const TotalAggregationFunctionSchema = z.object({
   ]).optional(),
 });
 
-export const TotalAggregationOptionSchema = z.object({
+const TotalAggregationOptionSchema = z.object({
   TotalAggregationFunction: TotalAggregationFunctionSchema,
   FieldId: z.string().min(1).max(512),
 });
 
-export const TotalOptionsSchema = z.object({
+const TotalOptionsSchema = z.object({
   TotalAggregationOptions: z.array(TotalAggregationOptionSchema).optional(),
   CustomLabel: z.string().optional(),
   ScrollStatus: z.enum(["PINNED", "SCROLLED"]).optional(),
@@ -3166,7 +3175,7 @@ export const TotalOptionsSchema = z.object({
   TotalsVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const TableConfigurationSchema = z.object({
+const TableConfigurationSchema = z.object({
   SortConfiguration: TableSortConfigurationSchema.optional(),
   PaginatedReportOptions: TablePaginatedReportOptionsSchema.optional(),
   TableOptions: TableOptionsSchema.optional(),
@@ -3177,7 +3186,7 @@ export const TableConfigurationSchema = z.object({
   TotalOptions: TotalOptionsSchema.optional(),
 });
 
-export const TableVisualSchema = z.object({
+const TableVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   ConditionalFormatting: TableConditionalFormattingSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -3187,58 +3196,58 @@ export const TableVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const PivotTableConditionalFormattingScopeSchema = z.object({
+const PivotTableConditionalFormattingScopeSchema = z.object({
   Role: z.enum(["FIELD", "FIELD_TOTAL", "GRAND_TOTAL"]).optional(),
 });
 
-export const PivotTableCellConditionalFormattingSchema = z.object({
+const PivotTableCellConditionalFormattingSchema = z.object({
   Scope: PivotTableConditionalFormattingScopeSchema.optional(),
   Scopes: z.array(PivotTableConditionalFormattingScopeSchema).optional(),
   FieldId: z.string().min(1).max(512),
   TextFormat: TextConditionalFormatSchema.optional(),
 });
 
-export const PivotTableConditionalFormattingOptionSchema = z.object({
+const PivotTableConditionalFormattingOptionSchema = z.object({
   Cell: PivotTableCellConditionalFormattingSchema.optional(),
 });
 
-export const PivotTableConditionalFormattingSchema = z.object({
+const PivotTableConditionalFormattingSchema = z.object({
   ConditionalFormattingOptions: z.array(
     PivotTableConditionalFormattingOptionSchema,
   ).optional(),
 });
 
-export const DataPathSortSchema = z.object({
+const DataPathSortSchema = z.object({
   SortPaths: z.array(DataPathValueSchema),
   Direction: z.enum(["ASC", "DESC"]),
 });
 
-export const PivotTableSortBySchema = z.object({
+const PivotTableSortBySchema = z.object({
   Field: FieldSortSchema.optional(),
   DataPath: DataPathSortSchema.optional(),
   Column: ColumnSortSchema.optional(),
 });
 
-export const PivotFieldSortOptionsSchema = z.object({
+const PivotFieldSortOptionsSchema = z.object({
   SortBy: PivotTableSortBySchema,
   FieldId: z.string().min(1).max(512),
 });
 
-export const PivotTableSortConfigurationSchema = z.object({
+const PivotTableSortConfigurationSchema = z.object({
   FieldSortOptions: z.array(PivotFieldSortOptionsSchema).optional(),
 });
 
-export const PivotTablePaginatedReportOptionsSchema = z.object({
+const PivotTablePaginatedReportOptionsSchema = z.object({
   OverflowColumnHeaderVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
   VerticalOverflowVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const PivotTableRowsLabelOptionsSchema = z.object({
+const PivotTableRowsLabelOptionsSchema = z.object({
   CustomLabel: z.string().min(1).max(1024).optional(),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const PivotTableOptionsSchema = z.object({
+const PivotTableOptionsSchema = z.object({
   RowFieldNamesStyle: TableCellStyleSchema.optional(),
   RowHeaderStyle: TableCellStyleSchema.optional(),
   CollapsedRowDimensionsVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
@@ -3256,56 +3265,56 @@ export const PivotTableOptionsSchema = z.object({
   RowAlternateColorOptions: RowAlternateColorOptionsSchema.optional(),
 });
 
-export const PivotTableAggregatedFieldWellsSchema = z.object({
+const PivotTableAggregatedFieldWellsSchema = z.object({
   Values: z.array(MeasureFieldSchema).optional(),
   Columns: z.array(DimensionFieldSchema).optional(),
   Rows: z.array(DimensionFieldSchema).optional(),
 });
 
-export const PivotTableFieldWellsSchema = z.object({
+const PivotTableFieldWellsSchema = z.object({
   PivotTableAggregatedFieldWells: PivotTableAggregatedFieldWellsSchema
     .optional(),
 });
 
-export const PivotTableFieldCollapseStateTargetSchema = z.object({
+const PivotTableFieldCollapseStateTargetSchema = z.object({
   FieldId: z.string().optional(),
   FieldDataPathValues: z.array(DataPathValueSchema).optional(),
 });
 
-export const PivotTableFieldCollapseStateOptionSchema = z.object({
+const PivotTableFieldCollapseStateOptionSchema = z.object({
   Target: PivotTableFieldCollapseStateTargetSchema,
   State: z.enum(["COLLAPSED", "EXPANDED"]).optional(),
 });
 
-export const PivotTableDataPathOptionSchema = z.object({
+const PivotTableDataPathOptionSchema = z.object({
   DataPathList: z.array(DataPathValueSchema),
   Width: z.string().describe(
     "String based length that is composed of value and unit in px",
   ).optional(),
 });
 
-export const PivotTableFieldOptionSchema = z.object({
+const PivotTableFieldOptionSchema = z.object({
   CustomLabel: z.string().min(1).max(2048).optional(),
   FieldId: z.string().min(1).max(512),
   Visibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
 });
 
-export const PivotTableFieldOptionsSchema = z.object({
+const PivotTableFieldOptionsSchema = z.object({
   CollapseStateOptions: z.array(PivotTableFieldCollapseStateOptionSchema)
     .optional(),
   DataPathOptions: z.array(PivotTableDataPathOptionSchema).optional(),
   SelectedFieldOptions: z.array(PivotTableFieldOptionSchema).optional(),
 });
 
-export const PivotTableFieldSubtotalOptionsSchema = z.object({
+const PivotTableFieldSubtotalOptionsSchema = z.object({
   FieldId: z.string().min(1).max(512).optional(),
 });
 
-export const TableStyleTargetSchema = z.object({
+const TableStyleTargetSchema = z.object({
   CellType: z.enum(["TOTAL", "METRIC_HEADER", "VALUE"]),
 });
 
-export const SubtotalOptionsSchema = z.object({
+const SubtotalOptionsSchema = z.object({
   CustomLabel: z.string().optional(),
   FieldLevelOptions: z.array(PivotTableFieldSubtotalOptionsSchema).optional(),
   ValueCellStyle: TableCellStyleSchema.optional(),
@@ -3316,7 +3325,7 @@ export const SubtotalOptionsSchema = z.object({
   StyleTargets: z.array(TableStyleTargetSchema).optional(),
 });
 
-export const PivotTotalOptionsSchema = z.object({
+const PivotTotalOptionsSchema = z.object({
   TotalAggregationOptions: z.array(TotalAggregationOptionSchema).optional(),
   CustomLabel: z.string().optional(),
   ValueCellStyle: TableCellStyleSchema.optional(),
@@ -3327,14 +3336,14 @@ export const PivotTotalOptionsSchema = z.object({
   MetricHeaderCellStyle: TableCellStyleSchema.optional(),
 });
 
-export const PivotTableTotalOptionsSchema = z.object({
+const PivotTableTotalOptionsSchema = z.object({
   ColumnSubtotalOptions: SubtotalOptionsSchema.optional(),
   RowSubtotalOptions: SubtotalOptionsSchema.optional(),
   RowTotalOptions: PivotTotalOptionsSchema.optional(),
   ColumnTotalOptions: PivotTotalOptionsSchema.optional(),
 });
 
-export const PivotTableConfigurationSchema = z.object({
+const PivotTableConfigurationSchema = z.object({
   SortConfiguration: PivotTableSortConfigurationSchema.optional(),
   PaginatedReportOptions: PivotTablePaginatedReportOptionsSchema.optional(),
   TableOptions: PivotTableOptionsSchema.optional(),
@@ -3344,7 +3353,7 @@ export const PivotTableConfigurationSchema = z.object({
   TotalOptions: PivotTableTotalOptionsSchema.optional(),
 });
 
-export const PivotTableVisualSchema = z.object({
+const PivotTableVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   ConditionalFormatting: PivotTableConditionalFormattingSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -3354,7 +3363,7 @@ export const PivotTableVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const BarChartSortConfigurationSchema = z.object({
+const BarChartSortConfigurationSchema = z.object({
   SmallMultiplesSort: z.array(FieldSortOptionsSchema).optional(),
   ColorSort: z.array(FieldSortOptionsSchema).optional(),
   ColorItemsLimit: ItemsLimitConfigurationSchema.optional(),
@@ -3363,18 +3372,18 @@ export const BarChartSortConfigurationSchema = z.object({
   SmallMultiplesLimitConfiguration: ItemsLimitConfigurationSchema.optional(),
 });
 
-export const BarChartAggregatedFieldWellsSchema = z.object({
+const BarChartAggregatedFieldWellsSchema = z.object({
   Category: z.array(DimensionFieldSchema).optional(),
   Colors: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
   SmallMultiples: z.array(DimensionFieldSchema).optional(),
 });
 
-export const BarChartFieldWellsSchema = z.object({
+const BarChartFieldWellsSchema = z.object({
   BarChartAggregatedFieldWells: BarChartAggregatedFieldWellsSchema.optional(),
 });
 
-export const BarChartConfigurationSchema = z.object({
+const BarChartConfigurationSchema = z.object({
   SortConfiguration: BarChartSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
   ReferenceLines: z.array(ReferenceLineSchema).optional(),
@@ -3396,7 +3405,7 @@ export const BarChartConfigurationSchema = z.object({
   Interactions: VisualInteractionOptionsSchema.optional(),
 });
 
-export const BarChartVisualSchema = z.object({
+const BarChartVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: BarChartConfigurationSchema.optional(),
@@ -3406,7 +3415,7 @@ export const BarChartVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const HeatMapSortConfigurationSchema = z.object({
+const HeatMapSortConfigurationSchema = z.object({
   HeatMapRowSort: z.array(FieldSortOptionsSchema).optional(),
   HeatMapRowItemsLimitConfiguration: ItemsLimitConfigurationSchema.optional(),
   HeatMapColumnItemsLimitConfiguration: ItemsLimitConfigurationSchema
@@ -3414,28 +3423,28 @@ export const HeatMapSortConfigurationSchema = z.object({
   HeatMapColumnSort: z.array(FieldSortOptionsSchema).optional(),
 });
 
-export const HeatMapAggregatedFieldWellsSchema = z.object({
+const HeatMapAggregatedFieldWellsSchema = z.object({
   Values: z.array(MeasureFieldSchema).optional(),
   Columns: z.array(DimensionFieldSchema).optional(),
   Rows: z.array(DimensionFieldSchema).optional(),
 });
 
-export const HeatMapFieldWellsSchema = z.object({
+const HeatMapFieldWellsSchema = z.object({
   HeatMapAggregatedFieldWells: HeatMapAggregatedFieldWellsSchema.optional(),
 });
 
-export const DataColorSchema = z.object({
+const DataColorSchema = z.object({
   DataValue: z.number().optional(),
   Color: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const ColorScaleSchema = z.object({
+const ColorScaleSchema = z.object({
   Colors: z.array(DataColorSchema),
   ColorFillType: z.enum(["DISCRETE", "GRADIENT"]),
   NullValueColor: DataColorSchema.optional(),
 });
 
-export const HeatMapConfigurationSchema = z.object({
+const HeatMapConfigurationSchema = z.object({
   SortConfiguration: HeatMapSortConfigurationSchema.optional(),
   ColumnLabelOptions: ChartAxisLabelOptionsSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
@@ -3447,7 +3456,7 @@ export const HeatMapConfigurationSchema = z.object({
   RowLabelOptions: ChartAxisLabelOptionsSchema.optional(),
 });
 
-export const HeatMapVisualSchema = z.object({
+const HeatMapVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: HeatMapConfigurationSchema.optional(),
@@ -3457,22 +3466,22 @@ export const HeatMapVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const TreeMapSortConfigurationSchema = z.object({
+const TreeMapSortConfigurationSchema = z.object({
   TreeMapSort: z.array(FieldSortOptionsSchema).optional(),
   TreeMapGroupItemsLimitConfiguration: ItemsLimitConfigurationSchema.optional(),
 });
 
-export const TreeMapAggregatedFieldWellsSchema = z.object({
+const TreeMapAggregatedFieldWellsSchema = z.object({
   Sizes: z.array(MeasureFieldSchema).optional(),
   Colors: z.array(MeasureFieldSchema).optional(),
   Groups: z.array(DimensionFieldSchema).optional(),
 });
 
-export const TreeMapFieldWellsSchema = z.object({
+const TreeMapFieldWellsSchema = z.object({
   TreeMapAggregatedFieldWells: TreeMapAggregatedFieldWellsSchema.optional(),
 });
 
-export const TreeMapConfigurationSchema = z.object({
+const TreeMapConfigurationSchema = z.object({
   SortConfiguration: TreeMapSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
   DataLabels: DataLabelOptionsSchema.optional(),
@@ -3485,7 +3494,7 @@ export const TreeMapConfigurationSchema = z.object({
   GroupLabelOptions: ChartAxisLabelOptionsSchema.optional(),
 });
 
-export const TreeMapVisualSchema = z.object({
+const TreeMapVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: TreeMapConfigurationSchema.optional(),
@@ -3495,7 +3504,7 @@ export const TreeMapVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const PeriodToDateComputationSchema = z.object({
+const PeriodToDateComputationSchema = z.object({
   PeriodTimeGranularity: z.enum([
     "YEAR",
     "QUARTER",
@@ -3513,7 +3522,7 @@ export const PeriodToDateComputationSchema = z.object({
   Name: z.string().optional(),
 });
 
-export const GrowthRateComputationSchema = z.object({
+const GrowthRateComputationSchema = z.object({
   Value: MeasureFieldSchema.optional(),
   Time: DimensionFieldSchema.optional(),
   PeriodSize: z.number().min(2).max(52).optional(),
@@ -3521,7 +3530,7 @@ export const GrowthRateComputationSchema = z.object({
   Name: z.string().optional(),
 });
 
-export const TopBottomRankedComputationSchema = z.object({
+const TopBottomRankedComputationSchema = z.object({
   Type: z.enum(["TOP", "BOTTOM"]),
   Category: DimensionFieldSchema.optional(),
   ResultSize: z.number().min(1).max(20).optional(),
@@ -3530,13 +3539,13 @@ export const TopBottomRankedComputationSchema = z.object({
   Name: z.string().optional(),
 });
 
-export const TotalAggregationComputationSchema = z.object({
+const TotalAggregationComputationSchema = z.object({
   Value: MeasureFieldSchema.optional(),
   ComputationId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Name: z.string().optional(),
 });
 
-export const ForecastComputationSchema = z.object({
+const ForecastComputationSchema = z.object({
   PeriodsBackward: z.number().min(0).max(1000).optional(),
   PeriodsForward: z.number().min(1).max(1000).optional(),
   PredictionInterval: z.number().min(50).max(95).optional(),
@@ -3550,7 +3559,7 @@ export const ForecastComputationSchema = z.object({
   LowerBoundary: z.number().optional(),
 });
 
-export const MaximumMinimumComputationSchema = z.object({
+const MaximumMinimumComputationSchema = z.object({
   Type: z.enum(["MAXIMUM", "MINIMUM"]),
   Value: MeasureFieldSchema.optional(),
   Time: DimensionFieldSchema.optional(),
@@ -3558,14 +3567,14 @@ export const MaximumMinimumComputationSchema = z.object({
   Name: z.string().optional(),
 });
 
-export const PeriodOverPeriodComputationSchema = z.object({
+const PeriodOverPeriodComputationSchema = z.object({
   Value: MeasureFieldSchema.optional(),
   Time: DimensionFieldSchema.optional(),
   ComputationId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Name: z.string().optional(),
 });
 
-export const MetricComparisonComputationSchema = z.object({
+const MetricComparisonComputationSchema = z.object({
   TargetValue: MeasureFieldSchema.optional(),
   Time: DimensionFieldSchema.optional(),
   ComputationId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
@@ -3573,7 +3582,7 @@ export const MetricComparisonComputationSchema = z.object({
   Name: z.string().optional(),
 });
 
-export const TopBottomMoversComputationSchema = z.object({
+const TopBottomMoversComputationSchema = z.object({
   Type: z.enum(["TOP", "BOTTOM"]),
   Category: DimensionFieldSchema.optional(),
   Value: MeasureFieldSchema.optional(),
@@ -3584,13 +3593,13 @@ export const TopBottomMoversComputationSchema = z.object({
   Name: z.string().optional(),
 });
 
-export const UniqueValuesComputationSchema = z.object({
+const UniqueValuesComputationSchema = z.object({
   Category: DimensionFieldSchema.optional(),
   ComputationId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Name: z.string().optional(),
 });
 
-export const ComputationSchema = z.object({
+const ComputationSchema = z.object({
   PeriodToDate: PeriodToDateComputationSchema.optional(),
   GrowthRate: GrowthRateComputationSchema.optional(),
   TopBottomRanked: TopBottomRankedComputationSchema.optional(),
@@ -3603,17 +3612,17 @@ export const ComputationSchema = z.object({
   UniqueValues: UniqueValuesComputationSchema.optional(),
 });
 
-export const CustomNarrativeOptionsSchema = z.object({
+const CustomNarrativeOptionsSchema = z.object({
   Narrative: z.string().min(0).max(150000),
 });
 
-export const InsightConfigurationSchema = z.object({
+const InsightConfigurationSchema = z.object({
   Computations: z.array(ComputationSchema).optional(),
   CustomNarrative: CustomNarrativeOptionsSchema.optional(),
   Interactions: VisualInteractionOptionsSchema.optional(),
 });
 
-export const InsightVisualSchema = z.object({
+const InsightVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Actions: z.array(VisualCustomActionSchema).optional(),
@@ -3623,7 +3632,7 @@ export const InsightVisualSchema = z.object({
   VisualContentAltText: z.string().min(1).max(1024).optional(),
 });
 
-export const LineChartSortConfigurationSchema = z.object({
+const LineChartSortConfigurationSchema = z.object({
   CategoryItemsLimitConfiguration: ItemsLimitConfigurationSchema.optional(),
   ColorItemsLimitConfiguration: ItemsLimitConfigurationSchema.optional(),
   SmallMultiplesSort: z.array(FieldSortOptionsSchema).optional(),
@@ -3631,17 +3640,17 @@ export const LineChartSortConfigurationSchema = z.object({
   SmallMultiplesLimitConfiguration: ItemsLimitConfigurationSchema.optional(),
 });
 
-export const MissingDataConfigurationSchema = z.object({
+const MissingDataConfigurationSchema = z.object({
   TreatmentOption: z.enum(["INTERPOLATE", "SHOW_AS_ZERO", "SHOW_AS_BLANK"])
     .optional(),
 });
 
-export const LineSeriesAxisDisplayOptionsSchema = z.object({
+const LineSeriesAxisDisplayOptionsSchema = z.object({
   MissingDataConfigurations: z.array(MissingDataConfigurationSchema).optional(),
   AxisOptions: AxisDisplayOptionsSchema.optional(),
 });
 
-export const LineChartLineStyleSettingsSchema = z.object({
+const LineChartLineStyleSettingsSchema = z.object({
   LineInterpolation: z.enum(["LINEAR", "SMOOTH", "STEPPED"]).optional(),
   LineStyle: z.enum(["SOLID", "DOTTED", "DASHED"]).optional(),
   LineVisibility: z.enum(["HIDDEN", "VISIBLE"]).optional(),
@@ -3650,7 +3659,7 @@ export const LineChartLineStyleSettingsSchema = z.object({
   ).optional(),
 });
 
-export const LineChartMarkerStyleSettingsSchema = z.object({
+const LineChartMarkerStyleSettingsSchema = z.object({
   MarkerShape: z.enum([
     "CIRCLE",
     "TRIANGLE",
@@ -3665,13 +3674,13 @@ export const LineChartMarkerStyleSettingsSchema = z.object({
   MarkerColor: z.string().regex(new RegExp("^#[A-F0-9]{6}$")).optional(),
 });
 
-export const LineChartDefaultSeriesSettingsSchema = z.object({
+const LineChartDefaultSeriesSettingsSchema = z.object({
   LineStyleSettings: LineChartLineStyleSettingsSchema.optional(),
   AxisBinding: z.enum(["PRIMARY_YAXIS", "SECONDARY_YAXIS"]).optional(),
   MarkerStyleSettings: LineChartMarkerStyleSettingsSchema.optional(),
 });
 
-export const TimeBasedForecastPropertiesSchema = z.object({
+const TimeBasedForecastPropertiesSchema = z.object({
   PeriodsBackward: z.number().min(0).max(1000).optional(),
   PeriodsForward: z.number().min(1).max(1000).optional(),
   PredictionInterval: z.number().min(50).max(95).optional(),
@@ -3680,62 +3689,62 @@ export const TimeBasedForecastPropertiesSchema = z.object({
   LowerBoundary: z.number().optional(),
 });
 
-export const WhatIfRangeScenarioSchema = z.object({
+const WhatIfRangeScenarioSchema = z.object({
   StartDate: z.string(),
   Value: z.number(),
   EndDate: z.string(),
 });
 
-export const WhatIfPointScenarioSchema = z.object({
+const WhatIfPointScenarioSchema = z.object({
   Value: z.number(),
   Date: z.string(),
 });
 
-export const ForecastScenarioSchema = z.object({
+const ForecastScenarioSchema = z.object({
   WhatIfRangeScenario: WhatIfRangeScenarioSchema.optional(),
   WhatIfPointScenario: WhatIfPointScenarioSchema.optional(),
 });
 
-export const ForecastConfigurationSchema = z.object({
+const ForecastConfigurationSchema = z.object({
   ForecastProperties: TimeBasedForecastPropertiesSchema.optional(),
   Scenario: ForecastScenarioSchema.optional(),
 });
 
-export const LineChartSeriesSettingsSchema = z.object({
+const LineChartSeriesSettingsSchema = z.object({
   LineStyleSettings: LineChartLineStyleSettingsSchema.optional(),
   MarkerStyleSettings: LineChartMarkerStyleSettingsSchema.optional(),
 });
 
-export const FieldSeriesItemSchema = z.object({
+const FieldSeriesItemSchema = z.object({
   FieldId: z.string().min(1).max(512),
   AxisBinding: z.enum(["PRIMARY_YAXIS", "SECONDARY_YAXIS"]),
   Settings: LineChartSeriesSettingsSchema.optional(),
 });
 
-export const DataFieldSeriesItemSchema = z.object({
+const DataFieldSeriesItemSchema = z.object({
   FieldId: z.string().min(1).max(512),
   AxisBinding: z.enum(["PRIMARY_YAXIS", "SECONDARY_YAXIS"]),
   FieldValue: z.string().optional(),
   Settings: LineChartSeriesSettingsSchema.optional(),
 });
 
-export const SeriesItemSchema = z.object({
+const SeriesItemSchema = z.object({
   FieldSeriesItem: FieldSeriesItemSchema.optional(),
   DataFieldSeriesItem: DataFieldSeriesItemSchema.optional(),
 });
 
-export const LineChartAggregatedFieldWellsSchema = z.object({
+const LineChartAggregatedFieldWellsSchema = z.object({
   Category: z.array(DimensionFieldSchema).optional(),
   Colors: z.array(DimensionFieldSchema).optional(),
   Values: z.array(MeasureFieldSchema).optional(),
   SmallMultiples: z.array(DimensionFieldSchema).optional(),
 });
 
-export const LineChartFieldWellsSchema = z.object({
+const LineChartFieldWellsSchema = z.object({
   LineChartAggregatedFieldWells: LineChartAggregatedFieldWellsSchema.optional(),
 });
 
-export const LineChartConfigurationSchema = z.object({
+const LineChartConfigurationSchema = z.object({
   SortConfiguration: LineChartSortConfigurationSchema.optional(),
   Legend: LegendOptionsSchema.optional(),
   ReferenceLines: z.array(ReferenceLineSchema).optional(),
@@ -3760,7 +3769,7 @@ export const LineChartConfigurationSchema = z.object({
   Interactions: VisualInteractionOptionsSchema.optional(),
 });
 
-export const LineChartVisualSchema = z.object({
+const LineChartVisualSchema = z.object({
   Subtitle: VisualSubtitleLabelOptionsSchema.optional(),
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   ChartConfiguration: LineChartConfigurationSchema.optional(),
@@ -3770,13 +3779,13 @@ export const LineChartVisualSchema = z.object({
   ColumnHierarchies: z.array(ColumnHierarchySchema).optional(),
 });
 
-export const EmptyVisualSchema = z.object({
+const EmptyVisualSchema = z.object({
   VisualId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")),
   Actions: z.array(VisualCustomActionSchema).optional(),
   DataSetIdentifier: z.string().min(1).max(2048),
 });
 
-export const VisualSchema = z.object({
+const VisualSchema = z.object({
   FunnelChartVisual: FunnelChartVisualSchema.optional(),
   BoxPlotVisual: BoxPlotVisualSchema.optional(),
   LayerMapVisual: LayerMapVisualSchema.optional(),
@@ -3804,7 +3813,7 @@ export const VisualSchema = z.object({
   EmptyVisual: EmptyVisualSchema.optional(),
 });
 
-export const SheetDefinitionSchema = z.object({
+const SheetDefinitionSchema = z.object({
   Description: z.string().min(1).max(1024).optional(),
   ParameterControls: z.array(ParameterControlSchema).optional(),
   ContentType: z.enum(["PAGINATED", "INTERACTIVE"]).optional(),
@@ -3819,30 +3828,30 @@ export const SheetDefinitionSchema = z.object({
   Visuals: z.array(VisualSchema).optional(),
 });
 
-export const MappedDataSetParameterSchema = z.object({
+const MappedDataSetParameterSchema = z.object({
   DataSetParameterName: z.string().min(1).max(2048).regex(
     new RegExp("^[a-zA-Z0-9]+$"),
   ),
   DataSetIdentifier: z.string().min(1).max(2048),
 });
 
-export const DynamicDefaultValueSchema = z.object({
+const DynamicDefaultValueSchema = z.object({
   GroupNameColumn: ColumnIdentifierSchema.optional(),
   DefaultValueColumn: ColumnIdentifierSchema,
   UserNameColumn: ColumnIdentifierSchema.optional(),
 });
 
-export const StringDefaultValuesSchema = z.object({
+const StringDefaultValuesSchema = z.object({
   DynamicValue: DynamicDefaultValueSchema.optional(),
   StaticValues: z.array(z.string()).optional(),
 });
 
-export const StringValueWhenUnsetConfigurationSchema = z.object({
+const StringValueWhenUnsetConfigurationSchema = z.object({
   ValueWhenUnsetOption: z.enum(["RECOMMENDED_VALUE", "NULL"]).optional(),
   CustomValue: z.string().optional(),
 });
 
-export const StringParameterDeclarationSchema = z.object({
+const StringParameterDeclarationSchema = z.object({
   MappedDataSetParameters: z.array(MappedDataSetParameterSchema).optional(),
   DefaultValues: StringDefaultValuesSchema.optional(),
   ParameterValueType: z.enum(["MULTI_VALUED", "SINGLE_VALUED"]),
@@ -3850,18 +3859,18 @@ export const StringParameterDeclarationSchema = z.object({
   Name: z.string().min(1).max(2048).regex(new RegExp("^[a-zA-Z0-9]+$")),
 });
 
-export const DateTimeDefaultValuesSchema = z.object({
+const DateTimeDefaultValuesSchema = z.object({
   RollingDate: RollingDateConfigurationSchema.optional(),
   DynamicValue: DynamicDefaultValueSchema.optional(),
   StaticValues: z.array(z.string()).optional(),
 });
 
-export const DateTimeValueWhenUnsetConfigurationSchema = z.object({
+const DateTimeValueWhenUnsetConfigurationSchema = z.object({
   ValueWhenUnsetOption: z.enum(["RECOMMENDED_VALUE", "NULL"]).optional(),
   CustomValue: z.string().optional(),
 });
 
-export const DateTimeParameterDeclarationSchema = z.object({
+const DateTimeParameterDeclarationSchema = z.object({
   MappedDataSetParameters: z.array(MappedDataSetParameterSchema).optional(),
   DefaultValues: DateTimeDefaultValuesSchema.optional(),
   TimeGranularity: z.enum([
@@ -3879,17 +3888,17 @@ export const DateTimeParameterDeclarationSchema = z.object({
   Name: z.string().min(1).max(2048).regex(new RegExp("^[a-zA-Z0-9]+$")),
 });
 
-export const DecimalDefaultValuesSchema = z.object({
+const DecimalDefaultValuesSchema = z.object({
   DynamicValue: DynamicDefaultValueSchema.optional(),
   StaticValues: z.array(z.number()).optional(),
 });
 
-export const DecimalValueWhenUnsetConfigurationSchema = z.object({
+const DecimalValueWhenUnsetConfigurationSchema = z.object({
   ValueWhenUnsetOption: z.enum(["RECOMMENDED_VALUE", "NULL"]).optional(),
   CustomValue: z.number().optional(),
 });
 
-export const DecimalParameterDeclarationSchema = z.object({
+const DecimalParameterDeclarationSchema = z.object({
   MappedDataSetParameters: z.array(MappedDataSetParameterSchema).optional(),
   DefaultValues: DecimalDefaultValuesSchema.optional(),
   ParameterValueType: z.enum(["MULTI_VALUED", "SINGLE_VALUED"]),
@@ -3897,17 +3906,17 @@ export const DecimalParameterDeclarationSchema = z.object({
   Name: z.string().min(1).max(2048).regex(new RegExp("^[a-zA-Z0-9]+$")),
 });
 
-export const IntegerDefaultValuesSchema = z.object({
+const IntegerDefaultValuesSchema = z.object({
   DynamicValue: DynamicDefaultValueSchema.optional(),
   StaticValues: z.array(z.number()).optional(),
 });
 
-export const IntegerValueWhenUnsetConfigurationSchema = z.object({
+const IntegerValueWhenUnsetConfigurationSchema = z.object({
   ValueWhenUnsetOption: z.enum(["RECOMMENDED_VALUE", "NULL"]).optional(),
   CustomValue: z.number().optional(),
 });
 
-export const IntegerParameterDeclarationSchema = z.object({
+const IntegerParameterDeclarationSchema = z.object({
   MappedDataSetParameters: z.array(MappedDataSetParameterSchema).optional(),
   DefaultValues: IntegerDefaultValuesSchema.optional(),
   ParameterValueType: z.enum(["MULTI_VALUED", "SINGLE_VALUED"]),
@@ -3915,18 +3924,18 @@ export const IntegerParameterDeclarationSchema = z.object({
   Name: z.string().min(1).max(2048).regex(new RegExp("^[a-zA-Z0-9]+$")),
 });
 
-export const ParameterDeclarationSchema = z.object({
+const ParameterDeclarationSchema = z.object({
   StringParameterDeclaration: StringParameterDeclarationSchema.optional(),
   DateTimeParameterDeclaration: DateTimeParameterDeclarationSchema.optional(),
   DecimalParameterDeclaration: DecimalParameterDeclarationSchema.optional(),
   IntegerParameterDeclaration: IntegerParameterDeclarationSchema.optional(),
 });
 
-export const EntitySchema = z.object({
+const EntitySchema = z.object({
   Path: z.string().regex(new RegExp("\\S")).optional(),
 });
 
-export const AnalysisErrorSchema = z.object({
+const AnalysisErrorSchema = z.object({
   Type: z.enum([
     "ACCESS_DENIED",
     "SOURCE_NOT_FOUND",
@@ -3947,7 +3956,7 @@ export const AnalysisErrorSchema = z.object({
   ).optional(),
 });
 
-export const ResourcePermissionSchema = z.object({
+const ResourcePermissionSchema = z.object({
   Actions: z.array(z.string()).describe(
     "The IAM action to grant or revoke permissions on.",
   ),
@@ -3956,12 +3965,12 @@ export const ResourcePermissionSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(1).max(256).describe("Tag value."),
   Key: z.string().min(1).max(128).describe("Tag key."),
 });
 
-export const SheetSchema = z.object({
+const SheetSchema = z.object({
   SheetId: z.string().min(1).max(512).regex(new RegExp("^[\\w\\-]+$")).describe(
     "The unique identifier associated with a sheet.",
   ).optional(),
@@ -4154,9 +4163,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for QuickSight Analysis. Registered at `@swamp/aws/quicksight/analysis`. */
 export const model = {
   type: "@swamp/aws/quicksight/analysis",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -4170,6 +4180,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

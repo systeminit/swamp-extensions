@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SecurityHub Insight (AWS::SecurityHub::Insight).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const StringFilterSchema = z.object({
+const StringFilterSchema = z.object({
   Comparison: z.enum(["EQUALS", "PREFIX", "NOT_EQUALS", "PREFIX_NOT_EQUALS"])
     .describe(
       "The condition to apply to a string value when filtering Security Hub findings.",
@@ -20,12 +29,12 @@ export const StringFilterSchema = z.object({
   Value: z.string().min(1).describe("Non-empty string definition."),
 });
 
-export const DateRangeSchema = z.object({
+const DateRangeSchema = z.object({
   Unit: z.enum(["DAYS"]).describe("A date range unit for the date filter."),
   Value: z.number().describe("A date range value for the date filter."),
 });
 
-export const DateFilterSchema = z.object({
+const DateFilterSchema = z.object({
   DateRange: DateRangeSchema.describe("A date range for the date filter.")
     .optional(),
   End: z.string().regex(
@@ -40,7 +49,7 @@ export const DateFilterSchema = z.object({
   ).describe("The date and time, in UTC and ISO 8601 format.").optional(),
 });
 
-export const NumberFilterSchema = z.object({
+const NumberFilterSchema = z.object({
   Eq: z.number().describe(
     "The equal-to condition to be applied to a single field when querying for findings.",
   ).optional(),
@@ -52,7 +61,7 @@ export const NumberFilterSchema = z.object({
   ).optional(),
 });
 
-export const MapFilterSchema = z.object({
+const MapFilterSchema = z.object({
   Comparison: z.enum(["EQUALS", "NOT_EQUALS"]).describe(
     "The condition to apply to the key value when filtering Security Hub findings with a map filter.",
   ),
@@ -60,15 +69,15 @@ export const MapFilterSchema = z.object({
   Value: z.string().min(1).describe("Non-empty string definition."),
 });
 
-export const IpFilterSchema = z.object({
+const IpFilterSchema = z.object({
   Cidr: z.string().min(1).describe("A finding's CIDR value."),
 });
 
-export const BooleanFilterSchema = z.object({
+const BooleanFilterSchema = z.object({
   Value: z.boolean().describe("The value of the boolean."),
 });
 
-export const KeywordFilterSchema = z.object({
+const KeywordFilterSchema = z.object({
   Value: z.string().min(1).describe("A value for the keyword."),
 });
 
@@ -830,9 +839,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SecurityHub Insight. Registered at `@swamp/aws/securityhub/insight`. */
 export const model = {
   type: "@swamp/aws/securityhub/insight",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -846,6 +856,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudFront MonitoringSubscription (AWS::CloudFront::MonitoringSubscription).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,7 +20,7 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const RealtimeMetricsSubscriptionConfigSchema = z.object({
+const RealtimeMetricsSubscriptionConfigSchema = z.object({
   RealtimeMetricsSubscriptionStatus: z.enum(["Enabled", "Disabled"]).describe(
     "A flag that indicates whether additional CloudWatch metrics are enabled for a given CloudFront distribution.",
   ),
@@ -53,9 +62,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for CloudFront MonitoringSubscription. Registered at `@swamp/aws/cloudfront/monitoring-subscription`. */
 export const model = {
   type: "@swamp/aws/cloudfront/monitoring-subscription",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -69,6 +79,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

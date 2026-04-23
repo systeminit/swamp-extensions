@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for NetworkFirewall TLSInspectionConfiguration (AWS::NetworkFirewall::TLSInspectionConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,23 +21,23 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ServerCertificateSchema = z.object({
+const ServerCertificateSchema = z.object({
   ResourceArn: z.string().min(1).max(256).regex(new RegExp("^(arn:aws.*)$"))
     .describe("A resource ARN.").optional(),
 });
 
-export const AddressSchema = z.object({
+const AddressSchema = z.object({
   AddressDefinition: z.string().min(1).max(255).regex(
     new RegExp("^([a-fA-F\\d:\\.]+/\\d{1,3})$"),
   ),
 });
 
-export const PortRangeSchema = z.object({
+const PortRangeSchema = z.object({
   FromPort: z.number().int().min(0).max(65535),
   ToPort: z.number().int().min(0).max(65535),
 });
 
-export const ServerCertificateScopeSchema = z.object({
+const ServerCertificateScopeSchema = z.object({
   Sources: z.array(AddressSchema).optional(),
   Destinations: z.array(AddressSchema).optional(),
   SourcePorts: z.array(PortRangeSchema).optional(),
@@ -36,7 +45,7 @@ export const ServerCertificateScopeSchema = z.object({
   Protocols: z.array(z.number().int().min(0).max(255)).optional(),
 });
 
-export const ServerCertificateConfigurationSchema = z.object({
+const ServerCertificateConfigurationSchema = z.object({
   ServerCertificates: z.array(ServerCertificateSchema).optional(),
   Scopes: z.array(ServerCertificateScopeSchema).optional(),
   CertificateAuthorityArn: z.string().min(1).max(256).regex(
@@ -48,7 +57,7 @@ export const ServerCertificateConfigurationSchema = z.object({
   }).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^.*$")),
   Value: z.string().min(0).max(255).regex(new RegExp("^.*$")),
 });
@@ -98,9 +107,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for NetworkFirewall TLSInspectionConfiguration. Registered at `@swamp/aws/networkfirewall/tlsinspection-configuration`. */
 export const model = {
   type: "@swamp/aws/networkfirewall/tlsinspection-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -114,6 +124,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

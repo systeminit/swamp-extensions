@@ -11,7 +11,7 @@ import { htmlToMarkdown, pcreToRegexp } from "./util.ts";
 
 export interface ExtractedSchema {
   name: string; // e.g., "BlockDeviceMappingSchema"
-  declaration: string; // Full `export const ... = z.object({...});`
+  declaration: string; // Full `const ... = z.object({...});`
 }
 
 export interface ZodGeneratorResult {
@@ -508,8 +508,12 @@ function generateObjectZod(
         maxDepth,
       );
 
-      const declaration =
-        `export const ${schemaName} = z.object({\n${body}\n});`;
+      // Extracted schemas are used only inside the generated model file
+      // (they're referenced by GlobalArgsSchema / StateSchema); keeping them
+      // un-exported narrows the entrypoint's public API surface so
+      // `deno doc --lint` stays clean of missing-jsdoc / missing-explicit-type
+      // warnings on every extracted CF sub-schema.
+      const declaration = `const ${schemaName} = z.object({\n${body}\n});`;
       extractedSchemas.push({ name: schemaName, declaration });
 
       seenTitles.delete(title);

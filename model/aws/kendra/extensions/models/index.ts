@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Kendra Index (AWS::Kendra::Index).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "A string used to identify this tag",
   ),
@@ -21,12 +30,12 @@ export const TagSchema = z.object({
   ),
 });
 
-export const ValueImportanceItemSchema = z.object({
+const ValueImportanceItemSchema = z.object({
   Key: z.string().min(1).max(50).optional(),
   Value: z.number().int().min(1).max(10).optional(),
 });
 
-export const RelevanceSchema = z.object({
+const RelevanceSchema = z.object({
   Freshness: z.boolean().optional(),
   Importance: z.number().int().min(1).max(10).optional(),
   Duration: z.string().min(1).max(10).regex(new RegExp("[0-9]+[s]")).optional(),
@@ -34,14 +43,14 @@ export const RelevanceSchema = z.object({
   ValueImportanceItems: z.array(ValueImportanceItemSchema).optional(),
 });
 
-export const SearchSchema = z.object({
+const SearchSchema = z.object({
   Facetable: z.boolean().optional(),
   Searchable: z.boolean().optional(),
   Displayable: z.boolean().optional(),
   Sortable: z.boolean().optional(),
 });
 
-export const DocumentMetadataConfigurationSchema = z.object({
+const DocumentMetadataConfigurationSchema = z.object({
   Name: z.string().min(1).max(30),
   Type: z.enum([
     "STRING_VALUE",
@@ -53,7 +62,7 @@ export const DocumentMetadataConfigurationSchema = z.object({
   Search: SearchSchema.optional(),
 });
 
-export const JwtTokenTypeConfigurationSchema = z.object({
+const JwtTokenTypeConfigurationSchema = z.object({
   KeyLocation: z.enum(["URL", "SECRET_MANAGER"]),
   URL: z.string().min(1).max(2048).regex(
     new RegExp("^(https?|ftp|file):\\/\\/([^\\s]*)"),
@@ -69,12 +78,12 @@ export const JwtTokenTypeConfigurationSchema = z.object({
   ClaimRegex: z.string().min(1).max(100).optional(),
 });
 
-export const JsonTokenTypeConfigurationSchema = z.object({
+const JsonTokenTypeConfigurationSchema = z.object({
   UserNameAttributeField: z.string().min(1).max(100),
   GroupAttributeField: z.string().min(1).max(100),
 });
 
-export const UserTokenConfigurationSchema = z.object({
+const UserTokenConfigurationSchema = z.object({
   JwtTokenTypeConfiguration: JwtTokenTypeConfigurationSchema.optional(),
   JsonTokenTypeConfiguration: JsonTokenTypeConfigurationSchema.optional(),
 });
@@ -162,9 +171,10 @@ const InputsSchema = z.object({
   UserTokenConfigurations: z.array(UserTokenConfigurationSchema).optional(),
 });
 
+/** Swamp extension model for Kendra Index. Registered at `@swamp/aws/kendra/index`. */
 export const model = {
   type: "@swamp/aws/kendra/index",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -178,6 +188,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

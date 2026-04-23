@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SageMaker FeatureGroup (AWS::SageMaker::FeatureGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,30 +21,30 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FeatureDefinitionSchema = z.object({
+const FeatureDefinitionSchema = z.object({
   FeatureName: z.string().min(1).max(64).regex(
     new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"),
   ),
   FeatureType: z.enum(["Integral", "Fractional", "String"]),
 });
 
-export const OnlineStoreSecurityConfigSchema = z.object({
+const OnlineStoreSecurityConfigSchema = z.object({
   KmsKeyId: z.string().max(2048).optional(),
 });
 
-export const TtlDurationSchema = z.object({
+const TtlDurationSchema = z.object({
   Unit: z.enum(["Seconds", "Minutes", "Hours", "Days", "Weeks"]).describe(
     "Unit of ttl configuration",
   ).optional(),
   Value: z.number().int().describe("Value of ttl configuration").optional(),
 });
 
-export const S3StorageConfigSchema = z.object({
+const S3StorageConfigSchema = z.object({
   S3Uri: z.string().max(1024).regex(new RegExp("^(https|s3)://([^/]+)/?(.*)$")),
   KmsKeyId: z.string().max(2048).optional(),
 });
 
-export const DataCatalogConfigSchema = z.object({
+const DataCatalogConfigSchema = z.object({
   TableName: z.string().min(1).max(255).regex(
     new RegExp("[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDFFF\t]*"),
   ),
@@ -47,7 +56,7 @@ export const DataCatalogConfigSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string(),
   Key: z.string(),
 });
@@ -185,9 +194,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SageMaker FeatureGroup. Registered at `@swamp/aws/sagemaker/feature-group`. */
 export const model = {
   type: "@swamp/aws/sagemaker/feature-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -201,6 +211,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

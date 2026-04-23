@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ApiGateway Deployment (AWS::ApiGateway::Deployment).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CanarySettingSchema = z.object({
+const CanarySettingSchema = z.object({
   StageVariableOverrides: z.record(z.string(), z.string()).optional(),
   PercentTraffic: z.number().optional(),
   UseStageCache: z.boolean().optional(),
 });
 
-export const MethodSettingSchema = z.object({
+const MethodSettingSchema = z.object({
   CacheTtlInSeconds: z.number().int().optional(),
   LoggingLevel: z.string().optional(),
   ResourcePath: z.string().describe(
@@ -33,12 +42,12 @@ export const MethodSettingSchema = z.object({
   ThrottlingRateLimit: z.number().optional(),
 });
 
-export const AccessLogSettingSchema = z.object({
+const AccessLogSettingSchema = z.object({
   Format: z.string().optional(),
   DestinationArn: z.string().optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe("The value for the specified tag key."),
   Key: z.string().describe(
     "A string you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.",
@@ -224,9 +233,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for ApiGateway Deployment. Registered at `@swamp/aws/apigateway/deployment`. */
 export const model = {
   type: "@swamp/aws/apigateway/deployment",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -240,6 +250,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

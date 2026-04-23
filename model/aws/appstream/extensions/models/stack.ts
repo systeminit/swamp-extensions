@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for AppStream Stack (AWS::AppStream::Stack).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const StorageConnectorSchema = z.object({
+const StorageConnectorSchema = z.object({
   Domains: z.array(z.string()).describe(
     "The names of the domains for the account.",
   ).optional(),
@@ -21,7 +30,7 @@ export const StorageConnectorSchema = z.object({
   ConnectorType: z.string().describe("The type of storage connector."),
 });
 
-export const UserSettingSchema = z.object({
+const UserSettingSchema = z.object({
   Permission: z.string().describe(
     "Indicates whether the action is enabled or disabled.",
   ),
@@ -31,12 +40,12 @@ export const UserSettingSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().describe("The value of the tag."),
   Key: z.string().describe("The key of the tag."),
 });
 
-export const AccessEndpointSchema = z.object({
+const AccessEndpointSchema = z.object({
   EndpointType: z.string().describe("The type of interface endpoint."),
   VpceId: z.string().describe(
     "The identifier (ID) of the VPC in which the interface endpoint is used.",
@@ -163,9 +172,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for AppStream Stack. Registered at `@swamp/aws/appstream/stack`. */
 export const model = {
   type: "@swamp/aws/appstream/stack",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -179,6 +189,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

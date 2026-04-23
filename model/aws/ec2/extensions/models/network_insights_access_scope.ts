@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EC2 NetworkInsightsAccessScope (AWS::EC2::NetworkInsightsAccessScope).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string().optional(),
 });
 
-export const PacketHeaderStatementRequestSchema = z.object({
+const PacketHeaderStatementRequestSchema = z.object({
   SourceAddresses: z.array(z.string()).optional(),
   DestinationAddresses: z.array(z.string()).optional(),
   SourcePorts: z.array(z.string()).optional(),
@@ -27,21 +36,21 @@ export const PacketHeaderStatementRequestSchema = z.object({
   Protocols: z.array(z.enum(["tcp", "udp"])).optional(),
 });
 
-export const ResourceStatementRequestSchema = z.object({
+const ResourceStatementRequestSchema = z.object({
   Resources: z.array(z.string()).optional(),
   ResourceTypes: z.array(z.string()).optional(),
 });
 
-export const PathStatementRequestSchema = z.object({
+const PathStatementRequestSchema = z.object({
   PacketHeaderStatement: PacketHeaderStatementRequestSchema.optional(),
   ResourceStatement: ResourceStatementRequestSchema.optional(),
 });
 
-export const ThroughResourcesStatementRequestSchema = z.object({
+const ThroughResourcesStatementRequestSchema = z.object({
   ResourceStatement: ResourceStatementRequestSchema.optional(),
 });
 
-export const AccessScopePathRequestSchema = z.object({
+const AccessScopePathRequestSchema = z.object({
   Source: PathStatementRequestSchema.optional(),
   Destination: PathStatementRequestSchema.optional(),
   ThroughResources: z.array(ThroughResourcesStatementRequestSchema).optional(),
@@ -75,9 +84,10 @@ const InputsSchema = z.object({
   ExcludePaths: z.array(AccessScopePathRequestSchema).optional(),
 });
 
+/** Swamp extension model for EC2 NetworkInsightsAccessScope. Registered at `@swamp/aws/ec2/network-insights-access-scope`. */
 export const model = {
   type: "@swamp/aws/ec2/network-insights-access-scope",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -91,6 +101,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -6,6 +6,15 @@ snapshot[`generateAwsExtensionModel - all handlers, natural name 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for S3 Bucket (AWS::S3::Bucket).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
@@ -24,6 +33,7 @@ const InputsSchema = z.object({
   BucketName: z.string().describe("The name of the S3 bucket").optional(),
 });
 
+/** Swamp extension model for S3 Bucket. Registered at \`@swamp/aws/s3/bucket\`. */
 export const model = {
   type: "@swamp/aws/s3/bucket",
   version: "2026.01.01.1",
@@ -142,6 +152,15 @@ snapshot[`generateAwsExtensionModel - synthetic name 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for IAM Role (AWS::IAM::Role).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
@@ -165,6 +184,7 @@ const InputsSchema = z.object({
   AssumeRolePolicyDocument: z.record(z.string(), z.unknown()).describe("The trust policy").optional(),
 });
 
+/** Swamp extension model for IAM Role. Registered at \`@swamp/aws/iam/role\`. */
 export const model = {
   type: "@swamp/aws/iam/role",
   version: "2026.01.01.1",
@@ -285,6 +305,15 @@ snapshot[`generateAwsExtensionModel - composite primary identifier 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for EC2 SubnetRouteTableAssociation (AWS::EC2::SubnetRouteTableAssociation).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
@@ -308,6 +337,7 @@ const InputsSchema = z.object({
   RouteTableId: z.string().describe("The route table ID").optional(),
 });
 
+/** Swamp extension model for EC2 SubnetRouteTableAssociation. Registered at \`@swamp/aws/ec2/subnet_route_table_association\`. */
 export const model = {
   type: "@swamp/aws/ec2/subnet_route_table_association",
   version: "2026.01.01.1",
@@ -430,6 +460,15 @@ snapshot[`generateAwsExtensionModel - createOnly properties filtered in update 1
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for EC2 Instance (AWS::EC2::Instance).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
@@ -453,6 +492,7 @@ const InputsSchema = z.object({
   ImageId: z.string().describe("The AMI ID").optional(),
 });
 
+/** Swamp extension model for EC2 Instance. Registered at \`@swamp/aws/ec2/instance\`. */
 export const model = {
   type: "@swamp/aws/ec2/instance",
   version: "2026.01.01.1",
@@ -573,6 +613,15 @@ snapshot[`generateAwsExtensionModel - read-only resource (no update, no delete) 
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for CloudFormation StackSet (AWS::CloudFormation::StackSet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource } from "./_lib/aws.ts";
 
@@ -593,6 +642,7 @@ const InputsSchema = z.object({
   StackSetName: z.string().describe("The name of the stack set").optional(),
 });
 
+/** Swamp extension model for CloudFormation StackSet. Registered at \`@swamp/aws/cloudformation/stack_set\`. */
 export const model = {
   type: "@swamp/aws/cloudformation/stack_set",
   version: "2026.01.01.1",
@@ -674,6 +724,15 @@ snapshot[`generateAwsExtensionModel - extracted schemas and StateSchema collisio
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for ECS TaskDefinition (AWS::ECS::TaskDefinition).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, deleteResource } from "./_lib/aws.ts";
 
@@ -698,6 +757,7 @@ const InputsSchema = z.object({
   Family: z.string().describe("The task family name").optional(),
 });
 
+/** Swamp extension model for ECS TaskDefinition. Registered at \`@swamp/aws/ecs/task_definition\`. */
 export const model = {
   type: "@swamp/aws/ecs/task_definition",
   version: "2026.01.01.1",
@@ -794,6 +854,15 @@ snapshot[`generateAwsExtensionModel - with upgrades block 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for SQS Queue (AWS::SQS::Queue).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
@@ -814,6 +883,7 @@ const InputsSchema = z.object({
   QueueName: z.string().describe("The name of the queue").optional(),
 });
 
+/** Swamp extension model for SQS Queue. Registered at \`@swamp/aws/sqs/queue\`. */
 export const model = {
   type: "@swamp/aws/sqs/queue",
   version: "2026.01.02.1",

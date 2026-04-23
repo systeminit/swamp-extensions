@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Rekognition StreamProcessor (AWS::Rekognition::StreamProcessor).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,19 +21,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const PointSchema = z.object({
+const PointSchema = z.object({
   X: z.number().describe("The X coordinate of the point."),
   Y: z.number().describe("The Y coordinate of the point."),
 });
 
-export const BoundingBoxSchema = z.object({
+const BoundingBoxSchema = z.object({
   Height: z.number().min(0).max(100),
   Width: z.number().min(0).max(100),
   Left: z.number().min(0).max(100),
   Top: z.number().min(0).max(100),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z0-9+\\-=\\._\\:\\/@]+$"),
   ).describe(
@@ -192,9 +201,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Rekognition StreamProcessor. Registered at `@swamp/aws/rekognition/stream-processor`. */
 export const model = {
   type: "@swamp/aws/rekognition/stream-processor",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -208,6 +218,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

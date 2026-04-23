@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataZone Connection (AWS::DataZone::Connection).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,11 +21,11 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AthenaPropertiesInputSchema = z.object({
+const AthenaPropertiesInputSchema = z.object({
   WorkgroupName: z.string().max(128).regex(new RegExp("^[a-zA-Z0-9._-]+$")),
 });
 
-export const PhysicalConnectionRequirementsSchema = z.object({
+const PhysicalConnectionRequirementsSchema = z.object({
   SubnetId: z.string().max(32).regex(new RegExp("^subnet-[a-z0-9]+$"))
     .optional(),
   SubnetIdList: z.array(
@@ -26,7 +35,7 @@ export const PhysicalConnectionRequirementsSchema = z.object({
   AvailabilityZone: z.string().min(1).max(255).optional(),
 });
 
-export const OAuth2ClientApplicationSchema = z.object({
+const OAuth2ClientApplicationSchema = z.object({
   UserManagedClientApplicationClientId: z.string().max(2048).regex(
     new RegExp("^\\S+$"),
   ).optional(),
@@ -35,12 +44,12 @@ export const OAuth2ClientApplicationSchema = z.object({
   ).optional(),
 });
 
-export const AuthorizationCodePropertiesSchema = z.object({
+const AuthorizationCodePropertiesSchema = z.object({
   AuthorizationCode: z.string().min(1).max(4096).optional(),
   RedirectUri: z.string().max(512).optional(),
 });
 
-export const GlueOAuth2CredentialsSchema = z.object({
+const GlueOAuth2CredentialsSchema = z.object({
   UserManagedClientApplicationClientSecret: z.string().max(512).regex(
     new RegExp("^[\\x20-\\x7E]*$"),
   ).optional(),
@@ -55,7 +64,7 @@ export const GlueOAuth2CredentialsSchema = z.object({
   ).optional(),
 });
 
-export const OAuth2PropertiesSchema = z.object({
+const OAuth2PropertiesSchema = z.object({
   OAuth2GrantType: z.enum([
     "AUTHORIZATION_CODE",
     "CLIENT_CREDENTIALS",
@@ -79,12 +88,12 @@ export const OAuth2PropertiesSchema = z.object({
   ).optional(),
 });
 
-export const BasicAuthenticationCredentialsSchema = z.object({
+const BasicAuthenticationCredentialsSchema = z.object({
   UserName: z.string().max(512).regex(new RegExp("^\\S+$")).optional(),
   Password: z.string().max(512).regex(new RegExp("^.*$")).optional(),
 });
 
-export const AuthenticationConfigurationInputSchema = z.object({
+const AuthenticationConfigurationInputSchema = z.object({
   AuthenticationType: z.enum(["BASIC", "OAUTH2", "CUSTOM"]).describe(
     "Authentication Type",
   ).optional(),
@@ -104,7 +113,7 @@ export const AuthenticationConfigurationInputSchema = z.object({
   ).describe("Credential Map").optional(),
 });
 
-export const GlueConnectionInputSchema = z.object({
+const GlueConnectionInputSchema = z.object({
   ConnectionProperties: z.record(z.string(), z.string().min(1).max(2048))
     .describe("Connection Properties").optional(),
   PhysicalConnectionRequirements: PhysicalConnectionRequirementsSchema.describe(
@@ -143,28 +152,28 @@ export const GlueConnectionInputSchema = z.object({
   ).optional(),
 });
 
-export const GluePropertiesInputSchema = z.object({
+const GluePropertiesInputSchema = z.object({
   GlueConnectionInput: GlueConnectionInputSchema.describe(
     "Glue Connection Input",
   ).optional(),
 });
 
-export const HyperPodPropertiesInputSchema = z.object({
+const HyperPodPropertiesInputSchema = z.object({
   ClusterName: z.string().min(1).max(63).regex(
     new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"),
   ),
 });
 
-export const IamPropertiesInputSchema = z.object({
+const IamPropertiesInputSchema = z.object({
   GlueLineageSyncEnabled: z.boolean().optional(),
 });
 
-export const UsernamePasswordSchema = z.object({
+const UsernamePasswordSchema = z.object({
   Password: z.string().max(64).regex(new RegExp("^[\\S]*$")),
   Username: z.string().min(1).max(127).regex(new RegExp("^[\\S]*$")),
 });
 
-export const LineageSyncScheduleSchema = z.object({
+const LineageSyncScheduleSchema = z.object({
   Schedule: z.string().regex(
     new RegExp(
       "^cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)$",
@@ -172,13 +181,13 @@ export const LineageSyncScheduleSchema = z.object({
   ).optional(),
 });
 
-export const RedshiftLineageSyncConfigurationInputSchema = z.object({
+const RedshiftLineageSyncConfigurationInputSchema = z.object({
   Enabled: z.boolean().optional(),
   Schedule: LineageSyncScheduleSchema.describe("Lineage Sync Schedule")
     .optional(),
 });
 
-export const RedshiftPropertiesInputSchema = z.object({
+const RedshiftPropertiesInputSchema = z.object({
   Storage: z.object({
     ClusterName: z.string().min(0).max(63).regex(new RegExp("^[a-z0-9-]+$"))
       .optional(),
@@ -204,7 +213,7 @@ export const RedshiftPropertiesInputSchema = z.object({
   ).optional(),
 });
 
-export const SparkEmrPropertiesInputSchema = z.object({
+const SparkEmrPropertiesInputSchema = z.object({
   ComputeArn: z.string().max(2048).regex(
     new RegExp(
       "^arn:aws(-(cn|us-gov|iso(-[bef])?))?:(elasticmapreduce|emr-serverless|emr-containers):.*",
@@ -229,7 +238,7 @@ export const SparkEmrPropertiesInputSchema = z.object({
   ManagedEndpointArn: z.string().max(2048).optional(),
 });
 
-export const AmazonQPropertiesInputSchema = z.object({
+const AmazonQPropertiesInputSchema = z.object({
   IsEnabled: z.boolean().describe(
     "Specifies whether Amazon Q is enabled for the connection",
   ).optional(),
@@ -241,12 +250,12 @@ export const AmazonQPropertiesInputSchema = z.object({
   ).optional(),
 });
 
-export const SparkGlueArgsSchema = z.object({
+const SparkGlueArgsSchema = z.object({
   Connection: z.string().max(128).regex(new RegExp("^[a-zA-Z0-9]+$"))
     .optional(),
 });
 
-export const SparkGluePropertiesInputSchema = z.object({
+const SparkGluePropertiesInputSchema = z.object({
   AdditionalArgs: SparkGlueArgsSchema.describe("Spark Glue Args.").optional(),
   GlueConnectionName: z.string().min(1).max(255).regex(new RegExp("^[\\S]*$"))
     .optional(),
@@ -260,7 +269,7 @@ export const SparkGluePropertiesInputSchema = z.object({
   WorkerType: z.string().max(256).regex(new RegExp("^[G|Z].*$")).optional(),
 });
 
-export const S3PropertiesInputSchema = z.object({
+const S3PropertiesInputSchema = z.object({
   S3Uri: z.string().min(0).max(2048).regex(new RegExp("s3://.+")).describe(
     "The Amazon S3 URI that's part of the Amazon S3 properties of a connection.",
   ),
@@ -271,13 +280,13 @@ export const S3PropertiesInputSchema = z.object({
   ).optional(),
 });
 
-export const MlflowPropertiesInputSchema = z.object({
+const MlflowPropertiesInputSchema = z.object({
   TrackingServerArn: z.string().describe(
     "The ARN of the MLflow tracking server",
   ).optional(),
 });
 
-export const WorkflowsMwaaPropertiesInputSchema = z.object({
+const WorkflowsMwaaPropertiesInputSchema = z.object({
   MwaaEnvironmentName: z.string().describe("The name of the MWAA environment.")
     .optional(),
 });
@@ -467,9 +476,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for DataZone Connection. Registered at `@swamp/aws/datazone/connection`. */
 export const model = {
   type: "@swamp/aws/datazone/connection",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -493,6 +503,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

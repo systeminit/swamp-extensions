@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for GroundStation Config (AWS::GroundStation::Config).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,84 +21,84 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().regex(new RegExp("^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$"))
     .optional(),
   Value: z.string().regex(new RegExp("^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$"))
     .optional(),
 });
 
-export const FrequencySchema = z.object({
+const FrequencySchema = z.object({
   Value: z.number().optional(),
   Units: z.enum(["GHz", "MHz", "kHz"]).optional(),
 });
 
-export const FrequencyBandwidthSchema = z.object({
+const FrequencyBandwidthSchema = z.object({
   Value: z.number().optional(),
   Units: z.enum(["GHz", "MHz", "kHz"]).optional(),
 });
 
-export const SpectrumConfigSchema = z.object({
+const SpectrumConfigSchema = z.object({
   CenterFrequency: FrequencySchema.optional(),
   Bandwidth: FrequencyBandwidthSchema.optional(),
   Polarization: z.enum(["LEFT_HAND", "RIGHT_HAND", "NONE"]).optional(),
 });
 
-export const AntennaDownlinkConfigSchema = z.object({
+const AntennaDownlinkConfigSchema = z.object({
   SpectrumConfig: SpectrumConfigSchema.optional(),
 });
 
-export const TrackingConfigSchema = z.object({
+const TrackingConfigSchema = z.object({
   Autotrack: z.enum(["REQUIRED", "PREFERRED", "REMOVED"]).optional(),
 });
 
-export const DataflowEndpointConfigSchema = z.object({
+const DataflowEndpointConfigSchema = z.object({
   DataflowEndpointName: z.string().optional(),
   DataflowEndpointRegion: z.string().optional(),
 });
 
-export const DemodulationConfigSchema = z.object({
+const DemodulationConfigSchema = z.object({
   UnvalidatedJSON: z.string().regex(
     new RegExp('^[{}\\[\\]:.,"0-9A-z\\-_\\s]{1,8192}$'),
   ).optional(),
 });
 
-export const DecodeConfigSchema = z.object({
+const DecodeConfigSchema = z.object({
   UnvalidatedJSON: z.string().regex(
     new RegExp('^[{}\\[\\]:.,"0-9A-z\\-_\\s]{1,8192}$'),
   ).optional(),
 });
 
-export const AntennaDownlinkDemodDecodeConfigSchema = z.object({
+const AntennaDownlinkDemodDecodeConfigSchema = z.object({
   SpectrumConfig: SpectrumConfigSchema.optional(),
   DemodulationConfig: DemodulationConfigSchema.optional(),
   DecodeConfig: DecodeConfigSchema.optional(),
 });
 
-export const UplinkSpectrumConfigSchema = z.object({
+const UplinkSpectrumConfigSchema = z.object({
   CenterFrequency: FrequencySchema.optional(),
   Polarization: z.enum(["LEFT_HAND", "RIGHT_HAND", "NONE"]).optional(),
 });
 
-export const EirpSchema = z.object({
+const EirpSchema = z.object({
   Value: z.number().optional(),
   Units: z.enum(["dBW"]).optional(),
 });
 
-export const AntennaUplinkConfigSchema = z.object({
+const AntennaUplinkConfigSchema = z.object({
   SpectrumConfig: UplinkSpectrumConfigSchema.optional(),
   TargetEirp: EirpSchema.optional(),
   TransmitDisabled: z.boolean().optional(),
 });
 
-export const UplinkEchoConfigSchema = z.object({
+const UplinkEchoConfigSchema = z.object({
   Enabled: z.boolean().optional(),
   AntennaUplinkConfigArn: z.string().regex(
     new RegExp("^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$"),
   ).optional(),
 });
 
-export const S3RecordingConfigSchema = z.object({
+const S3RecordingConfigSchema = z.object({
   BucketArn: z.string().regex(
     new RegExp("^arn:aws[A-Za-z0-9-]{0,64}:s3:::[A-Za-z0-9-]{1,64}$"),
   ).optional(),
@@ -103,7 +112,7 @@ export const S3RecordingConfigSchema = z.object({
   ).optional(),
 });
 
-export const KinesisDataStreamDataSchema = z.object({
+const KinesisDataStreamDataSchema = z.object({
   KinesisRoleArn: z.string().regex(
     new RegExp("^arn:[^:\\n]+:iam::[^:\\n]+:role\\/.+$"),
   ),
@@ -114,11 +123,11 @@ export const KinesisDataStreamDataSchema = z.object({
   ),
 });
 
-export const TelemetrySinkDataSchema = z.object({
+const TelemetrySinkDataSchema = z.object({
   KinesisDataStreamData: KinesisDataStreamDataSchema.optional(),
 });
 
-export const TelemetrySinkConfigSchema = z.object({
+const TelemetrySinkConfigSchema = z.object({
   TelemetrySinkType: z.enum(["KINESIS_DATA_STREAM"]),
   TelemetrySinkData: TelemetrySinkDataSchema,
 });
@@ -179,9 +188,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for GroundStation Config. Registered at `@swamp/aws/groundstation/config`. */
 export const model = {
   type: "@swamp/aws/groundstation/config",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -195,6 +205,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for NetworkFirewall RuleGroup (AWS::NetworkFirewall::RuleGroup).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,29 +21,29 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IPSetSchema = z.object({
+const IPSetSchema = z.object({
   Definition: z.array(z.string().min(1).regex(new RegExp("^.*$"))).optional(),
 });
 
-export const PortSetSchema = z.object({
+const PortSetSchema = z.object({
   Definition: z.array(z.string().min(1).regex(new RegExp("^.*$"))).optional(),
 });
 
-export const RuleVariablesSchema = z.object({
+const RuleVariablesSchema = z.object({
   IPSets: z.record(z.string(), IPSetSchema).optional(),
   PortSets: z.record(z.string(), PortSetSchema).optional(),
 });
 
-export const IPSetReferenceSchema = z.object({
+const IPSetReferenceSchema = z.object({
   ReferenceArn: z.string().min(1).max(256).regex(new RegExp("^(arn:aws.*)$"))
     .describe("A resource ARN.").optional(),
 });
 
-export const ReferenceSetsSchema = z.object({
+const ReferenceSetsSchema = z.object({
   IPSetReferences: z.record(z.string(), IPSetReferenceSchema).optional(),
 });
 
-export const RulesSourceListSchema = z.object({
+const RulesSourceListSchema = z.object({
   Targets: z.array(z.string()),
   TargetTypes: z.array(z.enum(["TLS_SNI", "HTTP_HOST"])),
   GeneratedRulesType: z.enum([
@@ -45,7 +54,7 @@ export const RulesSourceListSchema = z.object({
   ]),
 });
 
-export const HeaderSchema = z.object({
+const HeaderSchema = z.object({
   Protocol: z.enum([
     "IP",
     "TCP",
@@ -74,30 +83,30 @@ export const HeaderSchema = z.object({
   DestinationPort: z.string().min(1).max(1024).regex(new RegExp("^.*$")),
 });
 
-export const RuleOptionSchema = z.object({
+const RuleOptionSchema = z.object({
   Keyword: z.string().min(1).max(128).regex(new RegExp("^.*$")),
   Settings: z.array(z.string().min(1).max(8192).regex(new RegExp("^.*$")))
     .optional(),
 });
 
-export const StatefulRuleSchema = z.object({
+const StatefulRuleSchema = z.object({
   Action: z.enum(["PASS", "DROP", "ALERT", "REJECT"]),
   Header: HeaderSchema,
   RuleOptions: z.array(RuleOptionSchema),
 });
 
-export const AddressSchema = z.object({
+const AddressSchema = z.object({
   AddressDefinition: z.string().min(1).max(255).regex(
     new RegExp("^([a-fA-F\\d:\\.]+/\\d{1,3})$"),
   ),
 });
 
-export const PortRangeSchema = z.object({
+const PortRangeSchema = z.object({
   FromPort: z.number().int().min(0).max(65535),
   ToPort: z.number().int().min(0).max(65535),
 });
 
-export const TCPFlagFieldSchema = z.object({
+const TCPFlagFieldSchema = z.object({
   Flags: z.array(
     z.enum(["FIN", "SYN", "RST", "PSH", "ACK", "URG", "ECE", "CWR"]),
   ),
@@ -106,7 +115,7 @@ export const TCPFlagFieldSchema = z.object({
   ).optional(),
 });
 
-export const MatchAttributesSchema = z.object({
+const MatchAttributesSchema = z.object({
   Sources: z.array(AddressSchema).optional(),
   Destinations: z.array(AddressSchema).optional(),
   SourcePorts: z.array(PortRangeSchema).optional(),
@@ -115,39 +124,39 @@ export const MatchAttributesSchema = z.object({
   TCPFlags: z.array(TCPFlagFieldSchema).optional(),
 });
 
-export const RuleDefinitionSchema = z.object({
+const RuleDefinitionSchema = z.object({
   MatchAttributes: MatchAttributesSchema,
   Actions: z.array(z.string()),
 });
 
-export const StatelessRuleSchema = z.object({
+const StatelessRuleSchema = z.object({
   RuleDefinition: RuleDefinitionSchema,
   Priority: z.number().int().min(1).max(65535),
 });
 
-export const DimensionSchema = z.object({
+const DimensionSchema = z.object({
   Value: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9-_ ]+$")),
 });
 
-export const PublishMetricActionSchema = z.object({
+const PublishMetricActionSchema = z.object({
   Dimensions: z.array(DimensionSchema),
 });
 
-export const ActionDefinitionSchema = z.object({
+const ActionDefinitionSchema = z.object({
   PublishMetricAction: PublishMetricActionSchema.optional(),
 });
 
-export const CustomActionSchema = z.object({
+const CustomActionSchema = z.object({
   ActionName: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9]+$")),
   ActionDefinition: ActionDefinitionSchema,
 });
 
-export const StatelessRulesAndCustomActionsSchema = z.object({
+const StatelessRulesAndCustomActionsSchema = z.object({
   StatelessRules: z.array(StatelessRuleSchema),
   CustomActions: z.array(CustomActionSchema).optional(),
 });
 
-export const RulesSourceSchema = z.object({
+const RulesSourceSchema = z.object({
   RulesString: z.string().min(0).max(1000000).optional(),
   RulesSourceList: RulesSourceListSchema.optional(),
   StatefulRules: z.array(StatefulRuleSchema).optional(),
@@ -155,11 +164,11 @@ export const RulesSourceSchema = z.object({
     .optional(),
 });
 
-export const StatefulRuleOptionsSchema = z.object({
+const StatefulRuleOptionsSchema = z.object({
   RuleOrder: z.enum(["DEFAULT_ACTION_ORDER", "STRICT_ORDER"]).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^.*$")),
   Value: z.string().min(0).max(255).regex(new RegExp("^.*$")),
 });
@@ -226,9 +235,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for NetworkFirewall RuleGroup. Registered at `@swamp/aws/networkfirewall/rule-group`. */
 export const model = {
   type: "@swamp/aws/networkfirewall/rule-group",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -242,6 +252,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

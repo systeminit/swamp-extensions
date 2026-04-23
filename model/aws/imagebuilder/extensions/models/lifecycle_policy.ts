@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ImageBuilder LifecyclePolicy (AWS::ImageBuilder::LifecyclePolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const IncludeResourcesSchema = z.object({
+const IncludeResourcesSchema = z.object({
   Amis: z.boolean().describe("Use to configure lifecycle actions on AMIs.")
     .optional(),
   Containers: z.boolean().describe(
@@ -23,7 +32,7 @@ export const IncludeResourcesSchema = z.object({
   ).optional(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   Type: z.enum(["DELETE", "DEPRECATE", "DISABLE"]).describe(
     "The action type of the policy detail.",
   ),
@@ -32,7 +41,7 @@ export const ActionSchema = z.object({
   ).optional(),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   Type: z.enum(["AGE", "COUNT"]).describe("The filter type."),
   Value: z.number().int().describe("The filter value."),
   Unit: z.enum(["DAYS", "WEEKS", "MONTHS", "YEARS"]).describe(
@@ -43,14 +52,14 @@ export const FilterSchema = z.object({
   ).optional(),
 });
 
-export const LastLaunchedSchema = z.object({
+const LastLaunchedSchema = z.object({
   Value: z.number().int().describe("The last launched value."),
   Unit: z.enum(["DAYS", "WEEKS", "MONTHS", "YEARS"]).describe(
     "The value's time unit.",
   ),
 });
 
-export const AmiExclusionRulesSchema = z.object({
+const AmiExclusionRulesSchema = z.object({
   IsPublic: z.boolean().describe(
     "Use to apply lifecycle policy actions on whether the AMI is public.",
   ).optional(),
@@ -68,7 +77,7 @@ export const AmiExclusionRulesSchema = z.object({
   ).optional(),
 });
 
-export const ExclusionRulesSchema = z.object({
+const ExclusionRulesSchema = z.object({
   TagMap: z.record(z.string(), z.string()).describe(
     "The Image Builder tags to filter on.",
   ).optional(),
@@ -77,7 +86,7 @@ export const ExclusionRulesSchema = z.object({
   ).optional(),
 });
 
-export const PolicyDetailSchema = z.object({
+const PolicyDetailSchema = z.object({
   Action: ActionSchema.describe("The action of the policy detail."),
   Filter: FilterSchema.describe("The filters to apply of the policy detail."),
   ExclusionRules: ExclusionRulesSchema.describe(
@@ -85,7 +94,7 @@ export const PolicyDetailSchema = z.object({
   ).optional(),
 });
 
-export const RecipeSelectionSchema = z.object({
+const RecipeSelectionSchema = z.object({
   Name: z.string().describe("The recipe name."),
   SemanticVersion: z.string().describe("The recipe version."),
 });
@@ -167,9 +176,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ImageBuilder LifecyclePolicy. Registered at `@swamp/aws/imagebuilder/lifecycle-policy`. */
 export const model = {
   type: "@swamp/aws/imagebuilder/lifecycle-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -183,6 +193,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

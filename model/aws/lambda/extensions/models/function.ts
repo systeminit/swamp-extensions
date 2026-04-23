@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Lambda Function (AWS::Lambda::Function).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FileSystemConfigSchema = z.object({
+const FileSystemConfigSchema = z.object({
   Arn: z.string().max(200).regex(
     new RegExp(
       "^arn:aws[a-zA-Z-]*:elasticfilesystem:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:access-point/fsap-[a-f0-9]{17}$|^arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}$",
@@ -27,13 +36,13 @@ export const FileSystemConfigSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(0).max(256).describe("The value for this tag.")
     .optional(),
   Key: z.string().min(1).max(128).describe("The key for this tag."),
 });
 
-export const LambdaManagedInstancesCapacityProviderConfigSchema = z.object({
+const LambdaManagedInstancesCapacityProviderConfigSchema = z.object({
   ExecutionEnvironmentMemoryGiBPerVCpu: z.number().min(2).max(8).describe(
     "The amount of memory in GiB allocated per vCPU for execution environments.",
   ).optional(),
@@ -555,9 +564,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Lambda Function. Registered at `@swamp/aws/lambda/function`. */
 export const model = {
   type: "@swamp/aws/lambda/function",
-  version: "2026.04.09.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -581,6 +591,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.09.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

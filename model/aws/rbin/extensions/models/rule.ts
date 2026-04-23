@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Rbin Rule (AWS::Rbin::Rule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ResourceTagSchema = z.object({
+const ResourceTagSchema = z.object({
   ResourceTagKey: z.string().min(1).max(128).describe(
     "The tag key of the resource.",
   ),
@@ -21,7 +30,7 @@ export const ResourceTagSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("A unique identifier for the tag."),
   Value: z.string().min(0).max(256).describe(
     "String which you can use to describe or define the tag.",
@@ -134,9 +143,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for Rbin Rule. Registered at `@swamp/aws/rbin/rule`. */
 export const model = {
   type: "@swamp/aws/rbin/rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -150,6 +160,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

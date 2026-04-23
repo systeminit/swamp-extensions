@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for SSMContacts Plan (AWS::SSMContacts::Plan).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ContactTargetInfoSchema = z.object({
+const ContactTargetInfoSchema = z.object({
   ContactId: z.string().describe(
     "The Amazon Resource Name (ARN) of the contact.",
   ),
@@ -21,7 +30,7 @@ export const ContactTargetInfoSchema = z.object({
   ),
 });
 
-export const ChannelTargetInfoSchema = z.object({
+const ChannelTargetInfoSchema = z.object({
   ChannelId: z.string().describe(
     "The Amazon Resource Name (ARN) of the contact channel.",
   ),
@@ -30,7 +39,7 @@ export const ChannelTargetInfoSchema = z.object({
   ),
 });
 
-export const TargetsSchema = z.object({
+const TargetsSchema = z.object({
   ContactTargetInfo: ContactTargetInfoSchema.describe(
     "The contact that SSM Incident Manager is engaging during an incident.",
   ).optional(),
@@ -39,7 +48,7 @@ export const TargetsSchema = z.object({
   ).optional(),
 });
 
-export const StageSchema = z.object({
+const StageSchema = z.object({
   DurationInMinutes: z.number().int().describe(
     "The time to wait until beginning the next stage.",
   ),
@@ -93,9 +102,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for SSMContacts Plan. Registered at `@swamp/aws/ssmcontacts/plan`. */
 export const model = {
   type: "@swamp/aws/ssmcontacts/plan",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -109,6 +119,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

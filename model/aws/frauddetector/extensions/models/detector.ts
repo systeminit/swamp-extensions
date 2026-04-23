@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for FraudDetector Detector (AWS::FraudDetector::Detector).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
 
-export const OutcomeSchema = z.object({
+const OutcomeSchema = z.object({
   Arn: z.string().optional(),
   Inline: z.boolean().optional(),
   Name: z.string().optional(),
@@ -32,7 +41,7 @@ export const OutcomeSchema = z.object({
   ).optional(),
 });
 
-export const RuleSchema = z.object({
+const RuleSchema = z.object({
   RuleId: z.string().optional(),
   RuleVersion: z.string().optional(),
   DetectorId: z.string().optional(),
@@ -51,7 +60,7 @@ export const RuleSchema = z.object({
   ).optional(),
 });
 
-export const EventVariableSchema = z.object({
+const EventVariableSchema = z.object({
   Arn: z.string().optional(),
   Inline: z.boolean().optional(),
   Name: z.string().optional(),
@@ -105,7 +114,7 @@ export const EventVariableSchema = z.object({
   ).optional(),
 });
 
-export const LabelSchema = z.object({
+const LabelSchema = z.object({
   Arn: z.string().optional(),
   Inline: z.boolean().optional(),
   Name: z.string().optional(),
@@ -120,7 +129,7 @@ export const LabelSchema = z.object({
   ).optional(),
 });
 
-export const EntityTypeSchema = z.object({
+const EntityTypeSchema = z.object({
   Arn: z.string().optional(),
   Inline: z.boolean().optional(),
   Name: z.string().optional(),
@@ -135,7 +144,7 @@ export const EntityTypeSchema = z.object({
   ).optional(),
 });
 
-export const ModelSchema = z.object({
+const ModelSchema = z.object({
   Arn: z.string().optional(),
 });
 
@@ -235,9 +244,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for FraudDetector Detector. Registered at `@swamp/aws/frauddetector/detector`. */
 export const model = {
   type: "@swamp/aws/frauddetector/detector",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -251,6 +261,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

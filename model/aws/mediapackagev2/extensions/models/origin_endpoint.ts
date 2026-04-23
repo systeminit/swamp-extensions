@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaPackageV2 OriginEndpoint (AWS::MediaPackageV2::OriginEndpoint).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FilterConfigurationSchema = z.object({
+const FilterConfigurationSchema = z.object({
   ManifestFilter: z.string().min(1).max(1024).describe(
     "Optionally specify one or more manifest filters for all of your manifest egress requests. When you include a manifest filter, note that you cannot use an identical manifest filter query parameter for this manifest's endpoint URL.",
   ).optional(),
@@ -33,11 +42,11 @@ export const FilterConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ScteDashSchema = z.object({
+const ScteDashSchema = z.object({
   AdMarkerDash: z.enum(["BINARY", "XML"]).optional(),
 });
 
-export const DashUtcTimingSchema = z.object({
+const DashUtcTimingSchema = z.object({
   TimingMode: z.enum(["HTTP_HEAD", "HTTP_ISO", "HTTP_XSDATE", "UTC_DIRECT"])
     .optional(),
   TimingSource: z.string().min(1).max(1024).describe(
@@ -45,7 +54,7 @@ export const DashUtcTimingSchema = z.object({
   ).optional(),
 });
 
-export const DashBaseUrlSchema = z.object({
+const DashBaseUrlSchema = z.object({
   Url: z.string().min(1).max(2048).describe("A source location for segments."),
   ServiceLocation: z.string().min(1).max(2048).describe(
     "The name of the source location.",
@@ -58,7 +67,7 @@ export const DashBaseUrlSchema = z.object({
   ).optional(),
 });
 
-export const DashProgramInformationSchema = z.object({
+const DashProgramInformationSchema = z.object({
   Title: z.string().min(1).max(2048).describe("The title for the manifest.")
     .optional(),
   Source: z.string().min(1).max(2048).describe(
@@ -75,7 +84,7 @@ export const DashProgramInformationSchema = z.object({
   ).optional(),
 });
 
-export const DashDvbFontDownloadSchema = z.object({
+const DashDvbFontDownloadSchema = z.object({
   Url: z.string().min(1).max(2048).describe(
     "The URL for downloading fonts for subtitles.",
   ).optional(),
@@ -89,7 +98,7 @@ export const DashDvbFontDownloadSchema = z.object({
   ).optional(),
 });
 
-export const DashDvbMetricsReportingSchema = z.object({
+const DashDvbMetricsReportingSchema = z.object({
   ReportingUrl: z.string().min(1).max(2048).describe(
     "The URL where playback devices send error reports.",
   ),
@@ -98,7 +107,7 @@ export const DashDvbMetricsReportingSchema = z.object({
   ).optional(),
 });
 
-export const DashDvbSettingsSchema = z.object({
+const DashDvbSettingsSchema = z.object({
   FontDownload: DashDvbFontDownloadSchema.describe(
     "For use with DVB-DASH profiles only. The settings for font downloads that you want Elemental MediaPackage to pass through to the manifest.",
   ).optional(),
@@ -107,17 +116,17 @@ export const DashDvbSettingsSchema = z.object({
   ).optional(),
 });
 
-export const DashTtmlConfigurationSchema = z.object({
+const DashTtmlConfigurationSchema = z.object({
   TtmlProfile: z.enum(["IMSC_1", "EBU_TT_D_101"]),
 });
 
-export const DashSubtitleConfigurationSchema = z.object({
+const DashSubtitleConfigurationSchema = z.object({
   TtmlConfiguration: DashTtmlConfigurationSchema.describe(
     "The settings for TTML subtitles.",
   ).optional(),
 });
 
-export const DashManifestConfigurationSchema = z.object({
+const DashManifestConfigurationSchema = z.object({
   ManifestName: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9_-]+$"))
     .describe(
       "A short string that's appended to the endpoint URL. The manifest name creates a unique path to this endpoint. If you don't enter a value, MediaPackage uses the default manifest name, index.",
@@ -172,11 +181,11 @@ export const DashManifestConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const ScteHlsSchema = z.object({
+const ScteHlsSchema = z.object({
   AdMarkerHls: z.enum(["DATERANGE", "SCTE35_ENHANCED"]).optional(),
 });
 
-export const StartTagSchema = z.object({
+const StartTagSchema = z.object({
   TimeOffset: z.number().describe(
     "Specify the value for TIME-OFFSET within your EXT-X-START tag. Enter a signed floating point value which, if positive, must be less than the configured manifest duration minus three times the configured segment target duration. If negative, the absolute value must be larger than three times the configured segment target duration, and the absolute value must be smaller than the configured manifest duration.",
   ),
@@ -185,7 +194,7 @@ export const StartTagSchema = z.object({
   ).optional(),
 });
 
-export const HlsManifestConfigurationSchema = z.object({
+const HlsManifestConfigurationSchema = z.object({
   ManifestName: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9_-]+$"))
     .describe(
       "A short short string that's appended to the endpoint URL. The manifest name creates a unique path to this endpoint. If you don't enter a value, MediaPackage uses the default manifest name, index. MediaPackage automatically inserts the format extension, such as.m3u8. You can't use the same manifest name if you use HLS manifest and low-latency HLS manifest. The manifestName on the HLSManifest object overrides the manifestName you provided on the originEndpoint object.",
@@ -216,7 +225,7 @@ export const HlsManifestConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const LowLatencyHlsManifestConfigurationSchema = z.object({
+const LowLatencyHlsManifestConfigurationSchema = z.object({
   ManifestName: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9_-]+$"))
     .describe(
       "A short short string that's appended to the endpoint URL. The manifest name creates a unique path to this endpoint. If you don't enter a value, MediaPackage uses the default manifest name, index. MediaPackage automatically inserts the format extension, such as.m3u8. You can't use the same manifest name if you use HLS manifest and low-latency HLS manifest. The manifestName on the HLSManifest object overrides the manifestName you provided on the originEndpoint object.",
@@ -247,7 +256,7 @@ export const LowLatencyHlsManifestConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const MssManifestConfigurationSchema = z.object({
+const MssManifestConfigurationSchema = z.object({
   ManifestName: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9-]+$"))
     .describe(
       "The name of the MSS manifest. This name is appended to the origin endpoint URL to create the unique path for accessing this specific MSS manifest.",
@@ -261,7 +270,7 @@ export const MssManifestConfigurationSchema = z.object({
   ManifestLayout: z.enum(["FULL", "COMPACT"]).optional(),
 });
 
-export const ScteSchema = z.object({
+const ScteSchema = z.object({
   ScteFilter: z.array(
     z.enum([
       "SPLICE_INSERT",
@@ -280,13 +289,13 @@ export const ScteSchema = z.object({
   ScteInSegments: z.enum(["NONE", "ALL"]).optional(),
 });
 
-export const EncryptionMethodSchema = z.object({
+const EncryptionMethodSchema = z.object({
   TsEncryptionMethod: z.enum(["AES_128", "SAMPLE_AES"]).optional(),
   CmafEncryptionMethod: z.enum(["CENC", "CBCS"]).optional(),
   IsmEncryptionMethod: z.enum(["CENC"]).optional(),
 });
 
-export const EncryptionContractConfigurationSchema = z.object({
+const EncryptionContractConfigurationSchema = z.object({
   PresetSpeke20Audio: z.enum([
     "PRESET_AUDIO_1",
     "PRESET_AUDIO_2",
@@ -308,7 +317,7 @@ export const EncryptionContractConfigurationSchema = z.object({
   ]),
 });
 
-export const SpekeKeyProviderSchema = z.object({
+const SpekeKeyProviderSchema = z.object({
   EncryptionContractConfiguration: EncryptionContractConfigurationSchema
     .describe(
       "Configure one or more content encryption keys for your endpoints that use SPEKE Version 2.0. The encryption contract defines which content keys are used to encrypt the audio and video tracks in your stream. To configure the encryption contract, specify which audio and video encryption presets to use.",
@@ -340,7 +349,7 @@ export const SpekeKeyProviderSchema = z.object({
   ).optional(),
 });
 
-export const EncryptionSchema = z.object({
+const EncryptionSchema = z.object({
   ConstantInitializationVector: z.string().min(32).max(32).regex(
     new RegExp("^[0-9a-fA-F]+$"),
   ).describe(
@@ -358,7 +367,7 @@ export const EncryptionSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().optional(),
   Value: z.string().optional(),
 });
@@ -536,9 +545,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for MediaPackageV2 OriginEndpoint. Registered at `@swamp/aws/mediapackagev2/origin-endpoint`. */
 export const model = {
   type: "@swamp/aws/mediapackagev2/origin-endpoint",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -552,6 +562,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

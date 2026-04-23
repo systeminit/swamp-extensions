@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataBrew Dataset (AWS::DataBrew::Dataset).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,35 +21,35 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const JsonOptionsSchema = z.object({
+const JsonOptionsSchema = z.object({
   MultiLine: z.boolean().optional(),
 });
 
-export const ExcelOptionsSchema = z.object({
+const ExcelOptionsSchema = z.object({
   SheetNames: z.array(z.string()).optional(),
   SheetIndexes: z.array(z.number().int()).optional(),
   HeaderRow: z.boolean().optional(),
 });
 
-export const CsvOptionsSchema = z.object({
+const CsvOptionsSchema = z.object({
   Delimiter: z.string().min(1).max(1).optional(),
   HeaderRow: z.boolean().optional(),
 });
 
-export const S3LocationSchema = z.object({
+const S3LocationSchema = z.object({
   Bucket: z.string(),
   Key: z.string().optional(),
   BucketOwner: z.string().min(12).max(12).describe("Bucket owner").optional(),
 });
 
-export const DataCatalogInputDefinitionSchema = z.object({
+const DataCatalogInputDefinitionSchema = z.object({
   CatalogId: z.string().describe("Catalog id").optional(),
   DatabaseName: z.string().describe("Database name").optional(),
   TableName: z.string().describe("Table name").optional(),
   TempDirectory: S3LocationSchema.describe("Input location").optional(),
 });
 
-export const DatabaseInputDefinitionSchema = z.object({
+const DatabaseInputDefinitionSchema = z.object({
   GlueConnectionName: z.string().describe("Glue connection name"),
   DatabaseTableName: z.string().describe("Database table name").optional(),
   TempDirectory: S3LocationSchema.describe("Input location").optional(),
@@ -49,33 +58,33 @@ export const DatabaseInputDefinitionSchema = z.object({
   ).optional(),
 });
 
-export const MetadataSchema = z.object({
+const MetadataSchema = z.object({
   SourceArn: z.string().describe(
     "Arn of the source of the dataset. For e.g.: AppFlow Flow ARN.",
   ).optional(),
 });
 
-export const FilesLimitSchema = z.object({
+const FilesLimitSchema = z.object({
   MaxFiles: z.number().int().describe("Maximum number of files"),
   OrderedBy: z.enum(["LAST_MODIFIED_DATE"]).describe("Ordered by").optional(),
   Order: z.enum(["ASCENDING", "DESCENDING"]).describe("Order").optional(),
 });
 
-export const FilterValueSchema = z.object({
+const FilterValueSchema = z.object({
   ValueReference: z.string().min(2).max(128).regex(
     new RegExp("^:[A-Za-z0-9_]+$"),
   ).describe("Variable name"),
   Value: z.string().min(0).max(1024),
 });
 
-export const FilterExpressionSchema = z.object({
+const FilterExpressionSchema = z.object({
   Expression: z.string().min(4).max(1024).regex(
     new RegExp("^[><0-9A-Za-z_.,:)(!= ]+$"),
   ).describe("Filtering expression for a parameter"),
   ValuesMap: z.array(FilterValueSchema),
 });
 
-export const DatetimeOptionsSchema = z.object({
+const DatetimeOptionsSchema = z.object({
   Format: z.string().min(2).max(100).describe(
     "Date/time format of a date parameter",
   ),
@@ -87,7 +96,7 @@ export const DatetimeOptionsSchema = z.object({
   ).describe("Locale code for a date parameter").optional(),
 });
 
-export const DatasetParameterSchema = z.object({
+const DatasetParameterSchema = z.object({
   Name: z.string().min(1).max(255).describe("Parameter name"),
   Type: z.enum(["String", "Number", "Datetime"]).describe("Parameter type"),
   DatetimeOptions: DatetimeOptionsSchema.optional(),
@@ -97,12 +106,12 @@ export const DatasetParameterSchema = z.object({
   Filter: FilterExpressionSchema.optional(),
 });
 
-export const PathParameterSchema = z.object({
+const PathParameterSchema = z.object({
   PathParameterName: z.string().min(1).max(255).describe("Parameter name"),
   DatasetParameter: DatasetParameterSchema,
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
 });
@@ -186,9 +195,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for DataBrew Dataset. Registered at `@swamp/aws/databrew/dataset`. */
 export const model = {
   type: "@swamp/aws/databrew/dataset",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -202,6 +212,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

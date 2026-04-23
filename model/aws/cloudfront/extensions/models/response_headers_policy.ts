@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CloudFront ResponseHeadersPolicy (AWS::CloudFront::ResponseHeadersPolicy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,31 +21,31 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AccessControlAllowHeadersSchema = z.object({
+const AccessControlAllowHeadersSchema = z.object({
   Items: z.array(z.string()).describe(
     "The list of HTTP header names. You can specify * to allow all headers.",
   ),
 });
 
-export const AccessControlAllowMethodsSchema = z.object({
+const AccessControlAllowMethodsSchema = z.object({
   Items: z.array(z.string()).describe(
     "The list of HTTP methods. Valid values are: GET DELETE HEAD OPTIONS PATCH POST PUT ALL ALL is a special value that includes all of the listed HTTP methods.",
   ),
 });
 
-export const AccessControlAllowOriginsSchema = z.object({
+const AccessControlAllowOriginsSchema = z.object({
   Items: z.array(z.string()).describe(
     "The list of origins (domain names). You can specify * to allow all origins.",
   ),
 });
 
-export const AccessControlExposeHeadersSchema = z.object({
+const AccessControlExposeHeadersSchema = z.object({
   Items: z.array(z.string()).describe(
     "The list of HTTP headers. You can specify * to expose all headers.",
   ),
 });
 
-export const CorsConfigSchema = z.object({
+const CorsConfigSchema = z.object({
   AccessControlAllowCredentials: z.boolean().describe(
     "A Boolean that CloudFront uses as the value for the Access-Control-Allow-Credentials HTTP response header. For more information about the Access-Control-Allow-Credentials HTTP response header, see [Access-Control-Allow-Credentials](https://docs.aws.amazon.com/https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials) in the MDN Web Docs.",
   ),
@@ -60,7 +69,7 @@ export const CorsConfigSchema = z.object({
   ),
 });
 
-export const CustomHeaderSchema = z.object({
+const CustomHeaderSchema = z.object({
   Header: z.string().describe("The HTTP response header name."),
   Override: z.boolean().describe(
     "A Boolean that determines whether CloudFront overrides a response header with the same name received from the origin with the header specified here.",
@@ -68,21 +77,21 @@ export const CustomHeaderSchema = z.object({
   Value: z.string().describe("The value for the HTTP response header."),
 });
 
-export const CustomHeadersConfigSchema = z.object({
+const CustomHeadersConfigSchema = z.object({
   Items: z.array(CustomHeaderSchema).describe(
     "The list of HTTP response headers and their values.",
   ),
 });
 
-export const RemoveHeaderSchema = z.object({
+const RemoveHeaderSchema = z.object({
   Header: z.string().describe("The HTTP header name."),
 });
 
-export const RemoveHeadersConfigSchema = z.object({
+const RemoveHeadersConfigSchema = z.object({
   Items: z.array(RemoveHeaderSchema).describe("The list of HTTP header names."),
 });
 
-export const ContentSecurityPolicySchema = z.object({
+const ContentSecurityPolicySchema = z.object({
   ContentSecurityPolicy: z.string().describe(
     "The policy directives and their values that CloudFront includes as values for the Content-Security-Policy HTTP response header. For more information about the Content-Security-Policy HTTP response header, see [Content-Security-Policy](https://docs.aws.amazon.com/https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy) in the MDN Web Docs.",
   ),
@@ -91,13 +100,13 @@ export const ContentSecurityPolicySchema = z.object({
   ),
 });
 
-export const ContentTypeOptionsSchema = z.object({
+const ContentTypeOptionsSchema = z.object({
   Override: z.boolean().describe(
     "A Boolean that determines whether CloudFront overrides the X-Content-Type-Options HTTP response header received from the origin with the one specified in this response headers policy.",
   ),
 });
 
-export const FrameOptionsSchema = z.object({
+const FrameOptionsSchema = z.object({
   FrameOption: z.string().regex(new RegExp("^(DENY|SAMEORIGIN)$")).describe(
     "The value of the X-Frame-Options HTTP response header. Valid values are DENY and SAMEORIGIN. For more information about these values, see [X-Frame-Options](https://docs.aws.amazon.com/https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) in the MDN Web Docs.",
   ),
@@ -106,7 +115,7 @@ export const FrameOptionsSchema = z.object({
   ),
 });
 
-export const ReferrerPolicySchema = z.object({
+const ReferrerPolicySchema = z.object({
   Override: z.boolean().describe(
     "A Boolean that determines whether CloudFront overrides the Referrer-Policy HTTP response header received from the origin with the one specified in this response headers policy.",
   ),
@@ -119,7 +128,7 @@ export const ReferrerPolicySchema = z.object({
   ),
 });
 
-export const StrictTransportSecuritySchema = z.object({
+const StrictTransportSecuritySchema = z.object({
   AccessControlMaxAgeSec: z.number().int().describe(
     "A number that CloudFront uses as the value for the max-age directive in the Strict-Transport-Security HTTP response header.",
   ),
@@ -134,7 +143,7 @@ export const StrictTransportSecuritySchema = z.object({
   ).optional(),
 });
 
-export const XSSProtectionSchema = z.object({
+const XSSProtectionSchema = z.object({
   ModeBlock: z.boolean().describe(
     "A Boolean that determines whether CloudFront includes the mode=block directive in the X-XSS-Protection header. For more information about this directive, see [X-XSS-Protection](https://docs.aws.amazon.com/https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection) in the MDN Web Docs.",
   ).optional(),
@@ -149,7 +158,7 @@ export const XSSProtectionSchema = z.object({
   ).optional(),
 });
 
-export const SecurityHeadersConfigSchema = z.object({
+const SecurityHeadersConfigSchema = z.object({
   ContentSecurityPolicy: ContentSecurityPolicySchema.describe(
     "The policy directives and their values that CloudFront includes as values for the Content-Security-Policy HTTP response header. For more information about the Content-Security-Policy HTTP response header, see [Content-Security-Policy](https://docs.aws.amazon.com/https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy) in the MDN Web Docs.",
   ).optional(),
@@ -170,7 +179,7 @@ export const SecurityHeadersConfigSchema = z.object({
   ).optional(),
 });
 
-export const ServerTimingHeadersConfigSchema = z.object({
+const ServerTimingHeadersConfigSchema = z.object({
   Enabled: z.boolean().describe(
     "A Boolean that determines whether CloudFront adds the Server-Timing header to HTTP responses that it sends in response to requests that match a cache behavior that's associated with this response headers policy.",
   ),
@@ -251,9 +260,10 @@ const InputsSchema = z.object({
   }).describe("A response headers policy configuration.").optional(),
 });
 
+/** Swamp extension model for CloudFront ResponseHeadersPolicy. Registered at `@swamp/aws/cloudfront/response-headers-policy`. */
 export const model = {
   type: "@swamp/aws/cloudfront/response-headers-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -267,6 +277,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

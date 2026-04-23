@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for FMS Policy (AWS::FMS::Policy).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,24 +21,24 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ResourceTagSchema = z.object({
+const ResourceTagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().max(256).optional(),
 });
 
-export const NetworkFirewallPolicySchema = z.object({
+const NetworkFirewallPolicySchema = z.object({
   FirewallDeploymentModel: z.enum(["DISTRIBUTED", "CENTRALIZED"]).describe(
     "Firewall deployment mode.",
   ),
 });
 
-export const ThirdPartyFirewallPolicySchema = z.object({
+const ThirdPartyFirewallPolicySchema = z.object({
   FirewallDeploymentModel: z.enum(["DISTRIBUTED", "CENTRALIZED"]).describe(
     "Firewall deployment mode.",
   ),
 });
 
-export const NetworkAclEntrySchema = z.object({
+const NetworkAclEntrySchema = z.object({
   CidrBlock: z.string().regex(
     new RegExp(
       "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
@@ -57,7 +66,7 @@ export const NetworkAclEntrySchema = z.object({
   RuleAction: z.enum(["allow", "deny"]).describe("Rule Action."),
 });
 
-export const NetworkAclEntrySetSchema = z.object({
+const NetworkAclEntrySetSchema = z.object({
   FirstEntries: z.array(NetworkAclEntrySchema).describe(
     "NetworkAcl entry list.",
   ).optional(),
@@ -67,13 +76,13 @@ export const NetworkAclEntrySetSchema = z.object({
   ForceRemediateForLastEntries: z.boolean(),
 });
 
-export const NetworkAclCommonPolicySchema = z.object({
+const NetworkAclCommonPolicySchema = z.object({
   NetworkAclEntrySet: NetworkAclEntrySetSchema.describe(
     "Network ACL entry set.",
   ),
 });
 
-export const PolicyOptionSchema = z.object({
+const PolicyOptionSchema = z.object({
   NetworkFirewallPolicy: NetworkFirewallPolicySchema.describe(
     "Network firewall policy.",
   ).optional(),
@@ -85,7 +94,7 @@ export const PolicyOptionSchema = z.object({
   ).optional(),
 });
 
-export const PolicyTagSchema = z.object({
+const PolicyTagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^([^\\s]*)$")),
   Value: z.string().max(256).regex(new RegExp("^([^\\s]*)$")),
 });
@@ -250,9 +259,10 @@ const InputsSchema = z.object({
   Tags: z.array(PolicyTagSchema).optional(),
 });
 
+/** Swamp extension model for FMS Policy. Registered at `@swamp/aws/fms/policy`. */
 export const model = {
   type: "@swamp/aws/fms/policy",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -266,6 +276,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

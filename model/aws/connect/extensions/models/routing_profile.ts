@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Connect RoutingProfile (AWS::Connect::RoutingProfile).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CrossChannelBehaviorSchema = z.object({
+const CrossChannelBehaviorSchema = z.object({
   BehaviorType: z.enum(["ROUTE_CURRENT_CHANNEL_ONLY", "ROUTE_ANY_CHANNEL"])
     .describe(
       "Specifies the other channels that can be routed to an agent handling their current channel.",
     ),
 });
 
-export const MediaConcurrencySchema = z.object({
+const MediaConcurrencySchema = z.object({
   Channel: z.enum(["VOICE", "CHAT", "TASK", "EMAIL"]).describe(
     "The channels that agents can handle in the Contact Control Panel (CCP).",
   ),
@@ -31,7 +40,7 @@ export const MediaConcurrencySchema = z.object({
   ).optional(),
 });
 
-export const RoutingProfileQueueReferenceSchema = z.object({
+const RoutingProfileQueueReferenceSchema = z.object({
   Channel: z.enum(["VOICE", "CHAT", "TASK", "EMAIL"]).describe(
     "The channels that agents can handle in the Contact Control Panel (CCP).",
   ),
@@ -42,7 +51,7 @@ export const RoutingProfileQueueReferenceSchema = z.object({
   ).describe("The Amazon Resource Name (ARN) for the queue."),
 });
 
-export const RoutingProfileQueueConfigSchema = z.object({
+const RoutingProfileQueueConfigSchema = z.object({
   Delay: z.number().int().min(0).max(9999).describe(
     "The delay, in seconds, a contact should wait in the queue before they are routed to an available agent.",
   ),
@@ -54,13 +63,13 @@ export const RoutingProfileQueueConfigSchema = z.object({
   ),
 });
 
-export const RoutingProfileManualAssignmentQueueConfigSchema = z.object({
+const RoutingProfileManualAssignmentQueueConfigSchema = z.object({
   QueueReference: RoutingProfileQueueReferenceSchema.describe(
     "Contains the channel and queue identifier for a routing profile.",
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -171,9 +180,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Connect RoutingProfile. Registered at `@swamp/aws/connect/routing-profile`. */
 export const model = {
   type: "@swamp/aws/connect/routing-profile",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -187,6 +197,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

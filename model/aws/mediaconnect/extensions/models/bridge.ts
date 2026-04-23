@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaConnect Bridge (AWS::MediaConnect::Bridge).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SourcePrioritySchema = z.object({
+const SourcePrioritySchema = z.object({
   PrimarySource: z.string().describe(
     "The name of the source you choose as the primary source for this flow.",
   ).optional(),
 });
 
-export const BridgeNetworkOutputSchema = z.object({
+const BridgeNetworkOutputSchema = z.object({
   Name: z.string().describe("The network output name."),
   Protocol: z.enum(["rtp-fec", "rtp", "udp"]).describe(
     "The network output protocol.",
@@ -31,19 +40,19 @@ export const BridgeNetworkOutputSchema = z.object({
   Ttl: z.number().int().describe("The network output TTL."),
 });
 
-export const BridgeOutputSchema = z.object({
+const BridgeOutputSchema = z.object({
   NetworkOutput: BridgeNetworkOutputSchema.describe(
     "The output of the bridge. A network output is delivered to your premises.",
   ).optional(),
 });
 
-export const VpcInterfaceAttachmentSchema = z.object({
+const VpcInterfaceAttachmentSchema = z.object({
   VpcInterfaceName: z.string().describe(
     "The name of the VPC interface to use for this resource.",
   ).optional(),
 });
 
-export const BridgeFlowSourceSchema = z.object({
+const BridgeFlowSourceSchema = z.object({
   Name: z.string().describe("The name of the flow source."),
   FlowArn: z.string().describe(
     "The ARN of the cloud flow used as a source of this bridge.",
@@ -53,13 +62,13 @@ export const BridgeFlowSourceSchema = z.object({
   ).optional(),
 });
 
-export const MulticastSourceSettingsSchema = z.object({
+const MulticastSourceSettingsSchema = z.object({
   MulticastSourceIp: z.string().describe(
     "The IP address of the source for source-specific multicast (SSM).",
   ).optional(),
 });
 
-export const BridgeNetworkSourceSchema = z.object({
+const BridgeNetworkSourceSchema = z.object({
   Name: z.string().describe("The name of the network source."),
   Protocol: z.enum(["rtp-fec", "rtp", "udp"]).describe(
     "The network source protocol.",
@@ -74,7 +83,7 @@ export const BridgeNetworkSourceSchema = z.object({
   ),
 });
 
-export const BridgeSourceSchema = z.object({
+const BridgeSourceSchema = z.object({
   FlowSource: BridgeFlowSourceSchema.describe(
     "The source of the bridge. A flow source originates in MediaConnect as an existing cloud flow.",
   ).optional(),
@@ -175,9 +184,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for MediaConnect Bridge. Registered at `@swamp/aws/mediaconnect/bridge`. */
 export const model = {
   type: "@swamp/aws/mediaconnect/bridge",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -191,6 +201,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

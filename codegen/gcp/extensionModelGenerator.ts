@@ -79,6 +79,32 @@ export function generateGcpExtensionModel(
   lines.push(`// deno-lint-ignore-file ${lintIgnores.join(" ")}`);
   lines.push("");
 
+  // Module-level JSDoc. Sanitize both the type name and the description
+  // against `*/` sequences so they can't close the surrounding JSDoc block.
+  const rawModuleTypeName = resource.typeName;
+  const moduleTypeName = rawModuleTypeName.replace(/\*\//g, "*\\/");
+  const moduleDesc = (resource.description || rawModuleTypeName)
+    .split("\n")[0]
+    .trim()
+    .replace(/\*\//g, "*\\/");
+  lines.push(`/**`);
+  lines.push(` * Swamp extension model for ${moduleTypeName}.`);
+  if (moduleDesc && moduleDesc !== moduleTypeName) {
+    lines.push(` *`);
+    lines.push(` * ${moduleDesc}`);
+  }
+  lines.push(` *`);
+  lines.push(
+    ` * Wraps the GCP resource as a swamp model so create, get, update,`,
+  );
+  lines.push(
+    ` * delete, and sync can be driven through \`swamp model\`.`,
+  );
+  lines.push(` *`);
+  lines.push(` * @module`);
+  lines.push(` */`);
+  lines.push("");
+
   // Imports. The `npm:` prefix is required so `deno doc --lint` can resolve
   // zod standalone — it doesn't read the package's deno.json import map.
   lines.push(`import { z } from "npm:zod@4.3.6";`);
@@ -241,6 +267,9 @@ export function generateGcpExtensionModel(
     "resource";
 
   // Model export
+  lines.push(
+    `/** Swamp extension model for ${moduleTypeName}. Registered at \`${modelType}\`. */`,
+  );
   lines.push(`export const model = {`);
   lines.push(`  type: "${modelType}",`);
   lines.push(`  version: "${version}",`);

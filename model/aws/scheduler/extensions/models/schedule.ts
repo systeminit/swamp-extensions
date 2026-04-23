@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Scheduler Schedule (AWS::Scheduler::Schedule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const RetryPolicySchema = z.object({
+const RetryPolicySchema = z.object({
   MaximumEventAgeInSeconds: z.number().min(60).max(86400).describe(
     "The maximum amount of time, in seconds, to continue to make retry attempts.",
   ).optional(),
@@ -21,7 +30,7 @@ export const RetryPolicySchema = z.object({
   ).optional(),
 });
 
-export const AwsVpcConfigurationSchema = z.object({
+const AwsVpcConfigurationSchema = z.object({
   Subnets: z.array(z.string().min(1).max(1000)).describe(
     "Specifies the subnets associated with the task. These subnets must all be in the same VPC. You can specify as many as 16 subnets.",
   ),
@@ -33,13 +42,13 @@ export const AwsVpcConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const NetworkConfigurationSchema = z.object({
+const NetworkConfigurationSchema = z.object({
   AwsvpcConfiguration: AwsVpcConfigurationSchema.describe(
     "This structure specifies the VPC subnets and security groups for the task, and whether a public IP address is to be used. This structure is relevant only for ECS tasks that use the awsvpc network mode.",
   ).optional(),
 });
 
-export const CapacityProviderStrategyItemSchema = z.object({
+const CapacityProviderStrategyItemSchema = z.object({
   CapacityProvider: z.string().min(1).max(255).describe(
     "The short name of the capacity provider.",
   ),
@@ -51,7 +60,7 @@ export const CapacityProviderStrategyItemSchema = z.object({
   ).optional(),
 });
 
-export const PlacementConstraintSchema = z.object({
+const PlacementConstraintSchema = z.object({
   Type: z.enum(["distinctInstance", "memberOf"]).describe(
     "The type of constraint. Use distinctInstance to ensure that each task in a particular group is running on a different container instance. Use memberOf to restrict the selection to a group of valid candidates.",
   ).optional(),
@@ -60,7 +69,7 @@ export const PlacementConstraintSchema = z.object({
   ).optional(),
 });
 
-export const PlacementStrategySchema = z.object({
+const PlacementStrategySchema = z.object({
   Type: z.enum(["random", "spread", "binpack"]).describe(
     "The type of placement strategy. The random placement strategy randomly places tasks on available candidates. The spread placement strategy spreads placement across available candidates evenly based on the field parameter. The binpack strategy places tasks on available candidates that have the least available amount of the resource that is specified with the field parameter. For example, if you binpack on memory, a task is placed on the instance with the least amount of remaining memory (but still enough to run the task).",
   ).optional(),
@@ -69,7 +78,7 @@ export const PlacementStrategySchema = z.object({
   ).optional(),
 });
 
-export const EcsParametersSchema = z.object({
+const EcsParametersSchema = z.object({
   TaskDefinitionArn: z.string().min(1).max(1600).describe(
     "The ARN of the task definition to use if the event target is an Amazon ECS task.",
   ),
@@ -113,7 +122,7 @@ export const EcsParametersSchema = z.object({
   ).optional(),
 });
 
-export const EventBridgeParametersSchema = z.object({
+const EventBridgeParametersSchema = z.object({
   DetailType: z.string().min(1).max(128).describe(
     "Free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.",
   ),
@@ -124,13 +133,13 @@ export const EventBridgeParametersSchema = z.object({
   ).describe("The source of the event."),
 });
 
-export const KinesisParametersSchema = z.object({
+const KinesisParametersSchema = z.object({
   PartitionKey: z.string().min(1).max(256).describe(
     "The custom parameter used as the Kinesis partition key. For more information, see Amazon Kinesis Streams Key Concepts in the Amazon Kinesis Streams Developer Guide.",
   ),
 });
 
-export const SageMakerPipelineParameterSchema = z.object({
+const SageMakerPipelineParameterSchema = z.object({
   Name: z.string().min(1).max(256).regex(new RegExp("^[A-Za-z0-9\\-_]*$"))
     .describe(
       "Name of parameter to start execution of a SageMaker Model Building Pipeline.",
@@ -140,13 +149,13 @@ export const SageMakerPipelineParameterSchema = z.object({
   ),
 });
 
-export const SageMakerPipelineParametersSchema = z.object({
+const SageMakerPipelineParametersSchema = z.object({
   PipelineParameterList: z.array(SageMakerPipelineParameterSchema).describe(
     "List of Parameter names and values for SageMaker Model Building Pipeline execution.",
   ).optional(),
 });
 
-export const SqsParametersSchema = z.object({
+const SqsParametersSchema = z.object({
   MessageGroupId: z.string().min(1).max(128).describe(
     "The FIFO message group ID to use as the target.",
   ).optional(),
@@ -329,9 +338,10 @@ const InputsSchema = z.object({
   }).describe("The schedule target.").optional(),
 });
 
+/** Swamp extension model for Scheduler Schedule. Registered at `@swamp/aws/scheduler/schedule`. */
 export const model = {
   type: "@swamp/aws/scheduler/schedule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -345,6 +355,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

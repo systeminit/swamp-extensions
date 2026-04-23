@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Connect Rule (AWS::Connect::Rule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EventBridgeActionSchema = z.object({
+const EventBridgeActionSchema = z.object({
   Name: z.string().regex(new RegExp("^[a-zA-Z0-9._-]{1,100}$")).describe(
     "The name.",
   ),
 });
 
-export const ReferenceSchema = z.object({
+const ReferenceSchema = z.object({
   Value: z.string().regex(new RegExp("^(/|https:)")).describe(
     "A valid value for the reference. For example, for a URL reference, a formatted URL that is displayed to an agent in the Contact Control Panel (CCP).",
   ),
@@ -28,7 +37,7 @@ export const ReferenceSchema = z.object({
     ),
 });
 
-export const TaskActionSchema = z.object({
+const TaskActionSchema = z.object({
   Name: z.string().min(1).max(512).describe(
     "The name. Supports variable injection. For more information, see [JSONPath reference](https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html) in the *Administrators Guide*.",
   ),
@@ -45,7 +54,7 @@ export const TaskActionSchema = z.object({
   ).optional(),
 });
 
-export const NotificationRecipientTypeSchema = z.object({
+const NotificationRecipientTypeSchema = z.object({
   UserTags: z.record(z.string(), z.string()).describe(
     'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }. CON users with the specified tags will be notified.',
   ).optional(),
@@ -58,7 +67,7 @@ export const NotificationRecipientTypeSchema = z.object({
   ).describe("The Amazon Resource Name (ARN) of the user account.").optional(),
 });
 
-export const SendNotificationActionSchema = z.object({
+const SendNotificationActionSchema = z.object({
   DeliveryMethod: z.enum(["EMAIL"]).describe(
     "Notification delivery method. *Allowed value*: EMAIL",
   ),
@@ -76,28 +85,28 @@ export const SendNotificationActionSchema = z.object({
   ),
 });
 
-export const FieldValueSchema = z.object({
+const FieldValueSchema = z.object({
   StringValue: z.string().optional(),
   BooleanValue: z.boolean().optional(),
   DoubleValue: z.number().optional(),
   EmptyValue: z.string().optional(),
 });
 
-export const FieldSchema = z.object({
+const FieldSchema = z.object({
   Id: z.string().min(1).max(500),
   Value: FieldValueSchema,
 });
 
-export const CreateCaseActionSchema = z.object({
+const CreateCaseActionSchema = z.object({
   Fields: z.array(FieldSchema),
   TemplateId: z.string().min(1).max(500),
 });
 
-export const UpdateCaseActionSchema = z.object({
+const UpdateCaseActionSchema = z.object({
   Fields: z.array(FieldSchema),
 });
 
-export const SubmitAutoEvaluationActionSchema = z.object({
+const SubmitAutoEvaluationActionSchema = z.object({
   EvaluationFormArn: z.string().regex(
     new RegExp(
       "^$|arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/evaluation-form/[-a-zA-Z0-9]*$",
@@ -105,7 +114,7 @@ export const SubmitAutoEvaluationActionSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -264,9 +273,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Connect Rule. Registered at `@swamp/aws/connect/rule`. */
 export const model = {
   type: "@swamp/aws/connect/rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -280,6 +290,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

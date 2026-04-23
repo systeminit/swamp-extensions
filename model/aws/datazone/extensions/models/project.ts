@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataZone Project (AWS::DataZone::Project).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const EnvironmentParameterSchema = z.object({
+const EnvironmentParameterSchema = z.object({
   Name: z.string().optional(),
   Value: z.string().optional(),
 });
 
-export const EnvironmentConfigurationUserParameterSchema = z.object({
+const EnvironmentConfigurationUserParameterSchema = z.object({
   EnvironmentId: z.string().regex(new RegExp("^[a-zA-Z0-9_-]{1,36}$"))
     .optional(),
   EnvironmentConfigurationName: z.string().min(1).max(64).regex(
@@ -26,7 +35,7 @@ export const EnvironmentConfigurationUserParameterSchema = z.object({
   EnvironmentParameters: z.array(EnvironmentParameterSchema).optional(),
 });
 
-export const ResourceTagSchema = z.object({
+const ResourceTagSchema = z.object({
   Key: z.string().min(1).max(128).regex(new RegExp("^[\\w \\.:/=+@-]+$")),
   Value: z.string().min(0).max(256).regex(new RegExp("^[\\w \\.:/=+@-]*$")),
 });
@@ -118,9 +127,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for DataZone Project. Registered at `@swamp/aws/datazone/project`. */
 export const model = {
   type: "@swamp/aws/datazone/project",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -144,6 +154,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

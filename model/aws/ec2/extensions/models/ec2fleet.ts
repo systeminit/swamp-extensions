@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EC2 EC2Fleet (AWS::EC2::EC2Fleet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,16 +21,16 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CapacityReservationOptionsRequestSchema = z.object({
+const CapacityReservationOptionsRequestSchema = z.object({
   UsageStrategy: z.enum(["use-capacity-reservations-first"]).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string(),
   Key: z.string(),
 });
 
-export const TagSpecificationSchema = z.object({
+const TagSpecificationSchema = z.object({
   ResourceType: z.enum([
     "client-vpn-endpoint",
     "customer-gateway",
@@ -74,16 +83,16 @@ export const TagSpecificationSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
-export const CapacityRebalanceSchema = z.object({
+const CapacityRebalanceSchema = z.object({
   ReplacementStrategy: z.enum(["launch", "launch-before-terminate"]).optional(),
   TerminationDelay: z.number().int().optional(),
 });
 
-export const MaintenanceStrategiesSchema = z.object({
+const MaintenanceStrategiesSchema = z.object({
   CapacityRebalance: CapacityRebalanceSchema.optional(),
 });
 
-export const FleetLaunchTemplateSpecificationRequestSchema = z.object({
+const FleetLaunchTemplateSpecificationRequestSchema = z.object({
   LaunchTemplateName: z.string().min(3).max(128).regex(
     new RegExp("[a-zA-Z0-9\\(\\)\\.\\-/_]+"),
   ).optional(),
@@ -91,7 +100,7 @@ export const FleetLaunchTemplateSpecificationRequestSchema = z.object({
   Version: z.string(),
 });
 
-export const PlacementSchema = z.object({
+const PlacementSchema = z.object({
   GroupName: z.string().optional(),
   Tenancy: z.string().optional(),
   SpreadDomain: z.string().optional(),
@@ -102,64 +111,64 @@ export const PlacementSchema = z.object({
   HostResourceGroupArn: z.string().optional(),
 });
 
-export const VCpuCountRangeRequestSchema = z.object({
+const VCpuCountRangeRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const MemoryMiBRequestSchema = z.object({
+const MemoryMiBRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const MemoryGiBPerVCpuRequestSchema = z.object({
+const MemoryGiBPerVCpuRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const NetworkBandwidthGbpsRequestSchema = z.object({
+const NetworkBandwidthGbpsRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const NetworkInterfaceCountRequestSchema = z.object({
+const NetworkInterfaceCountRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const TotalLocalStorageGBRequestSchema = z.object({
+const TotalLocalStorageGBRequestSchema = z.object({
   Min: z.number().optional(),
   Max: z.number().optional(),
 });
 
-export const BaselineEbsBandwidthMbpsRequestSchema = z.object({
+const BaselineEbsBandwidthMbpsRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const AcceleratorCountRequestSchema = z.object({
+const AcceleratorCountRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const AcceleratorTotalMemoryMiBRequestSchema = z.object({
+const AcceleratorTotalMemoryMiBRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
 
-export const PerformanceFactorReferenceRequestSchema = z.object({
+const PerformanceFactorReferenceRequestSchema = z.object({
   InstanceFamily: z.string().optional(),
 });
 
-export const CpuPerformanceFactorRequestSchema = z.object({
+const CpuPerformanceFactorRequestSchema = z.object({
   References: z.array(PerformanceFactorReferenceRequestSchema).optional(),
 });
 
-export const BaselinePerformanceFactorsRequestSchema = z.object({
+const BaselinePerformanceFactorsRequestSchema = z.object({
   Cpu: CpuPerformanceFactorRequestSchema.optional(),
 });
 
-export const InstanceRequirementsRequestSchema = z.object({
+const InstanceRequirementsRequestSchema = z.object({
   VCpuCount: VCpuCountRangeRequestSchema.optional(),
   MemoryMiB: MemoryMiBRequestSchema.optional(),
   CpuManufacturers: z.array(
@@ -220,7 +229,7 @@ export const InstanceRequirementsRequestSchema = z.object({
   RequireEncryptionInTransit: z.boolean().optional(),
 });
 
-export const EbsBlockDeviceSchema = z.object({
+const EbsBlockDeviceSchema = z.object({
   DeleteOnTermination: z.boolean().optional(),
   Encrypted: z.boolean().optional(),
   Iops: z.number().int().optional(),
@@ -231,14 +240,14 @@ export const EbsBlockDeviceSchema = z.object({
     .optional(),
 });
 
-export const BlockDeviceMappingSchema = z.object({
+const BlockDeviceMappingSchema = z.object({
   DeviceName: z.string().optional(),
   Ebs: EbsBlockDeviceSchema.optional(),
   NoDevice: z.string().optional(),
   VirtualName: z.string().optional(),
 });
 
-export const FleetLaunchTemplateOverridesRequestSchema = z.object({
+const FleetLaunchTemplateOverridesRequestSchema = z.object({
   WeightedCapacity: z.number().optional(),
   Placement: PlacementSchema.optional(),
   Priority: z.number().optional(),
@@ -251,7 +260,7 @@ export const FleetLaunchTemplateOverridesRequestSchema = z.object({
   BlockDeviceMappings: z.array(BlockDeviceMappingSchema).optional(),
 });
 
-export const FleetLaunchTemplateConfigRequestSchema = z.object({
+const FleetLaunchTemplateConfigRequestSchema = z.object({
   LaunchTemplateSpecification: FleetLaunchTemplateSpecificationRequestSchema
     .optional(),
   Overrides: z.array(FleetLaunchTemplateOverridesRequestSchema).optional(),
@@ -424,9 +433,10 @@ const InputsSchema = z.object({
   Context: z.string().optional(),
 });
 
+/** Swamp extension model for EC2 EC2Fleet. Registered at `@swamp/aws/ec2/ec2fleet`. */
 export const model = {
   type: "@swamp/aws/ec2/ec2fleet",
-  version: "2026.04.19.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -445,6 +455,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.19.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

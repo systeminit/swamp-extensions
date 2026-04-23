@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Lightsail Distribution (AWS::Lightsail::Distribution).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CacheBehaviorPerPathSchema = z.object({
+const CacheBehaviorPerPathSchema = z.object({
   Behavior: z.string().describe("The cache behavior for the specified path.")
     .optional(),
   Path: z.string().describe(
@@ -20,7 +29,7 @@ export const CacheBehaviorPerPathSchema = z.object({
   ).optional(),
 });
 
-export const CookieObjectSchema = z.object({
+const CookieObjectSchema = z.object({
   CookiesAllowList: z.array(z.string()).describe(
     "The specific cookies to forward to your distribution's origin.",
   ).optional(),
@@ -29,7 +38,7 @@ export const CookieObjectSchema = z.object({
   ).optional(),
 });
 
-export const HeaderObjectSchema = z.object({
+const HeaderObjectSchema = z.object({
   HeadersAllowList: z.array(z.string()).describe(
     "The specific headers to forward to your distribution's origin.",
   ).optional(),
@@ -38,7 +47,7 @@ export const HeaderObjectSchema = z.object({
   ).optional(),
 });
 
-export const QueryStringObjectSchema = z.object({
+const QueryStringObjectSchema = z.object({
   QueryStringsAllowList: z.array(z.string()).describe(
     "The specific query strings that the distribution forwards to the origin.",
   ).optional(),
@@ -47,7 +56,7 @@ export const QueryStringObjectSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -224,9 +233,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for Lightsail Distribution. Registered at `@swamp/aws/lightsail/distribution`. */
 export const model = {
   type: "@swamp/aws/lightsail/distribution",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -240,6 +250,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

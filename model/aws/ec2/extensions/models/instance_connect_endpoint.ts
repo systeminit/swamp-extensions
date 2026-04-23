@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EC2 InstanceConnectEndpoint (AWS::EC2::InstanceConnectEndpoint).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,12 +21,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
 
-export const InstanceConnectEndpointDnsNamesSchema = z.object({
+const InstanceConnectEndpointDnsNamesSchema = z.object({
   DnsName: z.string().describe(
     "The DNS name of the EC2 Instance Connect Endpoint.",
   ).optional(),
@@ -106,9 +115,10 @@ const InputsSchema = z.object({
   }).describe("The public DNS names of the endpoint").optional(),
 });
 
+/** Swamp extension model for EC2 InstanceConnectEndpoint. Registered at `@swamp/aws/ec2/instance-connect-endpoint`. */
 export const model = {
   type: "@swamp/aws/ec2/instance-connect-endpoint",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -122,6 +132,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

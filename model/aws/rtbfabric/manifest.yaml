@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/rtbfabric"
-version: "2026.04.22.1"
+version: "2026.04.23.2"
 description: "AWS RTBFABRIC infrastructure models"
 labels:
   - aws
@@ -9,7 +9,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: inbound_external_link, link
+  - Updated: inbound_external_link, link, outbound_external_link, requester_gateway, responder_gateway
 models:
   - inbound_external_link.ts
   - link.ts

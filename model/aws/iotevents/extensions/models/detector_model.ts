@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for IoTEvents DetectorModel (AWS::IoTEvents::DetectorModel).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ClearTimerSchema = z.object({
+const ClearTimerSchema = z.object({
   TimerName: z.string().min(1).max(128).describe(
     "The name of the timer to clear.",
   ),
 });
 
-export const PayloadSchema = z.object({
+const PayloadSchema = z.object({
   ContentExpression: z.string().min(1).describe(
     "The content of the payload. You can use a string expression that includes quoted strings ( ''), variables ( $variable.), input values ( $input..), string concatenations, and quoted strings that contain ${} as the content. The recommended maximum size of a content expression is 1 KB.",
   ),
@@ -27,7 +36,7 @@ export const PayloadSchema = z.object({
   ),
 });
 
-export const DynamoDBSchema = z.object({
+const DynamoDBSchema = z.object({
   HashKeyField: z.string().describe(
     "The name of the hash key (also called the partition key). The hashKeyField value must match the partition key of the target DynamoDB table.",
   ),
@@ -60,14 +69,14 @@ export const DynamoDBSchema = z.object({
   ),
 });
 
-export const DynamoDBv2Schema = z.object({
+const DynamoDBv2Schema = z.object({
   Payload: PayloadSchema.describe(
     "Information needed to configure the payload. By default, ITE generates a standard payload in JSON for any action. This action payload contains all attribute-value pairs that have the information about the detector model instance and the event triggered the action. To configure the action payload, you can use contentExpression.",
   ).optional(),
   TableName: z.string().describe("The name of the DynamoDB table."),
 });
 
-export const FirehoseSchema = z.object({
+const FirehoseSchema = z.object({
   DeliveryStreamName: z.string().describe(
     "The name of the Kinesis Data Firehose delivery stream where the data is written.",
   ),
@@ -79,7 +88,7 @@ export const FirehoseSchema = z.object({
   ).optional(),
 });
 
-export const IotEventsSchema = z.object({
+const IotEventsSchema = z.object({
   InputName: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$"),
   ).describe("The name of the ITE input where the data is sent."),
@@ -88,7 +97,7 @@ export const IotEventsSchema = z.object({
   ).optional(),
 });
 
-export const AssetPropertyTimestampSchema = z.object({
+const AssetPropertyTimestampSchema = z.object({
   OffsetInNanos: z.string().describe(
     "The nanosecond offset converted from timeInSeconds. The valid range is between 0-999999999.",
   ).optional(),
@@ -97,7 +106,7 @@ export const AssetPropertyTimestampSchema = z.object({
   ),
 });
 
-export const AssetPropertyVariantSchema = z.object({
+const AssetPropertyVariantSchema = z.object({
   BooleanValue: z.string().describe(
     "The asset property value is a Boolean value that must be 'TRUE' or 'FALSE'. You must use an expression, and the evaluated result should be a Boolean value.",
   ).optional(),
@@ -112,7 +121,7 @@ export const AssetPropertyVariantSchema = z.object({
   ).optional(),
 });
 
-export const AssetPropertyValueSchema = z.object({
+const AssetPropertyValueSchema = z.object({
   Quality: z.string().describe(
     "The quality of the asset property value. The value must be 'GOOD', 'BAD', or 'UNCERTAIN'.",
   ).optional(),
@@ -124,7 +133,7 @@ export const AssetPropertyValueSchema = z.object({
   ),
 });
 
-export const IotSiteWiseSchema = z.object({
+const IotSiteWiseSchema = z.object({
   AssetId: z.string().describe(
     "The ID of the asset that has the specified property.",
   ).optional(),
@@ -139,7 +148,7 @@ export const IotSiteWiseSchema = z.object({
   ),
 });
 
-export const IotTopicPublishSchema = z.object({
+const IotTopicPublishSchema = z.object({
   MqttTopic: z.string().min(1).max(128).describe(
     "The MQTT topic of the message. You can use a string expression that includes variables ( $variable.) and input values ( $input..) as the topic string.",
   ),
@@ -148,7 +157,7 @@ export const IotTopicPublishSchema = z.object({
   ).optional(),
 });
 
-export const LambdaSchema = z.object({
+const LambdaSchema = z.object({
   FunctionArn: z.string().min(1).max(2048).describe(
     "The ARN of the Lambda function that is executed.",
   ),
@@ -157,13 +166,13 @@ export const LambdaSchema = z.object({
   ).optional(),
 });
 
-export const ResetTimerSchema = z.object({
+const ResetTimerSchema = z.object({
   TimerName: z.string().min(1).max(128).describe(
     "The name of the timer to reset.",
   ),
 });
 
-export const SetTimerSchema = z.object({
+const SetTimerSchema = z.object({
   DurationExpression: z.string().min(1).max(1024).describe(
     "The duration of the timer, in seconds. You can use a string expression that includes numbers, variables ( $variable.), and input values ( $input..) as the duration. The range of the duration is 1-31622400 seconds. To ensure accuracy, the minimum duration is 60 seconds. The evaluated result of the duration is rounded down to the nearest whole number.",
   ).optional(),
@@ -173,14 +182,14 @@ export const SetTimerSchema = z.object({
   TimerName: z.string().min(1).max(128).describe("The name of the timer."),
 });
 
-export const SetVariableSchema = z.object({
+const SetVariableSchema = z.object({
   Value: z.string().min(1).max(1024).describe("The new value of the variable."),
   VariableName: z.string().min(1).max(128).regex(
     new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$"),
   ).describe("The name of the variable."),
 });
 
-export const SnsSchema = z.object({
+const SnsSchema = z.object({
   Payload: PayloadSchema.describe(
     "You can configure the action payload when you send a message as an Amazon SNS push notification.",
   ).optional(),
@@ -189,7 +198,7 @@ export const SnsSchema = z.object({
   ),
 });
 
-export const SqsSchema = z.object({
+const SqsSchema = z.object({
   Payload: PayloadSchema.describe(
     "You can configure the action payload when you send a message to an Amazon SQS queue.",
   ).optional(),
@@ -201,7 +210,7 @@ export const SqsSchema = z.object({
   ).optional(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   ClearTimer: ClearTimerSchema.describe(
     "Information needed to clear the timer.",
   ).optional(),
@@ -238,7 +247,7 @@ export const ActionSchema = z.object({
   Sqs: SqsSchema.describe("Sends an Amazon SNS message.").optional(),
 });
 
-export const EventSchema = z.object({
+const EventSchema = z.object({
   Actions: z.array(ActionSchema).describe("The actions to be performed.")
     .optional(),
   Condition: z.string().max(512).describe(
@@ -247,19 +256,19 @@ export const EventSchema = z.object({
   EventName: z.string().max(128).describe("The name of the event."),
 });
 
-export const OnEnterSchema = z.object({
+const OnEnterSchema = z.object({
   Events: z.array(EventSchema).describe(
     "Specifies the actions that are performed when the state is entered and the condition is TRUE.",
   ).optional(),
 });
 
-export const OnExitSchema = z.object({
+const OnExitSchema = z.object({
   Events: z.array(EventSchema).describe(
     "Specifies the actions that are performed when the state is exited and the condition is TRUE.",
   ).optional(),
 });
 
-export const TransitionEventSchema = z.object({
+const TransitionEventSchema = z.object({
   Actions: z.array(ActionSchema).describe("The actions to be performed.")
     .optional(),
   Condition: z.string().max(512).describe(
@@ -271,7 +280,7 @@ export const TransitionEventSchema = z.object({
   NextState: z.string().min(1).max(128).describe("The next state to enter."),
 });
 
-export const OnInputSchema = z.object({
+const OnInputSchema = z.object({
   Events: z.array(EventSchema).describe(
     "Specifies the actions performed when the condition evaluates to TRUE.",
   ).optional(),
@@ -280,7 +289,7 @@ export const OnInputSchema = z.object({
   ).optional(),
 });
 
-export const StateSchema = z.object({
+const StateSchema = z.object({
   OnEnter: OnEnterSchema.describe(
     "When entering this state, perform these actions if the condition is TRUE.",
   ).optional(),
@@ -293,7 +302,7 @@ export const StateSchema = z.object({
   StateName: z.string().min(1).max(128).describe("The name of the state."),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().describe("The tag's key."),
   Value: z.string().describe("The tag's value."),
 });
@@ -379,9 +388,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for IoTEvents DetectorModel. Registered at `@swamp/aws/iotevents/detector-model`. */
 export const model = {
   type: "@swamp/aws/iotevents/detector-model",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -395,6 +405,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

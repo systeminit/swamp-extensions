@@ -15,8 +15,8 @@ import {
   GetResourceCommand,
   GetResourceRequestStatusCommand,
   UpdateResourceCommand,
-} from "@aws-sdk/client-cloudcontrol";
-import jsonpatch from "fast-json-patch";
+} from "npm:@aws-sdk/client-cloudcontrol@3.1021.0";
+import jsonpatch from "npm:fast-json-patch@3.1.1";
 
 function createClient(): CloudControlClient {
   return new CloudControlClient({

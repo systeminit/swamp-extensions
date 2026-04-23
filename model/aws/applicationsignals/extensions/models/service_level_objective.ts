@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ApplicationSignals ServiceLevelObjective (AWS::ApplicationSignals::ServiceLevelObjective).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DimensionSchema = z.object({
+const DimensionSchema = z.object({
   Value: z.string().describe(
     "The value of the dimension. Dimension values must contain only ASCII characters and must include at least one non-whitespace character. ASCII control characters are not supported as part of dimension values",
   ),
@@ -21,7 +30,7 @@ export const DimensionSchema = z.object({
   ),
 });
 
-export const MetricSchema = z.object({
+const MetricSchema = z.object({
   MetricName: z.string().describe("The name of the metric to use.").optional(),
   Dimensions: z.array(DimensionSchema).describe(
     "An array of one or more dimensions to use to define the metric that you want to use.",
@@ -29,7 +38,7 @@ export const MetricSchema = z.object({
   Namespace: z.string().describe("The namespace of the metric.").optional(),
 });
 
-export const MetricStatSchema = z.object({
+const MetricStatSchema = z.object({
   Period: z.number().int().describe(
     "The granularity, in seconds, to be used for the metric.",
   ),
@@ -44,7 +53,7 @@ export const MetricStatSchema = z.object({
   ).optional(),
 });
 
-export const MetricDataQuerySchema = z.object({
+const MetricDataQuerySchema = z.object({
   MetricStat: MetricStatSchema.describe(
     "A metric to be used directly for the SLO, or to be used in the math expression that will be used for the SLO. Within one MetricDataQuery, you must specify either Expression or MetricStat but not both.",
   ).optional(),
@@ -62,7 +71,7 @@ export const MetricDataQuerySchema = z.object({
   ).optional(),
 });
 
-export const DependencyConfigSchema = z.object({
+const DependencyConfigSchema = z.object({
   DependencyKeyAttributes: z.record(z.string(), z.string()).describe(
     "If this SLO is related to a metric collected by Application Signals, you must use this field to specify which dependency the SLO metric is related to.",
   ),
@@ -71,7 +80,7 @@ export const DependencyConfigSchema = z.object({
   ),
 });
 
-export const SliMetricSchema = z.object({
+const SliMetricSchema = z.object({
   KeyAttributes: z.record(z.string(), z.string()).describe(
     "This is a string-to-string map that contains information about the type of object that this SLO is related to.",
   ).optional(),
@@ -95,7 +104,7 @@ export const SliMetricSchema = z.object({
   ).optional(),
 });
 
-export const MonitoredRequestCountMetricSchema = z.object({
+const MonitoredRequestCountMetricSchema = z.object({
   GoodCountMetric: z.array(MetricDataQuerySchema).describe(
     'If you want to count "good requests" to determine the percentage of successful requests for this request-based SLO, specify the metric to use as "good requests" in this structure.',
   ).optional(),
@@ -104,7 +113,7 @@ export const MonitoredRequestCountMetricSchema = z.object({
   ).optional(),
 });
 
-export const RequestBasedSliMetricSchema = z.object({
+const RequestBasedSliMetricSchema = z.object({
   KeyAttributes: z.record(z.string(), z.string()).describe(
     "This is a string-to-string map that contains information about the type of object that this SLO is related to.",
   ).optional(),
@@ -125,7 +134,7 @@ export const RequestBasedSliMetricSchema = z.object({
   ).optional(),
 });
 
-export const RollingIntervalSchema = z.object({
+const RollingIntervalSchema = z.object({
   DurationUnit: z.enum(["MINUTE", "HOUR", "DAY", "MONTH"]).describe(
     "Specifies the interval unit.",
   ),
@@ -134,7 +143,7 @@ export const RollingIntervalSchema = z.object({
   ),
 });
 
-export const CalendarIntervalSchema = z.object({
+const CalendarIntervalSchema = z.object({
   StartTime: z.number().int().min(946684800).describe(
     "Epoch time in seconds you want the first interval to start. Be sure to choose a time that configures the intervals the way that you want. For example, if you want weekly intervals starting on Mondays at 6 a.m., be sure to specify a start time that is a Monday at 6 a.m. As soon as one calendar interval ends, another automatically begins.",
   ),
@@ -146,7 +155,7 @@ export const CalendarIntervalSchema = z.object({
   ),
 });
 
-export const IntervalSchema = z.object({
+const IntervalSchema = z.object({
   RollingInterval: RollingIntervalSchema.describe(
     "If the interval is a calendar interval, this structure contains the interval specifications.",
   ).optional(),
@@ -155,7 +164,7 @@ export const IntervalSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -166,13 +175,13 @@ export const TagSchema = z.object({
   ),
 });
 
-export const BurnRateConfigurationSchema = z.object({
+const BurnRateConfigurationSchema = z.object({
   LookBackWindowMinutes: z.number().int().min(1).max(10080).describe(
     "The number of minutes to use as the look-back window.",
   ),
 });
 
-export const WindowSchema = z.object({
+const WindowSchema = z.object({
   DurationUnit: z.enum(["MINUTE", "HOUR", "DAY", "MONTH"]).describe(
     "Specifies the interval unit.",
   ),
@@ -181,13 +190,13 @@ export const WindowSchema = z.object({
   ),
 });
 
-export const RecurrenceRuleSchema = z.object({
+const RecurrenceRuleSchema = z.object({
   Expression: z.string().min(1).max(1024).describe(
     "A cron or rate expression denoting how often to repeat this exclusion window.",
   ),
 });
 
-export const ExclusionWindowSchema = z.object({
+const ExclusionWindowSchema = z.object({
   Window: WindowSchema.describe(
     "This object defines the length of time an exclusion window should span.",
   ),
@@ -369,9 +378,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for ApplicationSignals ServiceLevelObjective. Registered at `@swamp/aws/applicationsignals/service-level-objective`. */
 export const model = {
   type: "@swamp/aws/applicationsignals/service-level-objective",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -385,6 +395,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

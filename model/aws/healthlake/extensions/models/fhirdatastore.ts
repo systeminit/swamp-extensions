@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for HealthLake FHIRDatastore (AWS::HealthLake::FHIRDatastore).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const KmsEncryptionConfigSchema = z.object({
+const KmsEncryptionConfigSchema = z.object({
   CmkType: z.enum(["CUSTOMER_MANAGED_KMS_KEY", "AWS_OWNED_KMS_KEY"]).describe(
     "The type of customer-managed-key (CMK) used for encryption. The two types of supported CMKs are customer owned CMKs and AWS owned CMKs.",
   ),
@@ -25,7 +34,7 @@ export const KmsEncryptionConfigSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("The key of the tag."),
   Value: z.string().min(0).max(256).describe("The value of the tag."),
 });
@@ -164,9 +173,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for HealthLake FHIRDatastore. Registered at `@swamp/aws/healthlake/fhirdatastore`. */
 export const model = {
   type: "@swamp/aws/healthlake/fhirdatastore",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -180,6 +190,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

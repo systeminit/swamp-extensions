@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for ApiGatewayV2 RoutingRule (AWS::ApiGatewayV2::RoutingRule).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,31 +21,31 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const MatchHeaderValueSchema = z.object({
+const MatchHeaderValueSchema = z.object({
   Header: z.string(),
   ValueGlob: z.string(),
 });
 
-export const MatchHeadersSchema = z.object({
+const MatchHeadersSchema = z.object({
   AnyOf: z.array(MatchHeaderValueSchema),
 });
 
-export const MatchBasePathsSchema = z.object({
+const MatchBasePathsSchema = z.object({
   AnyOf: z.array(z.string()),
 });
 
-export const ConditionSchema = z.object({
+const ConditionSchema = z.object({
   MatchHeaders: MatchHeadersSchema.optional(),
   MatchBasePaths: MatchBasePathsSchema.optional(),
 });
 
-export const ActionInvokeApiSchema = z.object({
+const ActionInvokeApiSchema = z.object({
   ApiId: z.string(),
   Stage: z.string(),
   StripBasePath: z.boolean().optional(),
 });
 
-export const ActionSchema = z.object({
+const ActionSchema = z.object({
   InvokeApi: ActionInvokeApiSchema,
 });
 
@@ -73,9 +82,10 @@ const InputsSchema = z.object({
   Actions: z.array(ActionSchema).optional(),
 });
 
+/** Swamp extension model for ApiGatewayV2 RoutingRule. Registered at `@swamp/aws/apigatewayv2/routing-rule`. */
 export const model = {
   type: "@swamp/aws/apigatewayv2/routing-rule",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -89,6 +99,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

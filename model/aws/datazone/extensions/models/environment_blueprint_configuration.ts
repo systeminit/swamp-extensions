@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for DataZone EnvironmentBlueprintConfiguration (AWS::DataZone::EnvironmentBlueprintConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,14 +21,14 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const RegionalParameterSchema = z.object({
+const RegionalParameterSchema = z.object({
   Parameters: z.record(z.string(), z.string()).optional(),
   Region: z.string().regex(
     new RegExp("^[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]$"),
   ).optional(),
 });
 
-export const LakeFormationConfigurationSchema = z.object({
+const LakeFormationConfigurationSchema = z.object({
   LocationRegistrationExcludeS3Locations: z.array(
     z.string().min(1).max(1024).regex(new RegExp("^s3://.+$")),
   ).optional(),
@@ -121,9 +130,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for DataZone EnvironmentBlueprintConfiguration. Registered at `@swamp/aws/datazone/environment-blueprint-configuration`. */
 export const model = {
   type: "@swamp/aws/datazone/environment-blueprint-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -137,6 +147,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for CodeBuild Fleet (AWS::CodeBuild::Fleet).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const FleetProxyRuleSchema = z.object({
+const FleetProxyRuleSchema = z.object({
   Type: z.enum(["DOMAIN", "IP"]).optional(),
   Effect: z.enum(["ALLOW", "DENY"]).optional(),
   Entities: z.array(z.string()).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ).describe(
@@ -30,7 +39,7 @@ export const TagSchema = z.object({
     ),
 });
 
-export const TargetTrackingScalingConfigurationSchema = z.object({
+const TargetTrackingScalingConfigurationSchema = z.object({
   MetricType: z.enum(["FLEET_UTILIZATION_RATE"]).optional(),
   TargetValue: z.number().optional(),
 });
@@ -190,9 +199,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for CodeBuild Fleet. Registered at `@swamp/aws/codebuild/fleet`. */
 export const model = {
   type: "@swamp/aws/codebuild/fleet",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -206,6 +216,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

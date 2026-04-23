@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaPackage PackagingConfiguration (AWS::MediaPackage::PackagingConfiguration).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -11,7 +20,7 @@ import {
   readResource,
 } from "./_lib/aws.ts";
 
-export const EncryptionContractConfigurationSchema = z.object({
+const EncryptionContractConfigurationSchema = z.object({
   PresetSpeke20Audio: z.enum([
     "PRESET-AUDIO-1",
     "PRESET-AUDIO-2",
@@ -33,7 +42,7 @@ export const EncryptionContractConfigurationSchema = z.object({
   ]).describe("A collection of video encryption presets."),
 });
 
-export const SpekeKeyProviderSchema = z.object({
+const SpekeKeyProviderSchema = z.object({
   EncryptionContractConfiguration: EncryptionContractConfigurationSchema
     .describe(
       "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
@@ -47,13 +56,13 @@ export const SpekeKeyProviderSchema = z.object({
   Url: z.string().describe("The URL of the external key provider service."),
 });
 
-export const CmafEncryptionSchema = z.object({
+const CmafEncryptionSchema = z.object({
   SpekeKeyProvider: SpekeKeyProviderSchema.describe(
     "A configuration for accessing an external Secure Packager and Encoder Key Exchange (SPEKE) service that will provide encryption keys.",
   ),
 });
 
-export const StreamSelectionSchema = z.object({
+const StreamSelectionSchema = z.object({
   MaxVideoBitsPerSecond: z.number().int().describe(
     "The maximum video bitrate (bps) to include in output.",
   ).optional(),
@@ -68,7 +77,7 @@ export const StreamSelectionSchema = z.object({
     .optional(),
 });
 
-export const HlsManifestSchema = z.object({
+const HlsManifestSchema = z.object({
   AdMarkers: z.enum(["NONE", "SCTE35_ENHANCED", "PASSTHROUGH"]).describe(
     'This setting controls how ad markers are included in the packaged OriginEndpoint. "NONE" will omit all SCTE-35 ad markers from the output. "PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad markers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest. "SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35 messages in the input source.',
   ).optional(),
@@ -89,7 +98,7 @@ export const HlsManifestSchema = z.object({
   ).optional(),
 });
 
-export const DashManifestSchema = z.object({
+const DashManifestSchema = z.object({
   ManifestLayout: z.enum(["FULL", "COMPACT"]).describe(
     "Determines the position of some tags in the Media Presentation Description (MPD). When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation. When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.",
   ).optional(),
@@ -110,13 +119,13 @@ export const DashManifestSchema = z.object({
   ).optional(),
 });
 
-export const DashEncryptionSchema = z.object({
+const DashEncryptionSchema = z.object({
   SpekeKeyProvider: SpekeKeyProviderSchema.describe(
     "A configuration for accessing an external Secure Packager and Encoder Key Exchange (SPEKE) service that will provide encryption keys.",
   ),
 });
 
-export const HlsEncryptionSchema = z.object({
+const HlsEncryptionSchema = z.object({
   ConstantInitializationVector: z.string().describe(
     "An HTTP Live Streaming (HLS) encryption configuration.",
   ).optional(),
@@ -128,13 +137,13 @@ export const HlsEncryptionSchema = z.object({
   ),
 });
 
-export const MssEncryptionSchema = z.object({
+const MssEncryptionSchema = z.object({
   SpekeKeyProvider: SpekeKeyProviderSchema.describe(
     "A configuration for accessing an external Secure Packager and Encoder Key Exchange (SPEKE) service that will provide encryption keys.",
   ),
 });
 
-export const MssManifestSchema = z.object({
+const MssManifestSchema = z.object({
   ManifestName: z.string().describe(
     "An optional string to include in the name of the manifest.",
   ).optional(),
@@ -143,7 +152,7 @@ export const MssManifestSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -345,9 +354,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for MediaPackage PackagingConfiguration. Registered at `@swamp/aws/mediapackage/packaging-configuration`. */
 export const model = {
   type: "@swamp/aws/mediapackage/packaging-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -361,6 +371,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

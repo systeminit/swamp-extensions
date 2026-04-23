@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for QuickSight ActionConnector (AWS::QuickSight::ActionConnector).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AuthorizationCodeGrantDetailsSchema = z.object({
+const AuthorizationCodeGrantDetailsSchema = z.object({
   ClientId: z.string().max(1024),
   ClientSecret: z.string().max(2048),
   TokenEndpoint: z.string().min(1).max(8192).regex(new RegExp("^https://.*")),
@@ -21,7 +30,7 @@ export const AuthorizationCodeGrantDetailsSchema = z.object({
   ),
 });
 
-export const AuthorizationCodeGrantMetadataSchema = z.object({
+const AuthorizationCodeGrantMetadataSchema = z.object({
   BaseEndpoint: z.string().min(1).max(8192).regex(new RegExp("^https://.*")),
   RedirectUrl: z.string().min(1).max(8192).regex(new RegExp("^https://.*")),
   AuthorizationCodeGrantCredentialsSource: z.enum(["PLAIN_CREDENTIALS"])
@@ -32,13 +41,13 @@ export const AuthorizationCodeGrantMetadataSchema = z.object({
   }).optional(),
 });
 
-export const ClientCredentialsGrantDetailsSchema = z.object({
+const ClientCredentialsGrantDetailsSchema = z.object({
   ClientId: z.string().max(1024),
   ClientSecret: z.string().max(2048),
   TokenEndpoint: z.string().min(1).max(8192).regex(new RegExp("^https://.*")),
 });
 
-export const ClientCredentialsGrantMetadataSchema = z.object({
+const ClientCredentialsGrantMetadataSchema = z.object({
   BaseEndpoint: z.string().min(1).max(8192).regex(new RegExp("^https://.*")),
   ClientCredentialsSource: z.enum(["PLAIN_CREDENTIALS"]).optional(),
   ClientCredentialsDetails: z.object({
@@ -47,13 +56,13 @@ export const ClientCredentialsGrantMetadataSchema = z.object({
   }).optional(),
 });
 
-export const BasicAuthConnectionMetadataSchema = z.object({
+const BasicAuthConnectionMetadataSchema = z.object({
   BaseEndpoint: z.string().min(1).max(8192).regex(new RegExp("^https://.*")),
   Username: z.string(),
   Password: z.string(),
 });
 
-export const APIKeyConnectionMetadataSchema = z.object({
+const APIKeyConnectionMetadataSchema = z.object({
   BaseEndpoint: z.string().min(1).max(8192).regex(new RegExp("^https://.*")),
   ApiKey: z.string(),
   Email: z.string().regex(
@@ -61,15 +70,15 @@ export const APIKeyConnectionMetadataSchema = z.object({
   ).optional(),
 });
 
-export const NoneConnectionMetadataSchema = z.object({
+const NoneConnectionMetadataSchema = z.object({
   BaseEndpoint: z.string().min(1).max(8192).regex(new RegExp("^https://.*")),
 });
 
-export const IAMConnectionMetadataSchema = z.object({
+const IAMConnectionMetadataSchema = z.object({
   RoleArn: z.string().min(20).max(2048),
 });
 
-export const ResourcePermissionSchema = z.object({
+const ResourcePermissionSchema = z.object({
   Principal: z.string().min(1).max(256).describe(
     "The Amazon Resource Name (ARN) of the principal. This can be one of the following:   The ARN of an Amazon QuickSight user or group associated with a data source or dataset. (This is common.)   The ARN of an Amazon QuickSight user, group, or namespace associated with an analysis, dashboard, template, or theme. (This is common.)   The ARN of an Amazon Web Services account root: This is an IAM ARN rather than a QuickSight ARN. Use this option only to share resources (templates) across Amazon Web Services accounts. (This is less common.)",
   ),
@@ -78,7 +87,7 @@ export const ResourcePermissionSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe("Tag key."),
   Value: z.string().min(1).max(256).describe("Tag value."),
 });
@@ -246,9 +255,10 @@ const InputsSchema = z.object({
   VpcConnectionArn: z.string().optional(),
 });
 
+/** Swamp extension model for QuickSight ActionConnector. Registered at `@swamp/aws/quicksight/action-connector`. */
 export const model = {
   type: "@swamp/aws/quicksight/action-connector",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -262,6 +272,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

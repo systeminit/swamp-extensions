@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for WorkSpacesWeb DataProtectionSettings (AWS::WorkSpacesWeb::DataProtectionSettings).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CustomPatternSchema = z.object({
+const CustomPatternSchema = z.object({
   PatternName: z.string().min(1).max(20).regex(new RegExp("^[_\\-\\d\\w]+$")),
   PatternRegex: z.string().min(0).max(300).regex(
     new RegExp("^\\/((?:[^\\n])+)\\/([gimsuyvd]{0,8})$"),
@@ -25,14 +34,14 @@ export const CustomPatternSchema = z.object({
   ).optional(),
 });
 
-export const RedactionPlaceHolderSchema = z.object({
+const RedactionPlaceHolderSchema = z.object({
   RedactionPlaceHolderType: z.enum(["CustomText"]),
   RedactionPlaceHolderText: z.string().min(1).max(20).regex(
     new RegExp("^[*_\\-\\d\\w]+$"),
   ).optional(),
 });
 
-export const InlineRedactionPatternSchema = z.object({
+const InlineRedactionPatternSchema = z.object({
   BuiltInPatternId: z.string().min(1).max(50).regex(
     new RegExp("^[_\\-\\d\\w]+$"),
   ).optional(),
@@ -55,7 +64,7 @@ export const InlineRedactionPatternSchema = z.object({
   ConfidenceLevel: z.number().min(1).max(3).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$", "u"),
   ),
@@ -157,9 +166,10 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).optional(),
 });
 
+/** Swamp extension model for WorkSpacesWeb DataProtectionSettings. Registered at `@swamp/aws/workspacesweb/data-protection-settings`. */
 export const model = {
   type: "@swamp/aws/workspacesweb/data-protection-settings",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -173,6 +183,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

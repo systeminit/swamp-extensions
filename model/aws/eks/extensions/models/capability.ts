@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EKS Capability (AWS::EKS::Capability).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AwsIdcSchema = z.object({
+const AwsIdcSchema = z.object({
   IdcInstanceArn: z.string().describe(
     "The ARN of the IAM Identity Center instance to use for authentication.",
   ),
@@ -21,7 +30,7 @@ export const AwsIdcSchema = z.object({
   ).optional(),
 });
 
-export const SsoIdentitySchema = z.object({
+const SsoIdentitySchema = z.object({
   Id: z.string().describe(
     "The unique identifier of the IAM Identity Center user or group.",
   ),
@@ -30,7 +39,7 @@ export const SsoIdentitySchema = z.object({
   ),
 });
 
-export const ArgoCdRoleMappingSchema = z.object({
+const ArgoCdRoleMappingSchema = z.object({
   Role: z.enum(["ADMIN", "EDITOR", "VIEWER"]).describe(
     "The Argo CD role to assign. Valid values are: ADMIN (full administrative access to Argo CD), EDITOR (edit access to Argo CD resources), or VIEWER (read-only access to Argo CD resources).",
   ),
@@ -39,13 +48,13 @@ export const ArgoCdRoleMappingSchema = z.object({
   ),
 });
 
-export const NetworkAccessSchema = z.object({
+const NetworkAccessSchema = z.object({
   VpceIds: z.array(z.string()).describe(
     "A list of VPC endpoint IDs to associate with the managed Argo CD API server endpoint. Each VPC endpoint provides private connectivity from a specific VPC to the Argo CD server. You can specify multiple VPC endpoint IDs to enable access from multiple VPCs.",
   ).optional(),
 });
 
-export const ArgoCdSchema = z.object({
+const ArgoCdSchema = z.object({
   Namespace: z.string().describe(
     "The Kubernetes namespace where Argo CD resources will be created. If not specified, the default namespace is used.",
   ).optional(),
@@ -60,7 +69,7 @@ export const ArgoCdSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -152,9 +161,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EKS Capability. Registered at `@swamp/aws/eks/capability`. */
 export const model = {
   type: "@swamp/aws/eks/capability",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -168,6 +178,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for RDS DBInstance (AWS::RDS::DBInstance).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const DBInstanceRoleSchema = z.object({
+const DBInstanceRoleSchema = z.object({
   FeatureName: z.string().describe(
     "The name of the feature associated with the AWS Identity and Access Management (IAM) role. IAM roles that are associated with a DB instance grant permission for the DB instance to access other AWS services on your behalf. For the list of supported feature names, see the SupportedFeatureNames description in [DBEngineVersion](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DBEngineVersion.html) in the *Amazon RDS API Reference*.",
   ),
@@ -21,14 +30,14 @@ export const DBInstanceRoleSchema = z.object({
   ),
 });
 
-export const ProcessorFeatureSchema = z.object({
+const ProcessorFeatureSchema = z.object({
   Name: z.enum(["coreCount", "threadsPerCore"]).describe(
     "The name of the processor feature. Valid names are coreCount and threadsPerCore.",
   ).optional(),
   Value: z.string().describe("The value of a processor feature.").optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "A key is the required name of the tag. The string value can be from 1 to 128 Unicode characters in length and can't be prefixed with aws: or rds:. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-@]*)$\").",
   ),
@@ -37,7 +46,7 @@ export const TagSchema = z.object({
   ).optional(),
 });
 
-export const AdditionalStorageVolumeSchema = z.object({
+const AdditionalStorageVolumeSchema = z.object({
   VolumeName: z.string().describe(
     "The name of the additional storage volume. Valid Values: RDSDBDATA2 | RDSDBDATA3 | RDSDBDATA4",
   ).optional(),
@@ -685,9 +694,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for RDS DBInstance. Registered at `@swamp/aws/rds/dbinstance`. */
 export const model = {
   type: "@swamp/aws/rds/dbinstance",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -701,6 +711,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

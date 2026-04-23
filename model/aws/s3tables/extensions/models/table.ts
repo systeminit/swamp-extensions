@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for S3Tables Table (AWS::S3Tables::Table).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const SchemaFieldSchema = z.object({
+const SchemaFieldSchema = z.object({
   Type: z.string().describe("The field type"),
   Required: z.boolean().describe(
     "A Boolean value that specifies whether values are required for each row in this field",
@@ -22,13 +31,13 @@ export const SchemaFieldSchema = z.object({
   Name: z.string().describe("The name of the field"),
 });
 
-export const IcebergSchemaSchema = z.object({
+const IcebergSchemaSchema = z.object({
   SchemaFieldList: z.array(SchemaFieldSchema).describe(
     "Contains details about the schema for an Iceberg table",
   ),
 });
 
-export const IcebergSortFieldSchema = z.object({
+const IcebergSortFieldSchema = z.object({
   SourceId: z.number().int().describe("The source column ID to sort on"),
   NullOrder: z.enum(["nulls-first", "nulls-last"]).describe(
     "Null value ordering (nulls-first or nulls-last)",
@@ -37,14 +46,14 @@ export const IcebergSortFieldSchema = z.object({
   Direction: z.enum(["asc", "desc"]).describe("Sort direction (asc or desc)"),
 });
 
-export const IcebergSortOrderSchema = z.object({
+const IcebergSortOrderSchema = z.object({
   Fields: z.array(IcebergSortFieldSchema).describe("List of sort fields"),
   OrderId: z.number().int().describe(
     "The sort order ID (defaults to 1 if not specified, 0 is reserved for unsorted)",
   ).optional(),
 });
 
-export const SchemaV2FieldSchema = z.object({
+const SchemaV2FieldSchema = z.object({
   Required: z.boolean().describe(
     "A Boolean value that specifies whether values are required for each row in this field",
   ),
@@ -53,7 +62,7 @@ export const SchemaV2FieldSchema = z.object({
   Name: z.string().describe("The name of the field"),
 });
 
-export const IcebergSchemaV2Schema = z.object({
+const IcebergSchemaV2Schema = z.object({
   SchemaV2FieldList: z.array(SchemaV2FieldSchema).describe(
     "The schema fields for the table",
   ),
@@ -68,7 +77,7 @@ export const IcebergSchemaV2Schema = z.object({
   ).optional(),
 });
 
-export const IcebergPartitionFieldSchema = z.object({
+const IcebergPartitionFieldSchema = z.object({
   SourceId: z.number().int().describe("The source column ID to partition on"),
   FieldId: z.number().int().describe(
     "The partition field ID (auto-assigned starting from 1000 if not specified)",
@@ -79,7 +88,7 @@ export const IcebergPartitionFieldSchema = z.object({
   Name: z.string().describe("The name of the partition field"),
 });
 
-export const IcebergPartitionSpecSchema = z.object({
+const IcebergPartitionSpecSchema = z.object({
   Fields: z.array(IcebergPartitionFieldSchema).describe(
     "List of partition fields",
   ),
@@ -88,7 +97,7 @@ export const IcebergPartitionSpecSchema = z.object({
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().max(256).describe(
     "Tag value must be between 0 to 256 characters in length. Tag value can only contain alphanumeric characters, spaces, _,., /, =, +, -, and @.",
   ),
@@ -260,9 +269,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for S3Tables Table. Registered at `@swamp/aws/s3tables/table`. */
 export const model = {
   type: "@swamp/aws/s3tables/table",
-  version: "2026.04.07.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -281,6 +291,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

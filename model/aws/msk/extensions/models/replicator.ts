@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MSK Replicator (AWS::MSK::Replicator).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const AmazonMskClusterSchema = z.object({
+const AmazonMskClusterSchema = z.object({
   MskClusterArn: z.string().regex(
     new RegExp("arn:(aws|aws-us-gov|aws-cn):kafka:.*"),
   ).describe("The ARN of an Amazon MSK cluster."),
 });
 
-export const ApacheKafkaClusterSchema = z.object({
+const ApacheKafkaClusterSchema = z.object({
   ApacheKafkaClusterId: z.string().describe(
     "The ID of the Apache Kafka cluster.",
   ),
@@ -27,7 +36,7 @@ export const ApacheKafkaClusterSchema = z.object({
   ),
 });
 
-export const KafkaClusterClientVpcConfigSchema = z.object({
+const KafkaClusterClientVpcConfigSchema = z.object({
   SecurityGroupIds: z.array(z.string()).describe(
     "The AWS security groups to associate with the elastic network interfaces in order to specify what the replicator has access to. If a security group is not specified, the default security group associated with the VPC is used.",
   ).optional(),
@@ -36,7 +45,7 @@ export const KafkaClusterClientVpcConfigSchema = z.object({
   ),
 });
 
-export const KafkaClusterSaslScramAuthenticationSchema = z.object({
+const KafkaClusterSaslScramAuthenticationSchema = z.object({
   Mechanism: z.enum(["SHA256", "SHA512"]).describe(
     "The SASL/SCRAM authentication mechanism.",
   ),
@@ -45,20 +54,20 @@ export const KafkaClusterSaslScramAuthenticationSchema = z.object({
   ),
 });
 
-export const KafkaClusterClientAuthenticationSchema = z.object({
+const KafkaClusterClientAuthenticationSchema = z.object({
   SaslScram: KafkaClusterSaslScramAuthenticationSchema.describe(
     "Details for SASL/SCRAM client authentication.",
   ),
 });
 
-export const KafkaClusterEncryptionInTransitSchema = z.object({
+const KafkaClusterEncryptionInTransitSchema = z.object({
   EncryptionType: z.enum(["TLS"]).describe(
     "The type of encryption in transit to the Apache Kafka cluster.",
   ),
   RootCaCertificate: z.string().describe("The root CA certificate.").optional(),
 });
 
-export const KafkaClusterSchema = z.object({
+const KafkaClusterSchema = z.object({
   AmazonMskCluster: AmazonMskClusterSchema.describe(
     "Details of an Amazon MSK cluster.",
   ).optional(),
@@ -76,19 +85,19 @@ export const KafkaClusterSchema = z.object({
   ).optional(),
 });
 
-export const ReplicationStartingPositionSchema = z.object({
+const ReplicationStartingPositionSchema = z.object({
   Type: z.enum(["LATEST", "EARLIEST"]).describe(
     "The type of replication starting position.",
   ).optional(),
 });
 
-export const ReplicationTopicNameConfigurationSchema = z.object({
+const ReplicationTopicNameConfigurationSchema = z.object({
   Type: z.enum(["PREFIXED_WITH_SOURCE_CLUSTER_ALIAS", "IDENTICAL"]).describe(
     "The type of replicated topic name.",
   ).optional(),
 });
 
-export const TopicReplicationSchema = z.object({
+const TopicReplicationSchema = z.object({
   TopicsToReplicate: z.array(z.string().max(249)).describe(
     "List of regular expression patterns indicating the topics to copy.",
   ),
@@ -112,7 +121,7 @@ export const TopicReplicationSchema = z.object({
   ).optional(),
 });
 
-export const ConsumerGroupReplicationSchema = z.object({
+const ConsumerGroupReplicationSchema = z.object({
   ConsumerGroupsToReplicate: z.array(z.string().max(256)).describe(
     "List of regular expression patterns indicating the consumer groups to copy.",
   ),
@@ -130,7 +139,7 @@ export const ConsumerGroupReplicationSchema = z.object({
   ).optional(),
 });
 
-export const ReplicationInfoSchema = z.object({
+const ReplicationInfoSchema = z.object({
   SourceKafkaClusterArn: z.string().regex(
     new RegExp("arn:(aws|aws-us-gov|aws-cn):kafka:.*"),
   ).describe("Amazon Resource Name of the source Kafka cluster.").optional(),
@@ -155,12 +164,12 @@ export const ReplicationInfoSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().max(256),
 });
 
-export const CloudWatchLogsSchema = z.object({
+const CloudWatchLogsSchema = z.object({
   Enabled: z.boolean().describe(
     "Whether log delivery to CloudWatch Logs is enabled.",
   ),
@@ -169,14 +178,14 @@ export const CloudWatchLogsSchema = z.object({
   ).optional(),
 });
 
-export const FirehoseSchema = z.object({
+const FirehoseSchema = z.object({
   Enabled: z.boolean().describe("Whether log delivery to Firehose is enabled."),
   DeliveryStream: z.string().describe(
     "The Firehose delivery stream that is the destination for log delivery.",
   ).optional(),
 });
 
-export const S3Schema = z.object({
+const S3Schema = z.object({
   Enabled: z.boolean().describe("Whether log delivery to S3 is enabled."),
   Bucket: z.string().describe(
     "The S3 bucket that is the destination for log delivery.",
@@ -186,7 +195,7 @@ export const S3Schema = z.object({
   ).optional(),
 });
 
-export const ReplicatorLogDeliverySchema = z.object({
+const ReplicatorLogDeliverySchema = z.object({
   CloudWatchLogs: CloudWatchLogsSchema.describe(
     "Details of the CloudWatch Logs destination for replicator logs.",
   ).optional(),
@@ -274,9 +283,10 @@ const InputsSchema = z.object({
   }).describe("Configuration for log delivery for the replicator.").optional(),
 });
 
+/** Swamp extension model for MSK Replicator. Registered at `@swamp/aws/msk/replicator`. */
 export const model = {
   type: "@swamp/aws/msk/replicator",
-  version: "2026.04.21.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -296,6 +306,16 @@ export const model = {
     {
       toVersion: "2026.04.21.1",
       description: "Added: LogDelivery",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

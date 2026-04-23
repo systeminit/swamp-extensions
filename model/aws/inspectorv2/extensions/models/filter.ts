@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for InspectorV2 Filter (AWS::InspectorV2::Filter).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,33 +21,33 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const StringFilterSchema = z.object({
+const StringFilterSchema = z.object({
   Comparison: z.enum(["EQUALS", "PREFIX", "NOT_EQUALS"]),
   Value: z.string().min(1).max(1024),
 });
 
-export const DateFilterSchema = z.object({
+const DateFilterSchema = z.object({
   EndInclusive: z.number().int().optional(),
   StartInclusive: z.number().int().optional(),
 });
 
-export const NumberFilterSchema = z.object({
+const NumberFilterSchema = z.object({
   LowerInclusive: z.number().optional(),
   UpperInclusive: z.number().optional(),
 });
 
-export const PortRangeFilterSchema = z.object({
+const PortRangeFilterSchema = z.object({
   BeginInclusive: z.number().int().min(0).max(65535).optional(),
   EndInclusive: z.number().int().min(0).max(65535).optional(),
 });
 
-export const MapFilterSchema = z.object({
+const MapFilterSchema = z.object({
   Comparison: z.enum(["EQUALS"]),
   Key: z.string().min(1).max(128).optional(),
   Value: z.string().min(0).max(256).optional(),
 });
 
-export const PackageFilterSchema = z.object({
+const PackageFilterSchema = z.object({
   Architecture: StringFilterSchema.optional(),
   Epoch: NumberFilterSchema.optional(),
   FilePath: StringFilterSchema.optional(),
@@ -218,9 +227,10 @@ const InputsSchema = z.object({
     .optional(),
 });
 
+/** Swamp extension model for InspectorV2 Filter. Registered at `@swamp/aws/inspectorv2/filter`. */
 export const model = {
   type: "@swamp/aws/inspectorv2/filter",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -234,6 +244,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

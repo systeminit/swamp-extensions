@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for MediaConnect FlowOutput (AWS::MediaConnect::FlowOutput).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const InterfaceSchema = z.object({
+const InterfaceSchema = z.object({
   Name: z.string().describe(
     "The name of the VPC interface that you want to use for the media stream associated with the output.",
   ),
 });
 
-export const DestinationConfigurationSchema = z.object({
+const DestinationConfigurationSchema = z.object({
   DestinationIp: z.string().describe(
     "The IP address where contents of the media stream will be sent.",
   ),
@@ -30,7 +39,7 @@ export const DestinationConfigurationSchema = z.object({
   ),
 });
 
-export const EncodingParametersSchema = z.object({
+const EncodingParametersSchema = z.object({
   CompressionFactor: z.number().describe(
     "A value that is used to calculate compression for an output. The bitrate of the output is calculated as follows: Output bitrate = (1 / compressionFactor) * (source bitrate) This property only applies to outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol. Valid values are in the range of 3.0 to 10.0, inclusive.",
   ),
@@ -39,7 +48,7 @@ export const EncodingParametersSchema = z.object({
   ).optional(),
 });
 
-export const MediaStreamOutputConfigurationSchema = z.object({
+const MediaStreamOutputConfigurationSchema = z.object({
   EncodingName: z.enum(["jxsv", "raw", "smpte291", "pcm"]).describe(
     "The format that will be used to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video streams on sources or outputs that use the CDI protocol, set the encoding name to raw. For video streams on sources or outputs that use the ST 2110 JPEG XS protocol, set the encoding name to jxsv.",
   ),
@@ -54,7 +63,7 @@ export const MediaStreamOutputConfigurationSchema = z.object({
   ).optional(),
 });
 
-export const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
+const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
   SecretArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$",
@@ -69,7 +78,7 @@ export const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
   ),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string(),
   Value: z.string(),
 });
@@ -338,9 +347,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for MediaConnect FlowOutput. Registered at `@swamp/aws/mediaconnect/flow-output`. */
 export const model = {
   type: "@swamp/aws/mediaconnect/flow-output",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -354,6 +364,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

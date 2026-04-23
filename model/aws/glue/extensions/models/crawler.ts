@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for Glue Crawler (AWS::Glue::Crawler).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const S3TargetSchema = z.object({
+const S3TargetSchema = z.object({
   ConnectionName: z.string().describe(
     "The name of a connection which allows a job or crawler to access data in Amazon S3 within an Amazon Virtual Private Cloud environment (Amazon VPC).",
   ).optional(),
@@ -31,7 +40,7 @@ export const S3TargetSchema = z.object({
   ).optional(),
 });
 
-export const CatalogTargetSchema = z.object({
+const CatalogTargetSchema = z.object({
   ConnectionName: z.string().describe(
     "The name of the connection for an Amazon S3-backed Data Catalog table to be a target of the crawl when using a Catalog connection type paired with a NETWORK Connection type.",
   ).optional(),
@@ -49,7 +58,7 @@ export const CatalogTargetSchema = z.object({
   ).optional(),
 });
 
-export const DeltaTargetSchema = z.object({
+const DeltaTargetSchema = z.object({
   ConnectionName: z.string().describe(
     "The name of the connection to use to connect to the Delta table target.",
   ).optional(),
@@ -62,7 +71,7 @@ export const DeltaTargetSchema = z.object({
   DeltaTables: z.array(z.string()).optional(),
 });
 
-export const MongoDBTargetSchema = z.object({
+const MongoDBTargetSchema = z.object({
   ConnectionName: z.string().describe(
     "The name of the connection to use to connect to the Amazon DocumentDB or MongoDB target.",
   ).optional(),
@@ -71,7 +80,7 @@ export const MongoDBTargetSchema = z.object({
   ).optional(),
 });
 
-export const JdbcTargetSchema = z.object({
+const JdbcTargetSchema = z.object({
   ConnectionName: z.string().describe(
     "The name of the connection to use to connect to the JDBC target.",
   ).optional(),
@@ -84,7 +93,7 @@ export const JdbcTargetSchema = z.object({
   ).optional(),
 });
 
-export const DynamoDBTargetSchema = z.object({
+const DynamoDBTargetSchema = z.object({
   Path: z.string().describe("The name of the DynamoDB table to crawl.")
     .optional(),
   ScanAll: z.boolean().describe(
@@ -95,7 +104,7 @@ export const DynamoDBTargetSchema = z.object({
   ).optional(),
 });
 
-export const IcebergTargetSchema = z.object({
+const IcebergTargetSchema = z.object({
   ConnectionName: z.string().describe(
     "The name of the connection to use to connect to the Iceberg target.",
   ).optional(),
@@ -110,7 +119,7 @@ export const IcebergTargetSchema = z.object({
   ).optional(),
 });
 
-export const HudiTargetSchema = z.object({
+const HudiTargetSchema = z.object({
   ConnectionName: z.string().describe(
     "The name of the connection to use to connect to the Hudi target.",
   ).optional(),
@@ -329,9 +338,10 @@ const InputsSchema = z.object({
   Tags: z.string().describe("The tags to use with this crawler.").optional(),
 });
 
+/** Swamp extension model for Glue Crawler. Registered at `@swamp/aws/glue/crawler`. */
 export const model = {
   type: "@swamp/aws/glue/crawler",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -345,6 +355,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

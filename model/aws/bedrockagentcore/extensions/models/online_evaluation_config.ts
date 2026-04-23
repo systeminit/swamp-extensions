@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for BedrockAgentCore OnlineEvaluationConfig (AWS::BedrockAgentCore::OnlineEvaluationConfig).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const CloudWatchLogsInputConfigSchema = z.object({
+const CloudWatchLogsInputConfigSchema = z.object({
   LogGroupNames: z.array(
     z.string().min(1).max(512).regex(new RegExp("^[.\\-_/#A-Za-z0-9]+$")),
   ).describe(
@@ -25,7 +34,7 @@ export const CloudWatchLogsInputConfigSchema = z.object({
   ),
 });
 
-export const EvaluatorReferenceSchema = z.object({
+const EvaluatorReferenceSchema = z.object({
   EvaluatorId: z.string().regex(
     new RegExp(
       "^(Builtin\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})$",
@@ -33,13 +42,13 @@ export const EvaluatorReferenceSchema = z.object({
   ).describe("The unique identifier of the evaluator."),
 });
 
-export const SamplingConfigSchema = z.object({
+const SamplingConfigSchema = z.object({
   SamplingPercentage: z.number().min(0.01).max(100).describe(
     "The percentage of agent traces to sample for evaluation.",
   ),
 });
 
-export const FilterValueSchema = z.object({
+const FilterValueSchema = z.object({
   StringValue: z.string().min(1).max(1024).describe(
     "The string value for text-based filtering.",
   ).optional(),
@@ -50,7 +59,7 @@ export const FilterValueSchema = z.object({
   ).optional(),
 });
 
-export const FilterSchema = z.object({
+const FilterSchema = z.object({
   Key: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9._-]+$"))
     .describe(
       "The key or field name to filter on within the agent trace data.",
@@ -68,19 +77,19 @@ export const FilterSchema = z.object({
   Value: FilterValueSchema.describe("The value used in filter comparisons."),
 });
 
-export const SessionConfigSchema = z.object({
+const SessionConfigSchema = z.object({
   SessionTimeoutMinutes: z.number().int().min(1).max(1440).describe(
     "The number of minutes of inactivity after which an agent session is considered complete.",
   ),
 });
 
-export const CloudWatchOutputConfigSchema = z.object({
+const CloudWatchOutputConfigSchema = z.object({
   LogGroupName: z.string().describe(
     "The CloudWatch log group name for evaluation results.",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
   ),
@@ -222,9 +231,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for BedrockAgentCore OnlineEvaluationConfig. Registered at `@swamp/aws/bedrockagentcore/online-evaluation-config`. */
 export const model = {
   type: "@swamp/aws/bedrockagentcore/online-evaluation-config",
-  version: "2026.04.03.3",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -248,6 +258,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

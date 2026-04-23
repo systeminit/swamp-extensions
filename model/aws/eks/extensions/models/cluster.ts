@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for EKS Cluster (AWS::EKS::Cluster).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,13 +21,13 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const ProviderSchema = z.object({
+const ProviderSchema = z.object({
   KeyArn: z.string().describe(
     "Amazon Resource Name (ARN) or alias of the KMS key. The KMS key must be symmetric, created in the same region as the cluster, and if the KMS key was created in a different account, the user must have access to the KMS key.",
   ).optional(),
 });
 
-export const EncryptionConfigSchema = z.object({
+const EncryptionConfigSchema = z.object({
   Resources: z.array(z.string()).describe(
     'Specifies the resources to be encrypted. The only supported value is "secrets".',
   ).optional(),
@@ -26,17 +35,17 @@ export const EncryptionConfigSchema = z.object({
     .optional(),
 });
 
-export const ElasticLoadBalancingSchema = z.object({
+const ElasticLoadBalancingSchema = z.object({
   Enabled: z.boolean().describe("Todo: add description").optional(),
 });
 
-export const ControlPlanePlacementSchema = z.object({
+const ControlPlanePlacementSchema = z.object({
   GroupName: z.string().describe(
     "Specify the placement group name of the control place machines for your cluster.",
   ).optional(),
 });
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Value: z.string().min(0).max(256).describe(
     "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
@@ -45,7 +54,7 @@ export const TagSchema = z.object({
   ),
 });
 
-export const LoggingTypeConfigSchema = z.object({
+const LoggingTypeConfigSchema = z.object({
   Type: z.enum([
     "api",
     "audit",
@@ -55,23 +64,23 @@ export const LoggingTypeConfigSchema = z.object({
   ]).describe("name of the log type").optional(),
 });
 
-export const ClusterLoggingSchema = z.object({
+const ClusterLoggingSchema = z.object({
   EnabledTypes: z.array(LoggingTypeConfigSchema).describe(
     "Enable control plane logs for your cluster, all log types will be disabled if the array is empty",
   ).optional(),
 });
 
-export const BlockStorageSchema = z.object({
+const BlockStorageSchema = z.object({
   Enabled: z.boolean().describe("Todo: add description").optional(),
 });
 
-export const RemoteNodeNetworkSchema = z.object({
+const RemoteNodeNetworkSchema = z.object({
   Cidrs: z.array(z.string()).describe(
     "Specifies the list of remote node CIDRs.",
   ),
 });
 
-export const RemotePodNetworkSchema = z.object({
+const RemotePodNetworkSchema = z.object({
   Cidrs: z.array(z.string()).describe(
     "Specifies the list of remote pod CIDRs.",
   ),
@@ -401,9 +410,10 @@ const InputsSchema = z.object({
   ).optional(),
 });
 
+/** Swamp extension model for EKS Cluster. Registered at `@swamp/aws/eks/cluster`. */
 export const model = {
   type: "@swamp/aws/eks/cluster",
-  version: "2026.04.03.2",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -417,6 +427,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

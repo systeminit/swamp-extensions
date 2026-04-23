@@ -3,7 +3,16 @@
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+/**
+ * Swamp extension model for S3Files FileSystem (AWS::S3Files::FileSystem).
+ *
+ * Wraps the CloudFormation resource type as a swamp model so create,
+ * get, update, delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
+import { z } from "npm:zod@4.3.6";
 import {
   createResource,
   deleteResource,
@@ -12,7 +21,7 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
+const TagSchema = z.object({
   Key: z.string().min(1).max(128).regex(
     new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)$", "u"),
   ),
@@ -21,13 +30,13 @@ export const TagSchema = z.object({
   ),
 });
 
-export const ImportDataRuleSchema = z.object({
+const ImportDataRuleSchema = z.object({
   Prefix: z.string().min(0).max(1024).regex(new RegExp("^(|.*/)$")),
   Trigger: z.enum(["ON_DIRECTORY_FIRST_ACCESS", "ON_FILE_ACCESS"]),
   SizeLessThan: z.number().int().min(0).max(52673613135872),
 });
 
-export const ExpirationDataRuleSchema = z.object({
+const ExpirationDataRuleSchema = z.object({
   DaysAfterLastAccess: z.number().int().min(1).max(365),
 });
 
@@ -103,9 +112,22 @@ const InputsSchema = z.object({
   AcceptBucketWarning: z.boolean().optional(),
 });
 
+/** Swamp extension model for S3Files FileSystem. Registered at `@swamp/aws/s3files/file-system`. */
 export const model = {
   type: "@swamp/aws/s3files/file-system",
-  version: "2026.04.08.1",
+  version: "2026.04.23.2",
+  upgrades: [
+    {
+      toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
