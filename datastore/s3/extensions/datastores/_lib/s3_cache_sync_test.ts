@@ -23,10 +23,21 @@
 // sync boundary in either direction, and zombie entries from pre-fix
 // remote indexes must self-heal via the `indexMutated` flag.
 
-import { assertEquals, assertExists } from "jsr:@std/assert@1.0.19";
+import {
+  assertEquals,
+  assertExists,
+  assertRejects,
+} from "jsr:@std/assert@1.0.19";
 import { join } from "jsr:@std/path@1";
 import { S3CacheSyncService } from "./s3_cache_sync.ts";
 import type { S3Client } from "./s3_client.ts";
+
+/** Creates an error that matches the SDK's "object not found" shape. */
+function makeNoSuchKeyError(key: string): Error {
+  const err = new Error(`NoSuchKey: ${key}`);
+  err.name = "NoSuchKey";
+  return err;
+}
 
 /** Captured putObject call for test assertions. */
 interface PutCall {
@@ -58,7 +69,7 @@ function createMockS3Client(): S3Client & {
     getObject(key: string): Promise<Uint8Array> {
       gets.push(key);
       const data = storage.get(key);
-      if (!data) return Promise.reject(new Error(`NoSuchKey: ${key}`));
+      if (!data) return Promise.reject(makeNoSuchKeyError(key));
       return Promise.resolve(data);
     },
   } as unknown as S3Client & {
@@ -359,9 +370,17 @@ Deno.test("pullIndex S3-fetch path: scrubs in-memory and rewrites local cache fi
   }
 });
 
-// -- (e2) pullIndex cache-hit path scrubs in-memory, pushChanged propagates -
+// -- (e2) pullIndex cache-hit path scrubs in-memory only -----------------
 
-Deno.test("pullIndex cache-hit path: scrubs in-memory, next pushChanged propagates to remote", async () => {
+// The cache-hit branch (local `.datastore-index.json` fresh under the
+// TTL) must still scrub zombie entries from the in-memory view so the
+// rest of the sync pipeline sees a clean index — but it must NOT
+// rewrite the local file. Propagation of the scrub to the remote does
+// not ride through this path anymore: since swamp-club#30 we
+// force-remote on pushChanged, so remote zombies are scrubbed when
+// they are actually fetched (covered by test (f)).
+
+Deno.test("pullIndex cache-hit path: scrubs in-memory and leaves local file untouched", async () => {
   const cachePath = await Deno.makeTempDir({ prefix: "s3sync-test-e2-" });
   try {
     const mock = createMockS3Client();
@@ -412,64 +431,137 @@ Deno.test("pullIndex cache-hit path: scrubs in-memory, next pushChanged propagat
       pollutedJson,
       "cache-hit branch must not rewrite the local index file",
     );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
 
-    // Now push against a cache with no new payload files. The
-    // indexMutated flag must trigger a write-back of the scrubbed
-    // index to the remote.
+// -- (g) push merges remote index instead of clobbering it ----------------
+
+// Regression test for swamp-club#30: without the fix, a client whose
+// local cache has fewer files than the remote index will overwrite the
+// remote `.datastore-index.json` with a subset of entries on push,
+// orphaning the remote data objects. Exercised in production by
+// `datastore setup` on a reader-side repo, which invokes pushChanged
+// against a near-empty local cache before the reader has pulled.
+
+Deno.test("pushChanged: preserves remote index entries for files absent from local cache", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-test-g-" });
+  try {
+    const mock = createMockS3Client();
+
+    // Remote already has 5 entries from a prior writer. None of the
+    // corresponding files are present on the reader's local disk.
+    const remoteEntries = {
+      "data/@writer/alpha.yaml": {
+        key: "data/@writer/alpha.yaml",
+        size: 10,
+        lastModified: new Date().toISOString(),
+      },
+      "data/@writer/beta.yaml": {
+        key: "data/@writer/beta.yaml",
+        size: 20,
+        lastModified: new Date().toISOString(),
+      },
+      "data/@writer/gamma.yaml": {
+        key: "data/@writer/gamma.yaml",
+        size: 30,
+        lastModified: new Date().toISOString(),
+      },
+      "data/@writer/delta.yaml": {
+        key: "data/@writer/delta.yaml",
+        size: 40,
+        lastModified: new Date().toISOString(),
+      },
+      "data/@writer/epsilon.yaml": {
+        key: "data/@writer/epsilon.yaml",
+        size: 50,
+        lastModified: new Date().toISOString(),
+      },
+    };
+    mock.storage.set(".datastore-index.json", encodeIndex(remoteEntries));
+
+    // Reader's local cache has exactly one new file, the kind of
+    // bootstrap artifact `datastore setup` produces.
+    await seedFile(cachePath, "data/@reader/new.yaml", "reader: added\n");
+
+    const service = new S3CacheSyncService(mock, cachePath);
     await service.pushChanged();
 
-    const indexPuts = mock.puts.filter((p) =>
-      p.key === ".datastore-index.json"
+    const indexPuts = mock.puts.filter(
+      (p) => p.key === ".datastore-index.json",
     );
     assertEquals(
       indexPuts.length,
       1,
-      "scrubbed index must be pushed exactly once via indexMutated",
+      "index must be written back exactly once",
     );
     const pushedIndex = decodeIndex(indexPuts[0].body);
+    const keys = Object.keys(pushedIndex.entries).sort();
     assertEquals(
-      Object.keys(pushedIndex.entries).sort(),
-      ["data/@m/ok.yaml"],
-      "pushed index must contain only the legitimate entry",
+      keys.length,
+      6,
+      `expected 6 entries (5 remote + 1 new local), got ${keys.length}: ${
+        keys.join(", ")
+      }`,
     );
     assertEquals(
-      state.indexMutated,
-      false,
-      "indexMutated must reset after write-back",
+      keys.includes("data/@reader/new.yaml"),
+      true,
+      "new local file must be added to the index",
+    );
+    for (const remoteKey of Object.keys(remoteEntries)) {
+      assertEquals(
+        keys.includes(remoteKey),
+        true,
+        `remote entry must be preserved: ${remoteKey}`,
+      );
+    }
+
+    // The writer's data objects themselves must NOT be re-uploaded —
+    // pushChanged only walks local files.
+    const uploadedDataKeys = mock.puts
+      .map((p) => p.key)
+      .filter((k) => k !== ".datastore-index.json");
+    assertEquals(
+      uploadedDataKeys,
+      ["data/@reader/new.yaml"],
+      "only the new local file should be uploaded",
     );
   } finally {
     await Deno.remove(cachePath, { recursive: true });
   }
 });
 
-// -- (f) indexMutated propagates on no-op push and resets ------------------
+// -- (f) pushChanged scrubs remote zombies and is idempotent --------------
 
-Deno.test("pushChanged: no-op push still propagates scrubbed index, second call is quiet", async () => {
+// Migration path for swamp-club#29: when the remote `.datastore-index.json`
+// contains zombie `_catalog.db*` entries from a pre-fix writer, the
+// first fixed client to pushChanged must fetch, scrub, and write back
+// a clean index — even on a no-op push (no local files to upload). A
+// subsequent push against the now-clean remote must be a no-op with
+// no redundant index writeback.
+
+Deno.test("pushChanged: scrubs remote zombies and writes back clean, second call is quiet", async () => {
   const cachePath = await Deno.makeTempDir({ prefix: "s3sync-test-f-" });
   try {
     const mock = createMockS3Client();
 
-    // Seed a polluted local index. No remote index — loadIndex reads
-    // straight from disk.
-    await seedFile(
-      cachePath,
+    // Seed remote with a zombie-only index (the pre-fix migration state).
+    mock.storage.set(
       ".datastore-index.json",
-      JSON.stringify({
-        version: 1,
-        lastPulled: new Date().toISOString(),
-        entries: {
-          "data/_catalog.db-wal": {
-            key: "data/_catalog.db-wal",
-            size: 42,
-            lastModified: new Date().toISOString(),
-          },
+      encodeIndex({
+        "data/_catalog.db-wal": {
+          key: "data/_catalog.db-wal",
+          size: 42,
+          lastModified: new Date().toISOString(),
         },
       }),
     );
 
     const service = new S3CacheSyncService(mock, cachePath);
 
-    // First push: no files to push, but scrub triggered the flag.
+    // First push: no files to push, but remote scrub triggered the flag.
     await service.pushChanged();
 
     const firstIndexPuts = mock.puts.filter(
@@ -487,7 +579,7 @@ Deno.test("pushChanged: no-op push still propagates scrubbed index, second call 
       "scrubbed index must contain no zombie entries",
     );
 
-    // Second push on the same instance: flag is reset, nothing to do.
+    // Second push on the same instance: remote is now clean, no-op.
     await service.pushChanged();
 
     const secondIndexPuts = mock.puts.filter(
@@ -496,7 +588,52 @@ Deno.test("pushChanged: no-op push still propagates scrubbed index, second call 
     assertEquals(
       secondIndexPuts.length,
       1,
-      "second pushChanged must NOT rewrite the index — flag must reset",
+      "second pushChanged must NOT rewrite — remote already clean, flag reset",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (h) pushChanged aborts on transient remote fetch errors --------------
+
+// Since swamp-club#30, pushChanged force-fetches the remote index on
+// every call. That means any non-NotFound error from the fetch (5xx,
+// auth failure, network timeout) must propagate — otherwise a
+// transient blip would leave us with an empty in-memory index, which
+// the subsequent writeback would push to the remote and silently wipe
+// the real index.
+
+Deno.test("pushChanged: propagates non-NotFound remote errors and skips writeback", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-test-h-" });
+  try {
+    const puts: PutCall[] = [];
+    const mock = {
+      putObject(key: string, body: Uint8Array): Promise<void> {
+        puts.push({ key, body });
+        return Promise.resolve();
+      },
+      getObject(_key: string): Promise<Uint8Array> {
+        // Simulate a transient 5xx: generic Error with no matching name.
+        return Promise.reject(new Error("500 Internal Server Error"));
+      },
+    } as unknown as S3Client;
+
+    await seedFile(cachePath, "data/@m/payload.yaml", "data\n");
+
+    const service = new S3CacheSyncService(mock, cachePath);
+
+    await assertRejects(
+      () => service.pushChanged(),
+      Error,
+      "500",
+      "pushChanged must propagate non-NotFound remote errors",
+    );
+
+    assertEquals(
+      puts.length,
+      0,
+      "no putObject calls allowed — a failed remote fetch must not trigger a writeback that could wipe the real remote index",
     );
   } finally {
     await Deno.remove(cachePath, { recursive: true });

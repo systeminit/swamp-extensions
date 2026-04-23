@@ -163,56 +163,80 @@ export class S3CacheSyncService implements DatastoreSyncService {
    * Uses a local cache with a 60-second TTL to avoid redundant fetches
    * during rapid command sequences.
    *
+   * Pass `forceRemote: true` to bypass the local TTL cache and always
+   * fetch from S3. `pushChanged()` uses this to guarantee the
+   * writeback merges onto the current remote state — without it, a
+   * stale local cache (< 60 s old) could silently clobber updates
+   * pushed by another writer in the intervening window.
+   *
    * Both entry paths (cache-hit and S3-fetch) scrub the in-memory
    * index after parsing so zombie internal-file entries never reach
    * the rest of the sync pipeline (see swamp-club#29). On the
    * S3-fetch path the local cache file is rewritten with the scrubbed
    * JSON when scrub mutated — keeping the on-disk and in-memory views
    * consistent. The cache-hit path does NOT rewrite the local file;
-   * its on-disk view self-heals on the next S3 fetch or via the
-   * `indexMutated` propagation on the next `pushChanged`.
+   * its on-disk view self-heals on the next S3 fetch.
    */
-  async pullIndex(): Promise<void> {
-    // Check local cache freshness
-    try {
-      const stat = await Deno.stat(this.indexPath);
-      const ageMs = Date.now() - (stat.mtime?.getTime() ?? 0);
-      if (ageMs < INDEX_CACHE_TTL_MS && this.index === null) {
-        const content = await Deno.readTextFile(this.indexPath);
-        this.index = JSON.parse(content) as DatastoreIndex;
-        // Scrub zombies from the in-memory view before returning.
-        this.indexMutated ||= this.scrubIndex();
-        return; // Fresh enough — skip S3
+  async pullIndex(options?: { forceRemote?: boolean }): Promise<void> {
+    // Check local cache freshness (skipped when forceRemote is set)
+    if (!options?.forceRemote) {
+      try {
+        const stat = await Deno.stat(this.indexPath);
+        const ageMs = Date.now() - (stat.mtime?.getTime() ?? 0);
+        if (ageMs < INDEX_CACHE_TTL_MS && this.index === null) {
+          const content = await Deno.readTextFile(this.indexPath);
+          this.index = JSON.parse(content) as DatastoreIndex;
+          // Scrub zombies from the in-memory view before returning.
+          this.indexMutated ||= this.scrubIndex();
+          return; // Fresh enough — skip S3
+        }
+      } catch {
+        // No local index — fetch from S3
       }
-    } catch {
-      // No local index — fetch from S3
     }
 
+    // Fetch the remote index. Only "object not found" errors (S3
+    // 404 — bucket exists but no index object yet; SDK surfaces this
+    // as `name === "NotFound"` or `"NoSuchKey"`) are treated as the
+    // brand-new-bucket case and fall back to an empty in-memory
+    // index. Any other error (auth failure, 5xx, network timeout,
+    // JSON parse failure, local write failure) propagates so callers
+    // abort rather than treating a transient failure as "no data" —
+    // critical for `pushChanged`, which would otherwise write an
+    // empty index back to the remote and wipe the real one.
+    let data: Uint8Array;
     try {
-      const data = await this.s3.getObject(".datastore-index.json");
-      const text = new TextDecoder().decode(data);
-      this.index = JSON.parse(text) as DatastoreIndex;
-      await ensureDir(this.cachePath);
-      // Scrub zombies, then write the local cache file. If scrub
-      // mutated, write the cleaned JSON so on-disk matches in-memory.
-      // Otherwise write the raw remote text to preserve the fast path
-      // (no re-serialization cost).
-      if (this.scrubIndex()) {
-        this.indexMutated = true;
-        await atomicWriteTextFile(
-          this.indexPath,
-          JSON.stringify(this.index, null, 2),
-        );
-      } else {
-        await atomicWriteTextFile(this.indexPath, text);
+      data = await this.s3.getObject(".datastore-index.json");
+    } catch (err) {
+      if (
+        err instanceof Error && "name" in err &&
+        (err.name === "NotFound" || err.name === "NoSuchKey")
+      ) {
+        this.index = {
+          version: 1,
+          lastPulled: new Date().toISOString(),
+          entries: {},
+        };
+        return;
       }
-    } catch {
-      // No index exists yet - start fresh
-      this.index = {
-        version: 1,
-        lastPulled: new Date().toISOString(),
-        entries: {},
-      };
+      throw err;
+    }
+
+    const text = new TextDecoder().decode(data);
+    this.index = JSON.parse(text) as DatastoreIndex;
+    await ensureDir(this.cachePath);
+    // Scrub zombies, then write the local cache file. If scrub
+    // mutated, write the cleaned JSON so on-disk matches in-memory.
+    // Otherwise write the raw remote text to preserve the fast path
+    // (no re-serialization cost).
+    if (this.scrubIndex()) {
+      this.indexMutated = true;
+      await atomicWriteTextFile(
+        this.indexPath,
+        JSON.stringify(this.index, null, 2),
+      );
+    } else {
+      await atomicWriteTextFile(this.indexPath, text);
     }
   }
 
@@ -324,21 +348,28 @@ export class S3CacheSyncService implements DatastoreSyncService {
   /**
    * Pushes only new or modified files from the local cache to S3.
    * Compares each file's size against the index to detect changes.
+   *
+   * Always fetches the current remote index (bypassing the local
+   * TTL cache) so that the writeback at the end of this method
+   * merges new/modified entries onto remote state instead of
+   * clobbering it. Without this, any client with a smaller or
+   * stale local cache (e.g. a fresh reader running `datastore setup`,
+   * or a writer whose cached index is < 60 s old but another writer
+   * has since pushed) would overwrite the remote
+   * `.datastore-index.json` with a subset of entries, leaving the
+   * other writer's data orphaned. See swamp-club#30.
    */
   async pushChanged(): Promise<number | void> {
-    await this.loadIndex();
+    await this.pullIndex({ forceRemote: true });
 
     // Build list of files that need pushing
     const toPush: string[] = [];
-    let totalFiles = 0;
-    let skippedFiles = 0;
     try {
       for await (
         const entry of walk(this.cachePath, {
           includeDirs: false,
         })
       ) {
-        totalFiles++;
         const rel = relative(this.cachePath, entry.path);
         // Skip internal metadata files (see isInternalCacheFile)
         if (isInternalCacheFile(rel)) {
@@ -354,12 +385,10 @@ export class S3CacheSyncService implements DatastoreSyncService {
             existing.localMtime && stat.mtime &&
             existing.localMtime === stat.mtime.toISOString()
           ) {
-            skippedFiles++;
             continue; // Both size and mtime match — unchanged
           }
           // If no localMtime recorded (old index format), fall back to size-only
           if (!stat.mtime || existing.localMtime === undefined) {
-            skippedFiles++;
             continue;
           }
         }
@@ -368,20 +397,6 @@ export class S3CacheSyncService implements DatastoreSyncService {
       }
     } catch {
       // Cache directory may not exist yet
-    }
-
-    // Debug: log walk summary
-    console.log(
-      `[pushChanged] cachePath=${this.cachePath} total=${totalFiles} skipped=${skippedFiles} toPush=${toPush.length} indexEntries=${
-        Object.keys(this.index?.entries ?? {}).length
-      }`,
-    );
-    if (toPush.length > 0) {
-      console.log(
-        `[pushChanged] pushing: ${toPush.slice(0, 5).join(", ")}${
-          toPush.length > 5 ? ` ... and ${toPush.length - 5} more` : ""
-        }`,
-      );
     }
 
     // Upload concurrently in batches
@@ -425,22 +440,5 @@ export class S3CacheSyncService implements DatastoreSyncService {
     }
 
     return pushed;
-  }
-
-  private async loadIndex(): Promise<void> {
-    if (this.index) return;
-    try {
-      const content = await Deno.readTextFile(this.indexPath);
-      this.index = JSON.parse(content) as DatastoreIndex;
-    } catch {
-      this.index = {
-        version: 1,
-        lastPulled: new Date().toISOString(),
-        entries: {},
-      };
-    }
-    // Scrub zombies from the in-memory view so the rest of
-    // `pushChanged` operates on a clean index. See swamp-club#29.
-    this.indexMutated ||= this.scrubIndex();
   }
 }
