@@ -74,7 +74,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud floating ip. Registered at `@swamp/hetzner-cloud/floating-ips`. */
 export const model = {
   type: "@swamp/hetzner-cloud/floating-ips",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.03.1",

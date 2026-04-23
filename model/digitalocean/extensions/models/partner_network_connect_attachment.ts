@@ -126,7 +126,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean partner network connect attachment. Registered at `@swamp/digitalocean/partner-network-connect-attachment`. */
 export const model = {
   type: "@swamp/digitalocean/partner-network-connect-attachment",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",

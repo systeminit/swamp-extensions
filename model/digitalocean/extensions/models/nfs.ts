@@ -94,7 +94,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean nfs. Registered at `@swamp/digitalocean/nfs`. */
 export const model = {
   type: "@swamp/digitalocean/nfs",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",

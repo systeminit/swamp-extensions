@@ -47,7 +47,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean vpc peering. Registered at `@swamp/digitalocean/vpc-peering`. */
 export const model = {
   type: "@swamp/digitalocean/vpc-peering",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",

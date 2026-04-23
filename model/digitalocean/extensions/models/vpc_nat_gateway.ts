@@ -116,7 +116,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean vpc nat gateway. Registered at `@swamp/digitalocean/vpc-nat-gateway`. */
 export const model = {
   type: "@swamp/digitalocean/vpc-nat-gateway",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",

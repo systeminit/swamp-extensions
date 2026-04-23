@@ -67,7 +67,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean ssl certificate. Registered at `@swamp/digitalocean/ssl-certificate`. */
 export const model = {
   type: "@swamp/digitalocean/ssl-certificate",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
