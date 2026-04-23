@@ -149,29 +149,36 @@ export class GcsCacheSyncService implements DatastoreSyncService {
    * Pulls the metadata index from GCS (lightweight, single GET).
    * Uses a local cache with a 60-second TTL to avoid redundant fetches.
    *
+   * Pass `forceRemote: true` to bypass the local TTL cache and always
+   * fetch from GCS. `pushChanged()` uses this to guarantee the
+   * writeback merges onto the current remote state — without it, a
+   * stale local cache (< 60 s old) could silently clobber updates
+   * pushed by another writer in the intervening window.
+   *
    * Both entry paths (cache-hit and GCS-fetch) scrub the in-memory
    * index after parsing so zombie internal-file entries never reach
    * the rest of the sync pipeline (see swamp-club#29). On the
    * GCS-fetch path the local cache file is rewritten with the scrubbed
    * JSON when scrub mutated — keeping the on-disk and in-memory views
    * consistent. The cache-hit path does NOT rewrite the local file;
-   * its on-disk view self-heals on the next GCS fetch or via the
-   * `indexMutated` propagation on the next `pushChanged`.
+   * its on-disk view self-heals on the next GCS fetch.
    */
-  async pullIndex(): Promise<void> {
-    // Check local cache freshness
-    try {
-      const stat = await Deno.stat(this.indexPath);
-      const ageMs = Date.now() - (stat.mtime?.getTime() ?? 0);
-      if (ageMs < INDEX_CACHE_TTL_MS && this.index === null) {
-        const content = await Deno.readTextFile(this.indexPath);
-        this.index = JSON.parse(content) as DatastoreIndex;
-        // Scrub zombies from the in-memory view before returning.
-        this.indexMutated ||= this.scrubIndex();
-        return;
+  async pullIndex(options?: { forceRemote?: boolean }): Promise<void> {
+    // Check local cache freshness (skipped when forceRemote is set)
+    if (!options?.forceRemote) {
+      try {
+        const stat = await Deno.stat(this.indexPath);
+        const ageMs = Date.now() - (stat.mtime?.getTime() ?? 0);
+        if (ageMs < INDEX_CACHE_TTL_MS && this.index === null) {
+          const content = await Deno.readTextFile(this.indexPath);
+          this.index = JSON.parse(content) as DatastoreIndex;
+          // Scrub zombies from the in-memory view before returning.
+          this.indexMutated ||= this.scrubIndex();
+          return;
+        }
+      } catch {
+        // No local index — fetch from GCS
       }
-    } catch {
-      // No local index — fetch from GCS
     }
 
     try {
@@ -295,9 +302,19 @@ export class GcsCacheSyncService implements DatastoreSyncService {
   /**
    * Pushes only new or modified files from the local cache to GCS.
    * Compares each file's size and mtime against the index to detect changes.
+   *
+   * Always fetches the current remote index (bypassing the local
+   * TTL cache) so that the writeback at the end of this method
+   * merges new/modified entries onto remote state instead of
+   * clobbering it. Without this, any client with a smaller or
+   * stale local cache (e.g. a fresh reader running `datastore setup`,
+   * or a writer whose cached index is < 60 s old but another writer
+   * has since pushed) would overwrite the remote
+   * `.datastore-index.json` with a subset of entries, leaving the
+   * other writer's data orphaned. See swamp-club#30.
    */
   async pushChanged(): Promise<number | void> {
-    await this.loadIndex();
+    await this.pullIndex({ forceRemote: true });
 
     const toPush: string[] = [];
     try {
@@ -371,22 +388,5 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     }
 
     return pushed;
-  }
-
-  private async loadIndex(): Promise<void> {
-    if (this.index) return;
-    try {
-      const content = await Deno.readTextFile(this.indexPath);
-      this.index = JSON.parse(content) as DatastoreIndex;
-    } catch {
-      this.index = {
-        version: 1,
-        lastPulled: new Date().toISOString(),
-        entries: {},
-      };
-    }
-    // Scrub zombies from the in-memory view so the rest of
-    // `pushChanged` operates on a clean index. See swamp-club#29.
-    this.indexMutated ||= this.scrubIndex();
   }
 }
