@@ -34,6 +34,23 @@ const DEFAULT_RETRY_INTERVAL_MS = 1_000;
 const DEFAULT_MAX_WAIT_MS = 60_000;
 const DEFAULT_LOCK_KEY = ".datastore.lock";
 
+/**
+ * Minimum and maximum sleep applied after a stale-lock steal attempt.
+ * Randomized in [MIN, MAX) to break tight retry loops when multiple
+ * processes race to steal a stale lock. Must always run (regardless of
+ * whether the delete succeeded) so we don't re-read the lock inside the
+ * same ms window as the real holder's next heartbeat — see the
+ * TOCTOU discussion above `acquire()`.
+ */
+const STALE_STEAL_BACKOFF_MIN_MS = 200;
+const STALE_STEAL_BACKOFF_MAX_MS = 500;
+
+/** Randomized sleep in [min, max) ms used after stale-lock steal attempts. */
+function randomSleep(minMs: number, maxMs: number): Promise<void> {
+  const delay = Math.floor(minMs + Math.random() * (maxMs - minMs));
+  return new Promise((resolve) => setTimeout(resolve, delay));
+}
+
 /** Thrown when a lock cannot be acquired within the configured timeout. */
 export class LockTimeoutError extends Error {
   override readonly name = "LockTimeoutError";
@@ -140,6 +157,17 @@ export class S3Lock implements DistributedLock {
             } catch {
               // Another process may have already cleaned it up
             }
+            // Backoff before the next iteration regardless of delete
+            // outcome. Without this, a tight head/delete loop can
+            // livelock against the real holder's heartbeat: every
+            // iteration reads a fresh lock, sees it stale, deletes,
+            // the heartbeat writes it back, repeat. Jittered sleep
+            // also spreads multiple stealing processes apart so they
+            // don't hammer the same key in lockstep.
+            await randomSleep(
+              STALE_STEAL_BACKOFF_MIN_MS,
+              STALE_STEAL_BACKOFF_MAX_MS,
+            );
             continue; // Retry conditional write (timeout checked at top of loop)
           }
         }
@@ -158,9 +186,29 @@ export class S3Lock implements DistributedLock {
 
     if (!this.held) return;
     this.held = false;
+    const ourNonce = this.nonce;
     this.nonce = undefined;
 
+    // Re-verify ownership via the lock body's nonce before deleting.
+    // Without this, a process whose heartbeat stalled (GC pause, network
+    // blip) long enough for another process to legitimately steal the
+    // stale lock will, on resume, delete the successor's live lock —
+    // orphaning work. The heartbeat's own fencing at extend() covers
+    // cases where a heartbeat tick runs between the steal and release;
+    // this guard covers the window from "last successful heartbeat" to
+    // "release() call" where no heartbeat tick fires.
+    //
+    // Portable across AWS and DO Spaces — no conditional DELETE needed.
+    // Residual TOCTOU window (readLock → deleteObject, tens of ms) is
+    // two orders of magnitude narrower than the full heartbeat interval.
     try {
+      const current = await this.readLock();
+      if (!current || current.nonce !== ourNonce) {
+        console.warn(
+          `Lock ${this.lockKey} was taken over during hold; skipping delete to avoid orphaning the successor's work`,
+        );
+        return;
+      }
       await this.s3.deleteObject(this.lockKey);
     } catch (error) {
       // Best-effort release — if S3 is unreachable, the lock expires via TTL

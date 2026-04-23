@@ -250,3 +250,109 @@ Deno.test("S3Lock: passes DistributedLock conformance suite", async () => {
   const lock = new S3Lock(mock, { ttlMs: 5000 });
   await assertLockConformance(lock);
 });
+
+// --- DEF-3B: stale-lock steal applies backoff before retry ---------------
+
+Deno.test("S3Lock: stale-lock steal path applies 200-500ms backoff", async () => {
+  const mock = createMockS3Client();
+
+  // Plant a stale lock. headObject will return an old lastModified.
+  const staleLock: LockInfo = {
+    holder: "stale@host",
+    hostname: "host",
+    pid: 99999,
+    acquiredAt: new Date(Date.now() - 120_000).toISOString(),
+    ttlMs: 5000,
+  };
+  const body = new TextEncoder().encode(JSON.stringify(staleLock, null, 2));
+  mock.storage.set(".datastore.lock", body);
+
+  // Force headObject to report the lock as stale.
+  (mock as unknown as Record<string, unknown>).headObject = (key: string) => {
+    if (key === ".datastore.lock") {
+      return Promise.resolve({
+        exists: true,
+        size: body.length,
+        lastModified: new Date(Date.now() - 120_000),
+      });
+    }
+    return Promise.resolve({ exists: false });
+  };
+
+  const lock = new S3Lock(mock, { ttlMs: 5000, retryIntervalMs: 0 });
+  const start = Date.now();
+  await lock.acquire();
+  const elapsed = Date.now() - start;
+
+  // First conditional write fails (stale lock present), steal path fires,
+  // backoff sleeps in [200, 500) ms, second conditional write succeeds.
+  // Assert the backoff actually ran — elapsed must be >= 200 ms even on a
+  // fast machine. (Upper bound isn't asserted to keep the test non-flaky.)
+  assertEquals(
+    elapsed >= 200,
+    true,
+    `expected >=200ms backoff on stale-steal, got ${elapsed}ms`,
+  );
+
+  await lock.release();
+});
+
+// --- DEF-4: release() skips delete when the lock has been taken over -----
+
+Deno.test("S3Lock: release skips deleteObject when nonce has changed", async () => {
+  const mock = createMockS3Client();
+  let deleteCount = 0;
+  const originalDelete = mock.deleteObject.bind(mock);
+  (mock as unknown as Record<string, unknown>).deleteObject = (key: string) => {
+    deleteCount++;
+    return originalDelete(key);
+  };
+
+  const lock = new S3Lock(mock, { ttlMs: 5000 });
+  await lock.acquire();
+  assertEquals(mock.storage.has(".datastore.lock"), true);
+
+  // Simulate another process legitimately stealing the lock while our
+  // process was paused (e.g. a long GC). The stored lock body no longer
+  // carries our nonce.
+  const successorLock: LockInfo = {
+    holder: "successor@host",
+    hostname: "host",
+    pid: 12345,
+    acquiredAt: new Date().toISOString(),
+    ttlMs: 5000,
+    nonce: "SUCCESSOR-NONCE",
+  };
+  mock.storage.set(
+    ".datastore.lock",
+    new TextEncoder().encode(JSON.stringify(successorLock, null, 2)),
+  );
+
+  // release() must NOT delete the successor's lock.
+  await lock.release();
+
+  assertEquals(
+    deleteCount,
+    0,
+    "release() called deleteObject despite nonce mismatch — would orphan successor",
+  );
+  assertEquals(
+    mock.storage.has(".datastore.lock"),
+    true,
+    "successor's lock must still be present after our release()",
+  );
+});
+
+Deno.test("S3Lock: release deletes normally when we still hold the lock", async () => {
+  const mock = createMockS3Client();
+  const lock = new S3Lock(mock, { ttlMs: 5000 });
+
+  await lock.acquire();
+  assertEquals(mock.storage.has(".datastore.lock"), true);
+  await lock.release();
+  assertEquals(
+    mock.storage.has(".datastore.lock"),
+    false,
+    "uncontested release must delete the lock object",
+  );
+});
