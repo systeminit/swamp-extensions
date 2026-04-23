@@ -195,31 +195,48 @@ export class S3CacheSyncService implements DatastoreSyncService {
       }
     }
 
+    // Fetch the remote index. Only "object not found" errors (S3
+    // 404 — bucket exists but no index object yet; SDK surfaces this
+    // as `name === "NotFound"` or `"NoSuchKey"`) are treated as the
+    // brand-new-bucket case and fall back to an empty in-memory
+    // index. Any other error (auth failure, 5xx, network timeout,
+    // JSON parse failure, local write failure) propagates so callers
+    // abort rather than treating a transient failure as "no data" —
+    // critical for `pushChanged`, which would otherwise write an
+    // empty index back to the remote and wipe the real one.
+    let data: Uint8Array;
     try {
-      const data = await this.s3.getObject(".datastore-index.json");
-      const text = new TextDecoder().decode(data);
-      this.index = JSON.parse(text) as DatastoreIndex;
-      await ensureDir(this.cachePath);
-      // Scrub zombies, then write the local cache file. If scrub
-      // mutated, write the cleaned JSON so on-disk matches in-memory.
-      // Otherwise write the raw remote text to preserve the fast path
-      // (no re-serialization cost).
-      if (this.scrubIndex()) {
-        this.indexMutated = true;
-        await atomicWriteTextFile(
-          this.indexPath,
-          JSON.stringify(this.index, null, 2),
-        );
-      } else {
-        await atomicWriteTextFile(this.indexPath, text);
+      data = await this.s3.getObject(".datastore-index.json");
+    } catch (err) {
+      if (
+        err instanceof Error && "name" in err &&
+        (err.name === "NotFound" || err.name === "NoSuchKey")
+      ) {
+        this.index = {
+          version: 1,
+          lastPulled: new Date().toISOString(),
+          entries: {},
+        };
+        return;
       }
-    } catch {
-      // No index exists yet - start fresh
-      this.index = {
-        version: 1,
-        lastPulled: new Date().toISOString(),
-        entries: {},
-      };
+      throw err;
+    }
+
+    const text = new TextDecoder().decode(data);
+    this.index = JSON.parse(text) as DatastoreIndex;
+    await ensureDir(this.cachePath);
+    // Scrub zombies, then write the local cache file. If scrub
+    // mutated, write the cleaned JSON so on-disk matches in-memory.
+    // Otherwise write the raw remote text to preserve the fast path
+    // (no re-serialization cost).
+    if (this.scrubIndex()) {
+      this.indexMutated = true;
+      await atomicWriteTextFile(
+        this.indexPath,
+        JSON.stringify(this.index, null, 2),
+      );
+    } else {
+      await atomicWriteTextFile(this.indexPath, text);
     }
   }
 

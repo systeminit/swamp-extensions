@@ -22,9 +22,14 @@
 // shares the identical internal-file exclusion pattern and scrub
 // logic. See swamp-club#29 for the motivating bug.
 
-import { assertEquals, assertExists } from "jsr:@std/assert@1.0.19";
+import {
+  assertEquals,
+  assertExists,
+  assertRejects,
+} from "jsr:@std/assert@1.0.19";
 import { join } from "jsr:@std/path@1";
 import { GcsCacheSyncService } from "./gcs_cache_sync.ts";
+import { NotFoundError } from "./gcs_client.ts";
 import type { GcsClient } from "./gcs_client.ts";
 
 /** Captured putObject call for test assertions. */
@@ -57,7 +62,9 @@ function createMockGcsClient(): GcsClient & {
     getObject(key: string): Promise<Uint8Array> {
       gets.push(key);
       const data = storage.get(key);
-      if (!data) return Promise.reject(new Error(`NoSuchKey: ${key}`));
+      if (!data) {
+        return Promise.reject(new NotFoundError(`Object not found: ${key}`));
+      }
       return Promise.resolve(data);
     },
   } as unknown as GcsClient & {
@@ -543,6 +550,54 @@ Deno.test("pushChanged: scrubs remote zombies and writes back clean, second call
       secondIndexPuts.length,
       1,
       "second pushChanged must NOT rewrite — remote already clean, flag reset",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (h) pushChanged aborts on transient remote fetch errors --------------
+
+// Since swamp-club#30, pushChanged force-fetches the remote index on
+// every call. That means any non-NotFound error from the fetch (5xx,
+// auth failure, network timeout) must propagate — otherwise a
+// transient blip would leave us with an empty in-memory index, which
+// the subsequent writeback would push to the remote and silently wipe
+// the real index.
+
+Deno.test("pushChanged: propagates non-NotFound remote errors and skips writeback", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-test-h-" });
+  try {
+    const puts: PutCall[] = [];
+    const mock = {
+      putObject(
+        key: string,
+        body: Uint8Array,
+      ): Promise<{ generation: string }> {
+        puts.push({ key, body });
+        return Promise.resolve({ generation: "1" });
+      },
+      getObject(_key: string): Promise<Uint8Array> {
+        // Simulate a transient 5xx: generic Error, NOT a NotFoundError.
+        return Promise.reject(new Error("500 Internal Server Error"));
+      },
+    } as unknown as GcsClient;
+
+    await seedFile(cachePath, "data/@m/payload.yaml", "data\n");
+
+    const service = new GcsCacheSyncService(mock, cachePath);
+
+    await assertRejects(
+      () => service.pushChanged(),
+      Error,
+      "500",
+      "pushChanged must propagate non-NotFound remote errors",
+    );
+
+    assertEquals(
+      puts.length,
+      0,
+      "no putObject calls allowed — a failed remote fetch must not trigger a writeback that could wipe the real remote index",
     );
   } finally {
     await Deno.remove(cachePath, { recursive: true });
