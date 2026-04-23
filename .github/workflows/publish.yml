@@ -21,7 +21,12 @@ jobs:
         run: |
           EXTENSIONS="[]"
 
-          for manifest in $(git diff --name-only HEAD~1 HEAD -- '*/manifest.yaml'); do
+          # --diff-filter=d excludes deleted paths. Without this, when a
+          # service is removed from the repo (e.g. CF drops a resource and the
+          # codegen prunes the service dir) its manifest.yaml shows up in the
+          # diff and the publish loop later fails with `cd: no such file or
+          # directory` trying to enter the deleted directory.
+          for manifest in $(git diff --name-only --diff-filter=d HEAD~1 HEAD -- '*/manifest.yaml'); do
             dir=$(dirname "$manifest")
             EXTENSIONS=$(echo "$EXTENSIONS" | jq -c --arg d "$dir" '. + [$d]')
             echo "Changed: ${dir}"
