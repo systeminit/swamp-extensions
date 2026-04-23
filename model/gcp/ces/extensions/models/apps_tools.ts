@@ -922,6 +922,18 @@ const GlobalArgsSchema = z.object({
       ).optional(),
     }).describe("Represents a select subset of an OpenAPI 3.0 schema object.")
       .optional(),
+    textResponseConfig: z.object({
+      staticText: z.string().describe(
+        "Optional. The static text response to return when type is STATIC.",
+      ).optional(),
+      textResponseInstruction: z.string().describe(
+        "Optional. Instruction for the LLM on how to generate the text response. Used as the description for the text response parameter if type is LLM_GENERATED.",
+      ).optional(),
+      type: z.enum(["TYPE_UNSPECIFIED", "NONE", "LLM_GENERATED", "STATIC"])
+        .describe("Optional. The strategy for providing the text response.")
+        .optional(),
+    }).describe("Configuration for the text response returned with the widget.")
+      .optional(),
     uiConfig: z.record(z.string(), z.string()).describe(
       "Optional. Configuration for rendering the widget.",
     ).optional(),
@@ -1284,6 +1296,11 @@ const StateSchema = z.object({
       title: z.string(),
       type: z.string(),
       uniqueItems: z.boolean(),
+    }),
+    textResponseConfig: z.object({
+      staticText: z.string(),
+      textResponseInstruction: z.string(),
+      type: z.string(),
     }),
     uiConfig: z.record(z.string(), z.unknown()),
     widgetType: z.string(),
@@ -2111,6 +2128,18 @@ const InputsSchema = z.object({
       ).optional(),
     }).describe("Represents a select subset of an OpenAPI 3.0 schema object.")
       .optional(),
+    textResponseConfig: z.object({
+      staticText: z.string().describe(
+        "Optional. The static text response to return when type is STATIC.",
+      ).optional(),
+      textResponseInstruction: z.string().describe(
+        "Optional. Instruction for the LLM on how to generate the text response. Used as the description for the text response parameter if type is LLM_GENERATED.",
+      ).optional(),
+      type: z.enum(["TYPE_UNSPECIFIED", "NONE", "LLM_GENERATED", "STATIC"])
+        .describe("Optional. The strategy for providing the text response.")
+        .optional(),
+    }).describe("Configuration for the text response returned with the widget.")
+      .optional(),
     uiConfig: z.record(z.string(), z.string()).describe(
       "Optional. Configuration for rendering the widget.",
     ).optional(),
@@ -2145,7 +2174,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Google Cloud Gemini Enterprise for Customer Experience Apps.Tools. Registered at `@swamp/gcp/ces/apps-tools`. */
 export const model = {
   type: "@swamp/gcp/ces/apps-tools",
-  version: "2026.04.23.1",
+  version: "2026.04.23.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -2184,6 +2213,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

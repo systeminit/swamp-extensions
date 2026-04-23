@@ -8,8 +8,6 @@ labels:
   - hetzner
   - cloud
   - infrastructure
-releaseNotes: |
-  - Updated: certificates, firewalls, floating_ips, load_balancers, networks, placement_groups, primary_ips, servers, ssh_keys, volumes, zones
 models:
   - certificates.ts
   - firewalls.ts
