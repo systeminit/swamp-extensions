@@ -22,6 +22,31 @@ swamp datastore setup @swamp/gcs-datastore \
 | `prefix` | No | Object name prefix within the bucket (e.g. `swamp/prod`) |
 | `projectId` | No | GCP project ID. Defaults to the project from Application Default Credentials. |
 | `apiEndpoint` | No | Custom API endpoint URL for emulators (e.g. [fake-gcs-server](https://github.com/fsouza/fake-gcs-server)). When set, authentication is skipped — matching the behavior of Google's official client libraries with `STORAGE_EMULATOR_HOST`. |
+| `defaultRequestTimeoutMs` | No | Per-request timeout in milliseconds (default: `30000`). Every outbound GCS call is guarded by this deadline. Operations that legitimately run longer than the default (large-file uploads on slow links, say) should raise this. Setting it too low makes transient network blips look like timeouts. |
+
+## Timeouts and cancellation
+
+Every outbound GCS request runs under a composite abort signal: the
+per-request deadline (`defaultRequestTimeoutMs`, 30 s default) composed
+with any caller-supplied `AbortSignal`. Stalls surface as
+`TimeoutError`; upstream cancellation surfaces as `AbortError`. Prior
+to this, stalled sockets could hang indefinitely — switching to
+bounded timeouts is a user-visible behavior change: operations that
+legitimately exceed 30 s now error instead of hanging. Raise
+`defaultRequestTimeoutMs` in the datastore config if your workload
+needs longer deadlines.
+
+Errors from GCS now carry structured detail:
+
+- `GcsOperationError` exposes `httpStatusCode`, `code` (the
+  `error.errors[0].reason` from the JSON envelope, e.g. `"authError"`
+  or `"rateLimitExceeded"`), `bodyPreview` (first 256 bytes of the
+  response body), and `uploadId` (the `X-GUploader-UploadID`
+  response header, populated on upload-path responses).
+- `NotFoundError` (404) and `PreconditionFailedError` (412) are
+  preserved as narrow types so existing catches keep matching.
+- 401/403 responses include a credential-source hint in the error
+  message to shorten the diagnostic loop.
 
 ### Example `.swamp.yaml`
 

@@ -84,12 +84,24 @@ export interface DatastoreVerifier {
   verify(): Promise<DatastoreHealthResult>;
 }
 
+/** Optional flags passed to a sync operation. */
+export interface DatastoreSyncOptions {
+  /**
+   * Cancellation signal forwarded to every in-flight GCS request. When the
+   * signal fires, pending requests abort and the top-level promise rejects
+   * with `AbortError` — no further work is scheduled. Added so swamp core's
+   * outer sync timeout can actually stop in-flight work instead of leaking
+   * it past the deadline.
+   */
+  signal?: AbortSignal;
+}
+
 /** Moves data between the local cache directory and the remote datastore. */
 export interface DatastoreSyncService {
   /** Downloads new or changed objects; returns the count synced where known. */
-  pullChanged(): Promise<number | void>;
+  pullChanged(options?: DatastoreSyncOptions): Promise<number | void>;
   /** Uploads new or changed local objects; returns the count synced where known. */
-  pushChanged(): Promise<number | void>;
+  pushChanged(options?: DatastoreSyncOptions): Promise<number | void>;
 }
 
 /** Factory that produces the datastore's lock, verifier, and sync service. */
