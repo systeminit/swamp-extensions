@@ -704,7 +704,9 @@ export class GcsClient {
       }`,
     );
     if (options?.ifGenerationMatch) {
-      url += `?ifGenerationMatch=${options.ifGenerationMatch}`;
+      url += `?ifGenerationMatch=${
+        encodeURIComponent(options.ifGenerationMatch)
+      }`;
     }
     try {
       const resp = await this.send(
@@ -807,7 +809,7 @@ export class GcsClient {
     const url = this.uploadUrl(
       `/b/${encodeURIComponent(this.bucket)}/o?uploadType=media&name=${
         encodeURIComponent(objectName)
-      }&ifGenerationMatch=${expectedGeneration}`,
+      }&ifGenerationMatch=${encodeURIComponent(expectedGeneration)}`,
     );
     const hdrs = await this.headers();
     hdrs["Content-Type"] = "application/octet-stream";

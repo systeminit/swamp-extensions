@@ -42,6 +42,7 @@ function createMockGcsClient(): GcsClient & {
   generations: Map<string, number>;
   putConditionalCalls: number;
   overrideUpdated: Map<string, Date>;
+  onDelete: ((key: string) => void) | undefined;
 } {
   const storage = new Map<string, Uint8Array>();
   /** Auto-incrementing generation counter, per key. Exposed so tests
@@ -56,6 +57,9 @@ function createMockGcsClient(): GcsClient & {
   /** Counts calls to `putObjectConditional` — lets DEF-3B tests assert
    *  a bounded attempt rate under stale-lock contention. */
   let putConditionalCalls = 0;
+  /** Hook invoked after every successful delete — lets tests re-seed
+   *  state without monkey-patching the method itself. */
+  let onDelete: ((key: string) => void) | undefined;
 
   function nextGen(key: string): string {
     const g = (generations.get(key) ?? 0) + 1;
@@ -72,6 +76,12 @@ function createMockGcsClient(): GcsClient & {
     },
     set putConditionalCalls(v: number) {
       putConditionalCalls = v;
+    },
+    get onDelete() {
+      return onDelete;
+    },
+    set onDelete(hook: ((key: string) => void) | undefined) {
+      onDelete = hook;
     },
 
     putObject(key: string, body: Uint8Array): Promise<GcsWriteResult> {
@@ -134,6 +144,7 @@ function createMockGcsClient(): GcsClient & {
       generations.delete(key);
       putTimes.delete(key);
       overrideUpdated.delete(key);
+      if (onDelete) onDelete(key);
       return Promise.resolve();
     },
 
@@ -152,6 +163,7 @@ function createMockGcsClient(): GcsClient & {
     generations: Map<string, number>;
     putConditionalCalls: number;
     overrideUpdated: Map<string, Date>;
+    onDelete: ((key: string) => void) | undefined;
   };
 }
 
@@ -376,13 +388,11 @@ Deno.test("GcsLock DEF-3B: stale-lock steal loop is rate-limited by backoff", as
     );
     mock.overrideUpdated.set(".datastore.lock", new Date(Date.now() - 60_000));
   };
-  const originalDelete = mock.deleteObject.bind(mock);
-  // deno-lint-ignore no-explicit-any
-  (mock as any).deleteObject = async (
-    key: string,
-    options?: { ifGenerationMatch?: string },
-  ) => {
-    await originalDelete(key, options);
+  // Every successful steal-delete must re-seed the stale lock so the
+  // contender keeps finding something to steal. Using the mock's
+  // onDelete hook is cleaner than monkey-patching the method and
+  // avoids `any`-typed reassignment.
+  mock.onDelete = (key) => {
     if (key === ".datastore.lock") restoreStaleLock();
   };
 

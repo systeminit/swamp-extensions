@@ -54,13 +54,17 @@ interface PutCall {
  * In-memory mock of GcsClient recording getObject/putObject/getMetadata
  * calls. `generationOverrides` lets a test pin a specific generation
  * string (for example `""` or `"0"` for the unusable-fingerprint case)
- * regardless of stored content. Mock method bodies reject
- * SYNCHRONOUSLY on a pre-aborted signal — promise-based rejection
- * would race the fast-path probe and leak a real HEAD call.
+ * regardless of stored content. `putFailures` lets a test inject a
+ * failure per key for retry / batch-error tests — cleaner than
+ * monkey-patching the method and avoids `any`-typed reassignments.
+ * Mock method bodies reject SYNCHRONOUSLY on a pre-aborted signal —
+ * promise-based rejection would race the fast-path probe and leak a
+ * real HEAD call.
  */
 function createMockGcsClient(): GcsClient & {
   storage: Map<string, Uint8Array>;
   generationOverrides: Map<string, string>;
+  putFailures: Map<string, Error>;
   puts: PutCall[];
   gets: string[];
   heads: string[];
@@ -68,6 +72,7 @@ function createMockGcsClient(): GcsClient & {
   const storage = new Map<string, Uint8Array>();
   const generations = new Map<string, number>();
   const generationOverrides = new Map<string, string>();
+  const putFailures = new Map<string, Error>();
   const puts: PutCall[] = [];
   const gets: string[] = [];
   const heads: string[] = [];
@@ -90,6 +95,7 @@ function createMockGcsClient(): GcsClient & {
   return {
     storage,
     generationOverrides,
+    putFailures,
     puts,
     gets,
     heads,
@@ -100,6 +106,8 @@ function createMockGcsClient(): GcsClient & {
       signal?: AbortSignal,
     ): Promise<GcsWriteResult> {
       throwIfAborted(signal);
+      const injected = putFailures.get(key);
+      if (injected) return Promise.reject(injected);
       storage.set(key, body);
       puts.push({ key, body });
       return Promise.resolve({ generation: nextGen(key) });
@@ -133,6 +141,7 @@ function createMockGcsClient(): GcsClient & {
   } as unknown as GcsClient & {
     storage: Map<string, Uint8Array>;
     generationOverrides: Map<string, string>;
+    putFailures: Map<string, Error>;
     puts: PutCall[];
     gets: string[];
     heads: string[];
@@ -1103,21 +1112,14 @@ Deno.test("pushChanged: batch failure message includes underlying error details"
     const mock = createMockGcsClient();
     await mock.putObject(".datastore-index.json", encodeIndex({}));
 
-    // Monkey-patch putObject to fail for data files (distinct reasons
-    // per file) while letting the index writeback succeed.
-    const originalPut = mock.putObject.bind(mock);
-    // deno-lint-ignore no-explicit-any
-    (mock as any).putObject = async (
-      key: string,
-      body: Uint8Array,
-      signal?: AbortSignal,
-    ) => {
-      if (key === "data/a.yaml") throw makeGcsErr(403); // auth
-      if (key === "data/b.yaml") throw makeGcsErr(500); // server
-      if (key === "data/c.yaml") throw makeGcsErr(null); // transport
-      if (key === "data/d.yaml") throw makeGcsErr(null); // transport
-      return await originalPut(key, body, signal);
-    };
+    // Inject per-key failures via the mock's putFailures hook so the
+    // test exercises distinct error reasons (auth, server, transport)
+    // in the batch-failure message without resorting to method
+    // reassignment.
+    mock.putFailures.set("data/a.yaml", makeGcsErr(403)); // auth
+    mock.putFailures.set("data/b.yaml", makeGcsErr(500)); // server
+    mock.putFailures.set("data/c.yaml", makeGcsErr(null)); // transport
+    mock.putFailures.set("data/d.yaml", makeGcsErr(null)); // transport
 
     await seedFile(cachePath, "data/a.yaml", "a");
     await seedFile(cachePath, "data/b.yaml", "b");

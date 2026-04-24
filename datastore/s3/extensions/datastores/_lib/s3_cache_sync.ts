@@ -295,6 +295,14 @@ export async function retryWithBackoff<T>(
   },
 ): Promise<T> {
   const maxAttempts = config?.maxAttempts ?? RETRY_MAX_ATTEMPTS;
+  if (maxAttempts < 1) {
+    // Guard against caller misconfiguration: maxAttempts=0 would skip
+    // the loop entirely and `throw lastErr` would throw undefined.
+    // Fail loudly with the actual problem instead.
+    throw new Error(
+      `retryWithBackoff: maxAttempts must be >= 1, got ${maxAttempts}`,
+    );
+  }
   const baseDelayMs = config?.baseDelayMs ?? RETRY_BASE_DELAY_MS;
   const signal = config?.signal;
   let lastErr: unknown;
