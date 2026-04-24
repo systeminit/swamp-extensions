@@ -407,10 +407,15 @@ export class GcsCacheSyncService implements DatastoreSyncService {
   /**
    * Pessimistically mark the local cache as dirty. Called by `pushFile`
    * before its upload work so a crash mid-batch leaves the flag set
-   * (safe: forces a full walk next time). Idempotent — if the sidecar
-   * already records `localDirty: true`, no write is issued.
+   * (safe: forces a full walk next time). Also the public
+   * `DatastoreSyncService.markDirty` entry point — swamp-core's
+   * repository layer calls this before writing to the cache directly
+   * (any write that bypasses `pushFile`). Without this hook, the
+   * fast-path short-circuit silently skips core's writes on the next
+   * `pushChanged`. Idempotent — if the sidecar already records
+   * `localDirty: true`, no write is issued.
    */
-  private async markLocalDirty(): Promise<void> {
+  async markDirty(): Promise<void> {
     const current = await this.loadSyncState();
     if (current?.localDirty === true) return;
     await this.writeSyncState({
@@ -781,7 +786,7 @@ export class GcsCacheSyncService implements DatastoreSyncService {
    * by `pushChanged` after a successful index writeback.
    */
   async pushFile(relativePath: string, signal?: AbortSignal): Promise<void> {
-    await this.markLocalDirty();
+    await this.markDirty();
     const localPath = assertSafePath(this.cachePath, relativePath);
     const data = await Deno.readFile(localPath);
     await retryWithBackoff(

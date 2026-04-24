@@ -189,10 +189,12 @@ The cache sync service maintains a local cache directory and syncs with GCS:
   The next `pullChanged` / `pushChanged` HEADs the remote index first;
   on generation match, it short-circuits without the full index GET or
   the cache walk. Self-healing: any remote mutation changes the
-  generation and falls through to the slow path. Writes that bypass
-  `pushFile` (direct `Deno.writeFile` into the cache) don't trip the
-  sidecar's `localDirty` flag — documented limitation; use `pushFile`
-  when integrating new cache writers.
+  generation and falls through to the slow path. External writers
+  into the cache (e.g. swamp-core's repository layer using
+  `atomicWriteFile`) MUST call `DatastoreSyncService.markDirty()` so
+  the fast-path short-circuit knows to run a full walk on the next
+  `pushChanged`. Without `markDirty`, the external write is silently
+  skipped on the next sync.
 - **Tracing** — set `SWAMP_GCS_SYNC_TRACE=1` to emit coarse per-phase
   timing lines (`[gcs-sync] pullChanged.fastpath <ms> hit`,
   `[gcs-sync] pushChanged.walk <ms> toPush=<n>`, etc.). Off by default;

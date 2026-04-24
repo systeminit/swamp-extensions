@@ -56,6 +56,17 @@ The datastore speaks the S3 API, so any S3-compatible object store works. Set
 `endpoint` (and `forcePathStyle: true` where required) to point at MinIO,
 DigitalOcean Spaces, Cloudflare R2, or other providers.
 
+## Cache-write contract
+
+The fast-path sync optimization maintains a `.datastore-sync-state.json`
+sidecar in the cache directory. Any write into the cache that does not
+route through the sync service's internal path MUST be accompanied by a
+call to `DatastoreSyncService.markDirty()`; otherwise the next
+`pushChanged` fast-paths past the write and the upload is silently
+skipped. swamp-core calls `markDirty()` from its repository layer for
+this reason. Downstream tooling that writes into the cache directory
+directly must follow the same contract.
+
 ## License
 
 AGPLv3 — see [LICENSE.txt](./LICENSE.txt) for details.

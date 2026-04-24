@@ -102,6 +102,15 @@ export interface DatastoreSyncService {
   pullChanged(options?: DatastoreSyncOptions): Promise<number | void>;
   /** Uploads new or changed local objects; returns the count synced where known. */
   pushChanged(options?: DatastoreSyncOptions): Promise<number | void>;
+  /**
+   * Signal that the local cache has uncommitted work. Must be called
+   * by swamp-core before (or immediately after) any write into the
+   * cache directory that does not route through a sync-service
+   * method. Invalidates the fast-path short-circuit so the next
+   * `pushChanged` performs a full walk + upload. No-op on
+   * implementations without a fast-path optimization.
+   */
+  markDirty(): Promise<void>;
 }
 
 /** Factory that produces the datastore's lock, verifier, and sync service. */
