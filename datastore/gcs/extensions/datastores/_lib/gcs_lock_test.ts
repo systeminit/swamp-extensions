@@ -120,10 +120,12 @@ function createMockGcsClient(): GcsClient & {
       return Promise.resolve({ generation: gen });
     },
 
-    getObject(key: string): Promise<Uint8Array> {
+    getObject(
+      key: string,
+    ): Promise<{ data: Uint8Array; generation?: string }> {
       const data = storage.get(key);
       if (!data) return Promise.reject(new Error(`NotFound: ${key}`));
-      return Promise.resolve(data);
+      return Promise.resolve({ data });
     },
 
     deleteObject(

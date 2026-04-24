@@ -445,6 +445,19 @@ export class GcsCacheSyncService implements DatastoreSyncService {
    * one would make every subsequent fast-path comparison succeed
    * spuriously.
    *
+   * Correctness invariant (swamp-club #168): `remoteIndexGeneration`
+   * MUST come from the same GET response (`x-goog-generation` header
+   * on the alt=media read) that delivered the bytes we verified the
+   * local cache against, OR from our own putObject response for the
+   * bytes we just wrote. A standalone post-walk `getMetadata` is
+   * TOCTOU-racy: a concurrent writer can bump the remote index
+   * between our GET and our metadata call, and recording their
+   * generation as ours would mask their data on the next fast-path
+   * sync until any future mutation invalidates. Callers must thread
+   * the fingerprint through `pullIndex`'s return value (or use
+   * `putResult.generation` in the writeback path) — never re-
+   * `getMetadata` for it.
+   *
    * `lastVerifiedAt` is forced strictly past the local index file's
    * mtime (by 1 ms when the wall clock would otherwise tie). The
    * fast-path probe uses `>=` to bail on any local edit, so a tied
@@ -604,8 +617,12 @@ export class GcsCacheSyncService implements DatastoreSyncService {
    */
   async pullIndex(
     options?: { forceRemote?: boolean; signal?: AbortSignal },
-  ): Promise<void> {
+  ): Promise<string | null> {
     const signal = options?.signal;
+    // Cache-hit returns null: no remote fetch happened, so we have no
+    // fingerprint the caller can safely record. The alternative —
+    // `getMetadata`'ing remote to synthesize a fingerprint —
+    // reintroduces the TOCTOU race this refactor exists to close.
     if (!options?.forceRemote) {
       try {
         const stat = await Deno.stat(this.indexPath);
@@ -614,7 +631,7 @@ export class GcsCacheSyncService implements DatastoreSyncService {
           const content = await Deno.readTextFile(this.indexPath);
           this.index = JSON.parse(content) as DatastoreIndex;
           this.indexMutated ||= this.scrubIndex();
-          return;
+          return null;
         }
       } catch {
         // No local index — fetch from GCS
@@ -630,8 +647,14 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     // critical for `pushChanged`, which would otherwise write an
     // empty index back to the remote and wipe the real one.
     let data: Uint8Array;
+    let generation: string | undefined;
     try {
-      data = await this.gcs.getObject(".datastore-index.json", signal);
+      const response = await this.gcs.getObject(
+        ".datastore-index.json",
+        signal,
+      );
+      data = response.data;
+      generation = response.generation;
     } catch (err) {
       if (err instanceof NotFoundError) {
         this.index = {
@@ -639,7 +662,8 @@ export class GcsCacheSyncService implements DatastoreSyncService {
           lastPulled: new Date().toISOString(),
           entries: {},
         };
-        return;
+        // No remote object yet → no fingerprint to return.
+        return null;
       }
       throw err;
     }
@@ -656,12 +680,13 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     } else {
       await atomicWriteTextFile(this.indexPath, text);
     }
+    return generation ?? null;
   }
 
   /** Fetches a single file from GCS to the local cache. */
   async pullFile(relativePath: string, signal?: AbortSignal): Promise<void> {
     const localPath = assertSafePath(this.cachePath, relativePath);
-    const data = await retryWithBackoff(
+    const { data } = await retryWithBackoff(
       () => this.gcs.getObject(relativePath, signal),
       { signal },
     );
@@ -698,7 +723,7 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     if (fastResult !== null) return fastResult;
 
     const indexStart = Date.now();
-    await this.pullIndex({ signal });
+    const indexGeneration = await this.pullIndex({ signal });
     tracePhase("pullChanged.pullIndex", indexStart);
 
     const walkStart = Date.now();
@@ -768,21 +793,17 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     }
 
     // Verified zero-diff: local cache matches the remote index whose
-    // generation we just GET'd. Persist the generation in the sidecar
-    // so the next `pullChanged` can take the fast path. If the HEAD
-    // fails, skip silently — the sidecar update is best-effort.
-    if (pulled === 0) {
-      try {
-        const meta = await this.gcs.getMetadata(
-          ".datastore-index.json",
-          signal,
-        );
-        if (meta.exists && meta.generation) {
-          await this.markSynced(meta.generation);
-        }
-      } catch {
-        // Non-fatal: sidecar update is opportunistic.
-      }
+    // generation we captured from the `pullIndex` GET response.
+    // Persist THAT generation — the one we walked against — so the
+    // next `pullChanged` can take the fast path. We deliberately do
+    // NOT re-`getMetadata` here: a post-walk metadata call could
+    // observe a generation from a concurrent writer's push landing
+    // during our walk, and recording that generation would mask their
+    // data on the next fast-path sync (swamp-club #168). If
+    // generation is null (cache-hit pullIndex or NotFound brand-new
+    // bucket), the sidecar is skipped — next sync self-heals.
+    if (pulled === 0 && indexGeneration) {
+      await this.markSynced(indexGeneration);
     }
 
     return pulled;
@@ -851,7 +872,10 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     if (fastResult !== null) return fastResult;
 
     const indexStart = Date.now();
-    await this.pullIndex({ forceRemote: true, signal });
+    const indexGeneration = await this.pullIndex({
+      forceRemote: true,
+      signal,
+    });
     tracePhase("pushChanged.pullIndex", indexStart);
 
     const walkStart = Date.now();
@@ -932,40 +956,28 @@ export class GcsCacheSyncService implements DatastoreSyncService {
       );
       await atomicWriteTextFile(this.indexPath, indexJson);
       this.indexMutated = false;
-      // Record the new index generation as the verified-clean baseline
-      // so the next `pushChanged` can take the fast path. `putObject`
-      // returns the fresh generation; if for some reason it's empty,
-      // fall back to a HEAD — the sidecar update is best-effort.
-      try {
-        if (putResult.generation && putResult.generation !== "0") {
-          await this.markSynced(putResult.generation);
-        } else {
-          const meta = await this.gcs.getMetadata(
-            ".datastore-index.json",
-            signal,
-          );
-          if (meta.exists && meta.generation) {
-            await this.markSynced(meta.generation);
-          }
-        }
-      } catch {
-        // Non-fatal: sidecar update is opportunistic.
+      // Record the new index generation as the verified-clean
+      // baseline so the next `pushChanged` can take the fast path.
+      // The putObject response's generation is bound to the bytes we
+      // just uploaded — it's race-free. If it's missing or zero, skip
+      // silently: a post-PUT `getMetadata` would be TOCTOU-racy (a
+      // concurrent writer could push between our PUT and our metadata
+      // call, and we'd record their generation as ours), and the
+      // sidecar is opportunistic — a missed update just costs one
+      // slow path next time (swamp-club #168).
+      if (putResult.generation && putResult.generation !== "0") {
+        await this.markSynced(putResult.generation);
       }
       tracePhase("pushChanged.writeback", writebackStart);
     } else {
       // No writeback needed and no failures — local cache is in sync
-      // with the remote index. Refresh the sidecar so the next call
-      // takes the fast path.
-      try {
-        const meta = await this.gcs.getMetadata(
-          ".datastore-index.json",
-          signal,
-        );
-        if (meta.exists && meta.generation) {
-          await this.markSynced(meta.generation);
-        }
-      } catch {
-        // Non-fatal: sidecar update is opportunistic.
+      // with the remote index. Record the generation we captured from
+      // the earlier `pullIndex({ forceRemote: true })` — that's the
+      // one we walked against. A post-walk `getMetadata` here would
+      // be TOCTOU-racy (same hazard as the pullChanged end-of-path,
+      // swamp-club #168). If pullIndex returned null (NotFound), skip.
+      if (indexGeneration) {
+        await this.markSynced(indexGeneration);
       }
     }
 

@@ -113,14 +113,17 @@ function createMockGcsClient(): GcsClient & {
       return Promise.resolve({ generation: nextGen(key) });
     },
 
-    getObject(key: string, signal?: AbortSignal): Promise<Uint8Array> {
+    getObject(
+      key: string,
+      signal?: AbortSignal,
+    ): Promise<{ data: Uint8Array; generation?: string }> {
       throwIfAborted(signal);
       gets.push(key);
       const data = storage.get(key);
       if (!data) {
         return Promise.reject(new NotFoundError(`Object not found: ${key}`));
       }
-      return Promise.resolve(data);
+      return Promise.resolve({ data, generation: genFor(key) });
     },
 
     getMetadata(
@@ -651,7 +654,9 @@ Deno.test("pushChanged: propagates non-NotFound remote errors and skips writebac
         puts.push({ key, body });
         return Promise.resolve({ generation: "1" });
       },
-      getObject(_key: string): Promise<Uint8Array> {
+      getObject(
+        _key: string,
+      ): Promise<{ data: Uint8Array; generation?: string }> {
         // Simulate a transient 5xx: generic Error, NOT a NotFoundError.
         return Promise.reject(new Error("500 Internal Server Error"));
       },
@@ -1218,7 +1223,7 @@ Deno.test({
       // assertion path — simpler: pullFile is `await retryWithBackoff(...)`
       // with no config override, so we instead verify behavior via
       // calling retryWithBackoff directly with fast delays.
-      const data = await originalRetry(
+      const { data } = await originalRetry(
         () => client.getObject("obj"),
         { baseDelayMs: 5 },
       );
@@ -1249,7 +1254,7 @@ Deno.test({
     });
     try {
       const client = new GcsClient({ bucket: "b", apiEndpoint: url });
-      const data = await retryWithBackoff(
+      const { data } = await retryWithBackoff(
         () => client.getObject("obj"),
         { baseDelayMs: 5 },
       );
@@ -1407,6 +1412,186 @@ Deno.test("markDirty: is idempotent — repeated calls don't thrash the sidecar"
       mtimeAfterRepeats.getTime(),
       mtimeAfterFirst.getTime(),
       "idempotent markDirty must not rewrite the sidecar",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// =========================================================================
+// swamp-club #168: fast-path sidecar TOCTOU regression tests (GCS mirror)
+//
+// Same race shape as the S3 suite: concurrent writer B bumps the remote
+// index generation between A's index GET and A's sidecar write. Before
+// the fix, `markSynced` observed B's generation via a post-walk
+// `getMetadata` and sidecar recorded B's value, causing A's next
+// fast-path sync to mask B's file. After the fix, sidecar records the
+// generation captured from A's GET response — the one A walked against.
+//
+// Microtask-bump ordering is the same as the S3 suite: the wrapped
+// mock attaches `p.then(bump)` BEFORE the caller's `await`
+// continuation, so bump runs first in the microtask queue. Any
+// refactor that moves bump-attachment to a macrotask (setTimeout)
+// loses the race simulation — keep this invariant when editing.
+// =========================================================================
+
+Deno.test("pullChanged: records generation from pullIndex GET, not post-walk getMetadata (swamp-club #168)", async () => {
+  const cachePath = await Deno.makeTempDir({
+    prefix: "gcssync-toctou-pull-",
+  });
+  try {
+    const mock = createMockGcsClient();
+    mock.generationOverrides.set(".datastore-index.json", "5");
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/ok.yaml": {
+          key: "data/@m/ok.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/ok.yaml", new TextEncoder().encode("hello"));
+    await seedFile(cachePath, "data/@m/ok.yaml", "hello");
+
+    // Race simulation: bump generation to 999 in a microtask scheduled
+    // from the index GET's resolution — fires between pullIndex's
+    // getObject resolving and the post-walk markSynced call.
+    const origGet = mock.getObject.bind(mock);
+    mock.getObject = ((key: string, signal?: AbortSignal) => {
+      const p = origGet(key, signal);
+      if (key === ".datastore-index.json") {
+        p.then(() => {
+          // B's push: new file, bumped generation.
+          mock.generationOverrides.set(".datastore-index.json", "999");
+          mock.storage.set(
+            ".datastore-index.json",
+            encodeIndex({
+              "data/@m/ok.yaml": {
+                key: "data/@m/ok.yaml",
+                size: 5,
+                lastModified: new Date().toISOString(),
+              },
+              "data/@m/new.yaml": {
+                key: "data/@m/new.yaml",
+                size: 3,
+                lastModified: new Date().toISOString(),
+              },
+            }),
+          );
+          mock.storage.set("data/@m/new.yaml", new TextEncoder().encode("new"));
+        });
+      }
+      return p;
+    }) as typeof mock.getObject;
+
+    const service = new GcsCacheSyncService(mock, cachePath);
+    const pulled = await service.pullChanged();
+    assertEquals(pulled, 0, "walk should see zero diff against generation 5");
+
+    // The fix records "5" (the generation we actually verified
+    // against), not "999" (the post-walk getMetadata value the old
+    // buggy code would have observed after B's push landed).
+    const sidecarText = await Deno.readTextFile(
+      join(cachePath, ".datastore-sync-state.json"),
+    );
+    const sidecar = JSON.parse(sidecarText);
+    assertEquals(
+      sidecar.remoteIndexGeneration,
+      "5",
+      "sidecar must record the generation from pullIndex GET, NOT a racy post-walk getMetadata",
+    );
+
+    // Invariant: the fix removes the post-walk getMetadata entirely.
+    // On a first pullChanged (no pre-existing sidecar), the fast-path
+    // probe returns null at the "no sidecar" check without
+    // getMetadata'ing, so zero getMetadata calls on the index are
+    // expected. If this assertion ever fails, a future maintainer
+    // likely re-added the TOCTOU metadata call.
+    assertEquals(
+      mock.heads.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "no post-walk getMetadata on index — TOCTOU fix removes it",
+    );
+
+    // On the second sync, the fast-path probe getMetadata's remote
+    // (999), compares to sidecar (5), and correctly bails to the slow
+    // path. The slow path walks and pulls B's new file. Without the
+    // fix, sidecar would be 999 and this sync would return 0, masking
+    // B's file.
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+    const secondResult = await service.pullChanged();
+    assertEquals(
+      secondResult,
+      1,
+      "second pullChanged must slow-path and pull B's file, not mask it",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+Deno.test("pushChanged no-writeback: records generation from forceRemote pullIndex, not post-walk getMetadata (swamp-club #168)", async () => {
+  const cachePath = await Deno.makeTempDir({
+    prefix: "gcssync-toctou-push-",
+  });
+  try {
+    const mock = createMockGcsClient();
+    mock.generationOverrides.set(".datastore-index.json", "5");
+    const existingMtime = new Date(0);
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/ok.yaml": {
+          key: "data/@m/ok.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+          localMtime: existingMtime.toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/ok.yaml", new TextEncoder().encode("hello"));
+    await seedFile(cachePath, "data/@m/ok.yaml", "hello");
+    await Deno.utime(
+      join(cachePath, "data/@m/ok.yaml"),
+      existingMtime,
+      existingMtime,
+    );
+
+    // Race simulation — bump generation to 999 in a microtask from
+    // the forceRemote index GET's resolution.
+    const origGet = mock.getObject.bind(mock);
+    mock.getObject = ((key: string, signal?: AbortSignal) => {
+      const p = origGet(key, signal);
+      if (key === ".datastore-index.json") {
+        p.then(() => {
+          mock.generationOverrides.set(".datastore-index.json", "999");
+        });
+      }
+      return p;
+    }) as typeof mock.getObject;
+
+    const service = new GcsCacheSyncService(mock, cachePath);
+    const pushed = await service.pushChanged();
+    assertEquals(pushed, 0, "walk should see zero diff against generation 5");
+
+    const sidecarText = await Deno.readTextFile(
+      join(cachePath, ".datastore-sync-state.json"),
+    );
+    const sidecar = JSON.parse(sidecarText);
+    assertEquals(
+      sidecar.remoteIndexGeneration,
+      "5",
+      "sidecar must record the generation from forceRemote pullIndex, NOT a racy post-walk getMetadata",
+    );
+
+    // No post-walk getMetadata in the no-writeback else branch after the fix.
+    assertEquals(
+      mock.heads.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "no post-walk getMetadata on index in no-writeback path — TOCTOU fix removes it",
     );
   } finally {
     await Deno.remove(cachePath, { recursive: true });
