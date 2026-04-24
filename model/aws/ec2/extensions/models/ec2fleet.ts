@@ -84,8 +84,8 @@ const TagSpecificationSchema = z.object({
 });
 
 const CapacityRebalanceSchema = z.object({
-  ReplacementStrategy: z.enum(["launch", "launch-before-terminate"]).optional(),
   TerminationDelay: z.number().int().optional(),
+  ReplacementStrategy: z.enum(["launch", "launch-before-terminate"]).optional(),
 });
 
 const MaintenanceStrategiesSchema = z.object({
@@ -96,8 +96,38 @@ const FleetLaunchTemplateSpecificationRequestSchema = z.object({
   LaunchTemplateName: z.string().min(3).max(128).regex(
     new RegExp("[a-zA-Z0-9\\(\\)\\.\\-/_]+"),
   ).optional(),
-  LaunchTemplateId: z.string().optional(),
   Version: z.string(),
+  LaunchTemplateId: z.string().optional(),
+  LaunchTemplateSpecificationUserData: z.string().optional(),
+});
+
+const InstanceMetadataOptionsRequestSchema = z.object({
+  HttpPutResponseHopLimit: z.number().int().optional(),
+  HttpTokens: z.enum(["optional", "required"]).optional(),
+  HttpEndpoint: z.enum(["disabled", "enabled"]).optional(),
+});
+
+const EbsBlockDeviceSchema = z.object({
+  SnapshotId: z.string().optional(),
+  VolumeType: z.enum(["gp2", "gp3", "io1", "io2", "sc1", "st1", "standard"])
+    .optional(),
+  KmsKeyId: z.string().optional(),
+  Encrypted: z.boolean().optional(),
+  Iops: z.number().int().optional(),
+  VolumeSize: z.number().int().optional(),
+  DeleteOnTermination: z.boolean().optional(),
+});
+
+const BlockDeviceMappingSchema = z.object({
+  Ebs: EbsBlockDeviceSchema.optional(),
+  NoDevice: z.string().optional(),
+  VirtualName: z.string().optional(),
+  DeviceName: z.string().optional(),
+});
+
+const IamInstanceProfileSpecificationSchema = z.object({
+  Arn: z.string().optional(),
+  Name: z.string().optional(),
 });
 
 const PlacementSchema = z.object({
@@ -111,6 +141,38 @@ const PlacementSchema = z.object({
   HostResourceGroupArn: z.string().optional(),
 });
 
+const PrivateIpAddressSpecificationRequestSchema = z.object({
+  PrivateIpAddress: z.string().optional(),
+  Primary: z.boolean().optional(),
+});
+
+const Ipv6AddressRequestSchema = z.object({
+  Ipv6Address: z.string().optional(),
+});
+
+const NetworkInterfaceSpecificationRequestSchema = z.object({
+  Description: z.string().optional(),
+  PrivateIpAddress: z.string().optional(),
+  PrivateIpAddresses: z.array(PrivateIpAddressSpecificationRequestSchema)
+    .optional(),
+  SecondaryPrivateIpAddressCount: z.number().int().optional(),
+  DeviceIndex: z.number().int().optional(),
+  Ipv6Addresses: z.array(Ipv6AddressRequestSchema).optional(),
+  SubnetId: z.string().optional(),
+  AssociatePublicIpAddress: z.boolean().optional(),
+  NetworkCardIndex: z.number().int().optional(),
+  NetworkInterfaceId: z.string().optional(),
+  InterfaceType: z.string().optional(),
+  Groups: z.array(z.string()).optional(),
+  Ipv6AddressCount: z.number().int().optional(),
+  DeleteOnTermination: z.boolean().optional(),
+});
+
+const MemoryGiBPerVCpuRequestSchema = z.object({
+  Min: z.number().optional(),
+  Max: z.number().optional(),
+});
+
 const VCpuCountRangeRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
@@ -121,9 +183,9 @@ const MemoryMiBRequestSchema = z.object({
   Max: z.number().int().optional(),
 });
 
-const MemoryGiBPerVCpuRequestSchema = z.object({
-  Min: z.number().optional(),
-  Max: z.number().optional(),
+const NetworkInterfaceCountRequestSchema = z.object({
+  Min: z.number().int().optional(),
+  Max: z.number().int().optional(),
 });
 
 const NetworkBandwidthGbpsRequestSchema = z.object({
@@ -131,27 +193,7 @@ const NetworkBandwidthGbpsRequestSchema = z.object({
   Max: z.number().optional(),
 });
 
-const NetworkInterfaceCountRequestSchema = z.object({
-  Min: z.number().int().optional(),
-  Max: z.number().int().optional(),
-});
-
-const TotalLocalStorageGBRequestSchema = z.object({
-  Min: z.number().optional(),
-  Max: z.number().optional(),
-});
-
-const BaselineEbsBandwidthMbpsRequestSchema = z.object({
-  Min: z.number().int().optional(),
-  Max: z.number().int().optional(),
-});
-
 const AcceleratorCountRequestSchema = z.object({
-  Min: z.number().int().optional(),
-  Max: z.number().int().optional(),
-});
-
-const AcceleratorTotalMemoryMiBRequestSchema = z.object({
   Min: z.number().int().optional(),
   Max: z.number().int().optional(),
 });
@@ -168,38 +210,54 @@ const BaselinePerformanceFactorsRequestSchema = z.object({
   Cpu: CpuPerformanceFactorRequestSchema.optional(),
 });
 
+const BaselineEbsBandwidthMbpsRequestSchema = z.object({
+  Min: z.number().int().optional(),
+  Max: z.number().int().optional(),
+});
+
+const AcceleratorTotalMemoryMiBRequestSchema = z.object({
+  Min: z.number().int().optional(),
+  Max: z.number().int().optional(),
+});
+
+const TotalLocalStorageGBRequestSchema = z.object({
+  Min: z.number().optional(),
+  Max: z.number().optional(),
+});
+
 const InstanceRequirementsRequestSchema = z.object({
-  VCpuCount: VCpuCountRangeRequestSchema.optional(),
-  MemoryMiB: MemoryMiBRequestSchema.optional(),
-  CpuManufacturers: z.array(
-    z.enum(["intel", "amd", "amazon-web-services", "apple"]),
-  ).optional(),
-  MemoryGiBPerVCpu: MemoryGiBPerVCpuRequestSchema.optional(),
-  AllowedInstanceTypes: z.array(
-    z.string().min(1).max(30).regex(new RegExp("[a-zA-Z0-9\\.\\*]+")),
-  ).optional(),
-  ExcludedInstanceTypes: z.array(
-    z.string().min(1).max(30).regex(new RegExp("[a-zA-Z0-9\\.\\*]+")),
-  ).optional(),
   InstanceGenerations: z.array(z.enum(["current", "previous"])).optional(),
-  SpotMaxPricePercentageOverLowestPrice: z.number().int().optional(),
-  OnDemandMaxPricePercentageOverLowestPrice: z.number().int().optional(),
-  MaxSpotPriceAsPercentageOfOptimalOnDemandPrice: z.number().int().optional(),
-  BareMetal: z.enum(["included", "required", "excluded"]).optional(),
-  BurstablePerformance: z.enum(["included", "required", "excluded"]).optional(),
-  RequireHibernateSupport: z.boolean().optional(),
-  NetworkBandwidthGbps: NetworkBandwidthGbpsRequestSchema.optional(),
-  NetworkInterfaceCount: NetworkInterfaceCountRequestSchema.optional(),
-  LocalStorage: z.enum(["included", "required", "excluded"]).optional(),
-  LocalStorageTypes: z.array(z.enum(["hdd", "ssd"])).optional(),
-  TotalLocalStorageGB: TotalLocalStorageGBRequestSchema.optional(),
-  BaselineEbsBandwidthMbps: BaselineEbsBandwidthMbpsRequestSchema.optional(),
+  RequireEncryptionInTransit: z.boolean().optional(),
+  MemoryGiBPerVCpu: MemoryGiBPerVCpuRequestSchema.optional(),
   AcceleratorTypes: z.array(z.enum(["gpu", "fpga", "inference", "media"]))
     .optional(),
-  AcceleratorCount: AcceleratorCountRequestSchema.optional(),
+  VCpuCount: VCpuCountRangeRequestSchema.optional(),
   AcceleratorManufacturers: z.array(
     z.enum(["amazon-web-services", "amd", "habana", "nvidia", "xilinx"]),
   ).optional(),
+  LocalStorage: z.enum(["included", "required", "excluded"]).optional(),
+  CpuManufacturers: z.array(
+    z.enum(["intel", "amd", "amazon-web-services", "apple"]),
+  ).optional(),
+  BareMetal: z.enum(["included", "required", "excluded"]).optional(),
+  RequireHibernateSupport: z.boolean().optional(),
+  MaxSpotPriceAsPercentageOfOptimalOnDemandPrice: z.number().int().optional(),
+  OnDemandMaxPricePercentageOverLowestPrice: z.number().int().optional(),
+  MemoryMiB: MemoryMiBRequestSchema.optional(),
+  LocalStorageTypes: z.array(z.enum(["hdd", "ssd"])).optional(),
+  NetworkInterfaceCount: NetworkInterfaceCountRequestSchema.optional(),
+  ExcludedInstanceTypes: z.array(
+    z.string().min(1).max(30).regex(new RegExp("[a-zA-Z0-9\\.\\*]+")),
+  ).optional(),
+  AllowedInstanceTypes: z.array(
+    z.string().min(1).max(30).regex(new RegExp("[a-zA-Z0-9\\.\\*]+")),
+  ).optional(),
+  NetworkBandwidthGbps: NetworkBandwidthGbpsRequestSchema.optional(),
+  AcceleratorCount: AcceleratorCountRequestSchema.optional(),
+  BaselinePerformanceFactors: BaselinePerformanceFactorsRequestSchema
+    .optional(),
+  SpotMaxPricePercentageOverLowestPrice: z.number().int().optional(),
+  BaselineEbsBandwidthMbps: BaselineEbsBandwidthMbpsRequestSchema.optional(),
   AcceleratorNames: z.array(
     z.enum([
       "a10g",
@@ -224,40 +282,26 @@ const InstanceRequirementsRequestSchema = z.object({
     ]),
   ).optional(),
   AcceleratorTotalMemoryMiB: AcceleratorTotalMemoryMiBRequestSchema.optional(),
-  BaselinePerformanceFactors: BaselinePerformanceFactorsRequestSchema
-    .optional(),
-  RequireEncryptionInTransit: z.boolean().optional(),
-});
-
-const EbsBlockDeviceSchema = z.object({
-  DeleteOnTermination: z.boolean().optional(),
-  Encrypted: z.boolean().optional(),
-  Iops: z.number().int().optional(),
-  KmsKeyId: z.string().optional(),
-  SnapshotId: z.string().optional(),
-  VolumeSize: z.number().int().optional(),
-  VolumeType: z.enum(["gp2", "gp3", "io1", "io2", "sc1", "st1", "standard"])
-    .optional(),
-});
-
-const BlockDeviceMappingSchema = z.object({
-  DeviceName: z.string().optional(),
-  Ebs: EbsBlockDeviceSchema.optional(),
-  NoDevice: z.string().optional(),
-  VirtualName: z.string().optional(),
+  BurstablePerformance: z.enum(["included", "required", "excluded"]).optional(),
+  TotalLocalStorageGB: TotalLocalStorageGBRequestSchema.optional(),
 });
 
 const FleetLaunchTemplateOverridesRequestSchema = z.object({
+  MetadataOptions: InstanceMetadataOptionsRequestSchema.optional(),
+  Priority: z.number().optional(),
+  AvailabilityZoneId: z.string().optional(),
+  BlockDeviceMappings: z.array(BlockDeviceMappingSchema).optional(),
+  AvailabilityZone: z.string().optional(),
+  IamInstanceProfile: IamInstanceProfileSpecificationSchema.optional(),
+  SubnetId: z.string().optional(),
+  KeyName: z.string().optional(),
   WeightedCapacity: z.number().optional(),
   Placement: PlacementSchema.optional(),
-  Priority: z.number().optional(),
-  AvailabilityZone: z.string().optional(),
-  AvailabilityZoneId: z.string().optional(),
-  SubnetId: z.string().optional(),
-  InstanceType: z.string().optional(),
+  NetworkInterfaces: z.array(NetworkInterfaceSpecificationRequestSchema)
+    .optional(),
   InstanceRequirements: InstanceRequirementsRequestSchema.optional(),
+  InstanceType: z.string().optional(),
   MaxPrice: z.string().optional(),
-  BlockDeviceMappings: z.array(BlockDeviceMappingSchema).optional(),
 });
 
 const FleetLaunchTemplateConfigRequestSchema = z.object({
@@ -270,6 +314,7 @@ const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
   ),
+  Context: z.string().optional(),
   TargetCapacitySpecification: z.object({
     DefaultTargetCapacityType: z.enum([
       "on-demand",
@@ -277,10 +322,10 @@ const GlobalArgsSchema = z.object({
       "capacity-block",
       "reserved-capacity",
     ]).optional(),
-    TargetCapacityUnitType: z.enum(["vcpu", "memory-mib", "units"]).optional(),
     TotalTargetCapacity: z.number().int(),
     OnDemandTargetCapacity: z.number().int().optional(),
     SpotTargetCapacity: z.number().int().optional(),
+    TargetCapacityUnitType: z.enum(["vcpu", "memory-mib", "units"]).optional(),
   }),
   OnDemandOptions: z.object({
     SingleAvailabilityZone: z.boolean().optional(),
@@ -291,16 +336,10 @@ const GlobalArgsSchema = z.object({
     CapacityReservationOptions: CapacityReservationOptionsRequestSchema
       .optional(),
   }).optional(),
-  ReservedCapacityOptions: z.object({
-    ReservationTypes: z.array(z.enum(["interruptible-capacity-reservation"]))
-      .optional(),
-  }).optional(),
-  Type: z.enum(["maintain", "request", "instant"]).optional(),
   ExcessCapacityTerminationPolicy: z.enum(["termination", "no-termination"])
     .optional(),
   TagSpecifications: z.array(TagSpecificationSchema).optional(),
   SpotOptions: z.object({
-    MaintenanceStrategies: MaintenanceStrategiesSchema.optional(),
     SingleAvailabilityZone: z.boolean().optional(),
     AllocationStrategy: z.enum([
       "lowest-price",
@@ -316,25 +355,31 @@ const GlobalArgsSchema = z.object({
     SingleInstanceType: z.boolean().optional(),
     MinTargetCapacity: z.number().int().optional(),
     MaxTotalPrice: z.string().optional(),
+    MaintenanceStrategies: MaintenanceStrategiesSchema.optional(),
     InstanceInterruptionBehavior: z.enum(["hibernate", "stop", "terminate"])
       .optional(),
     InstancePoolsToUseCount: z.number().int().optional(),
   }).optional(),
-  ValidFrom: z.string().optional(),
-  ReplaceUnhealthyInstances: z.boolean().optional(),
   LaunchTemplateConfigs: z.array(FleetLaunchTemplateConfigRequestSchema),
   TerminateInstancesWithExpiration: z.boolean().optional(),
   ValidUntil: z.string().optional(),
-  Context: z.string().optional(),
+  Type: z.enum(["maintain", "request", "instant"]).optional(),
+  ReservedCapacityOptions: z.object({
+    ReservationTypes: z.array(z.enum(["interruptible-capacity-reservation"]))
+      .optional(),
+  }).optional(),
+  ValidFrom: z.string().optional(),
+  ReplaceUnhealthyInstances: z.boolean().optional(),
 });
 
 const StateSchema = z.object({
+  Context: z.string().optional(),
   TargetCapacitySpecification: z.object({
     DefaultTargetCapacityType: z.string(),
-    TargetCapacityUnitType: z.string(),
     TotalTargetCapacity: z.number(),
     OnDemandTargetCapacity: z.number(),
     SpotTargetCapacity: z.number(),
+    TargetCapacityUnitType: z.string(),
   }).optional(),
   OnDemandOptions: z.object({
     SingleAvailabilityZone: z.boolean(),
@@ -344,36 +389,36 @@ const StateSchema = z.object({
     MaxTotalPrice: z.string(),
     CapacityReservationOptions: CapacityReservationOptionsRequestSchema,
   }).optional(),
-  ReservedCapacityOptions: z.object({
-    ReservationTypes: z.array(z.string()),
-  }).optional(),
-  Type: z.string().optional(),
   ExcessCapacityTerminationPolicy: z.string().optional(),
   TagSpecifications: z.array(TagSpecificationSchema).optional(),
   SpotOptions: z.object({
-    MaintenanceStrategies: MaintenanceStrategiesSchema,
     SingleAvailabilityZone: z.boolean(),
     AllocationStrategy: z.string(),
     SingleInstanceType: z.boolean(),
     MinTargetCapacity: z.number(),
     MaxTotalPrice: z.string(),
+    MaintenanceStrategies: MaintenanceStrategiesSchema,
     InstanceInterruptionBehavior: z.string(),
     InstancePoolsToUseCount: z.number(),
   }).optional(),
-  ValidFrom: z.string().optional(),
-  ReplaceUnhealthyInstances: z.boolean().optional(),
   LaunchTemplateConfigs: z.array(FleetLaunchTemplateConfigRequestSchema)
     .optional(),
-  FleetId: z.string(),
   TerminateInstancesWithExpiration: z.boolean().optional(),
   ValidUntil: z.string().optional(),
-  Context: z.string().optional(),
+  Type: z.string().optional(),
+  ReservedCapacityOptions: z.object({
+    ReservationTypes: z.array(z.string()),
+  }).optional(),
+  FleetId: z.string(),
+  ValidFrom: z.string().optional(),
+  ReplaceUnhealthyInstances: z.boolean().optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   name: z.string().optional(),
+  Context: z.string().optional(),
   TargetCapacitySpecification: z.object({
     DefaultTargetCapacityType: z.enum([
       "on-demand",
@@ -381,10 +426,10 @@ const InputsSchema = z.object({
       "capacity-block",
       "reserved-capacity",
     ]).optional(),
-    TargetCapacityUnitType: z.enum(["vcpu", "memory-mib", "units"]).optional(),
     TotalTargetCapacity: z.number().int().optional(),
     OnDemandTargetCapacity: z.number().int().optional(),
     SpotTargetCapacity: z.number().int().optional(),
+    TargetCapacityUnitType: z.enum(["vcpu", "memory-mib", "units"]).optional(),
   }).optional(),
   OnDemandOptions: z.object({
     SingleAvailabilityZone: z.boolean().optional(),
@@ -395,16 +440,10 @@ const InputsSchema = z.object({
     CapacityReservationOptions: CapacityReservationOptionsRequestSchema
       .optional(),
   }).optional(),
-  ReservedCapacityOptions: z.object({
-    ReservationTypes: z.array(z.enum(["interruptible-capacity-reservation"]))
-      .optional(),
-  }).optional(),
-  Type: z.enum(["maintain", "request", "instant"]).optional(),
   ExcessCapacityTerminationPolicy: z.enum(["termination", "no-termination"])
     .optional(),
   TagSpecifications: z.array(TagSpecificationSchema).optional(),
   SpotOptions: z.object({
-    MaintenanceStrategies: MaintenanceStrategiesSchema.optional(),
     SingleAvailabilityZone: z.boolean().optional(),
     AllocationStrategy: z.enum([
       "lowest-price",
@@ -420,23 +459,28 @@ const InputsSchema = z.object({
     SingleInstanceType: z.boolean().optional(),
     MinTargetCapacity: z.number().int().optional(),
     MaxTotalPrice: z.string().optional(),
+    MaintenanceStrategies: MaintenanceStrategiesSchema.optional(),
     InstanceInterruptionBehavior: z.enum(["hibernate", "stop", "terminate"])
       .optional(),
     InstancePoolsToUseCount: z.number().int().optional(),
   }).optional(),
-  ValidFrom: z.string().optional(),
-  ReplaceUnhealthyInstances: z.boolean().optional(),
   LaunchTemplateConfigs: z.array(FleetLaunchTemplateConfigRequestSchema)
     .optional(),
   TerminateInstancesWithExpiration: z.boolean().optional(),
   ValidUntil: z.string().optional(),
-  Context: z.string().optional(),
+  Type: z.enum(["maintain", "request", "instant"]).optional(),
+  ReservedCapacityOptions: z.object({
+    ReservationTypes: z.array(z.enum(["interruptible-capacity-reservation"]))
+      .optional(),
+  }).optional(),
+  ValidFrom: z.string().optional(),
+  ReplaceUnhealthyInstances: z.boolean().optional(),
 });
 
 /** Swamp extension model for EC2 EC2Fleet. Registered at `@swamp/aws/ec2/ec2fleet`. */
 export const model = {
   type: "@swamp/aws/ec2/ec2fleet",
-  version: "2026.04.23.2",
+  version: "2026.04.24.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -465,6 +509,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.23.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.24.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

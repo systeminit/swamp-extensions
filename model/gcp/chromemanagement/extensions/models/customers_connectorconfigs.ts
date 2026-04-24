@@ -21,6 +21,7 @@ import {
   getProjectId,
   isResourceNotFoundError,
   readResource,
+  updateResource,
 } from "./_lib/gcp.ts";
 
 /** Construct the fully-qualified resource name from parent and short name. */
@@ -63,6 +64,24 @@ const INSERT_CONFIG = {
   },
 } as const;
 
+const PATCH_CONFIG = {
+  "id": "chromemanagement.customers.connectorConfigs.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
 const DELETE_CONFIG = {
   "id": "chromemanagement.customers.connectorConfigs.delete",
   "path": "v1/{+name}",
@@ -71,9 +90,6 @@ const DELETE_CONFIG = {
     "name",
   ],
   "parameters": {
-    "etag": {
-      "location": "query",
-    },
     "name": {
       "location": "path",
       "required": true,
@@ -465,7 +481,7 @@ const GlobalArgsSchema = z.object({
         "Optional. Whether to use an unsecure HTTP scheme. Defaults to false (HTTPS).",
       ).optional(),
     }).describe("Splunk connector config.").optional(),
-  }).describe("The details of the connector config. LINT.IfChange").optional(),
+  }).describe("The details of the connector config.").optional(),
   displayName: z.string().describe("Required. The display name of the config.")
     .optional(),
   name: z.string().describe(
@@ -480,7 +496,7 @@ const GlobalArgsSchema = z.object({
         "Output only. The state of the connector config. The connector state is disabled if the connector has not successfully sent an event in the last 24 hours.",
       ).optional(),
     updateTime: z.string().describe(
-      "Output only. Field recording time of most recent modification of the status. For ENABLED, this is the time the status was changed to ENABLED. For DISABLED_BY_FAILURES, this is the time of the most recent failed attempt to send an event to this config.",
+      "Output only. Field recording time of most recent modification of the status. For `ENABLED`, this is the time the status was changed to `ENABLED`. For `DISABLED_BY_FAILURES`, this is the time of the most recent failed attempt to send an event to this config.",
     ).optional(),
   }).describe("The status of the connector config.").optional(),
   type: z.enum([
@@ -579,7 +595,6 @@ const StateSchema = z.object({
     }),
   }).optional(),
   displayName: z.string().optional(),
-  etag: z.string().optional(),
   name: z.string(),
   status: z.object({
     failureStartTime: z.string(),
@@ -975,7 +990,7 @@ const InputsSchema = z.object({
         "Optional. Whether to use an unsecure HTTP scheme. Defaults to false (HTTPS).",
       ).optional(),
     }).describe("Splunk connector config.").optional(),
-  }).describe("The details of the connector config. LINT.IfChange").optional(),
+  }).describe("The details of the connector config.").optional(),
   displayName: z.string().describe("Required. The display name of the config.")
     .optional(),
   name: z.string().describe(
@@ -990,7 +1005,7 @@ const InputsSchema = z.object({
         "Output only. The state of the connector config. The connector state is disabled if the connector has not successfully sent an event in the last 24 hours.",
       ).optional(),
     updateTime: z.string().describe(
-      "Output only. Field recording time of most recent modification of the status. For ENABLED, this is the time the status was changed to ENABLED. For DISABLED_BY_FAILURES, this is the time of the most recent failed attempt to send an event to this config.",
+      "Output only. Field recording time of most recent modification of the status. For `ENABLED`, this is the time the status was changed to `ENABLED`. For `DISABLED_BY_FAILURES`, this is the time of the most recent failed attempt to send an event to this config.",
     ).optional(),
   }).describe("The status of the connector config.").optional(),
   type: z.enum([
@@ -1013,10 +1028,15 @@ const InputsSchema = z.object({
 /** Swamp extension model for Google Cloud Chrome Management Customers.ConnectorConfigs. Registered at `@swamp/gcp/chromemanagement/customers-connectorconfigs`. */
 export const model = {
   type: "@swamp/gcp/chromemanagement/customers-connectorconfigs",
-  version: "2026.04.23.1",
+  version: "2026.04.24.1",
   upgrades: [
     {
       toVersion: "2026.04.23.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.24.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1097,6 +1117,60 @@ export const model = {
             /[\/\\]/g,
             "_",
           ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update connectorConfigs attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["details"] !== undefined) body["details"] = g["details"];
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["status"] !== undefined) body["status"] = g["status"];
+        if (g["type"] !== undefined) body["type"] = g["type"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
         const handle = await context.writeResource(
           "state",
           instanceName,

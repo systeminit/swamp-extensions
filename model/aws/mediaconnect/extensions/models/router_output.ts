@@ -25,7 +25,7 @@ const RtpRouterOutputConfigurationSchema = z.object({
   DestinationAddress: z.string().describe(
     "The destination IP address for the RTP protocol in the router output configuration.",
   ),
-  DestinationPort: z.number().int().min(0).max(65531).describe(
+  DestinationPort: z.number().int().min(1024).max(65531).describe(
     "The destination port number for the RTP protocol in the router output configuration.",
   ),
   ForwardErrorCorrection: z.enum(["ENABLED", "DISABLED"]).optional(),
@@ -35,7 +35,7 @@ const RistRouterOutputConfigurationSchema = z.object({
   DestinationAddress: z.string().describe(
     "The destination IP address for the RIST protocol in the router output configuration.",
   ),
-  DestinationPort: z.number().int().min(0).max(65535).describe(
+  DestinationPort: z.number().int().min(1024).max(65535).describe(
     "The destination port number for the RIST protocol in the router output configuration.",
   ),
 });
@@ -46,18 +46,18 @@ const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
       "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$",
     ),
   ).describe(
-    "The ARN of the AWS Secrets Manager secret used for transit encryption.",
+    "The ARN of the Secrets Manager secret used for transit encryption.",
   ),
   RoleArn: z.string().regex(
     new RegExp("^arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+$"),
   ).describe(
-    "The ARN of the IAM role assumed by MediaConnect to access the AWS Secrets Manager secret.",
+    "The ARN of the IAM role assumed by MediaConnect to access the Secrets Manager secret.",
   ),
 });
 
 const SrtEncryptionConfigurationSchema = z.object({
   EncryptionKey: SecretsManagerEncryptionKeyConfigurationSchema.describe(
-    "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
+    "The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.",
   ),
 });
 
@@ -77,7 +77,7 @@ const SrtCallerRouterOutputConfigurationSchema = z.object({
   DestinationAddress: z.string().describe(
     "The destination IP address for the SRT protocol in caller mode.",
   ),
-  DestinationPort: z.number().int().min(0).max(65535).describe(
+  DestinationPort: z.number().int().min(1024).max(65535).describe(
     "The destination port number for the SRT protocol in caller mode.",
   ),
   MinimumLatencyMilliseconds: z.number().int().min(10).max(10000).describe(
@@ -120,7 +120,7 @@ const FlowTransitEncryptionSchema = z.object({
   EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
   EncryptionKeyConfiguration: z.object({
     SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
-      "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
+      "The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.",
     ).optional(),
     Automatic: z.string().describe(
       "Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.",
@@ -150,7 +150,7 @@ const MediaLiveTransitEncryptionSchema = z.object({
   EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
   EncryptionKeyConfiguration: z.object({
     SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
-      "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
+      "The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.",
     ).optional(),
     Automatic: z.string().describe(
       "Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.",
@@ -169,7 +169,7 @@ const MediaLiveInputRouterOutputConfigurationSchema = z.object({
     .optional(),
   MediaLivePipelineId: z.enum(["PIPELINE_0", "PIPELINE_1"]).optional(),
   DestinationTransitEncryption: MediaLiveTransitEncryptionSchema.describe(
-    "The encryption configuration that defines how content is encrypted during transit between MediaConnect Router and MediaLive. This configuration determines whether encryption keys are automatically managed by the service or manually managed through AWS Secrets Manager.",
+    "The encryption configuration that defines how content is encrypted during transit between MediaConnect Router and MediaLive. This configuration determines whether encryption keys are automatically managed by the service or manually managed through Secrets Manager.",
   ),
 });
 
@@ -224,7 +224,7 @@ const GlobalArgsSchema = z.object({
   ),
   Name: z.string().min(1).max(128).describe("The name of the router output."),
   RegionName: z.string().describe(
-    "The AWS Region for the router output. Defaults to the current region if not specified.",
+    "The Amazon Web Services Region for the router output. Defaults to the current region if not specified.",
   ).optional(),
   RoutingScope: z.enum(["REGIONAL", "GLOBAL"]),
   Tags: z.array(TagSchema).describe(
@@ -295,7 +295,7 @@ const InputsSchema = z.object({
   Name: z.string().min(1).max(128).describe("The name of the router output.")
     .optional(),
   RegionName: z.string().describe(
-    "The AWS Region for the router output. Defaults to the current region if not specified.",
+    "The Amazon Web Services Region for the router output. Defaults to the current region if not specified.",
   ).optional(),
   RoutingScope: z.enum(["REGIONAL", "GLOBAL"]).optional(),
   Tags: z.array(TagSchema).describe(
@@ -307,7 +307,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for MediaConnect RouterOutput. Registered at `@swamp/aws/mediaconnect/router-output`. */
 export const model = {
   type: "@swamp/aws/mediaconnect/router-output",
-  version: "2026.04.23.2",
+  version: "2026.04.24.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -331,6 +331,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.23.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.24.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

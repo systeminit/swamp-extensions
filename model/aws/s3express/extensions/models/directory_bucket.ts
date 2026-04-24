@@ -76,6 +76,57 @@ const MetricsConfigurationSchema = z.object({
   ).optional(),
 });
 
+const DestinationSchema = z.object({
+  BucketArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the destination Amazon S3 bucket to which data is exported.",
+  ),
+  BucketAccountId: z.string().describe(
+    "The account ID that owns the destination S3 bucket.",
+  ).optional(),
+  Format: z.enum(["CSV", "ORC", "Parquet"]).describe(
+    "Specifies the file format used when exporting data to Amazon S3.",
+  ),
+  Prefix: z.string().describe(
+    "The prefix to use when exporting data. The prefix is prepended to all results.",
+  ).optional(),
+});
+
+const InventoryConfigurationSchema = z.object({
+  Destination: DestinationSchema.describe(
+    "Specifies information about where to publish inventory reports for an Amazon S3 Express bucket.",
+  ),
+  Enabled: z.boolean().describe(
+    "Specifies whether the inventory is enabled or disabled.",
+  ),
+  Id: z.string().describe(
+    "The ID used to identify the inventory configuration.",
+  ),
+  IncludedObjectVersions: z.enum(["All", "Current"]).describe(
+    "Object versions to include in the inventory list.",
+  ),
+  OptionalFields: z.array(
+    z.enum([
+      "Size",
+      "LastModifiedDate",
+      "StorageClass",
+      "ETag",
+      "IsMultipartUploaded",
+      "EncryptionStatus",
+      "BucketKeyStatus",
+      "ChecksumAlgorithm",
+      "LifecycleExpirationDate",
+    ]),
+  ).describe(
+    "Contains the optional fields that are included in the inventory results.",
+  ).optional(),
+  Prefix: z.string().describe(
+    "The prefix that is prepended to all inventory results.",
+  ).optional(),
+  ScheduleFrequency: z.enum(["Daily", "Weekly"]).describe(
+    "Specifies the schedule for generating inventory results.",
+  ),
+});
+
 const GlobalArgsSchema = z.object({
   BucketName: z.string().max(63).regex(
     new RegExp("^[a-z0-9][a-z0-9//.//-]*[a-z0-9]$"),
@@ -106,6 +157,9 @@ const GlobalArgsSchema = z.object({
   MetricsConfigurations: z.array(MetricsConfigurationSchema).describe(
     "Specifies the metrics configurations for the Amazon S3 Express bucket.",
   ).optional(),
+  InventoryConfigurations: z.array(InventoryConfigurationSchema).describe(
+    "The inventory configuration for an Amazon S3 Express bucket.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -122,6 +176,7 @@ const StateSchema = z.object({
   }).optional(),
   Tags: z.array(TagSchema).optional(),
   MetricsConfigurations: z.array(MetricsConfigurationSchema).optional(),
+  InventoryConfigurations: z.array(InventoryConfigurationSchema).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -157,12 +212,15 @@ const InputsSchema = z.object({
   MetricsConfigurations: z.array(MetricsConfigurationSchema).describe(
     "Specifies the metrics configurations for the Amazon S3 Express bucket.",
   ).optional(),
+  InventoryConfigurations: z.array(InventoryConfigurationSchema).describe(
+    "The inventory configuration for an Amazon S3 Express bucket.",
+  ).optional(),
 });
 
 /** Swamp extension model for S3Express DirectoryBucket. Registered at `@swamp/aws/s3express/directory-bucket`. */
 export const model = {
   type: "@swamp/aws/s3express/directory-bucket",
-  version: "2026.04.23.2",
+  version: "2026.04.24.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -192,6 +250,11 @@ export const model = {
     {
       toVersion: "2026.04.23.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.24.1",
+      description: "Added: InventoryConfigurations",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
