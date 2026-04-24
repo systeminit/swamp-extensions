@@ -43,18 +43,18 @@ const SecretsManagerEncryptionKeyConfigurationSchema = z.object({
       "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$",
     ),
   ).describe(
-    "The ARN of the AWS Secrets Manager secret used for transit encryption.",
+    "The ARN of the Secrets Manager secret used for transit encryption.",
   ),
   RoleArn: z.string().regex(
     new RegExp("^arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+$"),
   ).describe(
-    "The ARN of the IAM role assumed by MediaConnect to access the AWS Secrets Manager secret.",
+    "The ARN of the IAM role assumed by MediaConnect to access the Secrets Manager secret.",
   ),
 });
 
 const SrtDecryptionConfigurationSchema = z.object({
   EncryptionKey: SecretsManagerEncryptionKeyConfigurationSchema.describe(
-    "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
+    "The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.",
   ),
 });
 
@@ -74,7 +74,7 @@ const SrtCallerRouterInputConfigurationSchema = z.object({
   SourceAddress: z.string().describe(
     "The source IP address for the SRT protocol in caller mode.",
   ),
-  SourcePort: z.number().int().min(0).max(65535).describe(
+  SourcePort: z.number().int().min(1024).max(65535).describe(
     "The source port number for the SRT protocol in caller mode.",
   ),
   MinimumLatencyMilliseconds: z.number().int().min(10).max(10000).describe(
@@ -170,7 +170,7 @@ const FlowTransitEncryptionSchema = z.object({
   EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
   EncryptionKeyConfiguration: z.object({
     SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
-      "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
+      "The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.",
     ).optional(),
     Automatic: z.string().describe(
       "Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.",
@@ -192,6 +192,37 @@ const MediaConnectFlowRouterInputConfigurationSchema = z.object({
     .optional(),
   SourceTransitDecryption: FlowTransitEncryptionSchema.describe(
     "The configuration that defines how content is encrypted during transit between the MediaConnect router and a MediaConnect flow.",
+  ),
+});
+
+const MediaLiveTransitEncryptionSchema = z.object({
+  EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
+  EncryptionKeyConfiguration: z.object({
+    SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
+      "The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.",
+    ).optional(),
+    Automatic: z.string().describe(
+      "Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.",
+    ).optional(),
+  }).describe(
+    "Configuration settings for the MediaLive transit encryption key.",
+  ),
+});
+
+const MediaLiveChannelRouterInputConfigurationSchema = z.object({
+  MediaLiveChannelArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws[a-zA-Z-]*):medialive:[a-z0-9-]+:[0-9]{12}:channel:[a-zA-Z0-9]+$",
+    ),
+  ).describe(
+    "The ARN of the MediaLive channel to connect to this router input.",
+  ).optional(),
+  MediaLivePipelineId: z.enum(["PIPELINE_0", "PIPELINE_1"]).optional(),
+  MediaLiveChannelOutputName: z.string().describe(
+    "The name of the MediaLive channel output to connect to this router input.",
+  ).optional(),
+  SourceTransitDecryption: MediaLiveTransitEncryptionSchema.describe(
+    "The encryption configuration that defines how content is encrypted during transit between MediaConnect Router and MediaLive. This configuration determines whether encryption keys are automatically managed by the service or manually managed through Secrets Manager.",
   ),
 });
 
@@ -233,6 +264,9 @@ const GlobalArgsSchema = z.object({
     MediaConnectFlow: MediaConnectFlowRouterInputConfigurationSchema.describe(
       "Configuration settings for connecting a router input to a flow output.",
     ).optional(),
+    MediaLiveChannel: MediaLiveChannelRouterInputConfigurationSchema.describe(
+      "Configuration settings for connecting a router input to a MediaLive channel output.",
+    ).optional(),
   }).describe("The configuration settings for a router input."),
   MaintenanceConfiguration: z.object({
     PreferredDayTime: PreferredDayTimeMaintenanceConfigurationSchema.describe(
@@ -249,7 +283,7 @@ const GlobalArgsSchema = z.object({
   ),
   Name: z.string().min(1).max(128).describe("The name of the router input."),
   RegionName: z.string().describe(
-    "The AWS Region for the router input. Defaults to the current region if not specified.",
+    "The Amazon Web Services Region for the router input. Defaults to the current region if not specified.",
   ).optional(),
   RoutingScope: z.enum(["REGIONAL", "GLOBAL"]),
   Tags: z.array(TagSchema).describe(
@@ -260,7 +294,7 @@ const GlobalArgsSchema = z.object({
     EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
     EncryptionKeyConfiguration: z.object({
       SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
-        "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
+        "The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.",
       ).optional(),
       Automatic: z.string().describe(
         "Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.",
@@ -279,6 +313,7 @@ const StateSchema = z.object({
     Failover: FailoverRouterInputConfigurationSchema,
     Merge: MergeRouterInputConfigurationSchema,
     MediaConnectFlow: MediaConnectFlowRouterInputConfigurationSchema,
+    MediaLiveChannel: MediaLiveChannelRouterInputConfigurationSchema,
   }).optional(),
   CreatedAt: z.string().optional(),
   Id: z.string().optional(),
@@ -327,6 +362,9 @@ const InputsSchema = z.object({
     MediaConnectFlow: MediaConnectFlowRouterInputConfigurationSchema.describe(
       "Configuration settings for connecting a router input to a flow output.",
     ).optional(),
+    MediaLiveChannel: MediaLiveChannelRouterInputConfigurationSchema.describe(
+      "Configuration settings for connecting a router input to a MediaLive channel output.",
+    ).optional(),
   }).describe("The configuration settings for a router input.").optional(),
   MaintenanceConfiguration: z.object({
     PreferredDayTime: PreferredDayTimeMaintenanceConfigurationSchema.describe(
@@ -344,7 +382,7 @@ const InputsSchema = z.object({
   Name: z.string().min(1).max(128).describe("The name of the router input.")
     .optional(),
   RegionName: z.string().describe(
-    "The AWS Region for the router input. Defaults to the current region if not specified.",
+    "The Amazon Web Services Region for the router input. Defaults to the current region if not specified.",
   ).optional(),
   RoutingScope: z.enum(["REGIONAL", "GLOBAL"]).optional(),
   Tags: z.array(TagSchema).describe(
@@ -355,7 +393,7 @@ const InputsSchema = z.object({
     EncryptionKeyType: z.enum(["SECRETS_MANAGER", "AUTOMATIC"]).optional(),
     EncryptionKeyConfiguration: z.object({
       SecretsManager: SecretsManagerEncryptionKeyConfigurationSchema.describe(
-        "The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.",
+        "The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.",
       ).optional(),
       Automatic: z.string().describe(
         "Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.",
@@ -369,7 +407,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for MediaConnect RouterInput. Registered at `@swamp/aws/mediaconnect/router-input`. */
 export const model = {
   type: "@swamp/aws/mediaconnect/router-input",
-  version: "2026.04.23.2",
+  version: "2026.04.24.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -393,6 +431,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.23.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.24.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
