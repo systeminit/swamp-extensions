@@ -1224,8 +1224,6 @@ Deno.test({
       );
       assertEquals(Array.from(data), [1, 2, 3]);
       assertEquals(calls, 2, "first attempt 503, second 200");
-      // touch cachePath to silence unused
-      await Deno.stat(cachePath);
     } finally {
       await shutdown();
       await Deno.remove(cachePath, { recursive: true });

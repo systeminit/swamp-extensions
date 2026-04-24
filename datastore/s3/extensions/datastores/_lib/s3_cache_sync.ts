@@ -305,22 +305,26 @@ export async function retryWithBackoff<T>(
   }
   const baseDelayMs = config?.baseDelayMs ?? RETRY_BASE_DELAY_MS;
   const signal = config?.signal;
-  let lastErr: unknown;
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+  let attempt = 0;
+  // `while (true)` (not `for attempt < maxAttempts`) because every
+  // iteration either returns (success) or throws (exhausted budget /
+  // non-retryable) — there's no meaningful "loop exhausted" state.
+  // Makes the control flow honest to TypeScript without a dead
+  // `throw lastErr` at the bottom.
+  while (true) {
     throwIfAborted(signal);
     try {
       return await op();
     } catch (err) {
-      lastErr = err;
       const isLastAttempt = attempt === maxAttempts - 1;
       if (isLastAttempt || !isRetryableError(err)) throw err;
       const raw = baseDelayMs * Math.pow(3, attempt);
       const jitter = raw * RETRY_JITTER_FRACTION * (Math.random() * 2 - 1);
       const delay = Math.max(0, Math.floor(raw + jitter));
       await abortableSleep(delay, signal);
+      attempt++;
     }
   }
-  throw lastErr;
 }
 
 /**
