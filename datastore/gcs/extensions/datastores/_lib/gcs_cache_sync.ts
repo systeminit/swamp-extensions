@@ -25,12 +25,18 @@
  * - pushChanged(): pushes only new/modified files to GCS
  *
  * Tracks metadata in `.datastore-index.json` to avoid unnecessary transfers.
+ * A `.datastore-sync-state.json` sidecar records the remote index's GCS
+ * `generation` at the last verified-clean sync so zero-diff syncs can
+ * short-circuit to a single HEAD on the next call.
  */
 
 import { dirname, join, normalize, relative } from "jsr:@std/path@1";
 import { ensureDir, walk } from "jsr:@std/fs@1";
-import type { DatastoreSyncService } from "./interfaces.ts";
-import { NotFoundError } from "./gcs_client.ts";
+import type {
+  DatastoreSyncOptions,
+  DatastoreSyncService,
+} from "./interfaces.ts";
+import { GcsOperationError, NotFoundError } from "./gcs_client.ts";
 import type { GcsClient } from "./gcs_client.ts";
 import { atomicWriteTextFile } from "./atomic_write.ts";
 
@@ -50,6 +56,13 @@ function assertSafePath(cachePath: string, relativePath: string): string {
 }
 
 /**
+ * Filename of the sync-state sidecar used by the fast-path short-circuit
+ * in `pullChanged` / `pushChanged`. Lives inside the cache directory and
+ * is listed in `isInternalCacheFile` so the walker never uploads it.
+ */
+const SYNC_STATE_FILE = ".datastore-sync-state.json";
+
+/**
  * Returns true for files that live inside the cache directory but must
  * NOT cross the sync boundary in either direction (push or pull).
  *
@@ -59,6 +72,9 @@ function assertSafePath(cachePath: string, relativePath: string): string {
  * - `.push-queue.json` — local push-queue scratch file.
  * - `.datastore.lock` — distributed lock file; managed by the lock
  *   subsystem, must never be uploaded as data.
+ * - `.datastore-sync-state.json` — fast-path sidecar recording the
+ *   last-verified remote index generation and the local-dirty flag.
+ *   Never uploaded: its contents are per-machine state.
  * - basename `_catalog.db` and anything starting with `_catalog.db-`
  *   (the SQLite WAL/SHM/journal sidecars) — the local-only data catalog
  *   store. It is deliberately colocated with the data tier so it can
@@ -69,18 +85,209 @@ function assertSafePath(cachePath: string, relativePath: string): string {
  *   into `toPush`, SQLite would rewrite the WAL mid-upload, and the
  *   push would fail on `_catalog.db-wal`.
  *
- * Uses basename matching for the catalog pattern so the filter is
- * robust to any future change in the data tier subdirectory name.
+ * Exported for unit tests; not part of the public extension API.
  */
-function isInternalCacheFile(rel: string): boolean {
+export function isInternalCacheFile(rel: string): boolean {
   if (
     rel === ".datastore-index.json" || rel === ".push-queue.json" ||
-    rel === ".datastore.lock"
+    rel === ".datastore.lock" || rel === SYNC_STATE_FILE
   ) {
     return true;
   }
   const base = rel.split("/").pop() ?? "";
   return base === "_catalog.db" || base.startsWith("_catalog.db-");
+}
+
+/**
+ * Rejects with `AbortError` if the signal is already aborted. Used at
+ * phase boundaries so abort propagation doesn't have to ride on a
+ * pending GCS call — the next boundary catches it first.
+ */
+function throwIfAborted(signal: AbortSignal | undefined): void {
+  if (signal?.aborted) {
+    throw new DOMException(
+      signal.reason instanceof Error ? signal.reason.message : "Aborted",
+      "AbortError",
+    );
+  }
+}
+
+/**
+ * Sleep that wakes early if the signal aborts. Used inside
+ * `retryWithBackoff` so an outer sync timeout unblocks the backoff
+ * sleep instead of waiting out the full delay after the caller has
+ * already given up.
+ */
+function abortableSleep(
+  ms: number,
+  signal: AbortSignal | undefined,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      if (signal) signal.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(
+        new DOMException(
+          signal?.reason instanceof Error ? signal.reason.message : "Aborted",
+          "AbortError",
+        ),
+      );
+    };
+    if (signal) {
+      if (signal.aborted) {
+        clearTimeout(timer);
+        reject(
+          new DOMException(
+            signal.reason instanceof Error ? signal.reason.message : "Aborted",
+            "AbortError",
+          ),
+        );
+        return;
+      }
+      signal.addEventListener("abort", onAbort, { once: true });
+    }
+  });
+}
+
+/** Retry budget for single-object GCS operations in the sync pipeline. */
+const RETRY_MAX_ATTEMPTS = 3;
+/** Base delay between retry attempts (ms). Each retry multiplies by 3. */
+const RETRY_BASE_DELAY_MS = 500;
+/** Jitter fraction applied to each backoff delay (±25%). */
+const RETRY_JITTER_FRACTION = 0.25;
+
+/**
+ * Returns true when an error is a transient condition that should be
+ * retried: request timeouts, 5xx service errors, 429 throttling, and
+ * transport-level failures (connection reset, DNS, TLS handshake).
+ *
+ * Explicitly NOT retryable: 4xx other than 429 (bad request, auth
+ * failure), `PreconditionFailedError` (conditional write lost the
+ * race — retrying gives the same answer), `NotFoundError` (not a
+ * transient state), any `AbortError` (caller explicitly cancelled).
+ *
+ * The `status == null` branch matters more than it looks. The GCS
+ * client surfaces transport-level failures (ECONNRESET, DNS lookup,
+ * TLS close_notify) as a `GcsOperationError` with `httpStatusCode:
+ * null`. Without this branch, real network blips would not be retried
+ * — defeating the whole point of the retry budget. Auth and config
+ * errors always carry a 4xx status, so treating a missing status as
+ * transient is safe.
+ *
+ * Exported for unit tests; not part of the public extension API.
+ */
+export function isRetryableError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  if (err.name === "AbortError") return false;
+  if (err.name === "NotFoundError") return false;
+  if (err.name === "PreconditionFailedError") return false;
+  if (err.name === "TimeoutError") return true;
+  if (err instanceof GcsOperationError) {
+    const status = err.httpStatusCode;
+    if (status === 429) return true;
+    if (status != null && status >= 500 && status < 600) return true;
+    if (status == null) return true;
+  }
+  return false;
+}
+
+/**
+ * Retry `op` with exponential backoff + jitter until it succeeds, a
+ * non-retryable error is thrown, or `maxAttempts` is reached.
+ * Re-throws the last error if all attempts fail.
+ *
+ * Exported for unit tests; not part of the public extension API.
+ * The `config` override exists so tests can run without paying the
+ * production backoff latency. `signal` unblocks the backoff sleep on
+ * abort so the outer sync timeout isn't held up waiting for a delay
+ * that will never resolve into useful work.
+ */
+export async function retryWithBackoff<T>(
+  op: () => Promise<T>,
+  config?: {
+    maxAttempts?: number;
+    baseDelayMs?: number;
+    signal?: AbortSignal;
+  },
+): Promise<T> {
+  const maxAttempts = config?.maxAttempts ?? RETRY_MAX_ATTEMPTS;
+  if (maxAttempts < 1) {
+    // Guard against caller misconfiguration: maxAttempts=0 would skip
+    // the loop entirely and `throw lastErr` would throw undefined.
+    // Fail loudly with the actual problem instead.
+    throw new Error(
+      `retryWithBackoff: maxAttempts must be >= 1, got ${maxAttempts}`,
+    );
+  }
+  const baseDelayMs = config?.baseDelayMs ?? RETRY_BASE_DELAY_MS;
+  const signal = config?.signal;
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    throwIfAborted(signal);
+    try {
+      return await op();
+    } catch (err) {
+      lastErr = err;
+      const isLastAttempt = attempt === maxAttempts - 1;
+      if (isLastAttempt || !isRetryableError(err)) throw err;
+      const raw = baseDelayMs * Math.pow(3, attempt);
+      const jitter = raw * RETRY_JITTER_FRACTION * (Math.random() * 2 - 1);
+      const delay = Math.max(0, Math.floor(raw + jitter));
+      await abortableSleep(delay, signal);
+    }
+  }
+  throw lastErr;
+}
+
+/**
+ * Emit a trace-level timing line when `SWAMP_GCS_SYNC_TRACE` is truthy.
+ * Two timestamps per phase, never per-entry — matches the
+ * instrumentation contract from the s3-datastore mirror.
+ *
+ * Gated on env-var presence so tests and production stay silent by
+ * default; a reporter debugging a slow sync can opt in with
+ * `SWAMP_GCS_SYNC_TRACE=1 swamp datastore sync`.
+ */
+function traceEnabled(): boolean {
+  try {
+    const v = Deno.env.get("SWAMP_GCS_SYNC_TRACE");
+    return !!v && v !== "0" && v.toLowerCase() !== "false";
+  } catch {
+    // `--allow-env` may be absent; stay silent rather than throw.
+    return false;
+  }
+}
+function tracePhase(phase: string, startMs: number, detail?: string): void {
+  if (!traceEnabled()) return;
+  const elapsedMs = Date.now() - startMs;
+  const suffix = detail ? ` ${detail}` : "";
+  console.debug(`[gcs-sync] ${phase} ${elapsedMs}ms${suffix}`);
+}
+
+/**
+ * Build a batch-failure message that surfaces the actual reasons things
+ * failed, not just filenames. The first 3 underlying errors are
+ * included verbatim so users can tell a credential issue from a
+ * network blip from a bucket misconfig without having to re-run.
+ */
+function formatBatchFailure(
+  op: "push" | "pull",
+  failures: Array<{ file: string; error: unknown }>,
+): string {
+  const files = failures.map((f) => f.file);
+  const preview = failures.slice(0, 3).map((f) => {
+    const msg = f.error instanceof Error ? f.error.message : String(f.error);
+    return `  - ${f.file}: ${msg}`;
+  }).join("\n");
+  const more = failures.length > 3
+    ? `\n  ... and ${failures.length - 3} more`
+    : "";
+  return `Failed to ${op} ${failures.length} file(s) ${
+    op === "push" ? "to" : "from"
+  } GCS: ${files.join(", ")}\n${preview}${more}`;
 }
 
 /** Metadata index entry for a file in GCS. */
@@ -104,12 +311,53 @@ const INDEX_CACHE_TTL_MS = 60_000;
 /** Maximum number of concurrent GCS downloads/uploads. */
 const MAX_CONCURRENCY = 10;
 
+/**
+ * Fast-path sidecar persisted alongside the cache. Records the last
+ * remote `.datastore-index.json` generation we verified our local cache
+ * against, the timestamp of that verification, and whether the local
+ * cache has been written to since. The next `pullChanged` /
+ * `pushChanged` HEADs the remote index and short-circuits if the
+ * recorded generation still matches and the local view hasn't drifted —
+ * skipping the 1+ MB index GET and the multi-thousand-stat walk that
+ * the pre-fast-path path performed on every sync.
+ *
+ * Schema is versioned so old sidecars can be ignored on upgrade
+ * without a migration step (any parse failure or version mismatch
+ * falls through to the slow path and rewrites the sidecar).
+ *
+ * GCS generation is a better fingerprint than S3 ETag: it changes on
+ * every write including multipart uploads, so no multipart guard is
+ * needed (compare s3_cache_sync.ts `isMultipartETag`). Generation
+ * values are int64 strings — we store them verbatim and compare as
+ * strings; parsing to number would overflow JS number precision.
+ */
+interface DatastoreSyncState {
+  version: 1;
+  /** Remote `.datastore-index.json` GCS generation at last verification. */
+  remoteIndexGeneration: string;
+  /** ISO-8601 timestamp of the last successful verification. */
+  lastVerifiedAt: string;
+  /**
+   * `true` when a writer has touched the local cache since the last
+   * verified-clean snapshot. Set pessimistically by `pushFile` BEFORE
+   * any upload work so a crash mid-batch leaves the flag dirty (safe
+   * default: re-walk on next push). Cleared only after a successful
+   * index writeback completes, or after a verified-clean
+   * `pullChanged`. The guardrail test pins the contract: cache writes
+   * that bypass `pushFile` won't update this flag.
+   */
+  localDirty: boolean;
+}
+
 /** GCS cache sync service. */
 export class GcsCacheSyncService implements DatastoreSyncService {
   private readonly gcs: GcsClient;
   private readonly cachePath: string;
   private readonly indexPath: string;
+  private readonly syncStatePath: string;
   private index: DatastoreIndex | null = null;
+  private syncState: DatastoreSyncState | null = null;
+  private syncStateLoaded = false;
   /**
    * Set to true when `scrubIndex()` removes zombie entries from the
    * in-memory index. Drives the write-back gate in `pushChanged()` so
@@ -122,6 +370,192 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     this.gcs = gcs;
     this.cachePath = cachePath;
     this.indexPath = join(cachePath, ".datastore-index.json");
+    this.syncStatePath = join(cachePath, SYNC_STATE_FILE);
+  }
+
+  /**
+   * Loads the sidecar from disk on first call and caches the result.
+   * Returns null on missing file, parse failure, version mismatch, or
+   * any field-shape mismatch — every fall-through case is silent and
+   * leaves the slow path responsible. Bad sidecars must NEVER throw:
+   * the safest fast-path failure mode is "fast path unavailable", not
+   * "sync crashes on a stale sidecar".
+   */
+  private async loadSyncState(): Promise<DatastoreSyncState | null> {
+    if (this.syncStateLoaded) return this.syncState;
+    this.syncStateLoaded = true;
+    try {
+      const text = await Deno.readTextFile(this.syncStatePath);
+      const parsed = JSON.parse(text) as Partial<DatastoreSyncState>;
+      if (
+        parsed.version === 1 &&
+        typeof parsed.remoteIndexGeneration === "string" &&
+        typeof parsed.lastVerifiedAt === "string" &&
+        typeof parsed.localDirty === "boolean"
+      ) {
+        this.syncState = parsed as DatastoreSyncState;
+      }
+    } catch {
+      // Missing/corrupt/unreadable — treat as no sidecar (safe default).
+    }
+    return this.syncState;
+  }
+
+  /** Persist the sidecar atomically. */
+  private async writeSyncState(state: DatastoreSyncState): Promise<void> {
+    this.syncState = state;
+    this.syncStateLoaded = true;
+    await ensureDir(this.cachePath);
+    await atomicWriteTextFile(
+      this.syncStatePath,
+      JSON.stringify(state, null, 2),
+    );
+  }
+
+  /**
+   * Pessimistically mark the local cache as dirty. Called by `pushFile`
+   * before its upload work so a crash mid-batch leaves the flag set
+   * (safe: forces a full walk next time). Also the public
+   * `DatastoreSyncService.markDirty` entry point — swamp-core's
+   * repository layer calls this before writing to the cache directly
+   * (any write that bypasses `pushFile`). Without this hook, the
+   * fast-path short-circuit silently skips core's writes on the next
+   * `pushChanged`. Idempotent — if the sidecar already records
+   * `localDirty: true`, no write is issued.
+   */
+  async markDirty(): Promise<void> {
+    const current = await this.loadSyncState();
+    if (current?.localDirty === true) return;
+    await this.writeSyncState({
+      version: 1,
+      remoteIndexGeneration: current?.remoteIndexGeneration ?? "",
+      lastVerifiedAt: current?.lastVerifiedAt ?? "",
+      localDirty: true,
+    });
+  }
+
+  /**
+   * Record a verified-clean state: the local cache matches the remote
+   * index whose generation is `remoteIndexGeneration`. Empty/zero
+   * generations are rejected — they can't be fingerprints, so saving
+   * one would make every subsequent fast-path comparison succeed
+   * spuriously.
+   *
+   * `lastVerifiedAt` is forced strictly past the local index file's
+   * mtime (by 1 ms when the wall clock would otherwise tie). The
+   * fast-path probe uses `>=` to bail on any local edit, so a tied
+   * timestamp would spuriously bail out of the happy path on fast
+   * machines — paying the slow path on every second sync.
+   */
+  private async markSynced(remoteIndexGeneration: string): Promise<void> {
+    if (!remoteIndexGeneration || remoteIndexGeneration === "0") return;
+    let baselineMs = Date.now();
+    try {
+      const stat = await Deno.stat(this.indexPath);
+      const mtimeMs = stat.mtime?.getTime() ?? 0;
+      if (mtimeMs >= baselineMs) baselineMs = mtimeMs + 1;
+    } catch {
+      // No local index yet (e.g. first push against an empty cache);
+      // wall-clock baseline is fine.
+    }
+    await this.writeSyncState({
+      version: 1,
+      remoteIndexGeneration,
+      lastVerifiedAt: new Date(baselineMs).toISOString(),
+      localDirty: false,
+    });
+  }
+
+  /**
+   * Fast-path probe for `pullChanged`. Returns `0` when the sidecar
+   * proves we don't need the index GET or the cache walk; returns
+   * `null` to signal "fall through to the slow path" on any check
+   * miss (no sidecar, empty generation, local index touched after
+   * last verification, HEAD failure, or generation mismatch).
+   *
+   * The `getMetadata` call is wrapped in a bare try/catch that swallows
+   * EVERY thrown error (auth 401/403, transient 5xx, network failure,
+   * timeout) and returns null. A failed probe MUST fall through to the
+   * slow path — the slow path can still succeed via its own error
+   * handling and retries. The cost of this is that sustained auth
+   * regressions silently slow every sync instead of failing fast;
+   * operators noticing that behavior should start diagnosis at the
+   * slow-path code, not here.
+   *
+   * Self-healing note: when zombie-scrub (swamp-club#29) rewrites the
+   * remote index, the generation changes — so a fast-path HEAD sees a
+   * mismatch and falls through to the full pull path that re-runs the
+   * scrub. The fast path can never hide a needed migration.
+   */
+  private async tryFastPullChanged(
+    signal: AbortSignal | undefined,
+  ): Promise<number | null> {
+    const sidecar = await this.loadSyncState();
+    if (!sidecar) return null;
+    if (
+      !sidecar.remoteIndexGeneration || sidecar.remoteIndexGeneration === "0"
+    ) {
+      return null;
+    }
+    let indexMtime: Date | null = null;
+    try {
+      const stat = await Deno.stat(this.indexPath);
+      indexMtime = stat.mtime;
+    } catch {
+      return null;
+    }
+    if (!indexMtime) return null;
+    const verifiedAt = Date.parse(sidecar.lastVerifiedAt);
+    if (Number.isNaN(verifiedAt) || indexMtime.getTime() >= verifiedAt) {
+      // Local index was rewritten at-or-after our last verification —
+      // sidecar can't speak for what's on disk now. `>=` (not `>`)
+      // closes the second-precision filesystem hole where an mtime
+      // that rounds to the same second as `lastVerifiedAt` would
+      // otherwise spuriously fast-path past a real edit.
+      return null;
+    }
+    let meta;
+    try {
+      meta = await this.gcs.getMetadata(".datastore-index.json", signal);
+    } catch {
+      return null;
+    }
+    if (!meta.exists || !meta.generation || meta.generation === "0") {
+      return null;
+    }
+    if (meta.generation !== sidecar.remoteIndexGeneration) return null;
+    return 0;
+  }
+
+  /**
+   * Fast-path probe for `pushChanged`. Returns `0` when the sidecar
+   * records a clean local cache and the remote index generation still
+   * matches; otherwise returns `null` so the slow path runs. Same
+   * error-swallowing property as `tryFastPullChanged` — any thrown
+   * error from `getMetadata` falls through.
+   */
+  private async tryFastPushChanged(
+    signal: AbortSignal | undefined,
+  ): Promise<number | null> {
+    const sidecar = await this.loadSyncState();
+    if (!sidecar) return null;
+    if (sidecar.localDirty) return null;
+    if (
+      !sidecar.remoteIndexGeneration || sidecar.remoteIndexGeneration === "0"
+    ) {
+      return null;
+    }
+    let meta;
+    try {
+      meta = await this.gcs.getMetadata(".datastore-index.json", signal);
+    } catch {
+      return null;
+    }
+    if (!meta.exists || !meta.generation || meta.generation === "0") {
+      return null;
+    }
+    if (meta.generation !== sidecar.remoteIndexGeneration) return null;
+    return 0;
   }
 
   /**
@@ -164,8 +598,10 @@ export class GcsCacheSyncService implements DatastoreSyncService {
    * consistent. The cache-hit path does NOT rewrite the local file;
    * its on-disk view self-heals on the next GCS fetch.
    */
-  async pullIndex(options?: { forceRemote?: boolean }): Promise<void> {
-    // Check local cache freshness (skipped when forceRemote is set)
+  async pullIndex(
+    options?: { forceRemote?: boolean; signal?: AbortSignal },
+  ): Promise<void> {
+    const signal = options?.signal;
     if (!options?.forceRemote) {
       try {
         const stat = await Deno.stat(this.indexPath);
@@ -173,7 +609,6 @@ export class GcsCacheSyncService implements DatastoreSyncService {
         if (ageMs < INDEX_CACHE_TTL_MS && this.index === null) {
           const content = await Deno.readTextFile(this.indexPath);
           this.index = JSON.parse(content) as DatastoreIndex;
-          // Scrub zombies from the in-memory view before returning.
           this.indexMutated ||= this.scrubIndex();
           return;
         }
@@ -192,7 +627,7 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     // empty index back to the remote and wipe the real one.
     let data: Uint8Array;
     try {
-      data = await this.gcs.getObject(".datastore-index.json");
+      data = await this.gcs.getObject(".datastore-index.json", signal);
     } catch (err) {
       if (err instanceof NotFoundError) {
         this.index = {
@@ -208,9 +643,6 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     const text = new TextDecoder().decode(data);
     this.index = JSON.parse(text) as DatastoreIndex;
     await ensureDir(this.cachePath);
-    // Scrub zombies, then write the local cache file. If scrub
-    // mutated, write the cleaned JSON so on-disk matches in-memory.
-    // Otherwise write the raw remote text to preserve the fast path.
     if (this.scrubIndex()) {
       this.indexMutated = true;
       await atomicWriteTextFile(
@@ -223,9 +655,12 @@ export class GcsCacheSyncService implements DatastoreSyncService {
   }
 
   /** Fetches a single file from GCS to the local cache. */
-  async pullFile(relativePath: string): Promise<void> {
+  async pullFile(relativePath: string, signal?: AbortSignal): Promise<void> {
     const localPath = assertSafePath(this.cachePath, relativePath);
-    const data = await this.gcs.getObject(relativePath);
+    const data = await retryWithBackoff(
+      () => this.gcs.getObject(relativePath, signal),
+      { signal },
+    );
     await ensureDir(dirname(localPath));
     await Deno.writeFile(localPath, data);
   }
@@ -234,10 +669,35 @@ export class GcsCacheSyncService implements DatastoreSyncService {
    * Pulls only new or modified files from GCS to the local cache.
    * Fetches the remote index, compares against local files, and only
    * downloads files that are missing locally or have a different size.
+   *
+   * Fast path: before doing any of that, HEAD the remote index and
+   * compare its generation to the sidecar; if nothing has changed since
+   * the last verified-clean walk, return `0` immediately without the
+   * 1+ MB index GET or the multi-thousand-stat walk. Any fall-through
+   * condition (no sidecar, generation mismatch, empty/zero generation,
+   * local index mtime newer than `lastVerifiedAt`, HEAD failure) drops
+   * into the slow path below.
    */
-  async pullChanged(): Promise<number | void> {
-    await this.pullIndex();
+  async pullChanged(
+    options?: DatastoreSyncOptions,
+  ): Promise<number | void> {
+    const signal = options?.signal;
+    throwIfAborted(signal);
 
+    const fastStart = Date.now();
+    const fastResult = await this.tryFastPullChanged(signal);
+    tracePhase(
+      "pullChanged.fastpath",
+      fastStart,
+      fastResult === 0 ? "hit" : "miss",
+    );
+    if (fastResult !== null) return fastResult;
+
+    const indexStart = Date.now();
+    await this.pullIndex({ signal });
+    tracePhase("pullChanged.pullIndex", indexStart);
+
+    const walkStart = Date.now();
     const toPull: string[] = [];
     for (const [rel, entry] of Object.entries(this.index?.entries ?? {})) {
       // Belt-and-suspenders: `scrubIndex` already removed internal
@@ -250,6 +710,15 @@ export class GcsCacheSyncService implements DatastoreSyncService {
       try {
         const stat = await Deno.stat(localPath);
         if (stat.size === entry.size) {
+          // Reconcile localMtime so pushChanged() doesn't treat it as
+          // changed due to mtime drift (e.g. file was placed by a
+          // migration or a different machine pushed the index).
+          if (
+            this.index && stat.mtime &&
+            entry.localMtime !== stat.mtime.toISOString()
+          ) {
+            this.index.entries[rel].localMtime = stat.mtime.toISOString();
+          }
           continue;
         }
       } catch {
@@ -257,14 +726,17 @@ export class GcsCacheSyncService implements DatastoreSyncService {
       }
       toPull.push(rel);
     }
+    tracePhase("pullChanged.walk", walkStart, `toPull=${toPull.length}`);
 
+    const downloadStart = Date.now();
     let pulled = 0;
-    const failedFiles: string[] = [];
+    const failures: Array<{ file: string; error: unknown }> = [];
     for (let i = 0; i < toPull.length; i += MAX_CONCURRENCY) {
+      throwIfAborted(signal);
       const batch = toPull.slice(i, i + MAX_CONCURRENCY);
       const results = await Promise.allSettled(
         batch.map(async (rel) => {
-          await this.pullFile(rel);
+          await this.pullFile(rel, signal);
           try {
             const localPath = join(this.cachePath, rel);
             const stat = await Deno.stat(localPath);
@@ -277,30 +749,58 @@ export class GcsCacheSyncService implements DatastoreSyncService {
         }),
       );
       for (let j = 0; j < results.length; j++) {
-        if (results[j].status === "fulfilled") {
+        const result = results[j];
+        if (result.status === "fulfilled") {
           pulled++;
         } else {
-          failedFiles.push(batch[j]);
+          failures.push({ file: batch[j], error: result.reason });
         }
       }
     }
+    tracePhase("pullChanged.download", downloadStart, `pulled=${pulled}`);
 
-    if (failedFiles.length > 0) {
-      throw new Error(
-        `Failed to pull ${failedFiles.length} file(s) from GCS: ${
-          failedFiles.join(", ")
-        }`,
-      );
+    if (failures.length > 0) {
+      throw new Error(formatBatchFailure("pull", failures));
+    }
+
+    // Verified zero-diff: local cache matches the remote index whose
+    // generation we just GET'd. Persist the generation in the sidecar
+    // so the next `pullChanged` can take the fast path. If the HEAD
+    // fails, skip silently — the sidecar update is best-effort.
+    if (pulled === 0) {
+      try {
+        const meta = await this.gcs.getMetadata(
+          ".datastore-index.json",
+          signal,
+        );
+        if (meta.exists && meta.generation) {
+          await this.markSynced(meta.generation);
+        }
+      } catch {
+        // Non-fatal: sidecar update is opportunistic.
+      }
     }
 
     return pulled;
   }
 
-  /** Pushes a single file from the local cache to GCS. */
-  async pushFile(relativePath: string): Promise<void> {
+  /**
+   * Pushes a single file from the local cache to GCS.
+   *
+   * Pessimistically marks the sidecar `localDirty: true` BEFORE the
+   * upload so a crash mid-batch never strands an unpushed local change
+   * behind a clean fast-path flag — the next `pushChanged` will see
+   * `localDirty: true` and do the full walk. The flag is cleared only
+   * by `pushChanged` after a successful index writeback.
+   */
+  async pushFile(relativePath: string, signal?: AbortSignal): Promise<void> {
+    await this.markDirty();
     const localPath = assertSafePath(this.cachePath, relativePath);
     const data = await Deno.readFile(localPath);
-    await this.gcs.putObject(relativePath, data);
+    await retryWithBackoff(
+      () => this.gcs.putObject(relativePath, data, signal),
+      { signal },
+    );
 
     if (this.index) {
       const stat = await Deno.stat(localPath);
@@ -315,21 +815,42 @@ export class GcsCacheSyncService implements DatastoreSyncService {
 
   /**
    * Pushes only new or modified files from the local cache to GCS.
-   * Compares each file's size and mtime against the index to detect changes.
+   * Compares each file's size and mtime against the index to detect
+   * changes.
    *
-   * Always fetches the current remote index (bypassing the local
-   * TTL cache) so that the writeback at the end of this method
-   * merges new/modified entries onto remote state instead of
-   * clobbering it. Without this, any client with a smaller or
-   * stale local cache (e.g. a fresh reader running `datastore setup`,
-   * or a writer whose cached index is < 60 s old but another writer
-   * has since pushed) would overwrite the remote
-   * `.datastore-index.json` with a subset of entries, leaving the
-   * other writer's data orphaned. See swamp-club#30.
+   * Fast path: before doing any of that, HEAD the remote index and
+   * compare generation against the sidecar; if nothing has changed
+   * (and `localDirty` is false), short-circuit. Otherwise fall through
+   * to the slow walk + upload path, which always fetches the current
+   * remote index (bypassing the local TTL cache) so the writeback
+   * merges new/modified entries onto remote state instead of clobbering
+   * it. Without forceRemote here, any client with a smaller or stale
+   * local cache (e.g. a fresh reader running `datastore setup`, or a
+   * writer whose cached index is < 60 s old but another writer has
+   * since pushed) would overwrite the remote `.datastore-index.json`
+   * with a subset of entries, leaving the other writer's data
+   * orphaned. See swamp-club#30.
    */
-  async pushChanged(): Promise<number | void> {
-    await this.pullIndex({ forceRemote: true });
+  async pushChanged(
+    options?: DatastoreSyncOptions,
+  ): Promise<number | void> {
+    const signal = options?.signal;
+    throwIfAborted(signal);
 
+    const fastStart = Date.now();
+    const fastResult = await this.tryFastPushChanged(signal);
+    tracePhase(
+      "pushChanged.fastpath",
+      fastStart,
+      fastResult === 0 ? "hit" : "miss",
+    );
+    if (fastResult !== null) return fastResult;
+
+    const indexStart = Date.now();
+    await this.pullIndex({ forceRemote: true, signal });
+    tracePhase("pushChanged.pullIndex", indexStart);
+
+    const walkStart = Date.now();
     const toPush: string[] = [];
     try {
       for await (
@@ -338,7 +859,6 @@ export class GcsCacheSyncService implements DatastoreSyncService {
         })
       ) {
         const rel = relative(this.cachePath, entry.path);
-        // Skip internal metadata files (see isInternalCacheFile)
         if (isInternalCacheFile(rel)) {
           continue;
         }
@@ -362,43 +882,87 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     } catch {
       // Cache directory may not exist yet
     }
+    tracePhase("pushChanged.walk", walkStart, `toPush=${toPush.length}`);
 
+    const uploadStart = Date.now();
     let pushed = 0;
-    const failedFiles: string[] = [];
+    const failures: Array<{ file: string; error: unknown }> = [];
     for (let i = 0; i < toPush.length; i += MAX_CONCURRENCY) {
+      throwIfAborted(signal);
       const batch = toPush.slice(i, i + MAX_CONCURRENCY);
       const results = await Promise.allSettled(
-        batch.map((rel) => this.pushFile(rel)),
+        batch.map((rel) => this.pushFile(rel, signal)),
       );
       for (let j = 0; j < results.length; j++) {
-        if (results[j].status === "fulfilled") {
+        const result = results[j];
+        if (result.status === "fulfilled") {
           pushed++;
         } else {
-          failedFiles.push(batch[j]);
+          failures.push({ file: batch[j], error: result.reason });
         }
       }
     }
+    tracePhase("pushChanged.upload", uploadStart, `pushed=${pushed}`);
 
-    if (failedFiles.length > 0) {
-      throw new Error(
-        `Failed to push ${failedFiles.length} file(s) to GCS: ${
-          failedFiles.join(", ")
-        }`,
-      );
+    if (failures.length > 0) {
+      throw new Error(formatBatchFailure("push", failures));
     }
 
     // Push updated index if anything changed — either new files were
     // pushed OR scrubIndex removed zombie entries that need to
     // propagate to the remote (swamp-club#29 migration path).
     if ((pushed > 0 || this.indexMutated) && this.index) {
+      const writebackStart = Date.now();
       if (pushed > 0) {
         this.index.lastPulled = new Date().toISOString();
       }
       const indexJson = JSON.stringify(this.index, null, 2);
       const indexData = new TextEncoder().encode(indexJson);
-      await this.gcs.putObject(".datastore-index.json", indexData);
+      // Wrap in retryWithBackoff: if per-file pushes all succeed but
+      // the index write fails on a transient 5xx/timeout, we'd leave
+      // the remote inconsistent (files present, index unaware). Retry
+      // keeps the write-back atomic from the caller's perspective.
+      const putResult = await retryWithBackoff(
+        () => this.gcs.putObject(".datastore-index.json", indexData, signal),
+        { signal },
+      );
       await atomicWriteTextFile(this.indexPath, indexJson);
       this.indexMutated = false;
+      // Record the new index generation as the verified-clean baseline
+      // so the next `pushChanged` can take the fast path. `putObject`
+      // returns the fresh generation; if for some reason it's empty,
+      // fall back to a HEAD — the sidecar update is best-effort.
+      try {
+        if (putResult.generation && putResult.generation !== "0") {
+          await this.markSynced(putResult.generation);
+        } else {
+          const meta = await this.gcs.getMetadata(
+            ".datastore-index.json",
+            signal,
+          );
+          if (meta.exists && meta.generation) {
+            await this.markSynced(meta.generation);
+          }
+        }
+      } catch {
+        // Non-fatal: sidecar update is opportunistic.
+      }
+      tracePhase("pushChanged.writeback", writebackStart);
+    } else {
+      // No writeback needed and no failures — local cache is in sync
+      // with the remote index. Refresh the sidecar so the next call
+      // takes the fast path.
+      try {
+        const meta = await this.gcs.getMetadata(
+          ".datastore-index.json",
+          signal,
+        );
+        if (meta.exists && meta.generation) {
+          await this.markSynced(meta.generation);
+        }
+      } catch {
+        // Non-fatal: sidecar update is opportunistic.
+      }
     }
 
     return pushed;

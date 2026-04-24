@@ -151,6 +151,17 @@ export class GcsLock implements DistributedLock {
             } catch {
               // Another process may have already cleaned it up
             }
+            // DEF-3B (ref lab/166): jittered sleep after every steal
+            // attempt — success AND failure paths — to avoid
+            // tight-looping against the real holder's heartbeat when
+            // two contenders race to reclaim a stale lock. 200-500ms
+            // matches the S3 #102 range. Applies regardless of the
+            // conditional-delete outcome: if we lost the CAS, a
+            // successor already stole, and we still want to back off
+            // before the next acquire attempt.
+            await new Promise((resolve) =>
+              setTimeout(resolve, 200 + Math.floor(Math.random() * 300))
+            );
             continue;
           }
         }
@@ -171,7 +182,17 @@ export class GcsLock implements DistributedLock {
     this.generation = undefined;
 
     try {
-      // Conditional delete — only delete if we still own it (same generation)
+      // Conditional delete — only delete if we still own it (same generation).
+      //
+      // DEF-4 parity (ref lab/166): this is the structural equivalent of
+      // s3-datastore #102's nonce-GET-then-DELETE release pattern. GCS
+      // exposes a first-class conditional DELETE via `ifGenerationMatch`,
+      // so we can fuse the "check we still own it" and "delete" into one
+      // atomic call. S3 had no cheap conditional DELETE across AWS and
+      // DO Spaces, so #102 took the portable nonce-GET path. The
+      // invariant both defend is the same: a successor that legitimately
+      // stole our lock (TTL expiry + new acquire) must not have its
+      // lock deleted by our stale release.
       if (gen) {
         await this.gcs.deleteObject(this.lockKey, {
           ifGenerationMatch: gen,

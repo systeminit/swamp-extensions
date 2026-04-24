@@ -24,6 +24,12 @@
  * 1. GOOGLE_APPLICATION_CREDENTIALS env var → service account key JSON
  * 2. gcloud CLI default credentials (~/.config/gcloud/application_default_credentials.json)
  * 3. GCE/Cloud Run/GKE metadata server
+ *
+ * The ADC token-refresh path (`getAccessToken` and its callees) is NOT
+ * plumbed with AbortSignal. Token acquisition runs once per ~1 hour via
+ * the cached-token path; aborting a token refresh mid-request is out of
+ * scope. An operator reporting "token refresh hang on abort" should
+ * reach for this comment first.
  */
 
 export interface GcsClientConfig {
@@ -32,7 +38,16 @@ export interface GcsClientConfig {
   projectId?: string;
   /** Custom API endpoint (for emulators like fake-gcs-server). */
   apiEndpoint?: string;
+  /**
+   * Per-request timeout in milliseconds. Defaults to 30s. Every fetch
+   * call is guarded by `AbortSignal.timeout(defaultRequestTimeoutMs)`,
+   * composed with any caller-supplied signal. Prevents individual
+   * operations from hanging indefinitely on network stalls.
+   */
+  defaultRequestTimeoutMs?: number;
 }
+
+const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
 
 /** Result of a GCS object write, including the generation number. */
 export interface GcsWriteResult {
@@ -61,6 +76,68 @@ export class PreconditionFailedError extends Error {
 /** Error thrown when a GCS object is not found (HTTP 404). */
 export class NotFoundError extends Error {
   override readonly name = "NotFoundError";
+}
+
+/** Max bytes of response body displayed in the error preview string. */
+const ERROR_BODY_PREVIEW_BYTES = 256;
+
+/**
+ * Hard cap on how many bytes we read from an error response body before
+ * abandoning the stream. Real GCS JSON error bodies are <10KB; this
+ * protects against a buggy/adversarial endpoint returning a huge body.
+ */
+const MAX_ERROR_BODY_BYTES = 64 * 1024;
+
+/**
+ * Error thrown by `GcsClient` operations for the general non-2xx case.
+ * Preserves the original `name` so existing catches keep working and
+ * exposes HTTP-level detail callers need to distinguish transient from
+ * permanent failures:
+ *
+ * - `httpStatusCode` — `null` for transport-level failures (connection
+ *   reset, DNS, TLS handshake). The `isRetryableError` predicate in the
+ *   cache-sync layer treats null as transient.
+ * - `code` — structured error reason from GCS JSON bodies
+ *   (`error.errors[0].reason`, e.g. `"authError"`,
+ *   `"rateLimitExceeded"`). Falls back to numeric HTTP status if
+ *   `errors[]` is absent.
+ * - `bodyPreview` — first 256 bytes of the response body, UTF-8
+ *   decoded. Useful for debugging non-standard error shapes. May
+ *   contain bearer-token tail fragments in auth-failure responses;
+ *   the clamp is deliberate.
+ * - `uploadId` — value of the `X-GUploader-UploadID` response header
+ *   when present (upload-path responses only). The only cross-
+ *   referenceable debug token GCS exposes, captured opportunistically
+ *   on every response — absent on non-upload paths, which is expected.
+ */
+export class GcsOperationError extends Error {
+  override readonly name: string;
+  readonly httpStatusCode: number | null;
+  readonly code: string | undefined;
+  readonly bodyPreview: string | undefined;
+  readonly uploadId: string | undefined;
+
+  constructor(
+    message: string,
+    opts: {
+      name: string;
+      httpStatusCode: number | null;
+      code: string | undefined;
+      bodyPreview: string | undefined;
+      uploadId: string | undefined;
+      cause?: unknown;
+    },
+  ) {
+    super(
+      message,
+      opts.cause !== undefined ? { cause: opts.cause } : undefined,
+    );
+    this.name = opts.name;
+    this.httpStatusCode = opts.httpStatusCode;
+    this.code = opts.code;
+    this.bodyPreview = opts.bodyPreview;
+    this.uploadId = opts.uploadId;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -125,7 +202,6 @@ async function createSignedJwt(
 
   const signingInput = `${header}.${claims}`;
 
-  // Import the PEM private key
   const pemBody = sa.private_key
     .replace(
       /-----BEGIN RSA PRIVATE KEY-----|-----END RSA PRIVATE KEY-----|\n/g,
@@ -222,14 +298,12 @@ async function tokenFromMetadataServer(): Promise<TokenResponse> {
  * 3. GCE metadata server → attached service account
  */
 async function getAccessToken(): Promise<string> {
-  // Return cached token if still valid (with 60s buffer)
   if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
     return cachedToken.token;
   }
 
   let tokenResp: TokenResponse | null = null;
 
-  // 1. GOOGLE_APPLICATION_CREDENTIALS
   const credsPath = Deno.env.get("GOOGLE_APPLICATION_CREDENTIALS");
   if (credsPath) {
     const raw = await Deno.readTextFile(credsPath);
@@ -245,7 +319,6 @@ async function getAccessToken(): Promise<string> {
     }
   }
 
-  // 2. Well-known gcloud ADC location
   if (!tokenResp) {
     const home = Deno.env.get("HOME") ?? Deno.env.get("USERPROFILE") ?? ".";
     const adcPath =
@@ -263,7 +336,6 @@ async function getAccessToken(): Promise<string> {
     }
   }
 
-  // 3. GCE metadata server
   if (!tokenResp) {
     try {
       tokenResp = await tokenFromMetadataServer();
@@ -290,6 +362,112 @@ export function clearTokenCache(): void {
 }
 
 // ---------------------------------------------------------------------------
+// Response helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Reads up to `max` bytes from a response body, aborting the stream
+ * if the cap is hit. Used to capture an error-body preview without
+ * committing to buffering an arbitrary-size body.
+ */
+async function readCappedBody(
+  response: Response,
+  max: number,
+): Promise<{ bytes: Uint8Array; truncated: boolean }> {
+  const reader = response.body?.getReader();
+  if (!reader) return { bytes: new Uint8Array(0), truncated: false };
+
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  let truncated = false;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const remaining = max - total;
+    if (value.length > remaining) {
+      chunks.push(value.subarray(0, remaining));
+      total = max;
+      truncated = true;
+      try {
+        await reader.cancel();
+      } catch {
+        // best-effort; body stream may already be closing
+      }
+      break;
+    }
+    chunks.push(value);
+    total += value.length;
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return { bytes, truncated };
+}
+
+/** Decode up to `max` bytes as UTF-8 preview; mark overflow explicitly. */
+function decodePreview(
+  bytes: Uint8Array,
+  max: number,
+  streamTruncated: boolean,
+): string {
+  const overflow = bytes.length > max;
+  const slice = overflow ? bytes.subarray(0, max) : bytes;
+  const text = new TextDecoder("utf-8", { fatal: false }).decode(slice);
+  if (overflow) return `${text}…(${bytes.length - max}+ more bytes)`;
+  if (streamTruncated) return `${text}…(stream exceeded cap)`;
+  return text;
+}
+
+/**
+ * Extract a structured error code from a GCS JSON error body. Google's
+ * envelope is `{"error": {"code": 403, "message": "...", "errors":
+ * [{"reason": "authError", ...}]}}`. Prefer `errors[0].reason` because
+ * it's actionable; fall back to `error.code` when `errors[]` is absent.
+ * Non-JSON bodies return undefined.
+ */
+function extractErrorCode(
+  text: string,
+  contentType: string | null,
+): string | undefined {
+  if (!contentType || !contentType.includes("application/json")) {
+    return undefined;
+  }
+  try {
+    const parsed = JSON.parse(text);
+    const err = parsed?.error;
+    if (!err) return undefined;
+    const firstReason = err.errors?.[0]?.reason;
+    if (typeof firstReason === "string" && firstReason.length > 0) {
+      return firstReason;
+    }
+    if (typeof err.code === "number") return String(err.code);
+    if (typeof err.code === "string") return err.code;
+    return undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Compose a user-supplied signal with the per-request timeout signal.
+ * `AbortSignal.any` fires when either source aborts. A timeout-triggered
+ * abort carries `name: "TimeoutError"`, an external abort carries
+ * `name: "AbortError"` — downstream error wrapping preserves this
+ * distinction so the retry classifier can pick the right action.
+ */
+function composeSignal(
+  userSignal: AbortSignal | undefined,
+  timeoutMs: number,
+): AbortSignal {
+  const timeout = AbortSignal.timeout(timeoutMs);
+  if (!userSignal) return timeout;
+  return AbortSignal.any([userSignal, timeout]);
+}
+
+// ---------------------------------------------------------------------------
 // GCS Client
 // ---------------------------------------------------------------------------
 
@@ -307,6 +485,7 @@ export class GcsClient {
   private readonly prefix: string;
   private readonly apiBase: string;
   private readonly getToken: (() => Promise<string>) | null;
+  private readonly defaultRequestTimeoutMs: number;
 
   constructor(
     config: GcsClientConfig,
@@ -315,15 +494,14 @@ export class GcsClient {
     this.bucket = config.bucket;
     this.prefix = config.prefix ?? "";
     this.apiBase = (config.apiEndpoint ?? DEFAULT_API_BASE).replace(/\/+$/, "");
+    this.defaultRequestTimeoutMs = config.defaultRequestTimeoutMs ??
+      DEFAULT_REQUEST_TIMEOUT_MS;
 
     if (tokenFn) {
-      // Explicit token function always wins
       this.getToken = tokenFn;
     } else if (config.apiEndpoint) {
-      // Custom endpoint (emulator) — skip auth
       this.getToken = null;
     } else {
-      // Production — use ADC
       this.getToken = getAccessToken;
     }
   }
@@ -346,20 +524,137 @@ export class GcsClient {
     return { "Authorization": `Bearer ${token}` };
   }
 
-  /** Checks if the bucket exists and is accessible. */
-  async bucketExists(): Promise<void> {
-    const url = this.storageUrl(`/b/${encodeURIComponent(this.bucket)}`);
-    const resp = await fetch(url, { headers: await this.headers() });
-    if (!resp.ok) {
-      const body = await resp.text();
-      throw new Error(`Bucket check failed (${resp.status}): ${body}`);
+  /**
+   * Dispatch a fetch with composed timeout+abort signal, then return
+   * the response or throw a typed error:
+   *
+   * - Abort / timeout / transport failure → `GcsOperationError` with
+   *   `httpStatusCode: null`. `name` distinguishes cause
+   *   (`"AbortError"` / `"TimeoutError"` / original fetch error name).
+   *   The retry classifier keys off `name` and `httpStatusCode`.
+   * - 2xx → the `Response` passes through for the caller to consume.
+   * - 404 → `NotFoundError` (preserved narrow type).
+   * - 412 → `PreconditionFailedError` (preserved narrow type).
+   * - Other non-2xx → `GcsOperationError` with captured status, decoded
+   *   `code`, 256-byte `bodyPreview`, and `uploadId` when the response
+   *   carried `X-GUploader-UploadID`.
+   *
+   * The `uploadId` read is always attempted — free-cost on every
+   * response (absence is expected on non-upload paths).
+   */
+  private async send(
+    op: string,
+    url: string,
+    init: RequestInit,
+    userSignal: AbortSignal | undefined,
+  ): Promise<Response> {
+    const signal = composeSignal(userSignal, this.defaultRequestTimeoutMs);
+    let response: Response;
+    try {
+      response = await fetch(url, { ...init, signal });
+    } catch (err) {
+      const isErr = err instanceof Error;
+      const name = isErr ? err.name : "Error";
+      const message = isErr ? err.message : String(err);
+      if (name === "TimeoutError") {
+        throw new GcsOperationError(
+          `GCS ${op} timed out after ${this.defaultRequestTimeoutMs}ms`,
+          {
+            name: "TimeoutError",
+            httpStatusCode: null,
+            code: undefined,
+            bodyPreview: undefined,
+            uploadId: undefined,
+            cause: err,
+          },
+        );
+      }
+      if (name === "AbortError") {
+        throw new GcsOperationError(
+          `GCS ${op} aborted`,
+          {
+            name: "AbortError",
+            httpStatusCode: null,
+            code: undefined,
+            bodyPreview: undefined,
+            uploadId: undefined,
+            cause: err,
+          },
+        );
+      }
+      throw new GcsOperationError(
+        `GCS ${op} transport failure — ${message}`,
+        {
+          name,
+          httpStatusCode: null,
+          code: undefined,
+          bodyPreview: undefined,
+          uploadId: undefined,
+          cause: err,
+        },
+      );
     }
-    // Consume body
+
+    if (response.ok) return response;
+
+    const uploadId = response.headers.get("X-GUploader-UploadID") ?? undefined;
+
+    if (response.status === 404) {
+      await response.body?.cancel().catch(() => {});
+      throw new NotFoundError(`GCS ${op} not found (404)`);
+    }
+    if (response.status === 412) {
+      await response.body?.cancel().catch(() => {});
+      throw new PreconditionFailedError(`GCS ${op} precondition failed (412)`);
+    }
+
+    const { bytes, truncated } = await readCappedBody(
+      response,
+      MAX_ERROR_BODY_BYTES,
+    );
+    const bodyText = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+    const preview = decodePreview(bytes, ERROR_BODY_PREVIEW_BYTES, truncated);
+    const code = extractErrorCode(
+      bodyText,
+      response.headers.get("content-type"),
+    );
+
+    const parts: string[] = [`GCS ${op} failed`, `HTTP ${response.status}`];
+    if (code) parts.push(code);
+    if (response.status === 401 || response.status === 403) {
+      parts.push(
+        "(check GCS credentials — GOOGLE_APPLICATION_CREDENTIALS, gcloud ADC, or attached service account — and project/bucket configuration)",
+      );
+    }
+    if (preview) parts.push(`bodyPreview=${JSON.stringify(preview)}`);
+
+    throw new GcsOperationError(parts.join(" "), {
+      name: "GcsOperationError",
+      httpStatusCode: response.status,
+      code,
+      bodyPreview: preview,
+      uploadId,
+    });
+  }
+
+  /** Checks if the bucket exists and is accessible. */
+  async bucketExists(signal?: AbortSignal): Promise<void> {
+    const url = this.storageUrl(`/b/${encodeURIComponent(this.bucket)}`);
+    const resp = await this.send(
+      "bucketExists",
+      url,
+      { method: "GET", headers: await this.headers() },
+      signal,
+    );
     await resp.text();
   }
 
   /** Uploads an object to GCS. Returns the generation number. */
-  async putObject(key: string, body: Uint8Array): Promise<GcsWriteResult> {
+  async putObject(
+    key: string,
+    body: Uint8Array,
+    signal?: AbortSignal,
+  ): Promise<GcsWriteResult> {
     const objectName = this.fullKey(key);
     const url = this.uploadUrl(
       `/b/${encodeURIComponent(this.bucket)}/o?uploadType=media&name=${
@@ -369,40 +664,30 @@ export class GcsClient {
     const hdrs = await this.headers();
     hdrs["Content-Type"] = "application/octet-stream";
 
-    const resp = await fetch(url, {
-      method: "POST",
-      headers: hdrs,
-      body,
-    });
-    if (!resp.ok) {
-      const text = await resp.text();
-      throw new Error(
-        `GCS putObject failed for '${objectName}' (${resp.status}): ${text}`,
-      );
-    }
+    const resp = await this.send(
+      "putObject",
+      url,
+      { method: "POST", headers: hdrs, body: body as BodyInit },
+      signal,
+    );
     const meta = await resp.json();
     return { generation: meta.generation };
   }
 
   /** Downloads an object from GCS. */
-  async getObject(key: string): Promise<Uint8Array> {
+  async getObject(key: string, signal?: AbortSignal): Promise<Uint8Array> {
     const objectName = this.fullKey(key);
     const url = this.storageUrl(
       `/b/${encodeURIComponent(this.bucket)}/o/${
         encodeURIComponent(objectName)
       }?alt=media`,
     );
-    const resp = await fetch(url, { headers: await this.headers() });
-    if (!resp.ok) {
-      if (resp.status === 404) {
-        await resp.text();
-        throw new NotFoundError(`Object not found: ${objectName}`);
-      }
-      const text = await resp.text();
-      throw new Error(
-        `GCS getObject failed for '${objectName}' (${resp.status}): ${text}`,
-      );
-    }
+    const resp = await this.send(
+      "getObject",
+      url,
+      { method: "GET", headers: await this.headers() },
+      signal,
+    );
     return new Uint8Array(await resp.arrayBuffer());
   }
 
@@ -410,6 +695,7 @@ export class GcsClient {
   async deleteObject(
     key: string,
     options?: { ifGenerationMatch?: string },
+    signal?: AbortSignal,
   ): Promise<void> {
     const objectName = this.fullKey(key);
     let url = this.storageUrl(
@@ -418,53 +704,54 @@ export class GcsClient {
       }`,
     );
     if (options?.ifGenerationMatch) {
-      url += `?ifGenerationMatch=${options.ifGenerationMatch}`;
+      url += `?ifGenerationMatch=${
+        encodeURIComponent(options.ifGenerationMatch)
+      }`;
     }
-    const resp = await fetch(url, {
-      method: "DELETE",
-      headers: await this.headers(),
-    });
-    if (resp.status === 412) {
+    try {
+      const resp = await this.send(
+        "deleteObject",
+        url,
+        { method: "DELETE", headers: await this.headers() },
+        signal,
+      );
       await resp.text();
-      throw new PreconditionFailedError(
-        `Generation mismatch deleting '${objectName}'`,
-      );
+    } catch (err) {
+      // 404 on delete is a no-op — object is already gone.
+      if (err instanceof NotFoundError) return;
+      throw err;
     }
-    if (!resp.ok && resp.status !== 404) {
-      const text = await resp.text();
-      throw new Error(
-        `GCS deleteObject failed for '${objectName}' (${resp.status}): ${text}`,
-      );
-    }
-    if (resp.body) await resp.text();
   }
 
   /** Gets object metadata from GCS. */
-  async getMetadata(key: string): Promise<GcsObjectMetadata> {
+  async getMetadata(
+    key: string,
+    signal?: AbortSignal,
+  ): Promise<GcsObjectMetadata> {
     const objectName = this.fullKey(key);
     const url = this.storageUrl(
       `/b/${encodeURIComponent(this.bucket)}/o/${
         encodeURIComponent(objectName)
       }`,
     );
-    const resp = await fetch(url, { headers: await this.headers() });
-    if (resp.status === 404) {
-      await resp.text();
-      return { exists: false };
-    }
-    if (!resp.ok) {
-      const text = await resp.text();
-      throw new Error(
-        `GCS getMetadata failed for '${objectName}' (${resp.status}): ${text}`,
+    try {
+      const resp = await this.send(
+        "getMetadata",
+        url,
+        { method: "GET", headers: await this.headers() },
+        signal,
       );
+      const meta = await resp.json();
+      return {
+        exists: true,
+        size: parseInt(meta.size, 10),
+        updated: meta.updated ? new Date(meta.updated) : undefined,
+        generation: meta.generation,
+      };
+    } catch (err) {
+      if (err instanceof NotFoundError) return { exists: false };
+      throw err;
     }
-    const meta = await resp.json();
-    return {
-      exists: true,
-      size: parseInt(meta.size, 10),
-      updated: meta.updated ? new Date(meta.updated) : undefined,
-      generation: meta.generation,
-    };
   }
 
   /**
@@ -478,6 +765,7 @@ export class GcsClient {
   async putObjectConditional(
     key: string,
     body: Uint8Array,
+    signal?: AbortSignal,
   ): Promise<GcsWriteResult | null> {
     const objectName = this.fullKey(key);
     const url = this.uploadUrl(
@@ -488,25 +776,19 @@ export class GcsClient {
     const hdrs = await this.headers();
     hdrs["Content-Type"] = "application/octet-stream";
 
-    const resp = await fetch(url, {
-      method: "POST",
-      headers: hdrs,
-      body,
-    });
-
-    if (resp.status === 412) {
-      // Object already exists
-      await resp.text();
-      return null;
-    }
-    if (!resp.ok) {
-      const text = await resp.text();
-      throw new Error(
-        `GCS conditional putObject failed for '${objectName}' (${resp.status}): ${text}`,
+    try {
+      const resp = await this.send(
+        "putObjectConditional",
+        url,
+        { method: "POST", headers: hdrs, body: body as BodyInit },
+        signal,
       );
+      const meta = await resp.json();
+      return { generation: meta.generation };
+    } catch (err) {
+      if (err instanceof PreconditionFailedError) return null;
+      throw err;
     }
-    const meta = await resp.json();
-    return { generation: meta.generation };
   }
 
   /**
@@ -521,40 +803,37 @@ export class GcsClient {
     key: string,
     body: Uint8Array,
     expectedGeneration: string,
+    signal?: AbortSignal,
   ): Promise<GcsWriteResult | null> {
     const objectName = this.fullKey(key);
     const url = this.uploadUrl(
       `/b/${encodeURIComponent(this.bucket)}/o?uploadType=media&name=${
         encodeURIComponent(objectName)
-      }&ifGenerationMatch=${expectedGeneration}`,
+      }&ifGenerationMatch=${encodeURIComponent(expectedGeneration)}`,
     );
     const hdrs = await this.headers();
     hdrs["Content-Type"] = "application/octet-stream";
 
-    const resp = await fetch(url, {
-      method: "POST",
-      headers: hdrs,
-      body,
-    });
-
-    if (resp.status === 412) {
-      await resp.text();
-      return null;
-    }
-    if (!resp.ok) {
-      const text = await resp.text();
-      throw new Error(
-        `GCS CAS putObject failed for '${objectName}' (${resp.status}): ${text}`,
+    try {
+      const resp = await this.send(
+        "putObjectCas",
+        url,
+        { method: "POST", headers: hdrs, body: body as BodyInit },
+        signal,
       );
+      const meta = await resp.json();
+      return { generation: meta.generation };
+    } catch (err) {
+      if (err instanceof PreconditionFailedError) return null;
+      throw err;
     }
-    const meta = await resp.json();
-    return { generation: meta.generation };
   }
 
   /** Lists objects in GCS with the configured prefix. */
   async listObjects(
     subPrefix?: string,
     pageToken?: string,
+    signal?: AbortSignal,
   ): Promise<GcsListResult> {
     const prefix = subPrefix
       ? this.fullKey(subPrefix)
@@ -570,11 +849,12 @@ export class GcsClient {
     if (pageToken) params.set("pageToken", pageToken);
     url += params.toString();
 
-    const resp = await fetch(url, { headers: await this.headers() });
-    if (!resp.ok) {
-      const text = await resp.text();
-      throw new Error(`GCS listObjects failed (${resp.status}): ${text}`);
-    }
+    const resp = await this.send(
+      "listObjects",
+      url,
+      { method: "GET", headers: await this.headers() },
+      signal,
+    );
     const data = await resp.json();
 
     const prefixLen = this.prefix ? this.prefix.length + 1 : 0;
@@ -590,12 +870,15 @@ export class GcsClient {
   }
 
   /** Lists all objects (handling pagination). */
-  async listAllObjects(subPrefix?: string): Promise<string[]> {
+  async listAllObjects(
+    subPrefix?: string,
+    signal?: AbortSignal,
+  ): Promise<string[]> {
     const allKeys: string[] = [];
     let pageToken: string | undefined;
 
     do {
-      const result = await this.listObjects(subPrefix, pageToken);
+      const result = await this.listObjects(subPrefix, pageToken, signal);
       allKeys.push(...result.keys);
       pageToken = result.truncated ? result.pageToken : undefined;
     } while (pageToken);

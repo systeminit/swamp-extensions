@@ -295,6 +295,14 @@ export async function retryWithBackoff<T>(
   },
 ): Promise<T> {
   const maxAttempts = config?.maxAttempts ?? RETRY_MAX_ATTEMPTS;
+  if (maxAttempts < 1) {
+    // Guard against caller misconfiguration: maxAttempts=0 would skip
+    // the loop entirely and `throw lastErr` would throw undefined.
+    // Fail loudly with the actual problem instead.
+    throw new Error(
+      `retryWithBackoff: maxAttempts must be >= 1, got ${maxAttempts}`,
+    );
+  }
   const baseDelayMs = config?.baseDelayMs ?? RETRY_BASE_DELAY_MS;
   const signal = config?.signal;
   let lastErr: unknown;
@@ -438,10 +446,15 @@ export class S3CacheSyncService implements DatastoreSyncService {
   /**
    * Pessimistically mark the local cache as dirty. Called by `pushFile`
    * before its upload work so a crash mid-batch leaves the flag set
-   * (safe: forces a full walk next time). Idempotent — if the sidecar
-   * already records `localDirty: true`, no write is issued.
+   * (safe: forces a full walk next time). Also the public
+   * `DatastoreSyncService.markDirty` entry point — swamp-core's
+   * repository layer calls this before writing to the cache directly
+   * (any write that bypasses `pushFile`). Without this hook, the
+   * fast-path short-circuit silently skips core's writes on the next
+   * `pushChanged`. Idempotent — if the sidecar already records
+   * `localDirty: true`, no write is issued.
    */
-  private async markLocalDirty(): Promise<void> {
+  async markDirty(): Promise<void> {
     const current = await this.loadSyncState();
     if (current?.localDirty === true) return;
     await this.writeSyncState({
@@ -819,7 +832,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
     relativePath: string,
     signal?: AbortSignal,
   ): Promise<void> {
-    await this.markLocalDirty();
+    await this.markDirty();
     const localPath = assertSafePath(this.cachePath, relativePath);
     const data = await Deno.readFile(localPath);
     await retryWithBackoff(

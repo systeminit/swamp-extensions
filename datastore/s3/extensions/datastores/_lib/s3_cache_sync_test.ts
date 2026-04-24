@@ -1508,19 +1508,21 @@ Deno.test("pullChanged / pushChanged: AbortSignal cancellation propagates", asyn
   }
 });
 
-// -- (9) guardrail: direct cache writes bypass localDirty tracking -------
+// -- (9) guardrail: direct cache writes without markDirty bypass tracking --
 
-// CONTRACT: only `pushFile` is permitted to write into the cache from
-// the extension's side — that's the path that flips
-// `localDirty: true` before the upload work. A future PR adding
-// another cache-writer must update this test alongside the new code.
-// As long as no other writer exists, a direct `Deno.writeFile` into
-// the cache is a contract violation: the sidecar tracking won't see
-// it, and the next `pushChanged` will fast-path past the change.
+// CONTRACT: external writers into the cache directory (e.g.
+// swamp-core's repository layer using atomicWriteFile) MUST call
+// `markDirty()` on the sync service. Internal writes through
+// `pushFile` flip `localDirty: true` automatically. A direct
+// `Deno.writeFile` into the cache WITHOUT `markDirty` is a contract
+// violation: the sidecar won't see it, and the next `pushChanged`
+// fast-paths past the change. See the companion
+// "markDirty: flips sidecar localDirty..." test for the recovery
+// path.
 //
-// This test pins that contract so the limitation is explicit. Loosening
-// it (e.g. walking-on-every-push to re-confirm) would defeat DEF-2's
-// whole purpose.
+// This test pins the failure mode when `markDirty` is forgotten so
+// the footgun is explicit. Loosening it (e.g. walking on every push
+// to re-confirm) would defeat the fast-path's purpose.
 
 Deno.test("pushChanged: direct Deno.writeFile bypasses localDirty tracking (contract)", async () => {
   const cachePath = await Deno.makeTempDir({
@@ -1558,6 +1560,88 @@ Deno.test("pushChanged: direct Deno.writeFile bypasses localDirty tracking (cont
       mock.gets.filter((k) => k === ".datastore-index.json").length,
       0,
       "fast path also skipped the index force-fetch",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// ============================================================================
+// markDirty() contract — hotfix for fast-path/core-writes data-loss.
+//
+// The fast-path added in #105 depends on a `localDirty` flag in the
+// sidecar. That flag is flipped by `pushFile` internally OR by the
+// new public `markDirty()`. swamp-core writes directly to the cache
+// via atomicWriteFile, bypassing `pushFile` — so it MUST call
+// `markDirty()` before (or immediately after) each write, otherwise
+// the next `pushChanged` fast-paths past the write and the data is
+// silently missed on upload. Test (9) above pins the
+// "without markDirty" failure mode; these tests pin the
+// "with markDirty" recovery path.
+// ============================================================================
+
+Deno.test("markDirty: flips sidecar localDirty and forces slow-path on next pushChanged", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-markdirty-" });
+  try {
+    const mock = createMockS3Client();
+    mock.storage.set(".datastore-index.json", encodeIndex({}));
+    const service = new S3CacheSyncService(mock, cachePath);
+
+    // Priming sync populates the sidecar clean.
+    await service.pullChanged();
+    await service.pushChanged();
+
+    // Simulate swamp-core writing directly to the cache AND honoring
+    // the new contract by calling markDirty afterwards.
+    await seedFile(cachePath, "data/external-writer.yaml", "external\n");
+    await service.markDirty();
+
+    // Reset ledgers — next pushChanged must slow-path and walk.
+    mock.puts.length = 0;
+    mock.gets.length = 0;
+
+    await service.pushChanged();
+
+    assert(
+      mock.puts.some((p) => p.key === "data/external-writer.yaml"),
+      "markDirty must force the next pushChanged to walk and upload the externally-written file",
+    );
+    assert(
+      mock.gets.some((k) => k === ".datastore-index.json"),
+      "fast-path must not hit after markDirty — forceRemote index fetch expected",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+Deno.test("markDirty: is idempotent — repeated calls don't thrash the sidecar", async () => {
+  const cachePath = await Deno.makeTempDir({
+    prefix: "s3sync-markdirty-idem-",
+  });
+  try {
+    const mock = createMockS3Client();
+    mock.storage.set(".datastore-index.json", encodeIndex({}));
+    const service = new S3CacheSyncService(mock, cachePath);
+
+    await service.pullChanged();
+    await service.pushChanged();
+    await service.markDirty();
+
+    const sidecarPath = join(cachePath, ".datastore-sync-state.json");
+    const mtimeAfterFirst = (await Deno.stat(sidecarPath)).mtime;
+    assertExists(mtimeAfterFirst);
+
+    await new Promise((r) => setTimeout(r, 20));
+    await service.markDirty();
+    await service.markDirty();
+
+    const mtimeAfterRepeats = (await Deno.stat(sidecarPath)).mtime;
+    assertExists(mtimeAfterRepeats);
+    assertEquals(
+      mtimeAfterRepeats.getTime(),
+      mtimeAfterFirst.getTime(),
+      "idempotent markDirty must not rewrite the sidecar",
     );
   } finally {
     await Deno.remove(cachePath, { recursive: true });
