@@ -197,3 +197,14 @@ The cache sync service maintains a local cache directory and syncs with GCS:
   timing lines (`[gcs-sync] pullChanged.fastpath <ms> hit`,
   `[gcs-sync] pushChanged.walk <ms> toPush=<n>`, etc.). Off by default;
   useful when diagnosing a slow sync.
+- **Retry envelope** — per-object GET / PUT (including the index
+  writeback) runs under a 3-attempt exponential-backoff retry with
+  ±25% jitter. Retryable conditions: 5xx, 429, `TimeoutError`, and
+  transport-level failures (ECONNRESET, DNS, TLS). 4xx other than
+  429, `NotFoundError`, `PreconditionFailedError`, and `AbortError`
+  are terminal (no retry). Conditional writes used by the lock
+  (`putObjectConditional`, `putObjectCas`) are **not** retry-wrapped:
+  retrying a lost CAS would retry a known-losing race. One
+  operator-visible consequence of the retry envelope: a single
+  transient-5xx-affected file may be billed up to 3× on Cloud
+  Storage PUT metrics — by design, not a regression.

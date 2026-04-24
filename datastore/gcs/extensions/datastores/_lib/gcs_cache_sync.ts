@@ -36,7 +36,7 @@ import type {
   DatastoreSyncOptions,
   DatastoreSyncService,
 } from "./interfaces.ts";
-import { NotFoundError } from "./gcs_client.ts";
+import { GcsOperationError, NotFoundError } from "./gcs_client.ts";
 import type { GcsClient } from "./gcs_client.ts";
 import { atomicWriteTextFile } from "./atomic_write.ts";
 
@@ -110,6 +110,128 @@ function throwIfAborted(signal: AbortSignal | undefined): void {
       "AbortError",
     );
   }
+}
+
+/**
+ * Sleep that wakes early if the signal aborts. Used inside
+ * `retryWithBackoff` so an outer sync timeout unblocks the backoff
+ * sleep instead of waiting out the full delay after the caller has
+ * already given up.
+ */
+function abortableSleep(
+  ms: number,
+  signal: AbortSignal | undefined,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      if (signal) signal.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(
+        new DOMException(
+          signal?.reason instanceof Error ? signal.reason.message : "Aborted",
+          "AbortError",
+        ),
+      );
+    };
+    if (signal) {
+      if (signal.aborted) {
+        clearTimeout(timer);
+        reject(
+          new DOMException(
+            signal.reason instanceof Error ? signal.reason.message : "Aborted",
+            "AbortError",
+          ),
+        );
+        return;
+      }
+      signal.addEventListener("abort", onAbort, { once: true });
+    }
+  });
+}
+
+/** Retry budget for single-object GCS operations in the sync pipeline. */
+const RETRY_MAX_ATTEMPTS = 3;
+/** Base delay between retry attempts (ms). Each retry multiplies by 3. */
+const RETRY_BASE_DELAY_MS = 500;
+/** Jitter fraction applied to each backoff delay (±25%). */
+const RETRY_JITTER_FRACTION = 0.25;
+
+/**
+ * Returns true when an error is a transient condition that should be
+ * retried: request timeouts, 5xx service errors, 429 throttling, and
+ * transport-level failures (connection reset, DNS, TLS handshake).
+ *
+ * Explicitly NOT retryable: 4xx other than 429 (bad request, auth
+ * failure), `PreconditionFailedError` (conditional write lost the
+ * race — retrying gives the same answer), `NotFoundError` (not a
+ * transient state), any `AbortError` (caller explicitly cancelled).
+ *
+ * The `status == null` branch matters more than it looks. The GCS
+ * client surfaces transport-level failures (ECONNRESET, DNS lookup,
+ * TLS close_notify) as a `GcsOperationError` with `httpStatusCode:
+ * null`. Without this branch, real network blips would not be retried
+ * — defeating the whole point of the retry budget. Auth and config
+ * errors always carry a 4xx status, so treating a missing status as
+ * transient is safe.
+ *
+ * Exported for unit tests; not part of the public extension API.
+ */
+export function isRetryableError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  if (err.name === "AbortError") return false;
+  if (err.name === "NotFoundError") return false;
+  if (err.name === "PreconditionFailedError") return false;
+  if (err.name === "TimeoutError") return true;
+  if (err instanceof GcsOperationError) {
+    const status = err.httpStatusCode;
+    if (status === 429) return true;
+    if (status != null && status >= 500 && status < 600) return true;
+    if (status == null) return true;
+  }
+  return false;
+}
+
+/**
+ * Retry `op` with exponential backoff + jitter until it succeeds, a
+ * non-retryable error is thrown, or `maxAttempts` is reached.
+ * Re-throws the last error if all attempts fail.
+ *
+ * Exported for unit tests; not part of the public extension API.
+ * The `config` override exists so tests can run without paying the
+ * production backoff latency. `signal` unblocks the backoff sleep on
+ * abort so the outer sync timeout isn't held up waiting for a delay
+ * that will never resolve into useful work.
+ */
+export async function retryWithBackoff<T>(
+  op: () => Promise<T>,
+  config?: {
+    maxAttempts?: number;
+    baseDelayMs?: number;
+    signal?: AbortSignal;
+  },
+): Promise<T> {
+  const maxAttempts = config?.maxAttempts ?? RETRY_MAX_ATTEMPTS;
+  const baseDelayMs = config?.baseDelayMs ?? RETRY_BASE_DELAY_MS;
+  const signal = config?.signal;
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    throwIfAborted(signal);
+    try {
+      return await op();
+    } catch (err) {
+      lastErr = err;
+      const isLastAttempt = attempt === maxAttempts - 1;
+      if (isLastAttempt || !isRetryableError(err)) throw err;
+      const raw = baseDelayMs * Math.pow(3, attempt);
+      const jitter = raw * RETRY_JITTER_FRACTION * (Math.random() * 2 - 1);
+      const delay = Math.max(0, Math.floor(raw + jitter));
+      await abortableSleep(delay, signal);
+    }
+  }
+  throw lastErr;
 }
 
 /**
@@ -522,7 +644,10 @@ export class GcsCacheSyncService implements DatastoreSyncService {
   /** Fetches a single file from GCS to the local cache. */
   async pullFile(relativePath: string, signal?: AbortSignal): Promise<void> {
     const localPath = assertSafePath(this.cachePath, relativePath);
-    const data = await this.gcs.getObject(relativePath, signal);
+    const data = await retryWithBackoff(
+      () => this.gcs.getObject(relativePath, signal),
+      { signal },
+    );
     await ensureDir(dirname(localPath));
     await Deno.writeFile(localPath, data);
   }
@@ -659,7 +784,10 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     await this.markLocalDirty();
     const localPath = assertSafePath(this.cachePath, relativePath);
     const data = await Deno.readFile(localPath);
-    await this.gcs.putObject(relativePath, data, signal);
+    await retryWithBackoff(
+      () => this.gcs.putObject(relativePath, data, signal),
+      { signal },
+    );
 
     if (this.index) {
       const stat = await Deno.stat(localPath);
@@ -777,10 +905,13 @@ export class GcsCacheSyncService implements DatastoreSyncService {
       }
       const indexJson = JSON.stringify(this.index, null, 2);
       const indexData = new TextEncoder().encode(indexJson);
-      const putResult = await this.gcs.putObject(
-        ".datastore-index.json",
-        indexData,
-        signal,
+      // Wrap in retryWithBackoff: if per-file pushes all succeed but
+      // the index write fails on a transient 5xx/timeout, we'd leave
+      // the remote inconsistent (files present, index unaware). Retry
+      // keeps the write-back atomic from the caller's perspective.
+      const putResult = await retryWithBackoff(
+        () => this.gcs.putObject(".datastore-index.json", indexData, signal),
+        { signal },
       );
       await atomicWriteTextFile(this.indexPath, indexJson);
       this.indexMutated = false;
