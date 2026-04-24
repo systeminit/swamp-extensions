@@ -832,7 +832,14 @@ export class S3CacheSyncService implements DatastoreSyncService {
     // ETag is null (cache-hit pullIndex or NotFound brand-new bucket),
     // the sidecar is skipped — next sync self-heals on the slow path.
     if (pulled === 0 && indexETag) {
-      await this.markSynced(indexETag);
+      try {
+        await this.markSynced(indexETag);
+      } catch {
+        // Non-fatal: sidecar update is opportunistic. Disk-full /
+        // permissions / unmount must not turn a successful sync into
+        // a failure — the sidecar is a fast-path optimization, and a
+        // missed update only costs one slow-path sync next time.
+      }
     }
 
     return pulled;
@@ -1001,7 +1008,11 @@ export class S3CacheSyncService implements DatastoreSyncService {
       // just costs one slow path next time (swamp-club #168).
       const etag = putResult?.etag;
       if (etag && !isMultipartETag(etag)) {
-        await this.markSynced(etag);
+        try {
+          await this.markSynced(etag);
+        } catch {
+          // Non-fatal: sidecar update is opportunistic.
+        }
       }
       tracePhase("pushChanged.writeback", writebackStart);
     } else {
@@ -1012,7 +1023,11 @@ export class S3CacheSyncService implements DatastoreSyncService {
       // racy (same hazard as the pullChanged end-of-path, swamp-club
       // #168). If pullIndex returned null (NotFound), skip.
       if (indexETag) {
-        await this.markSynced(indexETag);
+        try {
+          await this.markSynced(indexETag);
+        } catch {
+          // Non-fatal: sidecar update is opportunistic.
+        }
       }
     }
 

@@ -803,7 +803,14 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     // generation is null (cache-hit pullIndex or NotFound brand-new
     // bucket), the sidecar is skipped — next sync self-heals.
     if (pulled === 0 && indexGeneration) {
-      await this.markSynced(indexGeneration);
+      try {
+        await this.markSynced(indexGeneration);
+      } catch {
+        // Non-fatal: sidecar update is opportunistic. Disk-full /
+        // permissions / unmount must not turn a successful sync into
+        // a failure — the sidecar is a fast-path optimization, and a
+        // missed update only costs one slow-path sync next time.
+      }
     }
 
     return pulled;
@@ -966,7 +973,11 @@ export class GcsCacheSyncService implements DatastoreSyncService {
       // sidecar is opportunistic — a missed update just costs one
       // slow path next time (swamp-club #168).
       if (putResult.generation && putResult.generation !== "0") {
-        await this.markSynced(putResult.generation);
+        try {
+          await this.markSynced(putResult.generation);
+        } catch {
+          // Non-fatal: sidecar update is opportunistic.
+        }
       }
       tracePhase("pushChanged.writeback", writebackStart);
     } else {
@@ -977,7 +988,11 @@ export class GcsCacheSyncService implements DatastoreSyncService {
       // be TOCTOU-racy (same hazard as the pullChanged end-of-path,
       // swamp-club #168). If pullIndex returned null (NotFound), skip.
       if (indexGeneration) {
-        await this.markSynced(indexGeneration);
+        try {
+          await this.markSynced(indexGeneration);
+        } catch {
+          // Non-fatal: sidecar update is opportunistic.
+        }
       }
     }
 
