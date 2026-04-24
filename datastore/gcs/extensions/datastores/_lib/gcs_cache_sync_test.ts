@@ -23,14 +23,19 @@
 // logic. See swamp-club#29 for the motivating bug.
 
 import {
+  assert,
   assertEquals,
   assertExists,
   assertRejects,
 } from "jsr:@std/assert@1.0.19";
 import { join } from "jsr:@std/path@1";
-import { GcsCacheSyncService } from "./gcs_cache_sync.ts";
+import { GcsCacheSyncService, isInternalCacheFile } from "./gcs_cache_sync.ts";
 import { NotFoundError } from "./gcs_client.ts";
-import type { GcsClient } from "./gcs_client.ts";
+import type {
+  GcsClient,
+  GcsObjectMetadata,
+  GcsWriteResult,
+} from "./gcs_client.ts";
 
 /** Captured putObject call for test assertions. */
 interface PutCall {
@@ -38,28 +43,63 @@ interface PutCall {
   body: Uint8Array;
 }
 
-/** In-memory mock of GcsClient recording getObject/putObject calls. */
+/**
+ * In-memory mock of GcsClient recording getObject/putObject/getMetadata
+ * calls. `generationOverrides` lets a test pin a specific generation
+ * string (for example `""` or `"0"` for the unusable-fingerprint case)
+ * regardless of stored content. Mock method bodies reject
+ * SYNCHRONOUSLY on a pre-aborted signal — promise-based rejection
+ * would race the fast-path probe and leak a real HEAD call.
+ */
 function createMockGcsClient(): GcsClient & {
   storage: Map<string, Uint8Array>;
+  generationOverrides: Map<string, string>;
   puts: PutCall[];
   gets: string[];
+  heads: string[];
 } {
   const storage = new Map<string, Uint8Array>();
+  const generations = new Map<string, number>();
+  const generationOverrides = new Map<string, string>();
   const puts: PutCall[] = [];
   const gets: string[] = [];
+  const heads: string[] = [];
+
+  const nextGen = (key: string): string => {
+    const g = (generations.get(key) ?? 0) + 1;
+    generations.set(key, g);
+    return String(g);
+  };
+
+  const genFor = (key: string): string =>
+    generationOverrides.get(key) ?? String(generations.get(key) ?? 0);
+
+  const throwIfAborted = (signal?: AbortSignal) => {
+    if (signal?.aborted) {
+      throw new DOMException("aborted", "AbortError");
+    }
+  };
 
   return {
     storage,
+    generationOverrides,
     puts,
     gets,
+    heads,
 
-    putObject(key: string, body: Uint8Array): Promise<{ generation: string }> {
+    putObject(
+      key: string,
+      body: Uint8Array,
+      signal?: AbortSignal,
+    ): Promise<GcsWriteResult> {
+      throwIfAborted(signal);
       storage.set(key, body);
       puts.push({ key, body });
-      return Promise.resolve({ generation: "1" });
+      return Promise.resolve({ generation: nextGen(key) });
     },
 
-    getObject(key: string): Promise<Uint8Array> {
+    getObject(key: string, signal?: AbortSignal): Promise<Uint8Array> {
+      throwIfAborted(signal);
       gets.push(key);
       const data = storage.get(key);
       if (!data) {
@@ -67,10 +107,28 @@ function createMockGcsClient(): GcsClient & {
       }
       return Promise.resolve(data);
     },
+
+    getMetadata(
+      key: string,
+      signal?: AbortSignal,
+    ): Promise<GcsObjectMetadata> {
+      throwIfAborted(signal);
+      heads.push(key);
+      const data = storage.get(key);
+      if (!data) return Promise.resolve({ exists: false });
+      return Promise.resolve({
+        exists: true,
+        size: data.length,
+        updated: new Date(),
+        generation: genFor(key),
+      });
+    },
   } as unknown as GcsClient & {
     storage: Map<string, Uint8Array>;
+    generationOverrides: Map<string, string>;
     puts: PutCall[];
     gets: string[];
+    heads: string[];
   };
 }
 
@@ -598,6 +656,325 @@ Deno.test("pushChanged: propagates non-NotFound remote errors and skips writebac
       puts.length,
       0,
       "no putObject calls allowed — a failed remote fetch must not trigger a writeback that could wipe the real remote index",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// ============================================================================
+// Fast-path test block (1)–(9) — ref lab/166.
+//
+// GCS fingerprint is the remote index's `generation` string instead of
+// an S3-style ETag. Design differences from s3's (1)-(9) block:
+//   - No `normalizeETag` helper equivalent — generation is a plain
+//     int64 string with no wire quirks.
+//   - Test (6) swaps s3's "multipart ETag bypasses fast path" case for
+//     "empty-string generation bypasses fast path" — GCS never returns
+//     multipart-style fingerprints because generation is unique per
+//     write regardless of upload method.
+// ============================================================================
+
+// -- (1) sidecar walker-exclusion guardrail -------------------------------
+
+Deno.test("isInternalCacheFile: excludes the sync-state sidecar", () => {
+  assertEquals(isInternalCacheFile(".datastore-sync-state.json"), true);
+  assertEquals(isInternalCacheFile("regular/file.yaml"), false);
+});
+
+// -- (2) post-verified pullChanged short-circuits with zero index GETs ----
+
+Deno.test("pullChanged: post-verified second call hits fast path with zero index GETs", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-fast2-" });
+  try {
+    const mock = createMockGcsClient();
+    // Seed a remote index + local index so the first pull marks clean.
+    await mock.putObject(".datastore-index.json", encodeIndex({}));
+    const service = new GcsCacheSyncService(mock, cachePath);
+
+    // Priming pull — slow-path, writes the sidecar.
+    await service.pullChanged();
+
+    // Reset call ledgers; second pull must fast-path.
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+
+    const result = await service.pullChanged();
+
+    assertEquals(result, 0, "fast path should return 0 pulled");
+    assertEquals(
+      mock.gets.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "no index GET on fast-path hit — only the sidecar HEAD fires",
+    );
+    assertEquals(
+      mock.heads.length,
+      1,
+      "exactly one HEAD of the index during the fast-path probe",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (3) post-verified pushChanged short-circuits with zero walk ----------
+
+Deno.test("pushChanged: post-verified second call hits fast path with zero index GETs", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-fast3-" });
+  try {
+    const mock = createMockGcsClient();
+    await mock.putObject(".datastore-index.json", encodeIndex({}));
+    const service = new GcsCacheSyncService(mock, cachePath);
+
+    // Priming sync populates the sidecar (pull then push slow-path).
+    await service.pullChanged();
+    await service.pushChanged();
+
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+    mock.puts.length = 0;
+
+    const result = await service.pushChanged();
+
+    assertEquals(result, 0, "fast path should return 0 pushed");
+    assertEquals(
+      mock.gets.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "no index GET on fast-path hit",
+    );
+    assertEquals(
+      mock.puts.length,
+      0,
+      "no putObject calls on fast-path hit — nothing walked, nothing written",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (4) corrupt sidecar falls through, never throws ----------------------
+
+Deno.test("pullChanged: corrupt sidecar (bad JSON / wrong version / missing fields) falls through to slow path", async () => {
+  const corruptCases = [
+    "not valid json{",
+    JSON.stringify({
+      version: 999,
+      remoteIndexGeneration: "1",
+      lastVerifiedAt: "2026-01-01T00:00:00Z",
+      localDirty: false,
+    }),
+    JSON.stringify({ version: 1 /* missing fields */ }),
+  ];
+  for (const [i, corrupt] of corruptCases.entries()) {
+    const cachePath = await Deno.makeTempDir({ prefix: `gcssync-fast4-${i}-` });
+    try {
+      const mock = createMockGcsClient();
+      await mock.putObject(".datastore-index.json", encodeIndex({}));
+      await Deno.mkdir(cachePath, { recursive: true });
+      await Deno.writeTextFile(
+        join(cachePath, ".datastore-sync-state.json"),
+        corrupt,
+      );
+
+      const service = new GcsCacheSyncService(mock, cachePath);
+
+      // Must NOT throw. Must fall through to slow path — which GETs
+      // the remote index (populating mock.gets).
+      await service.pullChanged();
+
+      assert(
+        mock.gets.some((k) => k === ".datastore-index.json"),
+        `corrupt sidecar case ${i} must fall through to slow-path index GET`,
+      );
+    } finally {
+      await Deno.remove(cachePath, { recursive: true });
+    }
+  }
+});
+
+// -- (5) remote generation change bypasses short-circuit ------------------
+
+Deno.test("pullChanged: remote index generation change bypasses fast path", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-fast5-" });
+  try {
+    const mock = createMockGcsClient();
+    await mock.putObject(".datastore-index.json", encodeIndex({}));
+    const service = new GcsCacheSyncService(mock, cachePath);
+
+    await service.pullChanged();
+
+    // Bump the remote generation — simulates another writer pushing
+    // an updated index between our syncs.
+    mock.generationOverrides.set(".datastore-index.json", "999");
+
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+
+    await service.pullChanged();
+
+    // Fast-path probe HEADs (generation mismatch), then slow path
+    // GETs the remote index.
+    assert(
+      mock.gets.some((k) => k === ".datastore-index.json"),
+      "generation mismatch must bypass fast path and slow-path GET the index",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (6) empty/zero generation bypasses fast path -------------------------
+//
+// GCS-specific: the S3 equivalent test checks multipart-shaped ETag
+// bypass. GCS generation is always unique per write (no multipart
+// variant), so the analogous unusable-fingerprint case is an
+// empty-string or "0" generation — values `tryFastPull*` rejects
+// explicitly. This pins the defensive check so a future implementer
+// doesn't "simplify" it out.
+
+Deno.test("pullChanged: empty-string generation bypasses fast path", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-fast6-" });
+  try {
+    const mock = createMockGcsClient();
+    await mock.putObject(".datastore-index.json", encodeIndex({}));
+    const service = new GcsCacheSyncService(mock, cachePath);
+
+    await service.pullChanged();
+
+    mock.generationOverrides.set(".datastore-index.json", "");
+
+    mock.gets.length = 0;
+    await service.pullChanged();
+
+    assert(
+      mock.gets.some((k) => k === ".datastore-index.json"),
+      "empty generation must bypass fast path and slow-path GET the index",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (7) local file mutation forces real push work -----------------------
+
+Deno.test("pushChanged: local file mutation since last sync forces real push work", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-fast7-" });
+  try {
+    const mock = createMockGcsClient();
+    await mock.putObject(".datastore-index.json", encodeIndex({}));
+    const service = new GcsCacheSyncService(mock, cachePath);
+
+    await service.pullChanged();
+    await service.pushChanged();
+
+    // pushFile marks localDirty. Call it directly to simulate a
+    // cache-writer that goes through the proper path.
+    mock.puts.length = 0;
+    await seedFile(cachePath, "data/new/file.yaml", "fresh\n");
+    await service.pushFile("data/new/file.yaml");
+
+    // Next pushChanged — localDirty was set by pushFile, so fast path
+    // must miss and slow-path walk.
+    mock.gets.length = 0;
+    await service.pushChanged();
+
+    assert(
+      mock.gets.some((k) => k === ".datastore-index.json"),
+      "localDirty=true must force slow-path index fetch",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (8) AbortSignal cancellation propagates -----------------------------
+
+Deno.test("pullChanged / pushChanged: AbortSignal cancellation propagates", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-fast8-" });
+  try {
+    const mock = createMockGcsClient();
+    await mock.putObject(".datastore-index.json", encodeIndex({}));
+    const service = new GcsCacheSyncService(mock, cachePath);
+
+    // Reset ledgers so the seed putObject doesn't count against
+    // "zero real calls leak after abort".
+    mock.puts.length = 0;
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+
+    const controller = new AbortController();
+    controller.abort();
+
+    await assertRejects(
+      () => service.pullChanged({ signal: controller.signal }),
+      DOMException,
+      undefined,
+      "pullChanged must reject with AbortError when signal is pre-aborted",
+    );
+    await assertRejects(
+      () => service.pushChanged({ signal: controller.signal }),
+      DOMException,
+      undefined,
+      "pushChanged must reject with AbortError when signal is pre-aborted",
+    );
+
+    assertEquals(
+      mock.gets.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "no GETs after abort",
+    );
+    assertEquals(mock.puts.length, 0, "no PUTs after abort");
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (9) guardrail: direct cache writes bypass localDirty tracking -------
+//
+// CONTRACT: only `pushFile` is permitted to write into the cache from
+// the extension's side — that's the path that flips
+// `localDirty: true` before the upload work. A future PR adding
+// another cache-writer must update this test alongside the new code.
+// As long as no other writer exists, a direct `Deno.writeFile` into
+// the cache is a contract violation: the sidecar tracking won't see
+// it, and the next `pushChanged` will fast-path past the change.
+//
+// This test pins that contract so the limitation is explicit.
+// Loosening it (e.g. walking on every push to re-confirm) would
+// defeat the fast-path's whole purpose.
+
+Deno.test("pushChanged: direct Deno.writeFile bypasses localDirty tracking (contract)", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-fast9-" });
+  try {
+    const mock = createMockGcsClient();
+    await mock.putObject(".datastore-index.json", encodeIndex({}));
+    const service = new GcsCacheSyncService(mock, cachePath);
+
+    // Clean baseline.
+    await service.pullChanged();
+    await service.pushChanged();
+
+    // Direct write — bypasses pushFile, so localDirty stays false.
+    await seedFile(cachePath, "data/@m/sneaky.yaml", "sneaky\n");
+
+    mock.puts.length = 0;
+    mock.gets.length = 0;
+    await service.pushChanged();
+
+    // Fast path hit — sneaky.yaml never uploaded. This is the
+    // documented contract (see S3 #105 precedent). If you broke
+    // this test by adding a new cache writer, teach that writer to
+    // flip the sidecar (or call markLocalDirty) instead of removing
+    // the assertion.
+    assertEquals(
+      mock.puts.length,
+      0,
+      "fast path skipped the direct write — documented contract, not a bug",
+    );
+    assertEquals(
+      mock.gets.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "fast path also skipped the index force-fetch",
     );
   } finally {
     await Deno.remove(cachePath, { recursive: true });

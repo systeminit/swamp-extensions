@@ -184,3 +184,16 @@ The cache sync service maintains a local cache directory and syncs with GCS:
 - **Index** — a `.datastore-index.json` file in GCS tracks file sizes and
   timestamps. The local copy has a 60-second TTL to avoid redundant fetches
   during rapid command sequences.
+- **Fast path** — a `.datastore-sync-state.json` sidecar records the
+  remote index's GCS `generation` from the last verified-clean sync.
+  The next `pullChanged` / `pushChanged` HEADs the remote index first;
+  on generation match, it short-circuits without the full index GET or
+  the cache walk. Self-healing: any remote mutation changes the
+  generation and falls through to the slow path. Writes that bypass
+  `pushFile` (direct `Deno.writeFile` into the cache) don't trip the
+  sidecar's `localDirty` flag — documented limitation; use `pushFile`
+  when integrating new cache writers.
+- **Tracing** — set `SWAMP_GCS_SYNC_TRACE=1` to emit coarse per-phase
+  timing lines (`[gcs-sync] pullChanged.fastpath <ms> hit`,
+  `[gcs-sync] pushChanged.walk <ms> toPush=<n>`, etc.). Off by default;
+  useful when diagnosing a slow sync.
