@@ -31,6 +31,7 @@ import {
 } from "jsr:@std/assert@1.0.19";
 import { join } from "jsr:@std/path@1";
 import {
+  isInternalCacheFile,
   isRetryableError,
   retryWithBackoff,
   S3CacheSyncService,
@@ -50,25 +51,51 @@ interface PutCall {
   body: Uint8Array;
 }
 
-/** In-memory mock of S3Client recording getObject/putObject calls. */
+/**
+ * Deterministic content-derived ETag, surrounded by quotes to mirror
+ * the real S3 wire format. Different bodies produce different ETags;
+ * identical bodies produce identical ETags.
+ */
+function fakeETag(body: Uint8Array): string {
+  let h = 0xdeadbeef >>> 0;
+  for (const b of body) {
+    h = ((h ^ b) * 16777619) >>> 0;
+  }
+  return `"${h.toString(16).padStart(8, "0")}"`;
+}
+
+/**
+ * In-memory mock of S3Client recording getObject/putObject/headObject
+ * calls. `etagOverrides` lets a test pin a specific ETag (for example
+ * a multipart-shaped one) regardless of stored content.
+ */
 function createMockS3Client(): S3Client & {
   storage: Map<string, Uint8Array>;
+  etagOverrides: Map<string, string>;
   puts: PutCall[];
   gets: string[];
+  heads: string[];
 } {
   const storage = new Map<string, Uint8Array>();
+  const etagOverrides = new Map<string, string>();
   const puts: PutCall[] = [];
   const gets: string[] = [];
+  const heads: string[] = [];
+
+  const etagFor = (key: string, body: Uint8Array): string =>
+    etagOverrides.get(key) ?? fakeETag(body);
 
   return {
     storage,
+    etagOverrides,
     puts,
     gets,
+    heads,
 
-    putObject(key: string, body: Uint8Array): Promise<void> {
+    putObject(key: string, body: Uint8Array): Promise<{ etag: string }> {
       storage.set(key, body);
       puts.push({ key, body });
-      return Promise.resolve();
+      return Promise.resolve({ etag: etagFor(key, body) });
     },
 
     getObject(key: string): Promise<Uint8Array> {
@@ -77,10 +104,27 @@ function createMockS3Client(): S3Client & {
       if (!data) return Promise.reject(makeNoSuchKeyError(key));
       return Promise.resolve(data);
     },
+
+    headObject(
+      key: string,
+    ): Promise<
+      { exists: boolean; size?: number; lastModified?: Date; etag?: string }
+    > {
+      heads.push(key);
+      const data = storage.get(key);
+      if (!data) return Promise.resolve({ exists: false });
+      return Promise.resolve({
+        exists: true,
+        size: data.length,
+        etag: etagFor(key, data),
+      });
+    },
   } as unknown as S3Client & {
     storage: Map<string, Uint8Array>;
+    etagOverrides: Map<string, string>;
     puts: PutCall[];
     gets: string[];
+    heads: string[];
   };
 }
 
@@ -1091,4 +1135,431 @@ Deno.test({
       await Deno.remove(cachePath, { recursive: true });
     }
   },
+});
+
+// =========================================================================
+// DEF-2 fast path: zero-diff sync skips the index GET and the cache walk.
+//
+// The motivating bug (swamp-club lab/164): a 4k-file production repo took
+// ~5 min on a no-op sync because every call fetched the 1.37 MB index and
+// stat'd the entire cache. The sidecar at <cache>/.datastore-sync-state.json
+// records the last verified remote ETag and a localDirty flag so the next
+// pullChanged/pushChanged can short-circuit when nothing has changed.
+//
+// The fall-through tests below are weighted as heavily as the happy-path
+// hit tests — a fast path that silently skips real work would be much
+// worse than the perf bug it replaces.
+// =========================================================================
+
+const SYNC_STATE_FILE = ".datastore-sync-state.json";
+
+/** Write a sidecar directly to disk, mimicking a prior verified-clean run. */
+async function writeSidecar(
+  cachePath: string,
+  state: {
+    version?: number;
+    remoteIndexETag?: string;
+    lastVerifiedAt?: string;
+    localDirty?: boolean;
+  },
+): Promise<void> {
+  await Deno.mkdir(cachePath, { recursive: true });
+  await Deno.writeTextFile(
+    join(cachePath, SYNC_STATE_FILE),
+    JSON.stringify({
+      version: 1,
+      remoteIndexETag: "",
+      lastVerifiedAt: new Date().toISOString(),
+      localDirty: false,
+      ...state,
+    }),
+  );
+}
+
+/** Read sidecar from disk; returns parsed JSON or null if missing/bad. */
+async function readSidecar(
+  cachePath: string,
+): Promise<{ remoteIndexETag: string; localDirty: boolean } | null> {
+  try {
+    const text = await Deno.readTextFile(join(cachePath, SYNC_STATE_FILE));
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+// -- (1) sidecar walker-exclusion guardrail -------------------------------
+
+Deno.test("isInternalCacheFile: excludes the sync-state sidecar", () => {
+  // The sidecar is per-machine state. If the walker ever uploads it, we
+  // overwrite other writers' sidecars on push and break their fast path.
+  assertEquals(isInternalCacheFile(".datastore-sync-state.json"), true);
+});
+
+// -- (2) post-verified pullChanged short-circuits with zero index GETs ----
+
+Deno.test("pullChanged: post-verified second call hits fast path with zero index GETs", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-fast-pull-" });
+  try {
+    const mock = createMockS3Client();
+    // Seed a remote index + matching local file so the first pullChanged
+    // ends in verified zero-diff state.
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/ok.yaml": {
+          key: "data/@m/ok.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/ok.yaml", new TextEncoder().encode("hello"));
+    await seedFile(cachePath, "data/@m/ok.yaml", "hello");
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    await service.pullChanged();
+    // First call should have GET'd the index once.
+    const firstIndexGets = mock.gets.filter((k) =>
+      k === ".datastore-index.json"
+    ).length;
+    assertEquals(firstIndexGets, 1, "first call must fetch the index");
+
+    // Reset call history for the second call's assertion.
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+
+    const result = await service.pullChanged();
+    assertEquals(result, 0, "second pullChanged must report zero pulls");
+    assertEquals(
+      mock.gets.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "fast path must NOT GET the index",
+    );
+    // The HEAD probe is the entire fast-path check — exactly one expected.
+    assertEquals(
+      mock.heads.filter((k) => k === ".datastore-index.json").length,
+      1,
+      "fast path issues exactly one HEAD on the index",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (3) post-verified pushChanged short-circuits with zero walk ----------
+
+Deno.test("pushChanged: post-verified second call hits fast path with zero index GETs", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-fast-push-" });
+  try {
+    const mock = createMockS3Client();
+    // Empty remote, empty local cache — first pushChanged ends in
+    // sidecar-clean state via the no-op writeback path.
+    mock.storage.set(".datastore-index.json", encodeIndex({}));
+    await Deno.mkdir(cachePath, { recursive: true });
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    await service.pushChanged();
+
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+    mock.puts.length = 0;
+
+    const result = await service.pushChanged();
+    assertEquals(result, 0, "second pushChanged must report zero pushes");
+    assertEquals(
+      mock.gets.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "fast path must NOT force-fetch the index",
+    );
+    assertEquals(
+      mock.puts.length,
+      0,
+      "fast path must NOT trigger an index writeback",
+    );
+    assertEquals(
+      mock.heads.filter((k) => k === ".datastore-index.json").length,
+      1,
+      "fast path issues exactly one HEAD on the index",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (4) corrupt sidecar falls through, never throws ----------------------
+
+Deno.test("pullChanged: corrupt sidecar (bad JSON / wrong version / missing fields) falls through to full walk", async () => {
+  for (
+    const corrupt of [
+      "this is not json",
+      JSON.stringify({ version: 999 }),
+      JSON.stringify({
+        version: 1,
+        // missing remoteIndexETag, lastVerifiedAt, localDirty
+      }),
+      JSON.stringify({
+        version: 1,
+        remoteIndexETag: 42, // wrong type
+        lastVerifiedAt: "2026-01-01T00:00:00Z",
+        localDirty: false,
+      }),
+    ]
+  ) {
+    const cachePath = await Deno.makeTempDir({
+      prefix: "s3sync-fast-corrupt-",
+    });
+    try {
+      await Deno.mkdir(cachePath, { recursive: true });
+      await Deno.writeTextFile(join(cachePath, SYNC_STATE_FILE), corrupt);
+
+      const mock = createMockS3Client();
+      mock.storage.set(".datastore-index.json", encodeIndex({}));
+
+      const service = new S3CacheSyncService(mock, cachePath);
+      // Must not throw on any of the corrupt-sidecar shapes.
+      const result = await service.pullChanged();
+      assertEquals(result, 0);
+      // And must have fallen through to the full walk: index was GET'd.
+      assert(
+        mock.gets.includes(".datastore-index.json"),
+        `corrupt sidecar (${
+          corrupt.slice(0, 30)
+        }…) must fall through, not fast-path`,
+      );
+    } finally {
+      await Deno.remove(cachePath, { recursive: true });
+    }
+  }
+});
+
+// -- (5) remote ETag change bypasses short-circuit ------------------------
+
+Deno.test("pullChanged: remote index ETag change bypasses fast path", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-fast-etag-" });
+  try {
+    const mock = createMockS3Client();
+    mock.storage.set(".datastore-index.json", encodeIndex({}));
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    await service.pullChanged();
+    const sidecarBefore = await readSidecar(cachePath);
+    assertExists(sidecarBefore);
+
+    // Remote-side mutation: write a new index payload. The mock derives
+    // ETag from content, so this changes the ETag.
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/new.yaml": {
+          key: "data/@m/new.yaml",
+          size: 3,
+          lastModified: new Date().toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/new.yaml", new TextEncoder().encode("new"));
+
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+
+    const result = await service.pullChanged();
+    // Fast path must have bailed; the new file gets pulled.
+    assertEquals(result, 1, "must pull the newly-added remote file");
+    assert(
+      mock.gets.includes(".datastore-index.json"),
+      "ETag mismatch must force a real index fetch",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (6) multipart-shaped ETag bypasses short-circuit --------------------
+
+Deno.test("pullChanged: multipart-shaped ETag ('abc-2') bypasses fast path", async () => {
+  const cachePath = await Deno.makeTempDir({
+    prefix: "s3sync-fast-multipart-",
+  });
+  try {
+    const mock = createMockS3Client();
+    mock.storage.set(".datastore-index.json", encodeIndex({}));
+    // Pin a multipart-shaped ETag for the remote index. The mock's HEAD
+    // returns this regardless of body content.
+    mock.etagOverrides.set(".datastore-index.json", `"abc-2"`);
+
+    // Plant a sidecar with the matching multipart ETag — the fast path
+    // must STILL bail because multipart ETags aren't a content
+    // fingerprint and any equality check would be spuriously true.
+    // No local index file is seeded so pullIndex's TTL cache also
+    // misses and falls through to a real S3 GET, which is what the
+    // assertion below proves.
+    await writeSidecar(cachePath, {
+      remoteIndexETag: "abc-2",
+      lastVerifiedAt: new Date().toISOString(),
+    });
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    const result = await service.pullChanged();
+    assertEquals(result, 0);
+    // Multipart guard must have forced fall-through to the GET path.
+    assert(
+      mock.gets.includes(".datastore-index.json"),
+      "multipart ETag must force fall-through to a real index GET",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (7) local file mutation forces real push work -----------------------
+
+Deno.test("pushChanged: local file mutation since last sync forces real push work", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-fast-mutate-" });
+  try {
+    const mock = createMockS3Client();
+    mock.storage.set(".datastore-index.json", encodeIndex({}));
+    // Establish a clean baseline.
+    const service = new S3CacheSyncService(mock, cachePath);
+    await service.pushChanged();
+
+    // Now simulate the user side: a local cache write through pushFile
+    // (the contracted write path), then sync.
+    await seedFile(cachePath, "data/@m/added.yaml", "added\n");
+
+    mock.puts.length = 0;
+    mock.gets.length = 0;
+
+    // Going through pushFile flips localDirty=true, so the next
+    // pushChanged must take the slow path.
+    await service.pushFile("data/@m/added.yaml");
+    const sidecarAfterDirty = await readSidecar(cachePath);
+    assertEquals(
+      sidecarAfterDirty?.localDirty,
+      true,
+      "pushFile must flip localDirty before its work",
+    );
+
+    // Reset mock counters and run pushChanged: it must do the real walk
+    // and writeback, not short-circuit.
+    mock.puts.length = 0;
+    mock.gets.length = 0;
+    await service.pushChanged();
+    assert(
+      mock.gets.includes(".datastore-index.json"),
+      "localDirty=true must force a real index force-fetch",
+    );
+    assert(
+      mock.puts.some((p) => p.key === ".datastore-index.json"),
+      "localDirty=true must lead to an index writeback",
+    );
+
+    const sidecarAfterPush = await readSidecar(cachePath);
+    assertEquals(
+      sidecarAfterPush?.localDirty,
+      false,
+      "successful writeback must clear localDirty",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (8) AbortSignal cancellation propagates -----------------------------
+
+Deno.test("pullChanged / pushChanged: AbortSignal cancellation propagates", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-fast-abort-" });
+  try {
+    const mock = createMockS3Client();
+    mock.storage.set(".datastore-index.json", encodeIndex({}));
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    const controller = new AbortController();
+    controller.abort();
+
+    await assertRejects(
+      () => service.pullChanged({ signal: controller.signal }),
+      DOMException,
+      undefined,
+      "pullChanged must reject with AbortError when signal is pre-aborted",
+    );
+    await assertRejects(
+      () => service.pushChanged({ signal: controller.signal }),
+      DOMException,
+      undefined,
+      "pushChanged must reject with AbortError when signal is pre-aborted",
+    );
+
+    // Pre-aborted call must not have issued any S3 calls beyond — at
+    // most — the sidecar HEAD probe (which itself respects the signal).
+    // Confirm no GETs/PUTs leaked through.
+    assertEquals(
+      mock.gets.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "no GETs after abort",
+    );
+    assertEquals(
+      mock.puts.length,
+      0,
+      "no PUTs after abort",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// -- (9) guardrail: direct cache writes bypass localDirty tracking -------
+
+// CONTRACT: only `pushFile` is permitted to write into the cache from
+// the extension's side — that's the path that flips
+// `localDirty: true` before the upload work. A future PR adding
+// another cache-writer must update this test alongside the new code.
+// As long as no other writer exists, a direct `Deno.writeFile` into
+// the cache is a contract violation: the sidecar tracking won't see
+// it, and the next `pushChanged` will fast-path past the change.
+//
+// This test pins that contract so the limitation is explicit. Loosening
+// it (e.g. walking-on-every-push to re-confirm) would defeat DEF-2's
+// whole purpose.
+
+Deno.test("pushChanged: direct Deno.writeFile bypasses localDirty tracking (contract)", async () => {
+  const cachePath = await Deno.makeTempDir({
+    prefix: "s3sync-fast-guardrail-",
+  });
+  try {
+    const mock = createMockS3Client();
+    mock.storage.set(".datastore-index.json", encodeIndex({}));
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    // Establish a clean baseline.
+    await service.pushChanged();
+
+    // Reach around the contract: write directly to the cache without
+    // going through pushFile. localDirty stays false because nothing
+    // told the sidecar otherwise.
+    await seedFile(cachePath, "data/@m/sneaky.yaml", "sneaky\n");
+
+    mock.puts.length = 0;
+    mock.gets.length = 0;
+    await service.pushChanged();
+
+    // Fast-path hit: sneaky.yaml is NEVER uploaded. This is the
+    // documented limitation — the cost of walking on every push would
+    // erase DEF-2's gains, so the contract is "writes go through
+    // pushFile". If you broke this test by adding a new cache writer,
+    // teach that writer to flip the sidecar (or call markLocalDirty
+    // itself) instead of removing this assertion.
+    assertEquals(
+      mock.puts.length,
+      0,
+      "fast path skipped the direct write — this is the documented contract, not a bug",
+    );
+    assertEquals(
+      mock.gets.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "fast path also skipped the index force-fetch",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
 });

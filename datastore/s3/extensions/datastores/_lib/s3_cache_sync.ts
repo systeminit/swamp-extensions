@@ -29,7 +29,10 @@
 
 import { dirname, join, normalize, relative } from "jsr:@std/path@1";
 import { ensureDir, walk } from "jsr:@std/fs@1";
-import type { DatastoreSyncService } from "./interfaces.ts";
+import type {
+  DatastoreSyncOptions,
+  DatastoreSyncService,
+} from "./interfaces.ts";
 import { type S3Client, S3OperationError } from "./s3_client.ts";
 import { atomicWriteTextFile } from "./atomic_write.ts";
 
@@ -49,6 +52,13 @@ function assertSafePath(cachePath: string, relativePath: string): string {
 }
 
 /**
+ * Filename of the sync-state sidecar used by the fast-path short-circuit
+ * in `pullChanged` / `pushChanged`. Lives inside the cache directory and
+ * is listed in `isInternalCacheFile` so the walker never uploads it.
+ */
+const SYNC_STATE_FILE = ".datastore-sync-state.json";
+
+/**
  * Returns true for files that live inside the cache directory but must
  * NOT cross the sync boundary in either direction (push or pull).
  *
@@ -58,6 +68,9 @@ function assertSafePath(cachePath: string, relativePath: string): string {
  * - `.push-queue.json` — local push-queue scratch file.
  * - `.datastore.lock` — distributed lock file; managed by the lock
  *   subsystem, must never be uploaded as data.
+ * - `.datastore-sync-state.json` — fast-path sidecar recording the
+ *   last-verified remote index ETag and the local-dirty flag. Never
+ *   uploaded: its contents are per-machine state.
  * - basename `_catalog.db` and anything starting with `_catalog.db-`
  *   (the SQLite WAL/SHM/journal sidecars) — the local-only data catalog
  *   store. It is deliberately colocated with the data tier so it can
@@ -70,16 +83,123 @@ function assertSafePath(cachePath: string, relativePath: string): string {
  *
  * Uses basename matching for the catalog pattern so the filter is
  * robust to any future change in the data tier subdirectory name.
+ *
+ * Exported for unit tests; not part of the public extension API.
  */
-function isInternalCacheFile(rel: string): boolean {
+export function isInternalCacheFile(rel: string): boolean {
   if (
     rel === ".datastore-index.json" || rel === ".push-queue.json" ||
-    rel === ".datastore.lock"
+    rel === ".datastore.lock" || rel === SYNC_STATE_FILE
   ) {
     return true;
   }
   const base = rel.split("/").pop() ?? "";
   return base === "_catalog.db" || base.startsWith("_catalog.db-");
+}
+
+/**
+ * Strips S3's surrounding double-quotes from an ETag so two ETags from
+ * different SDK paths (HeadObject vs. PutObject) can be compared byte-
+ * for-byte. `undefined` passes through.
+ */
+function normalizeETag(etag: string | undefined): string | undefined {
+  if (!etag) return undefined;
+  const m = etag.match(/^"(.*)"$/);
+  return m ? m[1] : etag;
+}
+
+/**
+ * Returns true when an ETag looks like a multipart-upload ETag (ends
+ * with `-<partCount>`). Multipart ETags are a hash of the per-part
+ * hashes, NOT the content hash, so they cannot be used as a content
+ * fingerprint — any fast-path comparison must bail out and fall
+ * through to a full walk. The current index payload is well under the
+ * 5 MB multipart threshold, but this guard future-proofs against the
+ * index outgrowing the single-part path.
+ */
+function isMultipartETag(etag: string | undefined): boolean {
+  const n = normalizeETag(etag);
+  if (!n) return true;
+  return /-\d+$/.test(n);
+}
+
+/**
+ * Rejects with `AbortError` if the signal is already aborted. Used at
+ * phase boundaries so abort propagation doesn't have to ride on a
+ * pending S3 call — the next boundary catches it first.
+ */
+function throwIfAborted(signal: AbortSignal | undefined): void {
+  if (signal?.aborted) {
+    throw new DOMException(
+      signal.reason instanceof Error ? signal.reason.message : "Aborted",
+      "AbortError",
+    );
+  }
+}
+
+/**
+ * Sleep that wakes early if the signal aborts. Used inside
+ * `retryWithBackoff` so an outer sync timeout unblocks the backoff
+ * sleep instead of waiting out the full delay after the caller has
+ * already given up.
+ */
+function abortableSleep(
+  ms: number,
+  signal: AbortSignal | undefined,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      if (signal) signal.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(
+        new DOMException(
+          signal?.reason instanceof Error ? signal.reason.message : "Aborted",
+          "AbortError",
+        ),
+      );
+    };
+    if (signal) {
+      if (signal.aborted) {
+        clearTimeout(timer);
+        reject(
+          new DOMException(
+            signal.reason instanceof Error ? signal.reason.message : "Aborted",
+            "AbortError",
+          ),
+        );
+        return;
+      }
+      signal.addEventListener("abort", onAbort, { once: true });
+    }
+  });
+}
+
+/**
+ * Emit a trace-level timing line when `SWAMP_S3_SYNC_TRACE` is truthy.
+ * Two timestamps per phase, never per-entry — matches the instrumentation
+ * contract in the DEF-2 plan.
+ *
+ * Gated on env-var presence so tests and production stay silent by
+ * default; a reporter debugging a slow sync can opt in with
+ * `SWAMP_S3_SYNC_TRACE=1 swamp datastore sync`.
+ */
+function traceEnabled(): boolean {
+  try {
+    const v = Deno.env.get("SWAMP_S3_SYNC_TRACE");
+    return !!v && v !== "0" && v.toLowerCase() !== "false";
+  } catch {
+    // `--allow-env` may be absent; stay silent rather than throw.
+    return false;
+  }
+}
+function tracePhase(phase: string, startMs: number, detail?: string): void {
+  if (!traceEnabled()) return;
+  const elapsedMs = Date.now() - startMs;
+  const suffix = detail ? ` ${detail}` : "";
+  console.debug(`[s3-sync] ${phase} ${elapsedMs}ms${suffix}`);
 }
 
 /** Metadata index entry for a file in S3. */
@@ -162,16 +282,24 @@ export function isRetryableError(err: unknown): boolean {
  *
  * Exported for unit tests; not part of the public extension API.
  * The `config` override exists so tests can run without paying the
- * production backoff latency.
+ * production backoff latency. `signal` unblocks the backoff sleep on
+ * abort so the outer sync timeout isn't held up waiting for a delay
+ * that will never resolve into useful work.
  */
 export async function retryWithBackoff<T>(
   op: () => Promise<T>,
-  config?: { maxAttempts?: number; baseDelayMs?: number },
+  config?: {
+    maxAttempts?: number;
+    baseDelayMs?: number;
+    signal?: AbortSignal;
+  },
 ): Promise<T> {
   const maxAttempts = config?.maxAttempts ?? RETRY_MAX_ATTEMPTS;
   const baseDelayMs = config?.baseDelayMs ?? RETRY_BASE_DELAY_MS;
+  const signal = config?.signal;
   let lastErr: unknown;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    throwIfAborted(signal);
     try {
       return await op();
     } catch (err) {
@@ -181,7 +309,7 @@ export async function retryWithBackoff<T>(
       const raw = baseDelayMs * Math.pow(3, attempt);
       const jitter = raw * RETRY_JITTER_FRACTION * (Math.random() * 2 - 1);
       const delay = Math.max(0, Math.floor(raw + jitter));
-      await new Promise((resolve) => setTimeout(resolve, delay));
+      await abortableSleep(delay, signal);
     }
   }
   throw lastErr;
@@ -210,13 +338,48 @@ function formatBatchFailure(
   } S3: ${files.join(", ")}\n${preview}${more}`;
 }
 
+/**
+ * Fast-path sidecar persisted alongside the cache. Records the last
+ * remote `.datastore-index.json` ETag we verified our local cache
+ * against, the timestamp of that verification, and whether the local
+ * cache has been written to since. The next `pullChanged` /
+ * `pushChanged` HEADs the remote index and short-circuits if the
+ * recorded ETag still matches and the local view hasn't drifted —
+ * skipping the 1.37 MB index GET and the multi-thousand-stat walk
+ * that DEF-2 traced as the bottleneck on a zero-diff sync.
+ *
+ * Schema is versioned so old sidecars can be ignored on upgrade
+ * without a migration step (any parse failure or version mismatch
+ * falls through to the slow path and rewrites the sidecar).
+ */
+interface DatastoreSyncState {
+  version: 1;
+  /** Remote `.datastore-index.json` ETag at last successful verification. */
+  remoteIndexETag: string;
+  /** ISO-8601 timestamp of the last successful verification. */
+  lastVerifiedAt: string;
+  /**
+   * `true` when a writer has touched the local cache since the last
+   * verified-clean snapshot. Set pessimistically by `pushFile` BEFORE
+   * any upload work so a crash mid-batch leaves the flag dirty (safe
+   * default: re-walk on next push). Cleared only after a successful
+   * index writeback completes, or after a verified-clean
+   * `pullChanged`. See the guardrail test for the contract: cache
+   * writes that bypass `pushFile` won't update this flag.
+   */
+  localDirty: boolean;
+}
+
 /** S3 cache sync service. */
 export class S3CacheSyncService implements DatastoreSyncService {
   private readonly s3: S3Client;
   private readonly cachePath: string;
   private readonly indexPath: string;
   private readonly pushQueuePath: string;
+  private readonly syncStatePath: string;
   private index: DatastoreIndex | null = null;
+  private syncState: DatastoreSyncState | null = null;
+  private syncStateLoaded = false;
   /**
    * Set to true when `scrubIndex()` removes zombie entries from the
    * in-memory index. Drives the write-back gate in `pushChanged()` so
@@ -230,6 +393,174 @@ export class S3CacheSyncService implements DatastoreSyncService {
     this.cachePath = cachePath;
     this.indexPath = join(cachePath, ".datastore-index.json");
     this.pushQueuePath = join(cachePath, ".push-queue.json");
+    this.syncStatePath = join(cachePath, SYNC_STATE_FILE);
+  }
+
+  /**
+   * Loads the sidecar from disk on first call and caches the result.
+   * Returns null on missing file, parse failure, version mismatch, or
+   * any field-shape mismatch — every fall-through case is silent and
+   * leaves the slow path responsible. Bad sidecars must NEVER throw:
+   * the safest fast-path failure mode is "fast path unavailable", not
+   * "sync crashes on a stale sidecar".
+   */
+  private async loadSyncState(): Promise<DatastoreSyncState | null> {
+    if (this.syncStateLoaded) return this.syncState;
+    this.syncStateLoaded = true;
+    try {
+      const text = await Deno.readTextFile(this.syncStatePath);
+      const parsed = JSON.parse(text) as Partial<DatastoreSyncState>;
+      if (
+        parsed.version === 1 &&
+        typeof parsed.remoteIndexETag === "string" &&
+        typeof parsed.lastVerifiedAt === "string" &&
+        typeof parsed.localDirty === "boolean"
+      ) {
+        this.syncState = parsed as DatastoreSyncState;
+      }
+    } catch {
+      // Missing/corrupt/unreadable — treat as no sidecar (safe default).
+    }
+    return this.syncState;
+  }
+
+  /** Persist the sidecar atomically. */
+  private async writeSyncState(state: DatastoreSyncState): Promise<void> {
+    this.syncState = state;
+    this.syncStateLoaded = true;
+    await ensureDir(this.cachePath);
+    await atomicWriteTextFile(
+      this.syncStatePath,
+      JSON.stringify(state, null, 2),
+    );
+  }
+
+  /**
+   * Pessimistically mark the local cache as dirty. Called by `pushFile`
+   * before its upload work so a crash mid-batch leaves the flag set
+   * (safe: forces a full walk next time). Idempotent — if the sidecar
+   * already records `localDirty: true`, no write is issued.
+   */
+  private async markLocalDirty(): Promise<void> {
+    const current = await this.loadSyncState();
+    if (current?.localDirty === true) return;
+    await this.writeSyncState({
+      version: 1,
+      remoteIndexETag: current?.remoteIndexETag ?? "",
+      lastVerifiedAt: current?.lastVerifiedAt ?? "",
+      localDirty: true,
+    });
+  }
+
+  /**
+   * Record a verified-clean state: the local cache matches the remote
+   * index whose ETag is `remoteIndexETag`. Multipart ETags are
+   * rejected — they aren't a content fingerprint, so saving one would
+   * make every subsequent fast-path comparison succeed spuriously.
+   *
+   * `lastVerifiedAt` is forced strictly past the local index file's
+   * mtime (by 1 ms when the wall clock would otherwise tie). The
+   * fast-path probe uses `>=` to bail on any local edit, so a tied
+   * timestamp would spuriously bail out of the happy path on fast
+   * machines — paying the slow path on every second sync.
+   */
+  private async markSynced(remoteIndexETag: string): Promise<void> {
+    const normalized = normalizeETag(remoteIndexETag);
+    if (!normalized || isMultipartETag(remoteIndexETag)) return;
+    let baselineMs = Date.now();
+    try {
+      const stat = await Deno.stat(this.indexPath);
+      const mtimeMs = stat.mtime?.getTime() ?? 0;
+      if (mtimeMs >= baselineMs) baselineMs = mtimeMs + 1;
+    } catch {
+      // No local index yet (e.g. first push against an empty cache);
+      // wall-clock baseline is fine.
+    }
+    await this.writeSyncState({
+      version: 1,
+      remoteIndexETag: normalized,
+      lastVerifiedAt: new Date(baselineMs).toISOString(),
+      localDirty: false,
+    });
+  }
+
+  /**
+   * Fast-path probe for `pullChanged`. Returns `0` when the sidecar
+   * proves we don't need the index GET or the cache walk; returns
+   * `null` to signal "fall through to the slow path" on any check
+   * miss (no sidecar, multipart ETag, local index touched after last
+   * verification, HEAD failure, or ETag mismatch).
+   *
+   * Self-healing note: when zombie-scrub (swamp-club#29) rewrites the
+   * remote index, the ETag changes — so a fast-path HEAD will see a
+   * mismatch and fall through to the full pull path that re-runs the
+   * scrub. The fast path can never hide a needed migration.
+   */
+  private async tryFastPullChanged(
+    signal: AbortSignal | undefined,
+  ): Promise<number | null> {
+    const sidecar = await this.loadSyncState();
+    if (!sidecar) return null;
+    if (
+      !sidecar.remoteIndexETag || isMultipartETag(sidecar.remoteIndexETag)
+    ) {
+      return null;
+    }
+    let indexMtime: Date | null = null;
+    try {
+      const stat = await Deno.stat(this.indexPath);
+      indexMtime = stat.mtime;
+    } catch {
+      return null;
+    }
+    if (!indexMtime) return null;
+    const verifiedAt = Date.parse(sidecar.lastVerifiedAt);
+    if (Number.isNaN(verifiedAt) || indexMtime.getTime() >= verifiedAt) {
+      // Local index was rewritten at-or-after our last verification —
+      // the sidecar can't speak for what's on disk now. `>=` (not `>`)
+      // closes the second-precision filesystem hole: an mtime that
+      // rounds down to the same second as `lastVerifiedAt` would
+      // otherwise spuriously fast-path past a real edit.
+      return null;
+    }
+    let head;
+    try {
+      head = await this.s3.headObject(".datastore-index.json", signal);
+    } catch {
+      return null;
+    }
+    if (!head.exists || !head.etag || isMultipartETag(head.etag)) return null;
+    if (normalizeETag(head.etag) !== sidecar.remoteIndexETag) return null;
+    return 0;
+  }
+
+  /**
+   * Fast-path probe for `pushChanged`. Returns `0` when the sidecar
+   * records a clean local cache and the remote index ETag still
+   * matches; otherwise returns `null` so the slow path runs. Same
+   * self-healing property as `tryFastPullChanged` — any remote
+   * mutation invalidates the fast path automatically.
+   */
+  private async tryFastPushChanged(
+    signal: AbortSignal | undefined,
+  ): Promise<number | null> {
+    const sidecar = await this.loadSyncState();
+    if (!sidecar) return null;
+    if (sidecar.localDirty) return null;
+    if (
+      !sidecar.remoteIndexETag || isMultipartETag(sidecar.remoteIndexETag)
+    ) {
+      return null;
+    }
+    let head;
+    try {
+      head = await this.s3.headObject(".datastore-index.json", signal);
+    } catch {
+      return null;
+    }
+    if (!head.exists || !head.etag || isMultipartETag(head.etag)) return null;
+    if (normalizeETag(head.etag) !== sidecar.remoteIndexETag) return null;
+    return 0;
   }
 
   /**
@@ -273,7 +604,10 @@ export class S3CacheSyncService implements DatastoreSyncService {
    * consistent. The cache-hit path does NOT rewrite the local file;
    * its on-disk view self-heals on the next S3 fetch.
    */
-  async pullIndex(options?: { forceRemote?: boolean }): Promise<void> {
+  async pullIndex(
+    options?: { forceRemote?: boolean; signal?: AbortSignal },
+  ): Promise<void> {
+    const signal = options?.signal;
     // Check local cache freshness (skipped when forceRemote is set)
     if (!options?.forceRemote) {
       try {
@@ -302,7 +636,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
     // empty index back to the remote and wipe the real one.
     let data: Uint8Array;
     try {
-      data = await this.s3.getObject(".datastore-index.json");
+      data = await this.s3.getObject(".datastore-index.json", signal);
     } catch (err) {
       if (
         err instanceof Error && "name" in err &&
@@ -337,9 +671,15 @@ export class S3CacheSyncService implements DatastoreSyncService {
   }
 
   /** Fetches a single file from S3 to the local cache. */
-  async pullFile(relativePath: string): Promise<void> {
+  async pullFile(
+    relativePath: string,
+    signal?: AbortSignal,
+  ): Promise<void> {
     const localPath = assertSafePath(this.cachePath, relativePath);
-    const data = await retryWithBackoff(() => this.s3.getObject(relativePath));
+    const data = await retryWithBackoff(
+      () => this.s3.getObject(relativePath, signal),
+      { signal },
+    );
     await ensureDir(dirname(localPath));
     await Deno.writeFile(localPath, data);
   }
@@ -348,11 +688,35 @@ export class S3CacheSyncService implements DatastoreSyncService {
    * Pulls only new or modified files from S3 to the local cache.
    * Fetches the remote index, compares against local files, and only
    * downloads files that are missing locally or have a different size.
+   *
+   * Fast path (DEF-2): before doing any of that, HEAD the remote index
+   * and compare its ETag to the sidecar; if nothing has changed since
+   * the last verified-clean walk, return `0` immediately without the
+   * 1.37 MB index GET or the multi-thousand-stat walk. Any fall-through
+   * condition (no sidecar, ETag mismatch, multipart ETag, local index
+   * mtime newer than `lastVerifiedAt`) drops into the slow path below.
    */
-  async pullChanged(): Promise<number | void> {
-    await this.pullIndex();
+  async pullChanged(
+    options?: DatastoreSyncOptions,
+  ): Promise<number | void> {
+    const signal = options?.signal;
+    throwIfAborted(signal);
+
+    const fastStart = Date.now();
+    const fastResult = await this.tryFastPullChanged(signal);
+    tracePhase(
+      "pullChanged.fastpath",
+      fastStart,
+      fastResult === 0 ? "hit" : "miss",
+    );
+    if (fastResult !== null) return fastResult;
+
+    const indexStart = Date.now();
+    await this.pullIndex({ signal });
+    tracePhase("pullChanged.pullIndex", indexStart);
 
     // Build list of files that need pulling
+    const walkStart = Date.now();
     const toPull: string[] = [];
     for (const [rel, entry] of Object.entries(this.index?.entries ?? {})) {
       // Belt-and-suspenders: `scrubIndex` already removed internal
@@ -382,15 +746,18 @@ export class S3CacheSyncService implements DatastoreSyncService {
       }
       toPull.push(rel);
     }
+    tracePhase("pullChanged.walk", walkStart, `toPull=${toPull.length}`);
 
     // Download concurrently in batches
+    const downloadStart = Date.now();
     let pulled = 0;
     const failures: Array<{ file: string; error: unknown }> = [];
     for (let i = 0; i < toPull.length; i += MAX_CONCURRENCY) {
+      throwIfAborted(signal);
       const batch = toPull.slice(i, i + MAX_CONCURRENCY);
       const results = await Promise.allSettled(
         batch.map(async (rel) => {
-          await this.pullFile(rel);
+          await this.pullFile(rel, signal);
           // Store the pulled file's local mtime so subsequent pushes have a baseline
           try {
             const localPath = join(this.cachePath, rel);
@@ -412,19 +779,53 @@ export class S3CacheSyncService implements DatastoreSyncService {
         }
       }
     }
+    tracePhase("pullChanged.download", downloadStart, `pulled=${pulled}`);
 
     if (failures.length > 0) {
       throw new Error(formatBatchFailure("pull", failures));
     }
 
+    // Verified zero-diff: local cache matches the remote index whose
+    // ETag we just GET'd. Persist the ETag in the sidecar so the next
+    // `pullChanged` can take the fast path. If the HEAD fails or the
+    // ETag is multipart, skip silently — the sidecar is best-effort.
+    if (pulled === 0) {
+      try {
+        const head = await this.s3.headObject(
+          ".datastore-index.json",
+          signal,
+        );
+        if (head.exists && head.etag) {
+          await this.markSynced(head.etag);
+        }
+      } catch {
+        // Non-fatal: sidecar update is opportunistic.
+      }
+    }
+
     return pulled;
   }
 
-  /** Pushes a single file from the local cache to S3. */
-  async pushFile(relativePath: string): Promise<void> {
+  /**
+   * Pushes a single file from the local cache to S3.
+   *
+   * Pessimistically marks the sidecar `localDirty: true` BEFORE the
+   * upload so a crash mid-batch never strands an unpushed local
+   * change behind a clean fast-path flag — the next `pushChanged`
+   * will see `localDirty: true` and do the full walk. The flag is
+   * cleared only by `pushChanged` after a successful index writeback.
+   */
+  async pushFile(
+    relativePath: string,
+    signal?: AbortSignal,
+  ): Promise<void> {
+    await this.markLocalDirty();
     const localPath = assertSafePath(this.cachePath, relativePath);
     const data = await Deno.readFile(localPath);
-    await retryWithBackoff(() => this.s3.putObject(relativePath, data));
+    await retryWithBackoff(
+      () => this.s3.putObject(relativePath, data, signal),
+      { signal },
+    );
 
     // Update index with size and local mtime
     if (this.index) {
@@ -452,10 +853,27 @@ export class S3CacheSyncService implements DatastoreSyncService {
    * `.datastore-index.json` with a subset of entries, leaving the
    * other writer's data orphaned. See swamp-club#30.
    */
-  async pushChanged(): Promise<number | void> {
-    await this.pullIndex({ forceRemote: true });
+  async pushChanged(
+    options?: DatastoreSyncOptions,
+  ): Promise<number | void> {
+    const signal = options?.signal;
+    throwIfAborted(signal);
+
+    const fastStart = Date.now();
+    const fastResult = await this.tryFastPushChanged(signal);
+    tracePhase(
+      "pushChanged.fastpath",
+      fastStart,
+      fastResult === 0 ? "hit" : "miss",
+    );
+    if (fastResult !== null) return fastResult;
+
+    const indexStart = Date.now();
+    await this.pullIndex({ forceRemote: true, signal });
+    tracePhase("pushChanged.pullIndex", indexStart);
 
     // Build list of files that need pushing
+    const walkStart = Date.now();
     const toPush: string[] = [];
     try {
       for await (
@@ -491,14 +909,17 @@ export class S3CacheSyncService implements DatastoreSyncService {
     } catch {
       // Cache directory may not exist yet
     }
+    tracePhase("pushChanged.walk", walkStart, `toPush=${toPush.length}`);
 
     // Upload concurrently in batches
+    const uploadStart = Date.now();
     let pushed = 0;
     const failures: Array<{ file: string; error: unknown }> = [];
     for (let i = 0; i < toPush.length; i += MAX_CONCURRENCY) {
+      throwIfAborted(signal);
       const batch = toPush.slice(i, i + MAX_CONCURRENCY);
       const results = await Promise.allSettled(
-        batch.map((rel) => this.pushFile(rel)),
+        batch.map((rel) => this.pushFile(rel, signal)),
       );
       for (let j = 0; j < results.length; j++) {
         const result = results[j];
@@ -509,6 +930,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
         }
       }
     }
+    tracePhase("pushChanged.upload", uploadStart, `pushed=${pushed}`);
 
     if (failures.length > 0) {
       throw new Error(formatBatchFailure("push", failures));
@@ -524,17 +946,56 @@ export class S3CacheSyncService implements DatastoreSyncService {
     // present, index unaware). Retry keeps the write-back atomic from
     // the caller's perspective.
     if ((pushed > 0 || this.indexMutated) && this.index) {
+      const writebackStart = Date.now();
       if (pushed > 0) {
         this.index.lastPulled = new Date().toISOString();
       }
       const indexJson = JSON.stringify(this.index, null, 2);
       const indexData = new TextEncoder().encode(indexJson);
-      await retryWithBackoff(() =>
-        this.s3.putObject(".datastore-index.json", indexData)
+      const putResult = await retryWithBackoff(
+        () => this.s3.putObject(".datastore-index.json", indexData, signal),
+        { signal },
       );
       // Also update the local cache
       await atomicWriteTextFile(this.indexPath, indexJson);
       this.indexMutated = false;
+      // Record the new index ETag as the verified-clean baseline so
+      // the next `pushChanged` can take the fast path. The PutObject
+      // response normally carries an ETag; if it's missing or
+      // multipart, fall back to a HEAD — the sidecar update is
+      // best-effort and a missed update just costs one slow path.
+      try {
+        const etag = putResult?.etag;
+        if (etag && !isMultipartETag(etag)) {
+          await this.markSynced(etag);
+        } else {
+          const head = await this.s3.headObject(
+            ".datastore-index.json",
+            signal,
+          );
+          if (head.exists && head.etag) {
+            await this.markSynced(head.etag);
+          }
+        }
+      } catch {
+        // Non-fatal: sidecar update is opportunistic.
+      }
+      tracePhase("pushChanged.writeback", writebackStart);
+    } else {
+      // No writeback needed and no failures — local cache is in sync
+      // with the remote index. Refresh the sidecar so the next call
+      // takes the fast path.
+      try {
+        const head = await this.s3.headObject(
+          ".datastore-index.json",
+          signal,
+        );
+        if (head.exists && head.etag) {
+          await this.markSynced(head.etag);
+        }
+      } catch {
+        // Non-fatal: sidecar update is opportunistic.
+      }
     }
 
     return pushed;

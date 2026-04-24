@@ -400,13 +400,17 @@ export class S3Client {
     );
   }
 
-  /** Uploads an object to S3. */
+  /**
+   * Uploads an object to S3. Returns the resulting object's `ETag` when the
+   * service surfaces one so callers can fingerprint the write without an
+   * extra HEAD roundtrip — used by the sync-state sidecar fast path.
+   */
   async putObject(
     key: string,
     body: Uint8Array,
     signal?: AbortSignal,
-  ): Promise<void> {
-    await this.run(
+  ): Promise<{ etag?: string }> {
+    const response = await this.run(
       "putObject",
       new PutObjectCommand({
         Bucket: this.bucket,
@@ -415,6 +419,7 @@ export class S3Client {
       }),
       signal,
     );
+    return { etag: response.ETag };
   }
 
   /** Downloads an object from S3. */
@@ -445,11 +450,17 @@ export class S3Client {
     );
   }
 
-  /** Checks if an object exists in S3. */
+  /**
+   * Checks if an object exists in S3. Includes the object's `ETag` when
+   * present — callers use it as a content fingerprint for the fast-path
+   * short-circuit in the cache sync.
+   */
   async headObject(
     key: string,
     signal?: AbortSignal,
-  ): Promise<{ exists: boolean; size?: number; lastModified?: Date }> {
+  ): Promise<
+    { exists: boolean; size?: number; lastModified?: Date; etag?: string }
+  > {
     try {
       const response = await this.run(
         "headObject",
@@ -463,6 +474,7 @@ export class S3Client {
         exists: true,
         size: response.ContentLength,
         lastModified: response.LastModified,
+        etag: response.ETag,
       };
     } catch (error) {
       if (
