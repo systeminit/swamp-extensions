@@ -156,7 +156,9 @@ assigned by GCS on each write — enabling compare-and-swap (CAS) semantics:
   release, the cleanup path handles the new generation.
 - **Stale lock cleanup** — if a lock object's `updated` timestamp plus its
   TTL is in the past, another acquirer will delete the stale lock and retry.
-  Default TTL is 30 seconds.
+  Default TTL is 30 seconds. The steal path is rate-limited by a
+  randomized 200-500 ms backoff between attempts so two contenders
+  never tight-loop against the real holder's heartbeat.
 
 ### Health Checks
 
