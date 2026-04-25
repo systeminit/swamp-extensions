@@ -291,7 +291,7 @@ export class S3Lock implements DistributedLock {
 
   private async readLock(): Promise<LockInfo | null> {
     try {
-      const data = await this.s3.getObject(this.lockKey);
+      const { data } = await this.s3.getObject(this.lockKey);
       return decodeLockInfo(data);
     } catch {
       return null;

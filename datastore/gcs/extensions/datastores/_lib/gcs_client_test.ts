@@ -85,8 +85,55 @@ Deno.test({
     });
     try {
       const client = new GcsClient({ bucket: "b", apiEndpoint: url });
-      const data = await client.getObject("foo");
+      const { data } = await client.getObject("foo");
       assertEquals(Array.from(data), [1, 2, 3, 4]);
+    } finally {
+      await shutdown();
+    }
+  },
+});
+
+// Pins the contract that `x-goog-generation` surfaces through the
+// response headers onto `getObject`'s return. The TOCTOU fix
+// (swamp-club #168) threads this value to `markSynced` as the
+// fingerprint of the bytes we actually read — if the header is
+// stripped anywhere in the stack, generation is undefined, pullIndex
+// returns null, and `markSynced` is skipped (safe fallback, slow path
+// next sync). This test catches a silent regression where the header
+// flow breaks and fast-path is permanently disabled on GCS.
+
+Deno.test({
+  name: "GcsClient.getObject: surfaces x-goog-generation from response headers",
+  sanitizeResources: false,
+  fn: async () => {
+    const { url, shutdown } = startServer((_req) => {
+      return new Response(new Uint8Array([7, 8, 9]), {
+        status: 200,
+        headers: { "x-goog-generation": "1729" },
+      });
+    });
+    try {
+      const client = new GcsClient({ bucket: "b", apiEndpoint: url });
+      const { data, generation } = await client.getObject("foo");
+      assertEquals(Array.from(data), [7, 8, 9]);
+      assertEquals(generation, "1729");
+    } finally {
+      await shutdown();
+    }
+  },
+});
+
+Deno.test({
+  name: "GcsClient.getObject: missing x-goog-generation yields undefined",
+  sanitizeResources: false,
+  fn: async () => {
+    const { url, shutdown } = startServer((_req) => {
+      return new Response(new Uint8Array([1]), { status: 200 });
+    });
+    try {
+      const client = new GcsClient({ bucket: "b", apiEndpoint: url });
+      const { generation } = await client.getObject("foo");
+      assertEquals(generation, undefined);
     } finally {
       await shutdown();
     }

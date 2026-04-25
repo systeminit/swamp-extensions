@@ -475,6 +475,17 @@ export class S3CacheSyncService implements DatastoreSyncService {
    * rejected — they aren't a content fingerprint, so saving one would
    * make every subsequent fast-path comparison succeed spuriously.
    *
+   * Correctness invariant (swamp-club #168): `remoteIndexETag` MUST
+   * come from the same GetObject response that delivered the bytes we
+   * verified the local cache against, OR from our own PutObject
+   * response for the bytes we just wrote. A standalone post-walk
+   * HeadObject is TOCTOU-racy: a concurrent writer can bump the
+   * remote index between our GET and our HEAD, and recording their
+   * ETag as ours would mask their data on the next fast-path sync
+   * until any future mutation invalidates. Callers must thread the
+   * fingerprint through `pullIndex`'s return value (or use
+   * `putResult.etag` in the writeback path) — never re-HEAD for it.
+   *
    * `lastVerifiedAt` is forced strictly past the local index file's
    * mtime (by 1 ms when the wall clock would otherwise tie). The
    * fast-path probe uses `>=` to bail on any local edit, so a tied
@@ -623,9 +634,13 @@ export class S3CacheSyncService implements DatastoreSyncService {
    */
   async pullIndex(
     options?: { forceRemote?: boolean; signal?: AbortSignal },
-  ): Promise<void> {
+  ): Promise<string | null> {
     const signal = options?.signal;
-    // Check local cache freshness (skipped when forceRemote is set)
+    // Check local cache freshness (skipped when forceRemote is set).
+    // Cache-hit returns null: no remote fetch happened, so we have no
+    // fingerprint the caller can safely record. The alternative —
+    // HEAD'ing remote to synthesize a fingerprint — reintroduces the
+    // TOCTOU race this refactor exists to close.
     if (!options?.forceRemote) {
       try {
         const stat = await Deno.stat(this.indexPath);
@@ -635,7 +650,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
           this.index = JSON.parse(content) as DatastoreIndex;
           // Scrub zombies from the in-memory view before returning.
           this.indexMutated ||= this.scrubIndex();
-          return; // Fresh enough — skip S3
+          return null; // Fresh enough — skip S3
         }
       } catch {
         // No local index — fetch from S3
@@ -652,8 +667,11 @@ export class S3CacheSyncService implements DatastoreSyncService {
     // critical for `pushChanged`, which would otherwise write an
     // empty index back to the remote and wipe the real one.
     let data: Uint8Array;
+    let etag: string | undefined;
     try {
-      data = await this.s3.getObject(".datastore-index.json", signal);
+      const response = await this.s3.getObject(".datastore-index.json", signal);
+      data = response.data;
+      etag = response.etag;
     } catch (err) {
       if (
         err instanceof Error && "name" in err &&
@@ -664,7 +682,8 @@ export class S3CacheSyncService implements DatastoreSyncService {
           lastPulled: new Date().toISOString(),
           entries: {},
         };
-        return;
+        // No remote object yet → no fingerprint to return.
+        return null;
       }
       throw err;
     }
@@ -685,6 +704,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
     } else {
       await atomicWriteTextFile(this.indexPath, text);
     }
+    return etag ?? null;
   }
 
   /** Fetches a single file from S3 to the local cache. */
@@ -693,7 +713,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
     signal?: AbortSignal,
   ): Promise<void> {
     const localPath = assertSafePath(this.cachePath, relativePath);
-    const data = await retryWithBackoff(
+    const { data } = await retryWithBackoff(
       () => this.s3.getObject(relativePath, signal),
       { signal },
     );
@@ -729,7 +749,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
     if (fastResult !== null) return fastResult;
 
     const indexStart = Date.now();
-    await this.pullIndex({ signal });
+    const indexETag = await this.pullIndex({ signal });
     tracePhase("pullChanged.pullIndex", indexStart);
 
     // Build list of files that need pulling
@@ -803,20 +823,22 @@ export class S3CacheSyncService implements DatastoreSyncService {
     }
 
     // Verified zero-diff: local cache matches the remote index whose
-    // ETag we just GET'd. Persist the ETag in the sidecar so the next
-    // `pullChanged` can take the fast path. If the HEAD fails or the
-    // ETag is multipart, skip silently — the sidecar is best-effort.
-    if (pulled === 0) {
+    // ETag we captured from the `pullIndex` GET response. Persist THAT
+    // ETag — the one we walked against — so the next `pullChanged` can
+    // take the fast path. We deliberately do NOT re-HEAD here: a
+    // post-walk HEAD could observe an ETag from a concurrent writer's
+    // push landing during our walk, and recording that ETag would mask
+    // their data on the next fast-path sync (swamp-club #168). If the
+    // ETag is null (cache-hit pullIndex or NotFound brand-new bucket),
+    // the sidecar is skipped — next sync self-heals on the slow path.
+    if (pulled === 0 && indexETag) {
       try {
-        const head = await this.s3.headObject(
-          ".datastore-index.json",
-          signal,
-        );
-        if (head.exists && head.etag) {
-          await this.markSynced(head.etag);
-        }
+        await this.markSynced(indexETag);
       } catch {
-        // Non-fatal: sidecar update is opportunistic.
+        // Non-fatal: sidecar update is opportunistic. Disk-full /
+        // permissions / unmount must not turn a successful sync into
+        // a failure — the sidecar is a fast-path optimization, and a
+        // missed update only costs one slow-path sync next time.
       }
     }
 
@@ -886,7 +908,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
     if (fastResult !== null) return fastResult;
 
     const indexStart = Date.now();
-    await this.pullIndex({ forceRemote: true, signal });
+    const indexETag = await this.pullIndex({ forceRemote: true, signal });
     tracePhase("pushChanged.pullIndex", indexStart);
 
     // Build list of files that need pushing
@@ -978,40 +1000,34 @@ export class S3CacheSyncService implements DatastoreSyncService {
       this.indexMutated = false;
       // Record the new index ETag as the verified-clean baseline so
       // the next `pushChanged` can take the fast path. The PutObject
-      // response normally carries an ETag; if it's missing or
-      // multipart, fall back to a HEAD — the sidecar update is
-      // best-effort and a missed update just costs one slow path.
-      try {
-        const etag = putResult?.etag;
-        if (etag && !isMultipartETag(etag)) {
+      // response's ETag is bound to the bytes we just uploaded — it's
+      // race-free. If it's missing or multipart, skip silently: a
+      // post-PUT HEAD would be TOCTOU-racy (a concurrent writer could
+      // push between our PUT and our HEAD, and we'd record their ETag
+      // as ours), and the sidecar is opportunistic — a missed update
+      // just costs one slow path next time (swamp-club #168).
+      const etag = putResult?.etag;
+      if (etag && !isMultipartETag(etag)) {
+        try {
           await this.markSynced(etag);
-        } else {
-          const head = await this.s3.headObject(
-            ".datastore-index.json",
-            signal,
-          );
-          if (head.exists && head.etag) {
-            await this.markSynced(head.etag);
-          }
+        } catch {
+          // Non-fatal: sidecar update is opportunistic.
         }
-      } catch {
-        // Non-fatal: sidecar update is opportunistic.
       }
       tracePhase("pushChanged.writeback", writebackStart);
     } else {
       // No writeback needed and no failures — local cache is in sync
-      // with the remote index. Refresh the sidecar so the next call
-      // takes the fast path.
-      try {
-        const head = await this.s3.headObject(
-          ".datastore-index.json",
-          signal,
-        );
-        if (head.exists && head.etag) {
-          await this.markSynced(head.etag);
+      // with the remote index. Record the ETag we captured from the
+      // earlier `pullIndex({ forceRemote: true })` — that's the one
+      // we walked against. A post-walk HEAD here would be TOCTOU-
+      // racy (same hazard as the pullChanged end-of-path, swamp-club
+      // #168). If pullIndex returned null (NotFound), skip.
+      if (indexETag) {
+        try {
+          await this.markSynced(indexETag);
+        } catch {
+          // Non-fatal: sidecar update is opportunistic.
         }
-      } catch {
-        // Non-fatal: sidecar update is opportunistic.
       }
     }
 

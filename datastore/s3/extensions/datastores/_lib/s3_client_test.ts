@@ -56,6 +56,35 @@ async function withMockServer(
   }
 }
 
+// Pins the contract that `GetObjectCommandOutput.ETag` surfaces on
+// `getObject`'s return. The TOCTOU fix (swamp-club #168) threads this
+// value to `markSynced` as the fingerprint of the bytes we actually
+// read — if the header is stripped anywhere in the stack, etag is
+// undefined, pullIndex returns null, and `markSynced` is skipped
+// (safe fallback, slow path next sync).
+
+Deno.test({
+  sanitizeResources: false,
+  name: "getObject: surfaces ETag from GetObject response",
+  fn: () =>
+    withMockServer(
+      (req) => {
+        if (req.method === "GET") {
+          return new Response(new Uint8Array([42, 43, 44]), {
+            status: 200,
+            headers: { ETag: '"abc-xyz"' },
+          });
+        }
+        return new Response(null, { status: 500 });
+      },
+      async (client) => {
+        const { data, etag } = await client.getObject("k");
+        assertEquals(Array.from(data), [42, 43, 44]);
+        assertEquals(etag, '"abc-xyz"');
+      },
+    ),
+});
+
 // --- Regression: existing typed-error behavior still works -----------------
 
 Deno.test({

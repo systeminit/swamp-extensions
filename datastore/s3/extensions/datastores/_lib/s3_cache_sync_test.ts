@@ -98,11 +98,13 @@ function createMockS3Client(): S3Client & {
       return Promise.resolve({ etag: etagFor(key, body) });
     },
 
-    getObject(key: string): Promise<Uint8Array> {
+    getObject(
+      key: string,
+    ): Promise<{ data: Uint8Array; etag?: string }> {
       gets.push(key);
       const data = storage.get(key);
       if (!data) return Promise.reject(makeNoSuchKeyError(key));
-      return Promise.resolve(data);
+      return Promise.resolve({ data, etag: etagFor(key, data) });
     },
 
     headObject(
@@ -662,7 +664,9 @@ Deno.test("pushChanged: propagates non-NotFound remote errors and skips writebac
         puts.push({ key, body });
         return Promise.resolve();
       },
-      getObject(_key: string): Promise<Uint8Array> {
+      getObject(
+        _key: string,
+      ): Promise<{ data: Uint8Array; etag?: string }> {
         // Simulate a transient 5xx: generic Error with no matching name.
         return Promise.reject(new Error("500 Internal Server Error"));
       },
@@ -765,7 +769,9 @@ Deno.test("pushChanged: batch failure message includes underlying error details"
     // Mock whose putObject rejects with 403 (non-retryable, so fails fast)
     // for every file push. Index fetch returns empty so writeback is unused.
     const mock = {
-      getObject(key: string): Promise<Uint8Array> {
+      getObject(
+        key: string,
+      ): Promise<{ data: Uint8Array; etag?: string }> {
         if (key === ".datastore-index.json") {
           const err = new Error("NoSuchKey");
           err.name = "NoSuchKey";
@@ -1642,6 +1648,202 @@ Deno.test("markDirty: is idempotent — repeated calls don't thrash the sidecar"
       mtimeAfterRepeats.getTime(),
       mtimeAfterFirst.getTime(),
       "idempotent markDirty must not rewrite the sidecar",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+// =========================================================================
+// swamp-club #168: fast-path sidecar TOCTOU regression tests
+//
+// Scenario: operator A runs a `pullChanged`/`pushChanged` that ends in
+// verified zero-diff state. Concurrently, operator B pushes a new file
+// that bumps the remote index's ETag between A's index GET and A's
+// sidecar write. Before the fix, `markSynced` would record B's ETag
+// (observed via a post-walk HEAD), and A's next fast-path sync would
+// see sidecar == remote and skip B's file. After the fix, `markSynced`
+// records the ETag captured from A's index GET response — the one A
+// actually walked against — so B's push correctly invalidates the
+// fast path on the next sync.
+//
+// The race window is simulated by wrapping `mock.getObject` so that a
+// microtask scheduled from the returned Promise's `.then()` bumps
+// `etagOverrides` and adds B's file to storage after the body has
+// been delivered to `pullIndex`. Microtask ordering: the wrapped
+// mock attaches `p.then(bump)` BEFORE the caller's `await`
+// continuation, so bump runs first in the microtask queue — which is
+// the race window (between index GET resolving and markSynced being
+// called). Any refactor that moves the bump-attachment to a macrotask
+// (setTimeout) would lose the race simulation; document the ordering
+// invariant so the test's correctness doesn't silently rot.
+// =========================================================================
+
+Deno.test("pullChanged: records ETag from pullIndex GET, not post-walk HEAD (swamp-club #168)", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-toctou-pull-" });
+  try {
+    const mock = createMockS3Client();
+    // Seed remote index at G1 with matching local cache file so the
+    // walk sees zero toPull.
+    mock.etagOverrides.set(".datastore-index.json", '"etag-G1"');
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/ok.yaml": {
+          key: "data/@m/ok.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/ok.yaml", new TextEncoder().encode("hello"));
+    await seedFile(cachePath, "data/@m/ok.yaml", "hello");
+
+    // Race simulation: bump the mock to G2 in a microtask scheduled
+    // from the index GET's resolution. Fires between pullIndex's
+    // getObject resolving and the post-walk markSynced call.
+    const origGet = mock.getObject.bind(mock);
+    mock.getObject = ((key: string, signal?: AbortSignal) => {
+      const p = origGet(key, signal);
+      if (key === ".datastore-index.json") {
+        p.then(() => {
+          // B's push: new file, bumped ETag.
+          mock.etagOverrides.set(".datastore-index.json", '"etag-G2"');
+          mock.storage.set(
+            ".datastore-index.json",
+            encodeIndex({
+              "data/@m/ok.yaml": {
+                key: "data/@m/ok.yaml",
+                size: 5,
+                lastModified: new Date().toISOString(),
+              },
+              "data/@m/new.yaml": {
+                key: "data/@m/new.yaml",
+                size: 3,
+                lastModified: new Date().toISOString(),
+              },
+            }),
+          );
+          mock.storage.set("data/@m/new.yaml", new TextEncoder().encode("new"));
+        });
+      }
+      return p;
+    }) as typeof mock.getObject;
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    const pulled = await service.pullChanged();
+    assertEquals(pulled, 0, "walk should see zero diff against G1 index");
+
+    // The fix records G1 (the ETag we actually verified against), not
+    // G2 (the post-walk HEAD value the old buggy code would have
+    // observed after B's push landed).
+    const sidecar = await readSidecar(cachePath);
+    assertExists(sidecar);
+    assertEquals(
+      sidecar!.remoteIndexETag,
+      "etag-G1",
+      "sidecar must record the ETag from pullIndex GET, NOT a racy post-walk HEAD",
+    );
+
+    // Invariant: the fix removes the post-walk HEAD entirely. On a
+    // first pullChanged (no pre-existing sidecar), the fast-path
+    // probe returns null at the "no sidecar" check without HEAD'ing,
+    // so zero HEADs on the index are expected. If this assertion
+    // ever fails, a future maintainer likely re-added the TOCTOU HEAD.
+    assertEquals(
+      mock.heads.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "no post-walk HEAD on index — TOCTOU fix removes it",
+    );
+
+    // On the second sync, the fast-path probe HEADs remote (G2),
+    // compares to sidecar (G1), and correctly bails to the slow
+    // path. The slow path walks and pulls B's new file. Without the
+    // fix, sidecar would be G2 and this sync would return 0, masking
+    // B's file until any future remote mutation invalidates.
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+    const secondResult = await service.pullChanged();
+    assertEquals(
+      secondResult,
+      1,
+      "second pullChanged must slow-path and pull B's file, not mask it",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
+Deno.test("pushChanged no-writeback: records ETag from forceRemote pullIndex, not post-walk HEAD (swamp-club #168)", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "s3sync-toctou-push-" });
+  try {
+    const mock = createMockS3Client();
+    // Seed remote index at G1 with matching local cache so the walk
+    // sees zero toPush and the writeback else branch runs.
+    mock.etagOverrides.set(".datastore-index.json", '"etag-G1"');
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/ok.yaml": {
+          key: "data/@m/ok.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+          localMtime: new Date(0).toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/ok.yaml", new TextEncoder().encode("hello"));
+    await seedFile(cachePath, "data/@m/ok.yaml", "hello");
+    // Align local mtime so the walk's existing-file check short-circuits.
+    const existingMtime = new Date(0);
+    await Deno.utime(
+      join(cachePath, "data/@m/ok.yaml"),
+      existingMtime,
+      existingMtime,
+    );
+    // Rewrite index with the aligned mtime so it matches stat.mtime.
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/ok.yaml": {
+          key: "data/@m/ok.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+          localMtime: existingMtime.toISOString(),
+        },
+      }),
+    );
+
+    // Race simulation: bump to G2 in a microtask from the forceRemote
+    // index GET's resolution, mirroring the pullChanged race.
+    const origGet = mock.getObject.bind(mock);
+    mock.getObject = ((key: string, signal?: AbortSignal) => {
+      const p = origGet(key, signal);
+      if (key === ".datastore-index.json") {
+        p.then(() => {
+          mock.etagOverrides.set(".datastore-index.json", '"etag-G2"');
+        });
+      }
+      return p;
+    }) as typeof mock.getObject;
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    const pushed = await service.pushChanged();
+    assertEquals(pushed, 0, "walk should see zero diff against G1 index");
+
+    const sidecar = await readSidecar(cachePath);
+    assertExists(sidecar);
+    assertEquals(
+      sidecar!.remoteIndexETag,
+      "etag-G1",
+      "sidecar must record the ETag from forceRemote pullIndex, NOT a racy post-walk HEAD",
+    );
+
+    // No post-walk HEAD in the no-writeback else branch after the fix.
+    assertEquals(
+      mock.heads.filter((k) => k === ".datastore-index.json").length,
+      0,
+      "no post-walk HEAD on index in no-writeback path — TOCTOU fix removes it",
     );
   } finally {
     await Deno.remove(cachePath, { recursive: true });

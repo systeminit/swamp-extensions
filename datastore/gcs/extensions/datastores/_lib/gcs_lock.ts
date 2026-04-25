@@ -293,7 +293,7 @@ export class GcsLock implements DistributedLock {
 
   private async readLock(): Promise<LockInfo | null> {
     try {
-      const data = await this.gcs.getObject(this.lockKey);
+      const { data } = await this.gcs.getObject(this.lockKey);
       return decodeLockInfo(data);
     } catch {
       return null;

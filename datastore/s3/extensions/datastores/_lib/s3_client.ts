@@ -422,8 +422,19 @@ export class S3Client {
     return { etag: response.ETag };
   }
 
-  /** Downloads an object from S3. */
-  async getObject(key: string, signal?: AbortSignal): Promise<Uint8Array> {
+  /**
+   * Downloads an object from S3. Returns the body bytes alongside the
+   * `ETag` from the same GetObject response so callers can fingerprint
+   * the exact version they read without a follow-up HEAD. The ETag
+   * binding is what closes the fast-path sidecar TOCTOU in cache sync:
+   * `markSynced` must record the fingerprint of the bytes we verified
+   * against, not a post-facto HEAD that could observe a concurrent
+   * writer's push.
+   */
+  async getObject(
+    key: string,
+    signal?: AbortSignal,
+  ): Promise<{ data: Uint8Array; etag?: string }> {
     const response = await this.run(
       "getObject",
       new GetObjectCommand({
@@ -435,7 +446,10 @@ export class S3Client {
     if (!response.Body) {
       throw new Error(`S3 GetObject returned empty body for key: ${key}`);
     }
-    return new Uint8Array(await response.Body.transformToByteArray());
+    return {
+      data: new Uint8Array(await response.Body.transformToByteArray()),
+      etag: response.ETag,
+    };
   }
 
   /** Deletes an object from S3. */

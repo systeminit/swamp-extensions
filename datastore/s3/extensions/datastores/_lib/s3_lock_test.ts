@@ -49,10 +49,12 @@ function createMockS3Client(): S3Client & { storage: Map<string, Uint8Array> } {
       return Promise.resolve(true);
     },
 
-    getObject(key: string): Promise<Uint8Array> {
+    getObject(
+      key: string,
+    ): Promise<{ data: Uint8Array; etag?: string }> {
       const data = storage.get(key);
       if (!data) return Promise.reject(new Error(`NoSuchKey: ${key}`));
-      return Promise.resolve(data);
+      return Promise.resolve({ data });
     },
 
     deleteObject(key: string): Promise<void> {

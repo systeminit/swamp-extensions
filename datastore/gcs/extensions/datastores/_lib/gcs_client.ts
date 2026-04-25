@@ -674,8 +674,20 @@ export class GcsClient {
     return { generation: meta.generation };
   }
 
-  /** Downloads an object from GCS. */
-  async getObject(key: string, signal?: AbortSignal): Promise<Uint8Array> {
+  /**
+   * Downloads an object from GCS. Returns the body bytes alongside the
+   * `generation` from the `x-goog-generation` response header on the
+   * same GET so callers can fingerprint the exact version they read
+   * without a follow-up metadata call. The generation binding is what
+   * closes the fast-path sidecar TOCTOU in cache sync: `markSynced`
+   * must record the fingerprint of the bytes we verified against, not
+   * a post-facto `getMetadata` that could observe a concurrent
+   * writer's push.
+   */
+  async getObject(
+    key: string,
+    signal?: AbortSignal,
+  ): Promise<{ data: Uint8Array; generation?: string }> {
     const objectName = this.fullKey(key);
     const url = this.storageUrl(
       `/b/${encodeURIComponent(this.bucket)}/o/${
@@ -688,7 +700,11 @@ export class GcsClient {
       { method: "GET", headers: await this.headers() },
       signal,
     );
-    return new Uint8Array(await resp.arrayBuffer());
+    const generation = resp.headers.get("x-goog-generation") ?? undefined;
+    return {
+      data: new Uint8Array(await resp.arrayBuffer()),
+      generation,
+    };
   }
 
   /** Deletes an object from GCS. Optionally conditional on generation. */
