@@ -844,6 +844,91 @@ Deno.test("pullChanged: remote index generation change bypasses fast path", asyn
   }
 });
 
+// pullChanged's slow path must force a remote pullIndex, not trust the
+// 60-second TTL local-mtime cache. The cache check only fires when the
+// in-memory `this.index` is null (i.e. a fresh process), so the bug
+// only manifests across process boundaries: process A pulls + writes
+// the local index file (fresh mtime), exits; process B's fresh
+// service starts, sees fast-path miss because remote generation has
+// moved on, drops to slow path — and without `forceRemote` would walk
+// the still-fresh-by-mtime local index file (process A's view) and
+// find toPull=0. Result: "Pulled 0 files" while another writer's data
+// sits unpulled on remote. swamp-club#1225 writer1↔writer2 path.
+Deno.test("pullChanged: slow path force-fetches the remote index even when a previous process's local index is mtime-fresh", async () => {
+  const cachePath = await Deno.makeTempDir({
+    prefix: "gcssync-pull-force-",
+  });
+  try {
+    const mock = createMockGcsClient();
+
+    // Seed initial remote: gen=1, one entry.
+    mock.generationOverrides.set(".datastore-index.json", "1");
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/a.yaml": {
+          key: "data/@m/a.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+          localMtime: new Date(0).toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/a.yaml", new TextEncoder().encode("hello"));
+
+    // Process A: pull and exit. Writes the local index file.
+    const serviceA = new GcsCacheSyncService(mock, cachePath);
+    await serviceA.pullChanged();
+
+    // Simulate another writer pushing in the meantime: bump generation,
+    // add a new entry and its file. Process A would not see this; only
+    // process B's pullChanged should.
+    mock.generationOverrides.set(".datastore-index.json", "2");
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/a.yaml": {
+          key: "data/@m/a.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+          localMtime: new Date(0).toISOString(),
+        },
+        "data/@m/b.yaml": {
+          key: "data/@m/b.yaml",
+          size: 7,
+          lastModified: new Date().toISOString(),
+          localMtime: new Date(0).toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/b.yaml", new TextEncoder().encode("goodbye"));
+
+    mock.gets.length = 0;
+    mock.heads.length = 0;
+
+    // Process B: fresh service instance, same cache dir. `this.index`
+    // is null, the local index file is mtime-fresh — without
+    // `forceRemote`, this would cache-hit and walk the stale view.
+    const serviceB = new GcsCacheSyncService(mock, cachePath);
+    const pulled = await serviceB.pullChanged();
+    assertEquals(
+      pulled,
+      1,
+      "must download the new remote-only entry — pre-fix this returned 0 because slow path used a stale TTL-cached local index",
+    );
+    assert(
+      mock.gets.includes(".datastore-index.json"),
+      "slow path must force-fetch the remote index, not trust local TTL cache",
+    );
+    assert(
+      mock.gets.includes("data/@m/b.yaml"),
+      "the previously-missing remote file must be fetched",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
+
 // -- (6) empty/zero generation bypasses fast path -------------------------
 //
 // GCS-specific: the S3 equivalent test checks multipart-shaped ETag
