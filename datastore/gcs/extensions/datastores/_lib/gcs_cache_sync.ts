@@ -879,7 +879,10 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     if (fastResult !== null) return fastResult;
 
     const indexStart = Date.now();
-    await this.pullIndex({ forceRemote: true, signal });
+    const indexGeneration = await this.pullIndex({
+      forceRemote: true,
+      signal,
+    });
     tracePhase("pushChanged.pullIndex", indexStart);
 
     const walkStart = Date.now();
@@ -977,20 +980,49 @@ export class GcsCacheSyncService implements DatastoreSyncService {
         }
       }
       tracePhase("pushChanged.writeback", writebackStart);
+    } else if (indexGeneration && this.index) {
+      // pushed === 0 and no writeback. The slow walk only visited
+      // LOCAL files, so remote-index entries with no local counterpart
+      // were never checked. Marking the sidecar clean unconditionally
+      // would lie about cache state for a fresh reader against a
+      // non-empty bucket and let the next `pullChanged` fast-path
+      // past unfetched files (swamp-club#1225 data-loss scenario).
+      //
+      // Verify before recording a clean baseline by walking the
+      // remote index and confirming each entry exists locally with
+      // matching size. Restores the legitimate recovery path
+      // (cache populated, sidecar deleted, no diffs to push).
+      if (await this.localHasAllRemoteEntries()) {
+        try {
+          await this.markSynced(indexGeneration);
+        } catch {
+          // Non-fatal: sidecar update is opportunistic.
+        }
+      }
     }
-    // Deliberately do NOT markSynced here when nothing was pushed and
-    // no writeback occurred. The slow walk only checks each LOCAL
-    // file against the remote index — remote-only entries are never
-    // visited, so `pushed === 0` is consistent with "local is missing
-    // N files that remote has" (e.g. a fresh reader running
-    // `datastore setup` against a non-empty bucket). Recording a
-    // verified-clean baseline here would let the next `pullChanged`
-    // hit the fast path past unfetched files and silently lose data.
-    // The only legitimate `markSynced` call sites are `pullChanged`
-    // end-of-walk (proven local matches remote by walk + downloads)
-    // and the `pushChanged` writeback branch above (proven by writing
-    // back the index that exactly describes local). swamp-club #1225.
 
     return pushed;
+  }
+
+  /**
+   * Returns true iff every entry in the in-memory remote index has a
+   * local file with matching size. Used by `pushChanged`'s no-writeback
+   * branch to distinguish "local matches remote" from "local is missing
+   * remote files" — the per-local-file walk above can't tell them
+   * apart on its own.
+   */
+  private async localHasAllRemoteEntries(): Promise<boolean> {
+    if (!this.index) return false;
+    for (const [rel, entry] of Object.entries(this.index.entries)) {
+      if (isInternalCacheFile(rel)) continue;
+      const localPath = assertSafePath(this.cachePath, rel);
+      try {
+        const stat = await Deno.stat(localPath);
+        if (stat.size !== entry.size) return false;
+      } catch {
+        return false;
+      }
+    }
+    return true;
   }
 }

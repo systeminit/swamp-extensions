@@ -1872,3 +1872,80 @@ Deno.test("pushChanged no-writeback: does NOT mark the sidecar clean when nothin
     await Deno.remove(cachePath, { recursive: true });
   }
 });
+
+// swamp-club #1225 recovery counterpart: when local cache fully matches
+// the remote index and the sidecar was wiped (e.g. an upgrade migration
+// removed it), the next pushChanged must re-establish the clean baseline
+// so subsequent fast-path syncs work. The verify-and-mark gate in the
+// no-writeback branch makes this safe — local-matches-remote is positive
+// evidence, distinct from the data-loss case above where local was
+// missing a remote entry.
+Deno.test("pushChanged no-writeback: regenerates sidecar when local fully matches remote (swamp-club #1225 recovery)", async () => {
+  const cachePath = await Deno.makeTempDir({
+    prefix: "s3sync-1225-recovery-",
+  });
+  try {
+    const mock = createMockS3Client();
+    mock.etagOverrides.set(".datastore-index.json", '"abc123"');
+    const existingMtime = new Date(0);
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/a.yaml": {
+          key: "data/@m/a.yaml",
+          size: 5,
+          lastModified: new Date().toISOString(),
+          localMtime: existingMtime.toISOString(),
+        },
+        "data/@m/b.yaml": {
+          key: "data/@m/b.yaml",
+          size: 7,
+          lastModified: new Date().toISOString(),
+          localMtime: existingMtime.toISOString(),
+        },
+      }),
+    );
+    mock.storage.set("data/@m/a.yaml", new TextEncoder().encode("hello"));
+    mock.storage.set("data/@m/b.yaml", new TextEncoder().encode("goodbye"));
+    // Local has BOTH files at matching size — the legitimate recovery
+    // case. A prior pull populated the cache; the sidecar was wiped.
+    await seedFile(cachePath, "data/@m/a.yaml", "hello");
+    await seedFile(cachePath, "data/@m/b.yaml", "goodbye");
+    await Deno.utime(
+      join(cachePath, "data/@m/a.yaml"),
+      existingMtime,
+      existingMtime,
+    );
+    await Deno.utime(
+      join(cachePath, "data/@m/b.yaml"),
+      existingMtime,
+      existingMtime,
+    );
+
+    const service = new S3CacheSyncService(mock, cachePath);
+    const pushed = await service.pushChanged();
+    assertEquals(pushed, 0, "no local-only files — nothing to push");
+
+    // Sidecar must be regenerated because local cache provably matches
+    // the remote index at the captured ETag.
+    const sidecarText = await Deno.readTextFile(
+      join(cachePath, ".datastore-sync-state.json"),
+    );
+    const sidecar = JSON.parse(sidecarText);
+    assertEquals(sidecar.localDirty, false);
+    assertEquals(
+      sidecar.remoteIndexETag,
+      "abc123",
+      "sidecar must record the ETag we walked against",
+    );
+
+    // No remote writeback — ETag of the index must be untouched.
+    assertEquals(
+      mock.puts.filter((p) => p.key === ".datastore-index.json").length,
+      0,
+      "recovery push must not rewrite the remote index",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
