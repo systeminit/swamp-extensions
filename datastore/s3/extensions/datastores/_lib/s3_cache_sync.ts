@@ -749,7 +749,16 @@ export class S3CacheSyncService implements DatastoreSyncService {
     if (fastResult !== null) return fastResult;
 
     const indexStart = Date.now();
-    const indexETag = await this.pullIndex({ signal });
+    // Force a remote fetch on the slow path. The 60-second TTL cache in
+    // pullIndex is correct within a single process (don't re-fetch what
+    // we just pulled), but it's stale across processes: another writer
+    // may have pushed since we last wrote our local index, and the
+    // fast-path miss above specifically means the remote ETag is not
+    // the one our sidecar recorded. Trusting the local-mtime cache
+    // here would walk a stale index, find toPull=0, and report
+    // "Pulled 0 files" while writer2's data sits unpulled on remote.
+    // Symmetric with `pushChanged`'s slow path, which already does this.
+    const indexETag = await this.pullIndex({ forceRemote: true, signal });
     tracePhase("pullChanged.pullIndex", indexStart);
 
     // Build list of files that need pulling
