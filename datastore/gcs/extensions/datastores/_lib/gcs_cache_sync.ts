@@ -972,7 +972,19 @@ export class GcsCacheSyncService implements DatastoreSyncService {
       // call, and we'd record their generation as ours), and the
       // sidecar is opportunistic — a missed update just costs one
       // slow path next time (swamp-club #168).
-      if (putResult.generation && putResult.generation !== "0") {
+      //
+      // Verify local has every entry in the merged index before marking
+      // clean. The walk only iterated LOCAL files — remote-only entries
+      // pulled in via `pullIndex(forceRemote)` were never visited, so
+      // `pushed > 0` does not imply local fully matches the merged
+      // index we just wrote back. A fresh reader migrating one file
+      // against a populated remote takes this branch; without the
+      // verify, the sidecar would lie and the next `pullChanged` would
+      // fast-path past unfetched remote-only files (swamp-club#1225).
+      if (
+        putResult.generation && putResult.generation !== "0" &&
+        await this.localHasAllRemoteEntries()
+      ) {
         try {
           await this.markSynced(putResult.generation);
         } catch {

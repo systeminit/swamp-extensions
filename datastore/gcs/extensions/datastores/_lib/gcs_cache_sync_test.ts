@@ -1710,3 +1710,82 @@ Deno.test("pushChanged no-writeback: regenerates sidecar when local fully matche
     await Deno.remove(cachePath, { recursive: true });
   }
 });
+
+// swamp-club #1225 writeback variant: when pushChanged uploads at least
+// one file (writeback branch fires) but the remote index already contains
+// entries the local cache doesn't have, the merged index we write back
+// describes "everything remote had + everything we just pushed" — local
+// only has "what we just pushed". Marking the sidecar clean against that
+// merged index lies the same way the no-writeback bug did. Verify-and-
+// mark must apply in this branch too.
+//
+// This is the production fresh-reader path: `swamp datastore setup`
+// migrates 1 local file, that file is NOT yet in the remote index (e.g.
+// different bundle hash), so toPush=1 and writeback fires. Without this
+// gate, the next `pullChanged` fast-paths past the 19+ remote-only files
+// that the reader actually needs.
+Deno.test("pushChanged writeback: does NOT mark sidecar clean when local is missing remote-only entries (swamp-club #1225)", async () => {
+  const cachePath = await Deno.makeTempDir({
+    prefix: "gcssync-1225-writeback-",
+  });
+  try {
+    const mock = createMockGcsClient();
+    mock.generationOverrides.set(".datastore-index.json", "11");
+    // Remote index already has an entry the reader does NOT have locally.
+    mock.storage.set(
+      ".datastore-index.json",
+      encodeIndex({
+        "data/@m/remote-only.yaml": {
+          key: "data/@m/remote-only.yaml",
+          size: 11,
+          lastModified: new Date().toISOString(),
+          localMtime: new Date(0).toISOString(),
+        },
+      }),
+    );
+    mock.storage.set(
+      "data/@m/remote-only.yaml",
+      new TextEncoder().encode("remote-only"),
+    );
+    // Local has a different file that's NOT in the remote index — the
+    // walker will route this through toPush, which means writeback fires.
+    await seedFile(cachePath, "bundles/h/migrated.js", "console.log(1);");
+
+    const service = new GcsCacheSyncService(mock, cachePath);
+    const pushed = await service.pushChanged();
+    assertEquals(pushed, 1, "the local-only file must be uploaded");
+
+    // The writeback DID fire — confirm by checking the index was rewritten.
+    assertEquals(
+      mock.puts.filter((p) => p.key === ".datastore-index.json").length,
+      1,
+      "writeback must rewrite the remote index with the new entry",
+    );
+
+    // Regression pin: the sidecar must remain dirty. `pushFile` writes a
+    // dirty sidecar (via `markDirty()`) before each upload, so the file
+    // does exist — but the writeback branch must NOT flip it to clean
+    // because local is missing `data/@m/remote-only.yaml`. Marking clean
+    // here would let the next pullChanged fast-path past that file.
+    const sidecarText = await Deno.readTextFile(
+      join(cachePath, ".datastore-sync-state.json"),
+    );
+    const sidecar = JSON.parse(sidecarText);
+    assertEquals(
+      sidecar.localDirty,
+      true,
+      "writeback must not flip localDirty to false when local is missing remote-only entries",
+    );
+
+    // Symmetric positive: a subsequent pullChanged must do real work
+    // and download the missing remote file rather than fast-pathing.
+    const pulled = await service.pullChanged();
+    assertEquals(
+      pulled,
+      1,
+      "pullChanged must download remote-only.yaml — sidecar wasn't falsely marked clean",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
