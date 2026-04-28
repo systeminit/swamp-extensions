@@ -879,10 +879,7 @@ export class GcsCacheSyncService implements DatastoreSyncService {
     if (fastResult !== null) return fastResult;
 
     const indexStart = Date.now();
-    const indexGeneration = await this.pullIndex({
-      forceRemote: true,
-      signal,
-    });
+    await this.pullIndex({ forceRemote: true, signal });
     tracePhase("pushChanged.pullIndex", indexStart);
 
     const walkStart = Date.now();
@@ -980,21 +977,19 @@ export class GcsCacheSyncService implements DatastoreSyncService {
         }
       }
       tracePhase("pushChanged.writeback", writebackStart);
-    } else {
-      // No writeback needed and no failures — local cache is in sync
-      // with the remote index. Record the generation we captured from
-      // the earlier `pullIndex({ forceRemote: true })` — that's the
-      // one we walked against. A post-walk `getMetadata` here would
-      // be TOCTOU-racy (same hazard as the pullChanged end-of-path,
-      // swamp-club #168). If pullIndex returned null (NotFound), skip.
-      if (indexGeneration) {
-        try {
-          await this.markSynced(indexGeneration);
-        } catch {
-          // Non-fatal: sidecar update is opportunistic.
-        }
-      }
     }
+    // Deliberately do NOT markSynced here when nothing was pushed and
+    // no writeback occurred. The slow walk only checks each LOCAL
+    // file against the remote index — remote-only entries are never
+    // visited, so `pushed === 0` is consistent with "local is missing
+    // N files that remote has" (e.g. a fresh reader running
+    // `datastore setup` against a non-empty bucket). Recording a
+    // verified-clean baseline here would let the next `pullChanged`
+    // hit the fast path past unfetched files and silently lose data.
+    // The only legitimate `markSynced` call sites are `pullChanged`
+    // end-of-walk (proven local matches remote by walk + downloads)
+    // and the `pushChanged` writeback branch above (proven by writing
+    // back the index that exactly describes local). swamp-club #1225.
 
     return pushed;
   }

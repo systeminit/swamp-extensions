@@ -1533,12 +1533,27 @@ Deno.test("pullChanged: records generation from pullIndex GET, not post-walk get
   }
 });
 
-Deno.test("pushChanged no-writeback: records generation from forceRemote pullIndex, not post-walk getMetadata (swamp-club #168)", async () => {
+// swamp-club #1225: pushChanged's no-writeback branch must not mark the
+// sidecar clean. The slow walk only checks each LOCAL file against the
+// remote index — remote-only entries are never visited, so `pushed === 0`
+// is consistent with "local is missing N files that remote has." Marking
+// the sidecar clean here lets the next pullChanged fast-path past
+// unfetched files (silent data loss for any reader running
+// `datastore setup` against a non-empty bucket). The earlier swamp-club
+// #168 TOCTOU concern is preserved: there is still no post-walk
+// getMetadata on the index in this branch — the branch simply does no
+// sidecar work at all now.
+Deno.test("pushChanged no-writeback: does NOT mark the sidecar clean when nothing was pushed (swamp-club #1225)", async () => {
   const cachePath = await Deno.makeTempDir({
-    prefix: "gcssync-toctou-push-",
+    prefix: "gcssync-1225-push-",
   });
   try {
     const mock = createMockGcsClient();
+    // Remote has TWO files; local cache has only one of them. This is
+    // the second-repo `datastore setup` scenario from production. The
+    // walker sees zero LOCAL-only diffs (nothing to push), but the
+    // local cache is missing `data/@m/remote-only.yaml` and must NOT
+    // be recorded as in-sync.
     mock.generationOverrides.set(".datastore-index.json", "5");
     const existingMtime = new Date(0);
     mock.storage.set(
@@ -1550,9 +1565,19 @@ Deno.test("pushChanged no-writeback: records generation from forceRemote pullInd
           lastModified: new Date().toISOString(),
           localMtime: existingMtime.toISOString(),
         },
+        "data/@m/remote-only.yaml": {
+          key: "data/@m/remote-only.yaml",
+          size: 11,
+          lastModified: new Date().toISOString(),
+          localMtime: existingMtime.toISOString(),
+        },
       }),
     );
     mock.storage.set("data/@m/ok.yaml", new TextEncoder().encode("hello"));
+    mock.storage.set(
+      "data/@m/remote-only.yaml",
+      new TextEncoder().encode("remote-only"),
+    );
     await seedFile(cachePath, "data/@m/ok.yaml", "hello");
     await Deno.utime(
       join(cachePath, "data/@m/ok.yaml"),
@@ -1560,38 +1585,49 @@ Deno.test("pushChanged no-writeback: records generation from forceRemote pullInd
       existingMtime,
     );
 
-    // Race simulation — bump generation to 999 in a microtask from
-    // the forceRemote index GET's resolution.
-    const origGet = mock.getObject.bind(mock);
-    mock.getObject = ((key: string, signal?: AbortSignal) => {
-      const p = origGet(key, signal);
-      if (key === ".datastore-index.json") {
-        p.then(() => {
-          mock.generationOverrides.set(".datastore-index.json", "999");
-        });
-      }
-      return p;
-    }) as typeof mock.getObject;
-
     const service = new GcsCacheSyncService(mock, cachePath);
     const pushed = await service.pushChanged();
-    assertEquals(pushed, 0, "walk should see zero diff against generation 5");
-
-    const sidecarText = await Deno.readTextFile(
-      join(cachePath, ".datastore-sync-state.json"),
-    );
-    const sidecar = JSON.parse(sidecarText);
     assertEquals(
-      sidecar.remoteIndexGeneration,
-      "5",
-      "sidecar must record the generation from forceRemote pullIndex, NOT a racy post-walk getMetadata",
+      pushed,
+      0,
+      "walker sees no local-only files, so nothing to push",
     );
 
-    // No post-walk getMetadata in the no-writeback else branch after the fix.
+    // Regression pin: the sidecar must NOT exist (or at minimum must
+    // not record a clean baseline). A fast-path-eligible sidecar here
+    // would let the next pullChanged skip downloading `remote-only.yaml`.
+    let sidecarExists = true;
+    try {
+      await Deno.stat(join(cachePath, ".datastore-sync-state.json"));
+    } catch (err) {
+      if (err instanceof Deno.errors.NotFound) sidecarExists = false;
+      else throw err;
+    }
+    assertEquals(
+      sidecarExists,
+      false,
+      "no-writeback branch must not write the sidecar — `pushed === 0` does not prove local matches remote",
+    );
+
+    // The TOCTOU fix from swamp-club #168 is preserved: no post-walk
+    // getMetadata on the index in the no-writeback path.
     assertEquals(
       mock.heads.filter((k) => k === ".datastore-index.json").length,
       0,
-      "no post-walk getMetadata on index in no-writeback path — TOCTOU fix removes it",
+      "no post-walk getMetadata on index in no-writeback path",
+    );
+
+    // Symmetric positive: a subsequent pullChanged must do real work
+    // and download the missing remote file rather than fast-pathing.
+    const pulled = await service.pullChanged();
+    assertEquals(
+      pulled,
+      1,
+      "pullChanged must download remote-only.yaml — the sidecar wasn't falsely marked clean",
+    );
+    assert(
+      mock.gets.includes("data/@m/remote-only.yaml"),
+      "the previously-missing remote file must be fetched",
     );
   } finally {
     await Deno.remove(cachePath, { recursive: true });
