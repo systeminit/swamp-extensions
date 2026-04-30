@@ -1,13 +1,15 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/hetzner-cloud"
-version: "2026.04.23.4"
+version: "2026.04.30.1"
 description: "Hetzner Cloud infrastructure models"
 repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - hetzner
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: load_balancers
 models:
   - certificates.ts
   - firewalls.ts

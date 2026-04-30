@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/youtube"
-version: "2026.04.23.1"
+version: "2026.04.30.1"
 description: "Google Cloud youtube infrastructure models"
 repository: "https://github.com/systeminit/swamp-extensions"
 labels:
@@ -10,6 +10,8 @@ labels:
   - youtube
   - cloud
   - infrastructure
+releaseNotes: |
+  - Added: youtube_v3_audiotracks
 models:
   - activities.ts
   - captions.ts
@@ -36,6 +38,7 @@ models:
   - videocategories.ts
   - videos.ts
   - videotrainability.ts
+  - youtube_v3_audiotracks.ts
 additionalFiles:
   - LICENSE.txt
   - README.md
