@@ -29,7 +29,7 @@ snapshot[`generateAwsExtensionModel - all handlers, natural name 1`] = `
  * Swamp extension model for S3 Bucket (AWS::S3::Bucket).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -221,7 +221,7 @@ snapshot[`generateAwsExtensionModel - synthetic name 1`] = `
  * Swamp extension model for IAM Role (AWS::IAM::Role).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -420,7 +420,7 @@ snapshot[`generateAwsExtensionModel - composite primary identifier 1`] = `
  * Swamp extension model for EC2 SubnetRouteTableAssociation (AWS::EC2::SubnetRouteTableAssociation).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -621,7 +621,7 @@ snapshot[`generateAwsExtensionModel - createOnly properties filtered in update 1
  * Swamp extension model for EC2 Instance (AWS::EC2::Instance).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -820,7 +820,7 @@ snapshot[`generateAwsExtensionModel - read-only resource (no update, no delete) 
  * Swamp extension model for CloudFormation StackSet (AWS::CloudFormation::StackSet).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -974,7 +974,7 @@ snapshot[`generateAwsExtensionModel - extracted schemas and StateSchema collisio
  * Swamp extension model for ECS TaskDefinition (AWS::ECS::TaskDefinition).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -1148,7 +1148,7 @@ snapshot[`generateAwsExtensionModel - with upgrades block 1`] = `
  * Swamp extension model for SQS Queue (AWS::SQS::Queue).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -1351,7 +1351,7 @@ snapshot[`generateAwsExtensionModel - with enrichment 1`] = `
  * Swamp extension model for RDS DBCluster (AWS::RDS::DBCluster).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -1359,7 +1359,7 @@ snapshot[`generateAwsExtensionModel - with enrichment 1`] = `
 import { z } from "npm:zod@4.3.6";
 import { isResourceNotFoundError, readResource, createResource, updateResource, deleteResource } from "./_lib/aws.ts";
 import type { AwsCredentials } from "./_lib/aws.ts";
-import { DescribeDBClustersCommand, RDSClient } from "npm:@aws-sdk/client-rds@3.1090.0";
+import { DescribeDBClustersCommand, RDSClient } from "npm:@aws-sdk/client-rds@3.1127.0";
 
 const GlobalArgsSchema = z.object({
   accessKeyId: z.string().meta({ sensitive: true }).describe("AWS access key ID; overrides AWS_ACCESS_KEY_ID environment variable. Wire with a vault.get(...) expression to source it from a vault.").optional(),
@@ -1554,7 +1554,7 @@ snapshot[`generateAwsExtensionModel - with modelMethods 1`] = `
  * Swamp extension model for CloudFormation StackSet (AWS::CloudFormation::StackSet).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
- * get, update, delete, and sync can be driven through \`swamp model\`.
+ * get, update, delete, sync, and list can be driven through \`swamp model\`.
  *
  * @module
  */
@@ -1562,7 +1562,7 @@ snapshot[`generateAwsExtensionModel - with modelMethods 1`] = `
 import { z } from \\"npm:zod@4.3.6\\";
 import { isResourceNotFoundError, readResource, createResource, updateResource, deleteResource } from \\"./_lib/aws.ts\\";
 import type { AwsCredentials } from \\"./_lib/aws.ts\\";
-import { CloudFormationClient, ListStackInstancesCommand } from \\"npm:@aws-sdk/client-cloudformation@3.1090.0\\";
+import { CloudFormationClient, ListStackInstancesCommand } from \\"npm:@aws-sdk/client-cloudformation@3.1127.0\\";
 
 const GlobalArgsSchema = z.object({
   accessKeyId: z.string().meta({ sensitive: true }).describe(\\"AWS access key ID; overrides AWS_ACCESS_KEY_ID environment variable. Wire with a vault.get(...) expression to source it from a vault.\\").optional(),

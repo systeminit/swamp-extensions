@@ -46,7 +46,7 @@ import {
   type KnowledgeBaseRetrievalResult,
   type RetrievalFilter,
   RetrieveCommand,
-} from "npm:@aws-sdk/client-bedrock-agent-runtime@3.1090.0";
+} from "npm:@aws-sdk/client-bedrock-agent-runtime@3.1127.0";
 import { NodeHttpHandler } from "npm:@smithy/node-http-handler@4.9.7";
 
 const AudioSegmentationConfigurationSchema = z.object({
@@ -900,7 +900,7 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
 /** Swamp extension model for Bedrock KnowledgeBase. Registered at `@swamp/aws/bedrock/knowledge-base`. */
 export const model = {
   type: "@swamp/aws/bedrock/knowledge-base",
-  version: "2026.08.25.1",
+  version: "2026.09.06.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -999,6 +999,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.25.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.06.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

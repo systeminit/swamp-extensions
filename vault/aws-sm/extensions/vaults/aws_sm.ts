@@ -39,7 +39,7 @@ import {
   TagResourceCommand,
   UntagResourceCommand,
   UpdateSecretCommand,
-} from "npm:@aws-sdk/client-secrets-manager@3.1090.0";
+} from "npm:@aws-sdk/client-secrets-manager@3.1127.0";
 import { SpanStatusCode } from "npm:@opentelemetry/api@1.9.0";
 import { AwsSmOperationError, wrapAwsSmError } from "./aws_sm_errors.ts";
 import { Attr, getTracer } from "./_lib/tracing.ts";

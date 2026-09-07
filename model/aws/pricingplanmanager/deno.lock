@@ -1,13 +1,13 @@
 {
   "version": "5",
   "specifiers": {
-    "npm:@aws-sdk/client-cloudcontrol@3.1090.0": "3.1090.0",
+    "npm:@aws-sdk/client-cloudcontrol@3.1127.0": "3.1127.0",
     "npm:fast-json-patch@3.1.1": "3.1.1",
     "npm:zod@4.3.6": "4.3.6"
   },
   "npm": {
-    "@aws-sdk/client-cloudcontrol@3.1090.0": {
-      "integrity": "sha512-rJQPZmCmgtZsT03fN4kpmwXEIOSxh++G6E7sRiAxIQP2AYSE7ck+Y3XQ53x77lCUZr/Ma6L88GJbLZz49PsRjw==",
+    "@aws-sdk/client-cloudcontrol@3.1127.0": {
+      "integrity": "sha512-jphDQTfnCYKv6XBPWo++IFD3oAkzG6rB15w1xoVLs+zH3vDoBSOMG0BQzQeCQzPu/hy8x////Hg+xSnRlccSiQ==",
       "dependencies": [
         "@aws-sdk/core",
         "@aws-sdk/credential-provider-node",
@@ -197,16 +197,16 @@
         "tslib"
       ]
     },
-    "@smithy/fetch-http-handler@5.7.2": {
-      "integrity": "sha512-nZyWTmSpJEXl6VtWVMBJve/7x12DZu6sIX1z1a+ZMaHlQQRs9Zpu6NbTe/gmxYXVRpkjxyDYpZ5gx2IM6f/Wkw==",
+    "@smithy/fetch-http-handler@5.8.0": {
+      "integrity": "sha512-ycSJu3tFAQ4v04CBB0agqFMVsSQ1iG3yw+SpgxRqKfaURpQD4CZ8Wn0zPMmSnOuTpTh65Vz+EA0rMrw089wvkA==",
       "dependencies": [
         "@smithy/core",
         "@smithy/types",
         "tslib"
       ]
     },
-    "@smithy/node-http-handler@4.12.0": {
-      "integrity": "sha512-0mq1pHadfyXCYCqm2cNpbjNIT+fbaUpNxewZb/YNr2L0IrEVMOb8gM/Fl4K6XvHCW3uSNDFwPl/+iKm0bx9jYg==",
+    "@smithy/node-http-handler@4.12.1": {
+      "integrity": "sha512-ThMkboGeONWXAelq9FvGsuJC4rOi+qyC4/zhUF58xYpxUg5sQKx2VXZYJmtNjr4dSuBJ1HeJXETQILCz3wOHvw==",
       "dependencies": [
         "@smithy/core",
         "@smithy/types",
@@ -221,8 +221,8 @@
         "tslib"
       ]
     },
-    "@smithy/types@4.17.2": {
-      "integrity": "sha512-FOKpVZob9MPTn2znRzGrnsMHv7BOsKVw3XiP/cOyYLDVZ9qKp4nifIiSCuUU/fIj5Vu0UOAxCFr+qRAtG0NUkA==",
+    "@smithy/types@4.18.0": {
+      "integrity": "sha512-CgB6HHWer/vrKps24ulRIbpcpb7K4xAU7SkZ7YHzBPlwHsvsrCJFEXK421s+cJzX+ZrqtA/TuU5w1HzI7k9N8A==",
       "dependencies": [
         "tslib"
       ]
@@ -242,7 +242,7 @@
   },
   "workspace": {
     "dependencies": [
-      "npm:@aws-sdk/client-cloudcontrol@3.1090.0",
+      "npm:@aws-sdk/client-cloudcontrol@3.1127.0",
       "npm:fast-json-patch@3.1.1",
       "npm:zod@4.3.6"
     ]
