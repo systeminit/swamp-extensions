@@ -188,6 +188,9 @@ const GlobalArgsSchema = z.object({
   labels: z.record(z.string(), z.string()).describe(
     "Optional. Labels as key value pairs",
   ).optional(),
+  tags: z.record(z.string(), z.string()).describe(
+    'Optional. Input only. Immutable. Tag keys and tag values that are bound to this Parameter. You must represent each item in the map as: `"": ""`. For example, a single resource can have the following tags: ` "123/environment": "production", "123/costCenter": "marketing", ` Tags are used to organize and group resources. Tags can be used to control policy evaluation for the resource.',
+  ).optional(),
   parameterId: z.string().describe("Required. Id of the Parameter resource")
     .optional(),
   requestId: z.string().describe(
@@ -208,6 +211,7 @@ const StateSchema = z.object({
     iamPolicyNamePrincipal: z.string(),
     iamPolicyUidPrincipal: z.string(),
   }).optional(),
+  tags: z.record(z.string(), z.unknown()).optional(),
   updateTime: z.string().optional(),
 }).passthrough();
 
@@ -232,6 +236,9 @@ const InputsSchema = z.object({
   ).optional(),
   labels: z.record(z.string(), z.string()).describe(
     "Optional. Labels as key value pairs",
+  ).optional(),
+  tags: z.record(z.string(), z.string()).describe(
+    'Optional. Input only. Immutable. Tag keys and tag values that are bound to this Parameter. You must represent each item in the map as: `"": ""`. For example, a single resource can have the following tags: ` "123/environment": "production", "123/costCenter": "marketing", ` Tags are used to organize and group resources. Tags can be used to control policy evaluation for the resource.',
   ).optional(),
   parameterId: z.string().describe("Required. Id of the Parameter resource")
     .optional(),
@@ -269,7 +276,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Parameter Manager Parameters. Registered at `@swamp/gcp/parametermanager/parameters`. */
 export const model = {
   type: "@swamp/gcp/parametermanager/parameters",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -404,6 +411,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: tags",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -433,6 +445,7 @@ export const model = {
         if (g["format"] !== undefined) body["format"] = g["format"];
         if (g["kmsKey"] !== undefined) body["kmsKey"] = g["kmsKey"];
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["tags"] !== undefined) body["tags"] = g["tags"];
         if (g["parameterId"] !== undefined) {
           params["parameterId"] = String(g["parameterId"]);
         }

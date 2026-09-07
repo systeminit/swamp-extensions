@@ -185,6 +185,9 @@ const GlobalArgsSchema = z.object({
   payload: z.object({
     data: z.string().describe("Required. bytes data for storing payload.")
       .optional(),
+    dataCrc32c: z.string().describe(
+      "Optional. [Optional] The integrity checksum of the payload. If provided, the server will verify that the checksum matches the payload. If not provided, the server will generate the checksum.",
+    ).optional(),
   }).describe(
     "Required. Immutable. Payload content of a ParameterVersion resource. This is only returned when the request provides the View value of FULL (default for GET request).",
   ).optional(),
@@ -203,12 +206,14 @@ const GlobalArgsSchema = z.object({
 });
 
 const StateSchema = z.object({
+  checksumSource: z.string().optional(),
   createTime: z.string().optional(),
   disabled: z.boolean().optional(),
   kmsKeyVersion: z.string().optional(),
   name: z.string(),
   payload: z.object({
     data: z.string(),
+    dataCrc32c: z.string(),
   }).optional(),
   updateTime: z.string().optional(),
 }).passthrough();
@@ -229,6 +234,9 @@ const InputsSchema = z.object({
   payload: z.object({
     data: z.string().describe("Required. bytes data for storing payload.")
       .optional(),
+    dataCrc32c: z.string().describe(
+      "Optional. [Optional] The integrity checksum of the payload. If provided, the server will verify that the checksum matches the payload. If not provided, the server will generate the checksum.",
+    ).optional(),
   }).describe(
     "Required. Immutable. Payload content of a ParameterVersion resource. This is only returned when the request provides the View value of FULL (default for GET request).",
   ).optional(),
@@ -272,7 +280,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Parameter Manager Parameters.Versions. Registered at `@swamp/gcp/parametermanager/parameters-versions`. */
 export const model = {
   type: "@swamp/gcp/parametermanager/parameters-versions",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -401,6 +409,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
