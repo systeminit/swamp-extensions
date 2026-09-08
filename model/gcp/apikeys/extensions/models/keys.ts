@@ -226,6 +226,9 @@ const GlobalArgsSchema = z.object({
   keyId: z.string().describe(
     "User specified key id (optional). If specified, it will become the final component of the key resource name. The id must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the id must match the regular expression: `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`. The id must NOT be a UUID-like string.",
   ).optional(),
+  checkExistingUsage: z.string().describe(
+    "Optional. Defines the behavior for checking existing usage when updating a key.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (this resource only supports 'global')",
   ).optional(),
@@ -330,6 +333,9 @@ const InputsSchema = z.object({
   keyId: z.string().describe(
     "User specified key id (optional). If specified, it will become the final component of the key resource name. The id must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the id must match the regular expression: `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`. The id must NOT be a UUID-like string.",
   ).optional(),
+  checkExistingUsage: z.string().describe(
+    "Optional. Defines the behavior for checking existing usage when updating a key.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (this resource only supports 'global')",
   ).optional(),
@@ -361,7 +367,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud API Keys Keys. Registered at `@swamp/gcp/apikeys/keys`. */
 export const model = {
   type: "@swamp/gcp/apikeys/keys",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -501,6 +507,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: checkExistingUsage",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -664,6 +675,11 @@ export const model = {
         }
         if (g["serviceAccountEmail"] !== undefined) {
           body["serviceAccountEmail"] = g["serviceAccountEmail"];
+        }
+        if (g["checkExistingUsage"] !== undefined) {
+          params["checkExistingUsage"] = String(g["checkExistingUsage"]);
+        } else if (existing["checkExistingUsage"] !== undefined) {
+          params["checkExistingUsage"] = String(existing["checkExistingUsage"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

@@ -273,7 +273,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Parameter Manager Templates.Versions. Registered at `@swamp/gcp/parametermanager/templates-versions`. */
 export const model = {
   type: "@swamp/gcp/parametermanager/templates-versions",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -282,6 +282,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -615,8 +620,10 @@ export const model = {
     },
     render: {
       description: "render",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        parameterVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -628,6 +635,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["parameterVersion"] !== undefined) {
+          params["parameterVersion"] = String(args["parameterVersion"]);
         }
         const result = await createResource(
           baseUrl,

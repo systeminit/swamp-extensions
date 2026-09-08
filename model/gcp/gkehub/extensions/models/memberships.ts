@@ -647,7 +647,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud GKE Hub Memberships. Registered at `@swamp/gcp/gkehub/memberships`. */
 export const model = {
   type: "@swamp/gcp/gkehub/memberships",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -658,6 +658,60 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: identityProvider, issuer, oidcJwks, scopeTenancyIdentityProvider, scopeTenancyWorkloadIdentityPool, workloadIdentityPool, applianceCluster, resourceLink, edgeCluster, resourceLink, gkeCluster, clusterMissing, resourceLink, googleManaged, kubernetesMetadata, kubernetesApiServerVersion, memoryMb, nodeCount, nodeProviderId, updateTime, vcpuCount, kubernetesResource, connectResources, clusterScoped, manifest, membershipCrManifest, membershipResources, clusterScoped, manifest, resourceOptions, connectVersion, k8sGitVersion, k8sVersion, v1beta1Crd, multiCloudCluster, clusterMissing, resourceLink, onPremCluster, adminCluster, clusterMissing, clusterType, resourceLink, cluster, clusterHash, kubernetesMetricsPrefix, projectId",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          identityProvider: _identityProvider,
+          issuer: _issuer,
+          oidcJwks: _oidcJwks,
+          scopeTenancyIdentityProvider: _scopeTenancyIdentityProvider,
+          scopeTenancyWorkloadIdentityPool: _scopeTenancyWorkloadIdentityPool,
+          workloadIdentityPool: _workloadIdentityPool,
+          applianceCluster: _applianceCluster,
+          resourceLink: _resourceLink,
+          edgeCluster: _edgeCluster,
+          gkeCluster: _gkeCluster,
+          clusterMissing: _clusterMissing,
+          googleManaged: _googleManaged,
+          kubernetesMetadata: _kubernetesMetadata,
+          kubernetesApiServerVersion: _kubernetesApiServerVersion,
+          memoryMb: _memoryMb,
+          nodeCount: _nodeCount,
+          nodeProviderId: _nodeProviderId,
+          updateTime: _updateTime,
+          vcpuCount: _vcpuCount,
+          kubernetesResource: _kubernetesResource,
+          connectResources: _connectResources,
+          clusterScoped: _clusterScoped,
+          manifest: _manifest,
+          membershipCrManifest: _membershipCrManifest,
+          membershipResources: _membershipResources,
+          resourceOptions: _resourceOptions,
+          connectVersion: _connectVersion,
+          k8sGitVersion: _k8sGitVersion,
+          k8sVersion: _k8sVersion,
+          v1beta1Crd: _v1beta1Crd,
+          multiCloudCluster: _multiCloudCluster,
+          onPremCluster: _onPremCluster,
+          adminCluster: _adminCluster,
+          clusterType: _clusterType,
+          cluster: _cluster,
+          clusterHash: _clusterHash,
+          kubernetesMetricsPrefix: _kubernetesMetricsPrefix,
+          projectId: _projectId,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -999,8 +1053,15 @@ export const model = {
     },
     generate_connect_manifest: {
       description: "generate connect manifest",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        imagePullSecretContent: z.any().optional(),
+        isUpgrade: z.any().optional(),
+        namespace: z.any().optional(),
+        proxy: z.any().optional(),
+        registry: z.any().optional(),
+        version: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1012,6 +1073,26 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["imagePullSecretContent"] !== undefined) {
+          params["imagePullSecretContent"] = String(
+            args["imagePullSecretContent"],
+          );
+        }
+        if (args["isUpgrade"] !== undefined) {
+          params["isUpgrade"] = String(args["isUpgrade"]);
+        }
+        if (args["namespace"] !== undefined) {
+          params["namespace"] = String(args["namespace"]);
+        }
+        if (args["proxy"] !== undefined) {
+          params["proxy"] = String(args["proxy"]);
+        }
+        if (args["registry"] !== undefined) {
+          params["registry"] = String(args["registry"]);
+        }
+        if (args["version"] !== undefined) {
+          params["version"] = String(args["version"]);
         }
         const result = await createResource(
           baseUrl,
@@ -1043,8 +1124,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1065,6 +1148,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

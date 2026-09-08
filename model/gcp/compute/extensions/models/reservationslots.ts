@@ -428,7 +428,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine ReservationSlots. Registered at `@swamp/gcp/compute/reservationslots`. */
 export const model = {
   type: "@swamp/gcp/compute/reservationslots",
-  version: "2026.08.28.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -557,6 +557,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.28.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -833,8 +838,10 @@ export const model = {
     },
     get_health: {
       description: "get health",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -859,6 +866,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["reservationSlot"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -894,6 +904,7 @@ export const model = {
       description: "get version",
       arguments: z.object({
         sbomSelections: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -920,6 +931,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["reservationSlot"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["sbomSelections"] !== undefined) {
           body["sbomSelections"] = args["sbomSelections"];

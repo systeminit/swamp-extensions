@@ -300,6 +300,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Required. An ID, such as a random UUID, which uniquely identifies this user's request for idempotent creation of a Team Drive. A repeated request by the same user and with the same request ID will avoid creating duplicates by attempting to create the same Team Drive. If the Team Drive already exists a 409 error will be returned.",
   ),
+  useDomainAdminAccess: z.string().describe(
+    "Issue the request as a domain administrator; if set to true, then the requester will be granted access if they are an administrator of the domain to which the Team Drive belongs.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -497,6 +500,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Required. An ID, such as a random UUID, which uniquely identifies this user's request for idempotent creation of a Team Drive. A repeated request by the same user and with the same request ID will avoid creating duplicates by attempting to create the same Team Drive. If the Team Drive already exists a 409 error will be returned.",
   ).optional(),
+  useDomainAdminAccess: z.string().describe(
+    "Issue the request as a domain administrator; if set to true, then the requester will be granted access if they are an administrator of the domain to which the Team Drive belongs.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -525,7 +531,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Drive Teamdrives. Registered at `@swamp/gcp/drive/teamdrives`. */
 export const model = {
   type: "@swamp/gcp/drive/teamdrives",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -682,6 +688,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: useDomainAdminAccess",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -836,6 +847,13 @@ export const model = {
         if (g["orgUnitId"] !== undefined) body["orgUnitId"] = g["orgUnitId"];
         if (g["restrictions"] !== undefined) {
           body["restrictions"] = g["restrictions"];
+        }
+        if (g["useDomainAdminAccess"] !== undefined) {
+          params["useDomainAdminAccess"] = String(g["useDomainAdminAccess"]);
+        } else if (existing["useDomainAdminAccess"] !== undefined) {
+          params["useDomainAdminAccess"] = String(
+            existing["useDomainAdminAccess"],
+          );
         }
         for (const key of Object.keys(existing)) {
           if (

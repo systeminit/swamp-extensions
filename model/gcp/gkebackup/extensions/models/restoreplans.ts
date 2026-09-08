@@ -731,7 +731,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Backup for GKE RestorePlans. Registered at `@swamp/gcp/gkebackup/restoreplans`. */
 export const model = {
   type: "@swamp/gcp/gkebackup/restoreplans",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -867,6 +867,62 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: allNamespaces, clusterResourceConflictPolicy, clusterResourceRestoreScope, allGroupKinds, excludedGroupKinds, resourceGroup, resourceKind, noGroupKinds, selectedGroupKinds, resourceGroup, resourceKind, excludedNamespaces, namespaces, namespacedResourceRestoreMode, noNamespaces, restoreOrder, groupKindDependencies, requiring, resourceGroup, resourceKind, satisfying, resourceGroup, resourceKind, selectedApplications, namespacedNames, namespace, selectedNamespaces, namespaces, substitutionRules, newValue, originalValuePattern, targetGroupKinds, resourceGroup, resourceKind, targetJsonPath, targetNamespaces, transformationRules, fieldActions, fromPath, op, path, value, resourceFilter, groupKinds, jsonPath, namespaces, volumeDataRestorePolicy, volumeDataRestorePolicyBindings, policy, volumeType",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          allNamespaces: _allNamespaces,
+          clusterResourceConflictPolicy: _clusterResourceConflictPolicy,
+          clusterResourceRestoreScope: _clusterResourceRestoreScope,
+          allGroupKinds: _allGroupKinds,
+          excludedGroupKinds: _excludedGroupKinds,
+          resourceGroup: _resourceGroup,
+          resourceKind: _resourceKind,
+          noGroupKinds: _noGroupKinds,
+          selectedGroupKinds: _selectedGroupKinds,
+          excludedNamespaces: _excludedNamespaces,
+          namespaces: _namespaces,
+          namespacedResourceRestoreMode: _namespacedResourceRestoreMode,
+          noNamespaces: _noNamespaces,
+          restoreOrder: _restoreOrder,
+          groupKindDependencies: _groupKindDependencies,
+          requiring: _requiring,
+          satisfying: _satisfying,
+          selectedApplications: _selectedApplications,
+          namespacedNames: _namespacedNames,
+          namespace: _namespace,
+          selectedNamespaces: _selectedNamespaces,
+          substitutionRules: _substitutionRules,
+          newValue: _newValue,
+          originalValuePattern: _originalValuePattern,
+          targetGroupKinds: _targetGroupKinds,
+          targetJsonPath: _targetJsonPath,
+          targetNamespaces: _targetNamespaces,
+          transformationRules: _transformationRules,
+          fieldActions: _fieldActions,
+          fromPath: _fromPath,
+          op: _op,
+          path: _path,
+          value: _value,
+          resourceFilter: _resourceFilter,
+          groupKinds: _groupKinds,
+          jsonPath: _jsonPath,
+          volumeDataRestorePolicy: _volumeDataRestorePolicy,
+          volumeDataRestorePolicyBindings: _volumeDataRestorePolicyBindings,
+          policy: _policy,
+          volumeType: _volumeType,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1230,8 +1286,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1252,6 +1310,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

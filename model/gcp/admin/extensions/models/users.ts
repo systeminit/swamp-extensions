@@ -488,7 +488,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Admin SDK Users. Registered at `@swamp/gcp/admin/users`. */
 export const model = {
   type: "@swamp/gcp/admin/users",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -497,6 +497,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1170,6 +1175,18 @@ export const model = {
         resourceUri: z.any().optional(),
         token: z.any().optional(),
         type: z.any().optional(),
+        customFieldMask: z.any().optional(),
+        customer: z.any().optional(),
+        domain: z.any().optional(),
+        event: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        projection: z.any().optional(),
+        query: z.any().optional(),
+        showDeleted: z.any().optional(),
+        sortOrder: z.any().optional(),
+        viewType: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1178,6 +1195,42 @@ export const model = {
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["customFieldMask"] !== undefined) {
+          params["customFieldMask"] = String(args["customFieldMask"]);
+        }
+        if (args["customer"] !== undefined) {
+          params["customer"] = String(args["customer"]);
+        }
+        if (args["domain"] !== undefined) {
+          params["domain"] = String(args["domain"]);
+        }
+        if (args["event"] !== undefined) {
+          params["event"] = String(args["event"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["projection"] !== undefined) {
+          params["projection"] = String(args["projection"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["showDeleted"] !== undefined) {
+          params["showDeleted"] = String(args["showDeleted"]);
+        }
+        if (args["sortOrder"] !== undefined) {
+          params["sortOrder"] = String(args["sortOrder"]);
+        }
+        if (args["viewType"] !== undefined) {
+          params["viewType"] = String(args["viewType"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["address"] !== undefined) body["address"] = args["address"];
         if (args["expiration"] !== undefined) {

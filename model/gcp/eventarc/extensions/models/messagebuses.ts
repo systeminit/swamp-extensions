@@ -217,6 +217,9 @@ const GlobalArgsSchema = z.object({
   messageBusId: z.string().describe(
     "Required. The user-provided ID to be assigned to the MessageBus. It should match the format `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the MessageBus is not found, a new MessageBus will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -281,6 +284,9 @@ const InputsSchema = z.object({
   messageBusId: z.string().describe(
     "Required. The user-provided ID to be assigned to the MessageBus. It should match the format `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the MessageBus is not found, a new MessageBus will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -312,7 +318,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Eventarc MessageBuses. Registered at `@swamp/gcp/eventarc/messagebuses`. */
 export const model = {
   type: "@swamp/gcp/eventarc/messagebuses",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -443,6 +449,19 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description: "Removed: logSeverity",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { logSeverity: _logSeverity, ...rest } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -610,6 +629,11 @@ export const model = {
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["loggingConfig"] !== undefined) {
           body["loggingConfig"] = g["loggingConfig"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
@@ -803,8 +827,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -825,6 +851,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -849,8 +880,11 @@ export const model = {
     },
     list_enrollments: {
       description: "list enrollments",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -860,6 +894,12 @@ export const model = {
         params["parent"] = `projects/${projectId}/locations/${
           String(g["location"] ?? "")
         }`;
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {

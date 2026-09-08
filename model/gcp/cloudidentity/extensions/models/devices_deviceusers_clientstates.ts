@@ -191,6 +191,9 @@ const GlobalArgsSchema = z.object({
   ]).describe("Output only. The owner of the ClientState").optional(),
   scoreReason: z.string().describe("A descriptive cause of the health score.")
     .optional(),
+  customer: z.string().describe(
+    "Optional. [Resource name](https://cloud.google.com/apis/design/resource_names) of the customer. If you're using this API for your own organization, use `customers/my_customer` If you're using this API to manage another organization, use `customers/{customer}`, where customer is the customer to whom the device belongs.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -276,6 +279,9 @@ const InputsSchema = z.object({
   ]).describe("Output only. The owner of the ClientState").optional(),
   scoreReason: z.string().describe("A descriptive cause of the health score.")
     .optional(),
+  customer: z.string().describe(
+    "Optional. [Resource name](https://cloud.google.com/apis/design/resource_names) of the customer. If you're using this API for your own organization, use `customers/my_customer` If you're using this API to manage another organization, use `customers/{customer}`, where customer is the customer to whom the device belongs.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -307,7 +313,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Identity Devices.DeviceUsers.ClientStates. Registered at `@swamp/gcp/cloudidentity/devices-deviceusers-clientstates`. */
 export const model = {
   type: "@swamp/gcp/cloudidentity/devices-deviceusers-clientstates",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -429,6 +435,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: customer",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -537,6 +548,11 @@ export const model = {
         if (g["ownerType"] !== undefined) body["ownerType"] = g["ownerType"];
         if (g["scoreReason"] !== undefined) {
           body["scoreReason"] = g["scoreReason"];
+        }
+        if (g["customer"] !== undefined) {
+          params["customer"] = String(g["customer"]);
+        } else if (existing["customer"] !== undefined) {
+          params["customer"] = String(existing["customer"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

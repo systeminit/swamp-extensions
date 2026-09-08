@@ -1604,7 +1604,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataplex ChangeRequests. Registered at `@swamp/gcp/dataplex/changerequests`. */
 export const model = {
   type: "@swamp/gcp/dataplex/changerequests",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -1615,6 +1615,61 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: entry, aspects, aspectSource, dataVersion, aspectType, data, path, entrySource, ancestors, type, description, displayName, platform, system, entryType, fullyQualifiedName, parentEntry, entryId, parent, entryLink, aspects, aspectSource, dataVersion, aspectType, data, path, entryLinkType, entryReferences, path, type, entryLinkId, parent, glossary, categoryCount, description, displayName, termCount, glossaryId, parent, validateOnly, category, description, displayName, parent, categoryId, parent, parent, term, description, displayName, parent, termId, accessGroupDisplayName, accessGroupId, parent, requestedPrincipal, allowMissing, aspectKeys, deleteMissingAspects, entry, aspects, aspectSource, dataVersion, aspectType, data, path, entrySource, ancestors, type, description, displayName, platform, system, entryType, fullyQualifiedName, parentEntry, updateMask, glossary, categoryCount, description, displayName, termCount, updateMask, validateOnly, category, description, displayName, parent, updateMask, term, description, displayName, parent, updateMask",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          entry: _entry,
+          aspects: _aspects,
+          aspectSource: _aspectSource,
+          dataVersion: _dataVersion,
+          aspectType: _aspectType,
+          data: _data,
+          path: _path,
+          entrySource: _entrySource,
+          ancestors: _ancestors,
+          type: _type,
+          description: _description,
+          displayName: _displayName,
+          platform: _platform,
+          system: _system,
+          entryType: _entryType,
+          fullyQualifiedName: _fullyQualifiedName,
+          parentEntry: _parentEntry,
+          entryId: _entryId,
+          parent: _parent,
+          entryLink: _entryLink,
+          entryLinkType: _entryLinkType,
+          entryReferences: _entryReferences,
+          entryLinkId: _entryLinkId,
+          glossary: _glossary,
+          categoryCount: _categoryCount,
+          termCount: _termCount,
+          glossaryId: _glossaryId,
+          validateOnly: _validateOnly,
+          category: _category,
+          categoryId: _categoryId,
+          term: _term,
+          termId: _termId,
+          accessGroupDisplayName: _accessGroupDisplayName,
+          accessGroupId: _accessGroupId,
+          requestedPrincipal: _requestedPrincipal,
+          allowMissing: _allowMissing,
+          aspectKeys: _aspectKeys,
+          deleteMissingAspects: _deleteMissingAspects,
+          updateMask: _updateMask,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -2000,8 +2055,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2010,6 +2067,11 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["resource"] !== undefined) {
           params["resource"] = String(g["resource"]);
+        }
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
         }
         const result = await createResource(
           baseUrl,

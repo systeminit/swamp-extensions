@@ -1570,14 +1570,35 @@ export function generateGcpExtensionModel(
       `      description: "${readableName}",`,
     );
 
-    // Build arguments schema from request properties
+    // Build arguments schema from request properties + query-location params
     const argProps = Object.entries(action.requestProperties);
-    if (argProps.length > 0) {
+    const pathParamNames = new Set(action.config.parameterOrder);
+    const queryParams: string[] = [];
+    if (action.config.parameters) {
+      for (
+        const [paramName, paramDef] of Object.entries(action.config.parameters)
+      ) {
+        if (paramDef.location !== "query") continue;
+        if (pathParamNames.has(paramName)) continue;
+        queryParams.push(paramName);
+      }
+    }
+    const queryParamSet = new Set(queryParams);
+    const safeQueryParamSet = new Set(queryParams.map(safeIdent));
+    if (argProps.length > 0 || queryParams.length > 0) {
       lines.push(`      arguments: z.object({`);
       for (const [propName, _prop] of argProps) {
+        if (queryParamSet.has(propName) || safeQueryParamSet.has(propName)) {
+          continue;
+        }
         const isRequired = action.requiredProperties.includes(propName);
         lines.push(
           `        ${propName}: z.any()${isRequired ? "" : ".optional()"},`,
+        );
+      }
+      for (const paramName of queryParams) {
+        lines.push(
+          `        ${safeIdent(paramName)}: z.any().optional(),`,
         );
       }
       lines.push(`      }),`);
@@ -1607,7 +1628,8 @@ export function generateGcpExtensionModel(
     }
 
     const needsExistingState = paramsNeedingState.length > 0;
-    const argsPrefix = argProps.length > 0 ? "args" : "_args";
+    const hasArgs = argProps.length > 0 || queryParams.length > 0;
+    const argsPrefix = hasArgs ? "args" : "_args";
 
     lines.push(
       `      execute: async (${argsPrefix}: Record<string, unknown>, context: any) => {`,
@@ -1710,10 +1732,25 @@ export function generateGcpExtensionModel(
       }
     }
 
-    // Build request body from action request properties
-    if (argProps.length > 0) {
+    // Route query-location args to params (safe ident for args key, raw name for URL param)
+    for (const paramName of queryParams) {
+      const safeParamName = safeIdent(paramName);
+      lines.push(
+        `        if (args[${
+          JSON.stringify(safeParamName)
+        }] !== undefined) params[${JSON.stringify(paramName)}] = String(args[${
+          JSON.stringify(safeParamName)
+        }]);`,
+      );
+    }
+
+    // Build request body from action request properties (excluding query params)
+    const bodyProps = argProps.filter(([name]) =>
+      !queryParamSet.has(name) && !safeQueryParamSet.has(name)
+    );
+    if (bodyProps.length > 0) {
       lines.push(`        const body: Record<string, unknown> = {};`);
-      for (const [propName] of argProps) {
+      for (const [propName] of bodyProps) {
         lines.push(
           `        if (args[${JSON.stringify(propName)}] !== undefined) body[${
             JSON.stringify(propName)
@@ -1726,7 +1763,7 @@ export function generateGcpExtensionModel(
     const actionConfigStr = JSON.stringify(action.config);
     const isGetOrHead = action.config.httpMethod === "GET" ||
       action.config.httpMethod === "HEAD";
-    const bodyArg = argProps.length > 0
+    const bodyArg = bodyProps.length > 0
       ? "body"
       : (isGetOrHead ? "undefined" : "{}");
     lines.push(

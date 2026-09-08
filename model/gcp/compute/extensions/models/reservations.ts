@@ -405,6 +405,7 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  paths: z.string().describe("The paths for this resource").optional(),
 });
 
 const StateSchema = z.object({
@@ -720,6 +721,7 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  paths: z.string().describe("The paths for this resource").optional(),
 });
 
 const _credentialKeys = new Set([
@@ -748,7 +750,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine Reservations. Registered at `@swamp/gcp/compute/reservations`. */
 export const model = {
   type: "@swamp/gcp/compute/reservations",
-  version: "2026.08.28.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -898,6 +900,11 @@ export const model = {
     {
       toVersion: "2026.08.28.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: paths",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1142,6 +1149,10 @@ export const model = {
           body["specificReservationRequired"] =
             g["specificReservationRequired"];
         }
+        if (g["paths"] !== undefined) params["paths"] = String(g["paths"]);
+        else if (existing["paths"] !== undefined) {
+          params["paths"] = String(existing["paths"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -1340,8 +1351,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        optionsRequestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1363,6 +1376,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1392,6 +1410,7 @@ export const model = {
       description: "perform maintenance",
       arguments: z.object({
         maintenanceScope: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1415,6 +1434,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["reservation"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["maintenanceScope"] !== undefined) {
           body["maintenanceScope"] = args["maintenanceScope"];
@@ -1448,6 +1470,7 @@ export const model = {
       description: "resize",
       arguments: z.object({
         specificSkuCount: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1471,6 +1494,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["reservation"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["specificSkuCount"] !== undefined) {
           body["specificSkuCount"] = args["specificSkuCount"];

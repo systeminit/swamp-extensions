@@ -1416,7 +1416,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud My Business Business Information Locations. Registered at `@swamp/gcp/mybusinessbusinessinformation/locations`. */
 export const model = {
   type: "@swamp/gcp/mybusinessbusinessinformation/locations",
-  version: "2026.08.28.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1580,6 +1580,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.28.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1852,8 +1857,10 @@ export const model = {
     },
     get_google_updated: {
       description: "get google updated",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        readMask: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1861,6 +1868,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["readMask"] !== undefined) {
+          params["readMask"] = String(args["readMask"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1888,6 +1898,7 @@ export const model = {
       arguments: z.object({
         attributes: z.any().optional(),
         name: z.any().optional(),
+        attributeMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1897,6 +1908,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["attributeMask"] !== undefined) {
+          params["attributeMask"] = String(args["attributeMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["attributes"] !== undefined) {
           body["attributes"] = args["attributes"];

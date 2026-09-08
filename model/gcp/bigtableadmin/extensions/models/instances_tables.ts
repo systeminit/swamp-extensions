@@ -861,6 +861,9 @@ const GlobalArgsSchema = z.object({
   }).describe(
     "Rules to specify what data is stored in each storage tier. Different tiers store data differently, providing different trade-offs between cost and performance. Different parts of a table can be stored separately on different tiers. If a config is specified, tiered storage is enabled for this table. Otherwise, tiered storage is disabled. Only SSD instances can configure tiered storage.",
   ).optional(),
+  ignoreWarnings: z.string().describe(
+    "Optional. If true, ignore safety checks when updating the table.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -1672,6 +1675,9 @@ const InputsSchema = z.object({
   }).describe(
     "Rules to specify what data is stored in each storage tier. Different tiers store data differently, providing different trade-offs between cost and performance. Different parts of a table can be stored separately on different tiers. If a config is specified, tiered storage is enabled for this table. Otherwise, tiered storage is disabled. Only SSD instances can configure tiered storage.",
   ).optional(),
+  ignoreWarnings: z.string().describe(
+    "Optional. If true, ignore safety checks when updating the table.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -1706,7 +1712,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Bigtable Admin Instances.Tables. Registered at `@swamp/gcp/bigtableadmin/instances-tables`. */
 export const model = {
   type: "@swamp/gcp/bigtableadmin/instances-tables",
-  version: "2026.08.21.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1893,6 +1899,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: ignoreWarnings",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -2062,6 +2073,11 @@ export const model = {
         if (g["stats"] !== undefined) body["stats"] = g["stats"];
         if (g["tieredStorageConfig"] !== undefined) {
           body["tieredStorageConfig"] = g["tieredStorageConfig"];
+        }
+        if (g["ignoreWarnings"] !== undefined) {
+          params["ignoreWarnings"] = String(g["ignoreWarnings"]);
+        } else if (existing["ignoreWarnings"] !== undefined) {
+          params["ignoreWarnings"] = String(existing["ignoreWarnings"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

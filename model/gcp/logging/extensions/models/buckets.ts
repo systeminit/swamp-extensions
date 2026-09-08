@@ -326,7 +326,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Logging Buckets. Registered at `@swamp/gcp/logging/buckets`. */
 export const model = {
   type: "@swamp/gcp/logging/buckets",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -450,6 +450,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -831,6 +836,7 @@ export const model = {
         restrictedFields: z.any().optional(),
         retentionDays: z.any().optional(),
         updateTime: z.any().optional(),
+        bucketId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -840,6 +846,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["bucketId"] !== undefined) {
+          params["bucketId"] = String(args["bucketId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["analyticsEnabled"] !== undefined) {
           body["analyticsEnabled"] = args["analyticsEnabled"];
@@ -941,6 +950,7 @@ export const model = {
         restrictedFields: z.any().optional(),
         retentionDays: z.any().optional(),
         updateTime: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -954,6 +964,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
         }
         const body: Record<string, unknown> = {};
         if (args["analyticsEnabled"] !== undefined) {

@@ -1701,7 +1701,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine BackendServices. Registered at `@swamp/gcp/compute/backendservices`. */
 export const model = {
   type: "@swamp/gcp/compute/backendservices",
-  version: "2026.09.06.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -1915,6 +1915,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.06.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -2434,6 +2439,7 @@ export const model = {
       arguments: z.object({
         keyName: z.any().optional(),
         keyValue: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2456,6 +2462,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["backendService"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["keyName"] !== undefined) body["keyName"] = args["keyName"];
         if (args["keyValue"] !== undefined) body["keyValue"] = args["keyValue"];
@@ -2583,8 +2592,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        optionsRequestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2605,6 +2616,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2631,14 +2647,35 @@ export const model = {
     },
     list_usable: {
       description: "list usable",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2669,6 +2706,7 @@ export const model = {
       description: "set edge security policy",
       arguments: z.object({
         securityPolicy: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2691,6 +2729,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["backendService"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["securityPolicy"] !== undefined) {
           body["securityPolicy"] = args["securityPolicy"];
@@ -2778,6 +2819,7 @@ export const model = {
       description: "set security policy",
       arguments: z.object({
         securityPolicy: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2800,6 +2842,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["backendService"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["securityPolicy"] !== undefined) {
           body["securityPolicy"] = args["securityPolicy"];

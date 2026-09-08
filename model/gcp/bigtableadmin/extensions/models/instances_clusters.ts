@@ -317,7 +317,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Bigtable Admin Instances.Clusters. Registered at `@swamp/gcp/bigtableadmin/instances-clusters`. */
 export const model = {
   type: "@swamp/gcp/bigtableadmin/instances-clusters",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -491,6 +491,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -883,6 +888,7 @@ export const model = {
         nodeScalingFactor: z.any().optional(),
         serveNodes: z.any().optional(),
         state: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -896,6 +902,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
         }
         const body: Record<string, unknown> = {};
         if (args["clusterConfig"] !== undefined) {
@@ -946,6 +955,7 @@ export const model = {
         memoryConfig: z.any().optional(),
         name: z.any().optional(),
         state: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -959,6 +969,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
         }
         const body: Record<string, unknown> = {};
         if (args["etag"] !== undefined) body["etag"] = args["etag"];

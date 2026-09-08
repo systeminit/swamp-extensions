@@ -283,7 +283,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud GKE Hub Memberships.Rbacrolebindings. Registered at `@swamp/gcp/gkehub/memberships-rbacrolebindings`. */
 export const model = {
   type: "@swamp/gcp/gkehub/memberships-rbacrolebindings",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -292,6 +292,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -629,6 +634,7 @@ export const model = {
         uid: z.any().optional(),
         updateTime: z.any().optional(),
         user: z.any().optional(),
+        rbacrolebindingId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -638,6 +644,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["rbacrolebindingId"] !== undefined) {
+          params["rbacrolebindingId"] = String(args["rbacrolebindingId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["createTime"] !== undefined) {
           body["createTime"] = args["createTime"];

@@ -1605,14 +1605,17 @@ export const model = {
     },
     batch_get: {
       description: \\"batch_get\\",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        ranges: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g[\\"apiEndpoint\\"]?.toString() ?? Deno.env.get(\\"GCP_API_ENDPOINT\\")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g[\\"spreadsheetId\\"] !== undefined) params[\\"spreadsheetId\\"] = String(g[\\"spreadsheetId\\"]);
+        if (args[\\"ranges\\"] !== undefined) params[\\"ranges\\"] = String(args[\\"ranges\\"]);
         const result = await createResource(baseUrl, {\\"id\\":\\"sheets.spreadsheets.values.batchGet\\",\\"path\\":\\"v4/spreadsheets/{spreadsheetId}/values:batchGet\\",\\"httpMethod\\":\\"GET\\",\\"parameterOrder\\":[\\"spreadsheetId\\"],\\"parameters\\":{\\"spreadsheetId\\":{\\"location\\":\\"path\\",\\"required\\":true},\\"ranges\\":{\\"location\\":\\"query\\"}}}, params, undefined, undefined, undefined, undefined, credentials);
         return { result };
       },

@@ -421,7 +421,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Agent Platform IndexEndpoints. Registered at `@swamp/gcp/aiplatform/indexendpoints`. */
 export const model = {
   type: "@swamp/gcp/aiplatform/indexendpoints",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -590,6 +590,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1079,6 +1084,7 @@ export const model = {
         privateEndpoints: z.any().optional(),
         pscAutomationConfigs: z.any().optional(),
         reservedIpRanges: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1101,6 +1107,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["indexEndpoint"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["automaticResources"] !== undefined) {
           body["automaticResources"] = args["automaticResources"];

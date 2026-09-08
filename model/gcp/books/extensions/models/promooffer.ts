@@ -152,7 +152,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Books Promooffer. Registered at `@swamp/gcp/books/promooffer`. */
 export const model = {
   type: "@swamp/gcp/books/promooffer",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -259,6 +259,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -347,14 +352,47 @@ export const model = {
     },
     accept: {
       description: "accept",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        androidId: z.any().optional(),
+        device: z.any().optional(),
+        manufacturer: z.any().optional(),
+        model: z.any().optional(),
+        offerId: z.any().optional(),
+        product: z.any().optional(),
+        serial: z.any().optional(),
+        volumeId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["androidId"] !== undefined) {
+          params["androidId"] = String(args["androidId"]);
+        }
+        if (args["device"] !== undefined) {
+          params["device"] = String(args["device"]);
+        }
+        if (args["manufacturer"] !== undefined) {
+          params["manufacturer"] = String(args["manufacturer"]);
+        }
+        if (args["model"] !== undefined) {
+          params["model"] = String(args["model"]);
+        }
+        if (args["offerId"] !== undefined) {
+          params["offerId"] = String(args["offerId"]);
+        }
+        if (args["product"] !== undefined) {
+          params["product"] = String(args["product"]);
+        }
+        if (args["serial"] !== undefined) {
+          params["serial"] = String(args["serial"]);
+        }
+        if (args["volumeId"] !== undefined) {
+          params["volumeId"] = String(args["volumeId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -385,14 +423,43 @@ export const model = {
     },
     dismiss: {
       description: "dismiss",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        androidId: z.any().optional(),
+        device: z.any().optional(),
+        manufacturer: z.any().optional(),
+        model: z.any().optional(),
+        offerId: z.any().optional(),
+        product: z.any().optional(),
+        serial: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["androidId"] !== undefined) {
+          params["androidId"] = String(args["androidId"]);
+        }
+        if (args["device"] !== undefined) {
+          params["device"] = String(args["device"]);
+        }
+        if (args["manufacturer"] !== undefined) {
+          params["manufacturer"] = String(args["manufacturer"]);
+        }
+        if (args["model"] !== undefined) {
+          params["model"] = String(args["model"]);
+        }
+        if (args["offerId"] !== undefined) {
+          params["offerId"] = String(args["offerId"]);
+        }
+        if (args["product"] !== undefined) {
+          params["product"] = String(args["product"]);
+        }
+        if (args["serial"] !== undefined) {
+          params["serial"] = String(args["serial"]);
+        }
         const result = await createResource(
           baseUrl,
           {

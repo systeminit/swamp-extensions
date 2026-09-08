@@ -252,7 +252,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Enterprise License Manager LicenseAssignments. Registered at `@swamp/gcp/licensing/licenseassignments`. */
 export const model = {
   type: "@swamp/gcp/licensing/licenseassignments",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -361,6 +361,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.13.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -630,8 +635,11 @@ export const model = {
     },
     list_for_product: {
       description: "list for product",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        maxResults: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -655,6 +663,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["customerId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -681,8 +695,11 @@ export const model = {
     },
     list_for_product_and_sku: {
       description: "list for product and sku",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        maxResults: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -707,6 +724,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["customerId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {

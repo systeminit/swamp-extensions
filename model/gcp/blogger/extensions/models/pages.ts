@@ -228,6 +228,8 @@ const GlobalArgsSchema = z.object({
     .optional(),
   blogId: z.string().describe("The blogId for this resource"),
   isDraft: z.string().describe("The isDraft for this resource").optional(),
+  publish: z.string().describe("The publish for this resource").optional(),
+  revert: z.string().describe("The revert for this resource").optional(),
 });
 
 const StateSchema = z.object({
@@ -299,6 +301,8 @@ const InputsSchema = z.object({
     .optional(),
   blogId: z.string().describe("The blogId for this resource").optional(),
   isDraft: z.string().describe("The isDraft for this resource").optional(),
+  publish: z.string().describe("The publish for this resource").optional(),
+  revert: z.string().describe("The revert for this resource").optional(),
 });
 
 const _credentialKeys = new Set([
@@ -327,7 +331,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Blogger Pages. Registered at `@swamp/gcp/blogger/pages`. */
 export const model = {
   type: "@swamp/gcp/blogger/pages",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -452,6 +456,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: publish, revert",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -592,6 +601,15 @@ export const model = {
         if (g["trashed"] !== undefined) body["trashed"] = g["trashed"];
         if (g["updated"] !== undefined) body["updated"] = g["updated"];
         if (g["url"] !== undefined) body["url"] = g["url"];
+        if (g["publish"] !== undefined) {
+          params["publish"] = String(g["publish"]);
+        } else if (existing["publish"] !== undefined) {
+          params["publish"] = String(existing["publish"]);
+        }
+        if (g["revert"] !== undefined) params["revert"] = String(g["revert"]);
+        else if (existing["revert"] !== undefined) {
+          params["revert"] = String(existing["revert"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

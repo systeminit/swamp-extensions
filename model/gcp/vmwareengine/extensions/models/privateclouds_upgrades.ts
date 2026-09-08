@@ -341,6 +341,9 @@ const GlobalArgsSchema = z.object({
     "Output only. Output Only. Last update time of this resource.",
   ).optional(),
   version: z.string().describe("Output only.").optional(),
+  requestId: z.string().describe(
+    "Optional. A request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server guarantees that a request doesn't result in creation of duplicate commitments for at least 60 minutes. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -629,6 +632,9 @@ const InputsSchema = z.object({
     "Output only. Output Only. Last update time of this resource.",
   ).optional(),
   version: z.string().describe("Output only.").optional(),
+  requestId: z.string().describe(
+    "Optional. A request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server guarantees that a request doesn't result in creation of duplicate commitments for at least 60 minutes. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -663,7 +669,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud VMware Engine PrivateClouds.Upgrades. Registered at `@swamp/gcp/vmwareengine/privateclouds-upgrades`. */
 export const model = {
   type: "@swamp/gcp/vmwareengine/privateclouds-upgrades",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -800,6 +806,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: requestId",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -917,6 +928,11 @@ export const model = {
         if (g["uid"] !== undefined) body["uid"] = g["uid"];
         if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
         if (g["version"] !== undefined) body["version"] = g["version"];
+        if (g["requestId"] !== undefined) {
+          params["requestId"] = String(g["requestId"]);
+        } else if (existing["requestId"] !== undefined) {
+          params["requestId"] = String(existing["requestId"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

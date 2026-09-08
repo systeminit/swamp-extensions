@@ -742,7 +742,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Healthcare Datasets.FhirStores. Registered at `@swamp/gcp/healthcare/datasets-fhirstores`. */
 export const model = {
   type: "@swamp/gcp/healthcare/datasets-fhirstores",
-  version: "2026.08.22.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -913,6 +913,68 @@ export const model = {
       toVersion: "2026.08.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: uriPrefix, accessDeterminationLogConfig, logLevel, accessEnforced, consentHeaderHandling, profile, enforcedAdminConsents, pubsubTopic, sendForBulkImport, pubsubTopic, sendFullResource, sendPreviousResourceOnDelete, bigqueryDestination, datasetUri, force, schemaConfig, lastUpdatedPartitionConfig, expirationMs, type, recursiveStructureDepth, schemaType, writeDisposition, deidentifiedStoreDestination, config, dicom, filterProfile, keepList, removeList, skipIdRedaction, fhir, defaultKeepExtensions, fieldMetadataList, image, textRedactionMode, text, additionalTransformations, excludeInfoTypes, transformations, useRegionalDataProcessing, store, resourceTypes, disableFhirpathValidation, disableProfileValidation, disableReferenceTypeValidation, disableRequiredFieldValidation, enableFhirpathProfileValidation, enabledImplementationGuides",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          uriPrefix: _uriPrefix,
+          accessDeterminationLogConfig: _accessDeterminationLogConfig,
+          logLevel: _logLevel,
+          accessEnforced: _accessEnforced,
+          consentHeaderHandling: _consentHeaderHandling,
+          profile: _profile,
+          enforcedAdminConsents: _enforcedAdminConsents,
+          pubsubTopic: _pubsubTopic,
+          sendForBulkImport: _sendForBulkImport,
+          sendFullResource: _sendFullResource,
+          sendPreviousResourceOnDelete: _sendPreviousResourceOnDelete,
+          bigqueryDestination: _bigqueryDestination,
+          datasetUri: _datasetUri,
+          force: _force,
+          schemaConfig: _schemaConfig,
+          lastUpdatedPartitionConfig: _lastUpdatedPartitionConfig,
+          expirationMs: _expirationMs,
+          type: _type,
+          recursiveStructureDepth: _recursiveStructureDepth,
+          schemaType: _schemaType,
+          writeDisposition: _writeDisposition,
+          deidentifiedStoreDestination: _deidentifiedStoreDestination,
+          config: _config,
+          dicom: _dicom,
+          filterProfile: _filterProfile,
+          keepList: _keepList,
+          removeList: _removeList,
+          skipIdRedaction: _skipIdRedaction,
+          fhir: _fhir,
+          defaultKeepExtensions: _defaultKeepExtensions,
+          fieldMetadataList: _fieldMetadataList,
+          image: _image,
+          textRedactionMode: _textRedactionMode,
+          text: _text,
+          additionalTransformations: _additionalTransformations,
+          excludeInfoTypes: _excludeInfoTypes,
+          transformations: _transformations,
+          useRegionalDataProcessing: _useRegionalDataProcessing,
+          store: _store,
+          resourceTypes: _resourceTypes,
+          disableFhirpathValidation: _disableFhirpathValidation,
+          disableProfileValidation: _disableProfileValidation,
+          disableReferenceTypeValidation: _disableReferenceTypeValidation,
+          disableRequiredFieldValidation: _disableRequiredFieldValidation,
+          enableFhirpathProfileValidation: _enableFhirpathProfileValidation,
+          enabledImplementationGuides: _enabledImplementationGuides,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1391,8 +1453,13 @@ export const model = {
     },
     bulk_export_group: {
       description: "bulk-export-group",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        _since: z.any().optional(),
+        _type: z.any().optional(),
+        organizeOutputBy: z.any().optional(),
+        outputFormat: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1404,6 +1471,18 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["_since"] !== undefined) {
+          params["_since"] = String(args["_since"]);
+        }
+        if (args["_type"] !== undefined) {
+          params["_type"] = String(args["_type"]);
+        }
+        if (args["organizeOutputBy"] !== undefined) {
+          params["organizeOutputBy"] = String(args["organizeOutputBy"]);
+        }
+        if (args["outputFormat"] !== undefined) {
+          params["outputFormat"] = String(args["outputFormat"]);
         }
         const result = await createResource(
           baseUrl,
@@ -1557,8 +1636,10 @@ export const model = {
     },
     explain_data_access: {
       description: "explain data access",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        resourceId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1570,6 +1651,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["resourceId"] !== undefined) {
+          params["resourceId"] = String(args["resourceId"]);
         }
         const result = await createResource(
           baseUrl,
@@ -1681,8 +1765,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1703,6 +1789,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

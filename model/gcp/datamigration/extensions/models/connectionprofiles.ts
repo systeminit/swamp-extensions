@@ -1670,7 +1670,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Database Migration ConnectionProfiles. Registered at `@swamp/gcp/datamigration/connectionprofiles`. */
 export const model = {
   type: "@swamp/gcp/datamigration/connectionprofiles",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1809,6 +1809,108 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: clusterId, settings, databaseVersion, encryptionConfig, kmsKeyName, initialUser, password, passwordSet, user, primaryInstanceSettings, databaseFlags, id, instanceNetworkConfig, authorizedExternalNetworks, enableOutboundPublicIp, enablePublicIp, machineConfig, cpuCount, machineType, outboundPublicIpAddresses, privateIp, vpcNetwork, additionalPublicIp, cloudSqlId, privateIp, publicIp, settings, activationPolicy, autoStorageIncrease, availabilityType, cmekKeyName, collation, dataCacheConfig, dataCacheEnabled, dataDiskProvisionedIops, dataDiskProvisionedThroughput, dataDiskSizeGb, dataDiskType, databaseFlags, databaseVersion, databaseVersionName, edition, ipConfig, allocatedIpRange, authorizedNetworks, expireTime, label, ttl, value, enableIpv4, privateNetwork, requireSsl, rootPassword, rootPasswordSet, secondaryZone, sourceId, storageAutoResizeLimit, tier, userLabels, zone, cloudSqlId, host, password, passwordSet, port, ssl, caCertificate, clientCertificate, clientKey, sslFlags, type, username, databaseService, forwardSshConnectivity, hostname, password, port, privateKey, username, host, oracleAsmConfig, asmService, hostname, password, passwordSet, port, ssl, caCertificate, clientCertificate, clientKey, sslFlags, type, username, password, passwordSet, port, privateConnectivity, privateConnection, ssl, caCertificate, clientCertificate, clientKey, sslFlags, type, staticServiceIpConnectivity, username, alloydbClusterId, cloudSqlId, database, enableIamAuthentication, forwardSshConnectivity, hostname, password, port, privateKey, username, host, networkArchitecture, password, passwordSet, port, privateConnectivity, privateConnection, privateServiceConnectConnectivity, serviceAttachment, ssl, caCertificate, clientCertificate, clientKey, sslFlags, type, staticIpConnectivity, username, backups, gcsBucket, gcsPrefix, cloudSqlId, cloudSqlProjectId, database, dbmPort, forwardSshConnectivity, hostname, password, port, privateKey, username, host, password, passwordSet, port, privateConnectivity, privateConnection, privateServiceConnectConnectivity, serviceAttachment, ssl, caCertificate, clientCertificate, clientKey, sslFlags, type, staticIpConnectivity, username",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          clusterId: _clusterId,
+          settings: _settings,
+          databaseVersion: _databaseVersion,
+          encryptionConfig: _encryptionConfig,
+          kmsKeyName: _kmsKeyName,
+          initialUser: _initialUser,
+          password: _password,
+          passwordSet: _passwordSet,
+          user: _user,
+          primaryInstanceSettings: _primaryInstanceSettings,
+          databaseFlags: _databaseFlags,
+          id: _id,
+          instanceNetworkConfig: _instanceNetworkConfig,
+          authorizedExternalNetworks: _authorizedExternalNetworks,
+          enableOutboundPublicIp: _enableOutboundPublicIp,
+          enablePublicIp: _enablePublicIp,
+          machineConfig: _machineConfig,
+          cpuCount: _cpuCount,
+          machineType: _machineType,
+          outboundPublicIpAddresses: _outboundPublicIpAddresses,
+          privateIp: _privateIp,
+          vpcNetwork: _vpcNetwork,
+          additionalPublicIp: _additionalPublicIp,
+          cloudSqlId: _cloudSqlId,
+          publicIp: _publicIp,
+          activationPolicy: _activationPolicy,
+          autoStorageIncrease: _autoStorageIncrease,
+          availabilityType: _availabilityType,
+          cmekKeyName: _cmekKeyName,
+          collation: _collation,
+          dataCacheConfig: _dataCacheConfig,
+          dataCacheEnabled: _dataCacheEnabled,
+          dataDiskProvisionedIops: _dataDiskProvisionedIops,
+          dataDiskProvisionedThroughput: _dataDiskProvisionedThroughput,
+          dataDiskSizeGb: _dataDiskSizeGb,
+          dataDiskType: _dataDiskType,
+          databaseVersionName: _databaseVersionName,
+          edition: _edition,
+          ipConfig: _ipConfig,
+          allocatedIpRange: _allocatedIpRange,
+          authorizedNetworks: _authorizedNetworks,
+          expireTime: _expireTime,
+          label: _label,
+          ttl: _ttl,
+          value: _value,
+          enableIpv4: _enableIpv4,
+          privateNetwork: _privateNetwork,
+          requireSsl: _requireSsl,
+          rootPassword: _rootPassword,
+          rootPasswordSet: _rootPasswordSet,
+          secondaryZone: _secondaryZone,
+          sourceId: _sourceId,
+          storageAutoResizeLimit: _storageAutoResizeLimit,
+          tier: _tier,
+          userLabels: _userLabels,
+          zone: _zone,
+          host: _host,
+          port: _port,
+          ssl: _ssl,
+          caCertificate: _caCertificate,
+          clientCertificate: _clientCertificate,
+          clientKey: _clientKey,
+          sslFlags: _sslFlags,
+          type: _type,
+          username: _username,
+          databaseService: _databaseService,
+          forwardSshConnectivity: _forwardSshConnectivity,
+          hostname: _hostname,
+          privateKey: _privateKey,
+          oracleAsmConfig: _oracleAsmConfig,
+          asmService: _asmService,
+          privateConnectivity: _privateConnectivity,
+          privateConnection: _privateConnection,
+          staticServiceIpConnectivity: _staticServiceIpConnectivity,
+          alloydbClusterId: _alloydbClusterId,
+          database: _database,
+          enableIamAuthentication: _enableIamAuthentication,
+          networkArchitecture: _networkArchitecture,
+          privateServiceConnectConnectivity: _privateServiceConnectConnectivity,
+          serviceAttachment: _serviceAttachment,
+          staticIpConnectivity: _staticIpConnectivity,
+          backups: _backups,
+          gcsBucket: _gcsBucket,
+          gcsPrefix: _gcsPrefix,
+          cloudSqlProjectId: _cloudSqlProjectId,
+          dbmPort: _dbmPort,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -2196,8 +2298,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2218,6 +2322,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

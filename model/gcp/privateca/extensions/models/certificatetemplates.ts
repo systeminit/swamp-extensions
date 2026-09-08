@@ -685,7 +685,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Certificate Authority CertificateTemplates. Registered at `@swamp/gcp/privateca/certificatetemplates`. */
 export const model = {
   type: "@swamp/gcp/privateca/certificatetemplates",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -821,6 +821,66 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: allowSubjectAltNamesPassthrough, allowSubjectPassthrough, celExpression, expression, title, additionalExtensions, objectIdPath, knownExtensions, additionalExtensions, critical, objectId, objectIdPath, value, aiaOcspServers, caOptions, isCa, maxIssuerPathLength, keyUsage, baseKeyUsage, certSign, contentCommitment, crlSign, dataEncipherment, decipherOnly, digitalSignature, encipherOnly, keyAgreement, keyEncipherment, extendedKeyUsage, clientAuth, codeSigning, emailProtection, ocspSigning, serverAuth, timeStamping, unknownExtendedKeyUsages, objectIdPath, nameConstraints, critical, excludedDnsNames, excludedEmailAddresses, excludedIpRanges, excludedUris, permittedDnsNames, permittedEmailAddresses, permittedIpRanges, permittedUris, policyIds, objectIdPath",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          allowSubjectAltNamesPassthrough: _allowSubjectAltNamesPassthrough,
+          allowSubjectPassthrough: _allowSubjectPassthrough,
+          celExpression: _celExpression,
+          expression: _expression,
+          title: _title,
+          additionalExtensions: _additionalExtensions,
+          objectIdPath: _objectIdPath,
+          knownExtensions: _knownExtensions,
+          critical: _critical,
+          objectId: _objectId,
+          value: _value,
+          aiaOcspServers: _aiaOcspServers,
+          caOptions: _caOptions,
+          isCa: _isCa,
+          maxIssuerPathLength: _maxIssuerPathLength,
+          keyUsage: _keyUsage,
+          baseKeyUsage: _baseKeyUsage,
+          certSign: _certSign,
+          contentCommitment: _contentCommitment,
+          crlSign: _crlSign,
+          dataEncipherment: _dataEncipherment,
+          decipherOnly: _decipherOnly,
+          digitalSignature: _digitalSignature,
+          encipherOnly: _encipherOnly,
+          keyAgreement: _keyAgreement,
+          keyEncipherment: _keyEncipherment,
+          extendedKeyUsage: _extendedKeyUsage,
+          clientAuth: _clientAuth,
+          codeSigning: _codeSigning,
+          emailProtection: _emailProtection,
+          ocspSigning: _ocspSigning,
+          serverAuth: _serverAuth,
+          timeStamping: _timeStamping,
+          unknownExtendedKeyUsages: _unknownExtendedKeyUsages,
+          nameConstraints: _nameConstraints,
+          excludedDnsNames: _excludedDnsNames,
+          excludedEmailAddresses: _excludedEmailAddresses,
+          excludedIpRanges: _excludedIpRanges,
+          excludedUris: _excludedUris,
+          permittedDnsNames: _permittedDnsNames,
+          permittedEmailAddresses: _permittedEmailAddresses,
+          permittedIpRanges: _permittedIpRanges,
+          permittedUris: _permittedUris,
+          policyIds: _policyIds,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1190,8 +1250,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1212,6 +1274,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

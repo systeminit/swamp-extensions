@@ -222,6 +222,11 @@ const GlobalArgsSchema = z.object({
   notificationPubsubTopic: z.string().describe(
     "Pub/Sub topic where notifications will be sent after transfer runs associated with this transfer config finish. The format for specifying a pubsub topic is: `projects/{project_id}/topics/{topic_id}`",
   ).optional(),
+  paramConfig: z.object({
+    secretManagerManagedParams: z.array(z.string()).describe(
+      "Optional. The list of parameters that are stored in Secret Manager. The value of a parameter included in this list will be interpreted as a Secret Manager key version resource name instead of a raw value. The raw value will be retrieved from Secret Manager upon execution.",
+    ).optional(),
+  }).describe("Optional. The config for values in `params`.").optional(),
   params: z.record(z.string(), z.string()).describe(
     "Parameters specific to each data source. For more information see the bq tab in the 'Setting up a data transfer' section for each data source. For example the parameters for Cloud Storage transfers are listed here: https://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq",
   ).optional(),
@@ -310,6 +315,9 @@ const StateSchema = z.object({
   ownerInfo: z.object({
     email: z.string(),
   }).optional(),
+  paramConfig: z.object({
+    secretManagerManagedParams: z.array(z.string()),
+  }).optional(),
   params: z.record(z.string(), z.unknown()).optional(),
   schedule: z.string().optional(),
   scheduleOptions: z.object({
@@ -388,6 +396,11 @@ const InputsSchema = z.object({
   notificationPubsubTopic: z.string().describe(
     "Pub/Sub topic where notifications will be sent after transfer runs associated with this transfer config finish. The format for specifying a pubsub topic is: `projects/{project_id}/topics/{topic_id}`",
   ).optional(),
+  paramConfig: z.object({
+    secretManagerManagedParams: z.array(z.string()).describe(
+      "Optional. The list of parameters that are stored in Secret Manager. The value of a parameter included in this list will be interpreted as a Secret Manager key version resource name instead of a raw value. The raw value will be retrieved from Secret Manager upon execution.",
+    ).optional(),
+  }).describe("Optional. The config for values in `params`.").optional(),
   params: z.record(z.string(), z.string()).describe(
     "Parameters specific to each data source. For more information see the bq tab in the 'Setting up a data transfer' section for each data source. For example the parameters for Cloud Storage transfers are listed here: https://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq",
   ).optional(),
@@ -472,7 +485,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud BigQuery Data Transfer TransferConfigs. Registered at `@swamp/gcp/bigquerydatatransfer/transferconfigs`. */
 export const model = {
   type: "@swamp/gcp/bigquerydatatransfer/transferconfigs",
-  version: "2026.08.18.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -608,6 +621,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: paramConfig",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -668,6 +686,9 @@ export const model = {
         if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["notificationPubsubTopic"] !== undefined) {
           body["notificationPubsubTopic"] = g["notificationPubsubTopic"];
+        }
+        if (g["paramConfig"] !== undefined) {
+          body["paramConfig"] = g["paramConfig"];
         }
         if (g["params"] !== undefined) body["params"] = g["params"];
         if (g["schedule"] !== undefined) body["schedule"] = g["schedule"];
@@ -837,6 +858,9 @@ export const model = {
         }
         if (g["notificationPubsubTopic"] !== undefined) {
           body["notificationPubsubTopic"] = g["notificationPubsubTopic"];
+        }
+        if (g["paramConfig"] !== undefined) {
+          body["paramConfig"] = g["paramConfig"];
         }
         if (g["params"] !== undefined) body["params"] = g["params"];
         if (g["schedule"] !== undefined) body["schedule"] = g["schedule"];

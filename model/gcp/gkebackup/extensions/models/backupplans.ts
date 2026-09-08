@@ -583,7 +583,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Backup for GKE BackupPlans. Registered at `@swamp/gcp/gkebackup/backupplans`. */
 export const model = {
   type: "@swamp/gcp/gkebackup/backupplans",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -719,6 +719,58 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: allNamespaces, encryptionKey, gcpKmsEncryptionKey, includeSecrets, includeVolumeData, permissiveMode, selectedApplications, namespacedNames, namespace, selectedNamespaceLabels, resourceLabels, key, value, selectedNamespaces, namespaces, cronSchedule, nextScheduledBackupTime, paused, rpoConfig, exclusionWindows, daily, daysOfWeek, daysOfWeek, duration, singleOccurrenceDate, day, month, year, startTime, hours, minutes, nanos, seconds, targetRpoMinutes, backupDeleteLockDays, backupRetainDays, locked",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          allNamespaces: _allNamespaces,
+          encryptionKey: _encryptionKey,
+          gcpKmsEncryptionKey: _gcpKmsEncryptionKey,
+          includeSecrets: _includeSecrets,
+          includeVolumeData: _includeVolumeData,
+          permissiveMode: _permissiveMode,
+          selectedApplications: _selectedApplications,
+          namespacedNames: _namespacedNames,
+          namespace: _namespace,
+          selectedNamespaceLabels: _selectedNamespaceLabels,
+          resourceLabels: _resourceLabels,
+          key: _key,
+          value: _value,
+          selectedNamespaces: _selectedNamespaces,
+          namespaces: _namespaces,
+          cronSchedule: _cronSchedule,
+          nextScheduledBackupTime: _nextScheduledBackupTime,
+          paused: _paused,
+          rpoConfig: _rpoConfig,
+          exclusionWindows: _exclusionWindows,
+          daily: _daily,
+          daysOfWeek: _daysOfWeek,
+          duration: _duration,
+          singleOccurrenceDate: _singleOccurrenceDate,
+          day: _day,
+          month: _month,
+          year: _year,
+          startTime: _startTime,
+          hours: _hours,
+          minutes: _minutes,
+          nanos: _nanos,
+          seconds: _seconds,
+          targetRpoMinutes: _targetRpoMinutes,
+          backupDeleteLockDays: _backupDeleteLockDays,
+          backupRetainDays: _backupRetainDays,
+          locked: _locked,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1099,8 +1151,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1121,6 +1175,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

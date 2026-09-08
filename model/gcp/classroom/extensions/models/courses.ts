@@ -467,7 +467,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Classroom Courses. Registered at `@swamp/gcp/classroom/courses`. */
 export const model = {
   type: "@swamp/gcp/classroom/courses",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -601,6 +601,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1026,6 +1031,7 @@ export const model = {
       arguments: z.object({
         applyToExistingCoursework: z.any().optional(),
         gradingPeriods: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1048,6 +1054,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["courseId"] = existing["id"]?.toString() ??
           g["id"]?.toString() ?? "";
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["applyToExistingCoursework"] !== undefined) {
           body["applyToExistingCoursework"] = args["applyToExistingCoursework"];

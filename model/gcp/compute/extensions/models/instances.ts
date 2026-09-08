@@ -969,6 +969,15 @@ const GlobalArgsSchema = z.object({
   sourceInstanceTemplate: z.string().describe(
     "Specifies instance template to create the instance. This field is optional. It can be a full or partial URL. For example, the following are all valid URLs to an instance template: - https://www.googleapis.com/compute/v1/projects/project/global/instanceTemplates/instanceTemplate - projects/project/global/instanceTemplates/instanceTemplate - global/instanceTemplates/instanceTemplate",
   ).optional(),
+  discardLocalSsd: z.string().describe(
+    "Whether to discard local SSDs from the instance during restart default value is false.",
+  ).optional(),
+  minimalAction: z.string().describe(
+    "Specifies the action to take when updating an instance even if the updated properties do not require it. If not specified, then Compute Engine acts based on the minimum action that the updated properties require.",
+  ).optional(),
+  mostDisruptiveAllowedAction: z.string().describe(
+    "Specifies the most disruptive action that can be taken on the instance as part of the update. Compute Engine returns an error if the instance properties require a more disruptive action as part of the instance update. Valid options from lowest to highest are NO_EFFECT, REFRESH, and RESTART.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -2056,6 +2065,15 @@ const InputsSchema = z.object({
   sourceInstanceTemplate: z.string().describe(
     "Specifies instance template to create the instance. This field is optional. It can be a full or partial URL. For example, the following are all valid URLs to an instance template: - https://www.googleapis.com/compute/v1/projects/project/global/instanceTemplates/instanceTemplate - projects/project/global/instanceTemplates/instanceTemplate - global/instanceTemplates/instanceTemplate",
   ).optional(),
+  discardLocalSsd: z.string().describe(
+    "Whether to discard local SSDs from the instance during restart default value is false.",
+  ).optional(),
+  minimalAction: z.string().describe(
+    "Specifies the action to take when updating an instance even if the updated properties do not require it. If not specified, then Compute Engine acts based on the minimum action that the updated properties require.",
+  ).optional(),
+  mostDisruptiveAllowedAction: z.string().describe(
+    "Specifies the most disruptive action that can be taken on the instance as part of the update. Compute Engine returns an error if the instance properties require a more disruptive action as part of the instance update. Valid options from lowest to highest are NO_EFFECT, REFRESH, and RESTART.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -2084,7 +2102,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine Instances. Registered at `@swamp/gcp/compute/instances`. */
 export const model = {
   type: "@swamp/gcp/compute/instances",
-  version: "2026.09.06.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -2317,6 +2335,12 @@ export const model = {
     {
       toVersion: "2026.09.06.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description:
+        "Added: discardLocalSsd, minimalAction, mostDisruptiveAllowedAction",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -2634,6 +2658,25 @@ export const model = {
         if (g["workloadIdentityConfig"] !== undefined) {
           body["workloadIdentityConfig"] = g["workloadIdentityConfig"];
         }
+        if (g["discardLocalSsd"] !== undefined) {
+          params["discardLocalSsd"] = String(g["discardLocalSsd"]);
+        } else if (existing["discardLocalSsd"] !== undefined) {
+          params["discardLocalSsd"] = String(existing["discardLocalSsd"]);
+        }
+        if (g["minimalAction"] !== undefined) {
+          params["minimalAction"] = String(g["minimalAction"]);
+        } else if (existing["minimalAction"] !== undefined) {
+          params["minimalAction"] = String(existing["minimalAction"]);
+        }
+        if (g["mostDisruptiveAllowedAction"] !== undefined) {
+          params["mostDisruptiveAllowedAction"] = String(
+            g["mostDisruptiveAllowedAction"],
+          );
+        } else if (existing["mostDisruptiveAllowedAction"] !== undefined) {
+          params["mostDisruptiveAllowedAction"] = String(
+            existing["mostDisruptiveAllowedAction"],
+          );
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -2839,6 +2882,7 @@ export const model = {
         securityPolicy: z.any().optional(),
         setPublicPtr: z.any().optional(),
         type: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2864,6 +2908,9 @@ export const model = {
           g["instance"]?.toString() ?? "";
         params["networkInterface"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["externalIpv6"] !== undefined) {
           body["externalIpv6"] = args["externalIpv6"];
@@ -2943,6 +2990,7 @@ export const model = {
         stackType: z.any().optional(),
         subnetwork: z.any().optional(),
         vlan: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2966,6 +3014,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["accessConfigs"] !== undefined) {
           body["accessConfigs"] = args["accessConfigs"];
@@ -3052,6 +3103,7 @@ export const model = {
       description: "add resource policies",
       arguments: z.object({
         resourcePolicies: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3075,6 +3127,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["resourcePolicies"] !== undefined) {
           body["resourcePolicies"] = args["resourcePolicies"];
@@ -3113,7 +3168,6 @@ export const model = {
         deviceName: z.any().optional(),
         diskEncryptionKey: z.any().optional(),
         diskSizeGb: z.any().optional(),
-        forceAttach: z.any().optional(),
         guestOsFeatures: z.any().optional(),
         index: z.any().optional(),
         initializeParams: z.any().optional(),
@@ -3125,6 +3179,8 @@ export const model = {
         shieldedInstanceInitialState: z.any().optional(),
         source: z.any().optional(),
         type: z.any().optional(),
+        forceAttach: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3148,6 +3204,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["forceAttach"] !== undefined) {
+          params["forceAttach"] = String(args["forceAttach"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["architecture"] !== undefined) {
           body["architecture"] = args["architecture"];
@@ -3164,9 +3226,6 @@ export const model = {
         }
         if (args["diskSizeGb"] !== undefined) {
           body["diskSizeGb"] = args["diskSizeGb"];
-        }
-        if (args["forceAttach"] !== undefined) {
-          body["forceAttach"] = args["forceAttach"];
         }
         if (args["guestOsFeatures"] !== undefined) {
           body["guestOsFeatures"] = args["guestOsFeatures"];
@@ -3227,6 +3286,7 @@ export const model = {
         namePattern: z.any().optional(),
         perInstanceProperties: z.any().optional(),
         sourceInstanceTemplate: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3236,6 +3296,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["zone"] !== undefined) params["zone"] = String(g["zone"]);
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["count"] !== undefined) body["count"] = args["count"];
         if (args["instanceFlexibilityPolicy"] !== undefined) {
@@ -3282,8 +3345,10 @@ export const model = {
     },
     detach_disk: {
       description: "detach disk",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3307,6 +3372,9 @@ export const model = {
           g["instance"]?.toString() ?? "";
         params["deviceName"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3392,8 +3460,11 @@ export const model = {
     },
     get_guest_attributes: {
       description: "get guest attributes",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        queryPath: z.any().optional(),
+        variableKey: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3415,6 +3486,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["queryPath"] !== undefined) {
+          params["queryPath"] = String(args["queryPath"]);
+        }
+        if (args["variableKey"] !== undefined) {
+          params["variableKey"] = String(args["variableKey"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3443,8 +3520,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        optionsRequestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3466,6 +3545,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3542,8 +3626,11 @@ export const model = {
     },
     get_serial_port_output: {
       description: "get serial port output",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        port: z.any().optional(),
+        start: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3565,6 +3652,10 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["port"] !== undefined) params["port"] = String(args["port"]);
+        if (args["start"] !== undefined) {
+          params["start"] = String(args["start"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3642,8 +3733,14 @@ export const model = {
     },
     list_referrers: {
       description: "list referrers",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3665,6 +3762,21 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3696,8 +3808,10 @@ export const model = {
     },
     perform_maintenance: {
       description: "perform maintenance",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3719,6 +3833,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3749,6 +3866,7 @@ export const model = {
       arguments: z.object({
         disruptionSchedule: z.any().optional(),
         faultReasons: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3772,6 +3890,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["disruptionSchedule"] !== undefined) {
           body["disruptionSchedule"] = args["disruptionSchedule"];
@@ -3806,8 +3927,10 @@ export const model = {
     },
     reset: {
       description: "reset",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3829,6 +3952,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3856,8 +3982,10 @@ export const model = {
     },
     resume: {
       description: "resume",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3879,6 +4007,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3955,8 +4086,11 @@ export const model = {
     },
     set_deletion_protection: {
       description: "set deletion protection",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        deletionProtection: z.any().optional(),
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3978,6 +4112,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["deletionProtection"] !== undefined) {
+          params["deletionProtection"] = String(args["deletionProtection"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4006,8 +4146,10 @@ export const model = {
     },
     set_disk_auto_delete: {
       description: "set disk auto delete",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4033,6 +4175,9 @@ export const model = {
           g["autoDelete"]?.toString() ?? "";
         params["deviceName"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4128,6 +4273,7 @@ export const model = {
       arguments: z.object({
         labelFingerprint: z.any().optional(),
         labels: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4151,6 +4297,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["labelFingerprint"] !== undefined) {
           body["labelFingerprint"] = args["labelFingerprint"];
@@ -4185,6 +4334,7 @@ export const model = {
       description: "set machine resources",
       arguments: z.object({
         guestAccelerators: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4208,6 +4358,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["guestAccelerators"] !== undefined) {
           body["guestAccelerators"] = args["guestAccelerators"];
@@ -4241,6 +4394,7 @@ export const model = {
       description: "set machine type",
       arguments: z.object({
         machineType: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4264,6 +4418,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["machineType"] !== undefined) {
           body["machineType"] = args["machineType"];
@@ -4299,6 +4456,7 @@ export const model = {
         fingerprint: z.any().optional(),
         items: z.any().optional(),
         kind: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4322,6 +4480,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["fingerprint"] !== undefined) {
           body["fingerprint"] = args["fingerprint"];
@@ -4357,6 +4518,7 @@ export const model = {
       description: "set min cpu platform",
       arguments: z.object({
         minCpuPlatform: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4380,6 +4542,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["minCpuPlatform"] !== undefined) {
           body["minCpuPlatform"] = args["minCpuPlatform"];
@@ -4414,6 +4579,7 @@ export const model = {
       arguments: z.object({
         currentName: z.any().optional(),
         name: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4437,6 +4603,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["currentName"] !== undefined) {
           body["currentName"] = args["currentName"];
@@ -4488,6 +4657,7 @@ export const model = {
         provisioningModel: z.any().optional(),
         skipGuestOsShutdown: z.any().optional(),
         terminationTime: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4511,6 +4681,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["automaticRestart"] !== undefined) {
           body["automaticRestart"] = args["automaticRestart"];
@@ -4596,6 +4769,7 @@ export const model = {
       arguments: z.object({
         networkInterfaces: z.any().optional(),
         securityPolicy: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4619,6 +4793,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["networkInterfaces"] !== undefined) {
           body["networkInterfaces"] = args["networkInterfaces"];
@@ -4656,6 +4833,7 @@ export const model = {
       arguments: z.object({
         email: z.any().optional(),
         scopes: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4679,6 +4857,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["email"] !== undefined) body["email"] = args["email"];
         if (args["scopes"] !== undefined) body["scopes"] = args["scopes"];
@@ -4711,6 +4892,7 @@ export const model = {
       description: "set shielded instance integrity policy",
       arguments: z.object({
         updateAutoLearnPolicy: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4734,6 +4916,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["updateAutoLearnPolicy"] !== undefined) {
           body["updateAutoLearnPolicy"] = args["updateAutoLearnPolicy"];
@@ -4768,6 +4953,7 @@ export const model = {
       arguments: z.object({
         fingerprint: z.any().optional(),
         items: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4791,6 +4977,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["fingerprint"] !== undefined) {
           body["fingerprint"] = args["fingerprint"];
@@ -4823,8 +5012,11 @@ export const model = {
     },
     simulate_maintenance_event: {
       description: "simulate maintenance event",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+        withExtendedNotifications: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4846,6 +5038,14 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
+        if (args["withExtendedNotifications"] !== undefined) {
+          params["withExtendedNotifications"] = String(
+            args["withExtendedNotifications"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4874,8 +5074,10 @@ export const model = {
     },
     start: {
       description: "start",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4897,6 +5099,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4926,6 +5131,7 @@ export const model = {
       description: "start with encryption key",
       arguments: z.object({
         disks: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4949,6 +5155,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["disks"] !== undefined) body["disks"] = args["disks"];
         const result = await createResource(
@@ -4978,8 +5187,12 @@ export const model = {
     },
     stop: {
       description: "stop",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        discardLocalSsd: z.any().optional(),
+        noGracefulShutdown: z.any().optional(),
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -5001,6 +5214,15 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["discardLocalSsd"] !== undefined) {
+          params["discardLocalSsd"] = String(args["discardLocalSsd"]);
+        }
+        if (args["noGracefulShutdown"] !== undefined) {
+          params["noGracefulShutdown"] = String(args["noGracefulShutdown"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -5029,8 +5251,11 @@ export const model = {
     },
     suspend: {
       description: "suspend",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        discardLocalSsd: z.any().optional(),
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -5052,6 +5277,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["discardLocalSsd"] !== undefined) {
+          params["discardLocalSsd"] = String(args["discardLocalSsd"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -5146,6 +5377,7 @@ export const model = {
         securityPolicy: z.any().optional(),
         setPublicPtr: z.any().optional(),
         type: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -5171,6 +5403,9 @@ export const model = {
           g["instance"]?.toString() ?? "";
         params["networkInterface"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["externalIpv6"] !== undefined) {
           body["externalIpv6"] = args["externalIpv6"];
@@ -5229,6 +5464,7 @@ export const model = {
       description: "update display device",
       arguments: z.object({
         enableDisplay: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -5252,6 +5488,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["enableDisplay"] !== undefined) {
           body["enableDisplay"] = args["enableDisplay"];
@@ -5306,6 +5545,7 @@ export const model = {
         stackType: z.any().optional(),
         subnetwork: z.any().optional(),
         vlan: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -5331,6 +5571,9 @@ export const model = {
           g["instance"]?.toString() ?? "";
         params["networkInterface"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["accessConfigs"] !== undefined) {
           body["accessConfigs"] = args["accessConfigs"];
@@ -5425,6 +5668,7 @@ export const model = {
         enableIntegrityMonitoring: z.any().optional(),
         enableSecureBoot: z.any().optional(),
         enableVtpm: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -5448,6 +5692,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["enableIntegrityMonitoring"] !== undefined) {
           body["enableIntegrityMonitoring"] = args["enableIntegrityMonitoring"];

@@ -144,6 +144,9 @@ const GlobalArgsSchema = z.object({
   reservedPeeringRanges: z.array(z.string()).describe(
     "The name of one or more allocated IP address ranges for this service producer of type `PEERING`. Note that invoking CreateConnection method with a different range when connection is already established will not modify already provisioned service producer subnetworks. If CreateConnection method is invoked repeatedly to reconnect when peering connection had been disconnected on the consumer side, leaving this field empty will restore previously allocated IP ranges.",
   ).optional(),
+  force: z.string().describe(
+    "If a previously defined allocated range is removed, force flag must be set to true.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -171,6 +174,9 @@ const InputsSchema = z.object({
   ).optional(),
   reservedPeeringRanges: z.array(z.string()).describe(
     "The name of one or more allocated IP address ranges for this service producer of type `PEERING`. Note that invoking CreateConnection method with a different range when connection is already established will not modify already provisioned service producer subnetworks. If CreateConnection method is invoked repeatedly to reconnect when peering connection had been disconnected on the consumer side, leaving this field empty will restore previously allocated IP ranges.",
+  ).optional(),
+  force: z.string().describe(
+    "If a previously defined allocated range is removed, force flag must be set to true.",
   ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
@@ -203,7 +209,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Service Networking Services.Connections. Registered at `@swamp/gcp/servicenetworking/services-connections`. */
 export const model = {
   type: "@swamp/gcp/servicenetworking/services-connections",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -325,6 +331,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: force",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -444,6 +455,10 @@ export const model = {
         if (g["network"] !== undefined) body["network"] = g["network"];
         if (g["reservedPeeringRanges"] !== undefined) {
           body["reservedPeeringRanges"] = g["reservedPeeringRanges"];
+        }
+        if (g["force"] !== undefined) params["force"] = String(g["force"]);
+        else if (existing["force"] !== undefined) {
+          params["force"] = String(existing["force"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

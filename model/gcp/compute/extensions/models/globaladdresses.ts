@@ -339,7 +339,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine GlobalAddresses. Registered at `@swamp/gcp/compute/globaladdresses`. */
 export const model = {
   type: "@swamp/gcp/compute/globaladdresses",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -493,6 +493,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -771,6 +776,7 @@ export const model = {
       arguments: z.object({
         description: z.any().optional(),
         destinationAddress: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -781,6 +787,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["address"] !== undefined) {
           params["address"] = String(g["address"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
         }
         const body: Record<string, unknown> = {};
         if (args["description"] !== undefined) {

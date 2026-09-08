@@ -1009,7 +1009,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine NetworkFirewallPolicies. Registered at `@swamp/gcp/compute/networkfirewallpolicies`. */
 export const model = {
   type: "@swamp/gcp/compute/networkfirewallpolicies",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1198,6 +1198,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1543,6 +1548,8 @@ export const model = {
         firewallPolicyId: z.any().optional(),
         name: z.any().optional(),
         shortName: z.any().optional(),
+        replaceExistingAssociation: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1565,6 +1572,14 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["replaceExistingAssociation"] !== undefined) {
+          params["replaceExistingAssociation"] = String(
+            args["replaceExistingAssociation"],
+          );
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["attachmentTarget"] !== undefined) {
           body["attachmentTarget"] = args["attachmentTarget"];
@@ -1624,6 +1639,9 @@ export const model = {
         targetServiceAccounts: z.any().optional(),
         targetType: z.any().optional(),
         tlsInspect: z.any().optional(),
+        maxPriority: z.any().optional(),
+        minPriority: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1646,6 +1664,15 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["maxPriority"] !== undefined) {
+          params["maxPriority"] = String(args["maxPriority"]);
+        }
+        if (args["minPriority"] !== undefined) {
+          params["minPriority"] = String(args["minPriority"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["action"] !== undefined) body["action"] = args["action"];
         if (args["description"] !== undefined) {
@@ -1732,6 +1759,9 @@ export const model = {
         targetServiceAccounts: z.any().optional(),
         targetType: z.any().optional(),
         tlsInspect: z.any().optional(),
+        maxPriority: z.any().optional(),
+        minPriority: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1754,6 +1784,15 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["maxPriority"] !== undefined) {
+          params["maxPriority"] = String(args["maxPriority"]);
+        }
+        if (args["minPriority"] !== undefined) {
+          params["minPriority"] = String(args["minPriority"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["action"] !== undefined) body["action"] = args["action"];
         if (args["description"] !== undefined) {
@@ -1822,8 +1861,11 @@ export const model = {
     },
     clone_rules: {
       description: "clone rules",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+        sourceFirewallPolicy: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1844,6 +1886,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
+        if (args["sourceFirewallPolicy"] !== undefined) {
+          params["sourceFirewallPolicy"] = String(args["sourceFirewallPolicy"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1871,8 +1919,10 @@ export const model = {
     },
     get_association: {
       description: "get association",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        name: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1893,6 +1943,7 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["name"] !== undefined) params["name"] = String(args["name"]);
         const result = await createResource(
           baseUrl,
           {
@@ -1919,8 +1970,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        optionsRequestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1941,6 +1994,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1967,8 +2025,10 @@ export const model = {
     },
     get_packet_mirroring_rule: {
       description: "get packet mirroring rule",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        priority: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1989,6 +2049,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["priority"] !== undefined) {
+          params["priority"] = String(args["priority"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2015,8 +2078,10 @@ export const model = {
     },
     get_rule: {
       description: "get rule",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        priority: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2037,6 +2102,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["priority"] !== undefined) {
+          params["priority"] = String(args["priority"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2071,7 +2139,6 @@ export const model = {
         enableLogging: z.any().optional(),
         kind: z.any().optional(),
         match: z.any().optional(),
-        priority: z.any().optional(),
         ruleName: z.any().optional(),
         ruleTupleCount: z.any().optional(),
         securityProfileGroup: z.any().optional(),
@@ -2081,6 +2148,8 @@ export const model = {
         targetServiceAccounts: z.any().optional(),
         targetType: z.any().optional(),
         tlsInspect: z.any().optional(),
+        priority: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2103,6 +2172,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["priority"] !== undefined) {
+          params["priority"] = String(args["priority"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["action"] !== undefined) body["action"] = args["action"];
         if (args["description"] !== undefined) {
@@ -2117,7 +2192,6 @@ export const model = {
         }
         if (args["kind"] !== undefined) body["kind"] = args["kind"];
         if (args["match"] !== undefined) body["match"] = args["match"];
-        if (args["priority"] !== undefined) body["priority"] = args["priority"];
         if (args["ruleName"] !== undefined) body["ruleName"] = args["ruleName"];
         if (args["ruleTupleCount"] !== undefined) {
           body["ruleTupleCount"] = args["ruleTupleCount"];
@@ -2178,7 +2252,6 @@ export const model = {
         enableLogging: z.any().optional(),
         kind: z.any().optional(),
         match: z.any().optional(),
-        priority: z.any().optional(),
         ruleName: z.any().optional(),
         ruleTupleCount: z.any().optional(),
         securityProfileGroup: z.any().optional(),
@@ -2188,6 +2261,8 @@ export const model = {
         targetServiceAccounts: z.any().optional(),
         targetType: z.any().optional(),
         tlsInspect: z.any().optional(),
+        priority: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2210,6 +2285,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["firewallPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["priority"] !== undefined) {
+          params["priority"] = String(args["priority"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["action"] !== undefined) body["action"] = args["action"];
         if (args["description"] !== undefined) {
@@ -2224,7 +2305,6 @@ export const model = {
         }
         if (args["kind"] !== undefined) body["kind"] = args["kind"];
         if (args["match"] !== undefined) body["match"] = args["match"];
-        if (args["priority"] !== undefined) body["priority"] = args["priority"];
         if (args["ruleName"] !== undefined) body["ruleName"] = args["ruleName"];
         if (args["ruleTupleCount"] !== undefined) {
           body["ruleTupleCount"] = args["ruleTupleCount"];

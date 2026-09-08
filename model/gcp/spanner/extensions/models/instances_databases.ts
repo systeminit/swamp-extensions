@@ -469,7 +469,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Spanner Instances.Databases. Registered at `@swamp/gcp/spanner/instances-databases`. */
 export const model = {
   type: "@swamp/gcp/spanner/instances-databases",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -603,6 +603,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1187,8 +1192,12 @@ export const model = {
     },
     get_scans: {
       description: "get scans",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        endTime: z.any().optional(),
+        startTime: z.any().optional(),
+        view: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1201,6 +1210,13 @@ export const model = {
             String(g["name"]),
           );
         }
+        if (args["endTime"] !== undefined) {
+          params["endTime"] = String(args["endTime"]);
+        }
+        if (args["startTime"] !== undefined) {
+          params["startTime"] = String(args["startTime"]);
+        }
+        if (args["view"] !== undefined) params["view"] = String(args["view"]);
         const result = await createResource(
           baseUrl,
           {

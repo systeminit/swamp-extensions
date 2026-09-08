@@ -197,6 +197,9 @@ const GlobalArgsSchema = z.object({
     "WEB_TAG_TYPE_DYNAMIC",
   ]).describe("Required. The web tag type enabled for the Floodlight group.")
     .optional(),
+  partnerId: z.string().describe(
+    "Required. The partner context by which the Floodlight group is being accessed.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -315,6 +318,9 @@ const InputsSchema = z.object({
     "WEB_TAG_TYPE_DYNAMIC",
   ]).describe("Required. The web tag type enabled for the Floodlight group.")
     .optional(),
+  partnerId: z.string().describe(
+    "Required. The partner context by which the Floodlight group is being accessed.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -343,7 +349,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Display & Video 360 FloodlightGroups. Registered at `@swamp/gcp/displayvideo/floodlightgroups`. */
 export const model = {
   type: "@swamp/gcp/displayvideo/floodlightgroups",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -465,6 +471,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: partnerId",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -556,6 +567,11 @@ export const model = {
         }
         if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["webTagType"] !== undefined) body["webTagType"] = g["webTagType"];
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        } else if (existing["partnerId"] !== undefined) {
+          params["partnerId"] = String(existing["partnerId"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

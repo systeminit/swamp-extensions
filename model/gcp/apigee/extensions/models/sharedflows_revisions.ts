@@ -146,7 +146,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Apigee Sharedflows.Revisions. Registered at `@swamp/gcp/apigee/sharedflows-revisions`. */
 export const model = {
   type: "@swamp/gcp/apigee/sharedflows-revisions",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -255,6 +255,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -402,6 +407,7 @@ export const model = {
         contentType: z.any().optional(),
         data: z.any().optional(),
         extensions: z.any().optional(),
+        validate: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -411,6 +417,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["validate"] !== undefined) {
+          params["validate"] = String(args["validate"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["contentType"] !== undefined) {
           body["contentType"] = args["contentType"];

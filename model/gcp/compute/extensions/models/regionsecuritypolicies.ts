@@ -1110,7 +1110,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine RegionSecurityPolicies. Registered at `@swamp/gcp/compute/regionsecuritypolicies`. */
 export const model = {
   type: "@swamp/gcp/compute/regionsecuritypolicies",
-  version: "2026.08.16.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1264,6 +1264,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.16.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1668,6 +1673,7 @@ export const model = {
         priority: z.any().optional(),
         rateLimitOptions: z.any().optional(),
         redirectOptions: z.any().optional(),
+        validateOnly: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1691,6 +1697,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["validateOnly"] !== undefined) {
+          params["validateOnly"] = String(args["validateOnly"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["action"] !== undefined) body["action"] = args["action"];
         if (args["description"] !== undefined) {
@@ -1742,8 +1751,10 @@ export const model = {
     },
     get_rule: {
       description: "get rule",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        priority: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1765,6 +1776,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["priority"] !== undefined) {
+          params["priority"] = String(args["priority"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1801,9 +1815,11 @@ export const model = {
         networkMatch: z.any().optional(),
         preconfiguredWafConfig: z.any().optional(),
         preview: z.any().optional(),
-        priority: z.any().optional(),
         rateLimitOptions: z.any().optional(),
         redirectOptions: z.any().optional(),
+        priority: z.any().optional(),
+        updateMask: z.any().optional(),
+        validateOnly: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1827,6 +1843,15 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["priority"] !== undefined) {
+          params["priority"] = String(args["priority"]);
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
+        if (args["validateOnly"] !== undefined) {
+          params["validateOnly"] = String(args["validateOnly"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["action"] !== undefined) body["action"] = args["action"];
         if (args["description"] !== undefined) {
@@ -1844,7 +1869,6 @@ export const model = {
           body["preconfiguredWafConfig"] = args["preconfiguredWafConfig"];
         }
         if (args["preview"] !== undefined) body["preview"] = args["preview"];
-        if (args["priority"] !== undefined) body["priority"] = args["priority"];
         if (args["rateLimitOptions"] !== undefined) {
           body["rateLimitOptions"] = args["rateLimitOptions"];
         }
@@ -1883,6 +1907,7 @@ export const model = {
       arguments: z.object({
         labelFingerprint: z.any().optional(),
         labels: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1906,6 +1931,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["labelFingerprint"] !== undefined) {
           body["labelFingerprint"] = args["labelFingerprint"];

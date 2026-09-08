@@ -982,7 +982,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud GKE On-Prem VmwareClusters. Registered at `@swamp/gcp/gkeonprem/vmwareclusters`. */
 export const model = {
   type: "@swamp/gcp/gkeonprem/vmwareclusters",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1126,6 +1126,86 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: aagConfigDisabled, adminUsers, username, enabled, evaluationMode, autoResizeConfig, enabled, cpus, memory, replicas, vsphereConfig, datastore, storagePolicyName, advancedNetworking, dataplaneV2Enabled, forwardMode, windowsDataplaneV2Enabled, f5Config, address, partition, snatPool, manualLbConfig, controlPlaneNodePort, ingressHttpNodePort, ingressHttpsNodePort, konnectivityServerNodePort, metalLbConfig, addressPools, addresses, avoidBuggyIps, manualAssign, pool, seesawConfig, enableHa, group, ipBlocks, gateway, ips, netmask, masterIp, stackdriverName, vms, vipConfig, controlPlaneVip, ingressVip, controlPlaneV2Config, controlPlaneIpBlock, gateway, ips, hostname, ip, netmask, dhcpIpConfig, enabled, hostConfig, dnsSearchDomains, dnsServers, ntpServers, podAddressCidrBlocks, serviceAddressCidrBlocks, staticIpConfig, ipBlocks, gateway, ips, netmask, vcenterNetwork, vsphereCsiDisabled, controlPlaneOnly, address, caCertData, cluster, datacenter, datastore, folder, resourcePool, storagePolicyName",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          aagConfigDisabled: _aagConfigDisabled,
+          adminUsers: _adminUsers,
+          username: _username,
+          enabled: _enabled,
+          evaluationMode: _evaluationMode,
+          autoResizeConfig: _autoResizeConfig,
+          cpus: _cpus,
+          memory: _memory,
+          replicas: _replicas,
+          vsphereConfig: _vsphereConfig,
+          datastore: _datastore,
+          storagePolicyName: _storagePolicyName,
+          advancedNetworking: _advancedNetworking,
+          dataplaneV2Enabled: _dataplaneV2Enabled,
+          forwardMode: _forwardMode,
+          windowsDataplaneV2Enabled: _windowsDataplaneV2Enabled,
+          f5Config: _f5Config,
+          address: _address,
+          partition: _partition,
+          snatPool: _snatPool,
+          manualLbConfig: _manualLbConfig,
+          controlPlaneNodePort: _controlPlaneNodePort,
+          ingressHttpNodePort: _ingressHttpNodePort,
+          ingressHttpsNodePort: _ingressHttpsNodePort,
+          konnectivityServerNodePort: _konnectivityServerNodePort,
+          metalLbConfig: _metalLbConfig,
+          addressPools: _addressPools,
+          addresses: _addresses,
+          avoidBuggyIps: _avoidBuggyIps,
+          manualAssign: _manualAssign,
+          pool: _pool,
+          seesawConfig: _seesawConfig,
+          enableHa: _enableHa,
+          group: _group,
+          ipBlocks: _ipBlocks,
+          gateway: _gateway,
+          ips: _ips,
+          netmask: _netmask,
+          masterIp: _masterIp,
+          stackdriverName: _stackdriverName,
+          vms: _vms,
+          vipConfig: _vipConfig,
+          controlPlaneVip: _controlPlaneVip,
+          ingressVip: _ingressVip,
+          controlPlaneV2Config: _controlPlaneV2Config,
+          controlPlaneIpBlock: _controlPlaneIpBlock,
+          hostname: _hostname,
+          ip: _ip,
+          dhcpIpConfig: _dhcpIpConfig,
+          hostConfig: _hostConfig,
+          dnsSearchDomains: _dnsSearchDomains,
+          dnsServers: _dnsServers,
+          ntpServers: _ntpServers,
+          podAddressCidrBlocks: _podAddressCidrBlocks,
+          serviceAddressCidrBlocks: _serviceAddressCidrBlocks,
+          staticIpConfig: _staticIpConfig,
+          vcenterNetwork: _vcenterNetwork,
+          vsphereCsiDisabled: _vsphereCsiDisabled,
+          controlPlaneOnly: _controlPlaneOnly,
+          caCertData: _caCertData,
+          cluster: _cluster,
+          datacenter: _datacenter,
+          folder: _folder,
+          resourcePool: _resourcePool,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1649,8 +1729,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1671,6 +1753,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1695,8 +1782,12 @@ export const model = {
     },
     query_version_config: {
       description: "query version config",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        createConfig_adminClusterMembership: z.any().optional(),
+        createConfig_adminClusterName: z.any().optional(),
+        upgradeConfig_clusterName: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1706,6 +1797,21 @@ export const model = {
         params["parent"] = `projects/${projectId}/locations/${
           String(g["location"] ?? "")
         }`;
+        if (args["createConfig_adminClusterMembership"] !== undefined) {
+          params["createConfig.adminClusterMembership"] = String(
+            args["createConfig_adminClusterMembership"],
+          );
+        }
+        if (args["createConfig_adminClusterName"] !== undefined) {
+          params["createConfig.adminClusterName"] = String(
+            args["createConfig_adminClusterName"],
+          );
+        }
+        if (args["upgradeConfig_clusterName"] !== undefined) {
+          params["upgradeConfig.clusterName"] = String(
+            args["upgradeConfig_clusterName"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1834,8 +1940,13 @@ export const model = {
     },
     unenroll: {
       description: "unenroll",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        allowMissing: z.any().optional(),
+        etag: z.any().optional(),
+        force: z.any().optional(),
+        validateOnly: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1847,6 +1958,16 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(args["allowMissing"]);
+        }
+        if (args["etag"] !== undefined) params["etag"] = String(args["etag"]);
+        if (args["force"] !== undefined) {
+          params["force"] = String(args["force"]);
+        }
+        if (args["validateOnly"] !== undefined) {
+          params["validateOnly"] = String(args["validateOnly"]);
         }
         const result = await createResource(
           baseUrl,

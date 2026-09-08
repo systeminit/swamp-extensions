@@ -123,6 +123,7 @@ const GlobalArgsSchema = z.object({
   profileId: z.string().describe(
     "User profile ID associated with this request.",
   ),
+  id: z.string().describe("Required. RemarketingList ID.").optional(),
 });
 
 const StateSchema = z.object({
@@ -157,6 +158,7 @@ const InputsSchema = z.object({
   profileId: z.string().describe(
     "User profile ID associated with this request.",
   ).optional(),
+  id: z.string().describe("Required. RemarketingList ID.").optional(),
 });
 
 const _credentialKeys = new Set([
@@ -185,7 +187,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Campaign Manager 360 RemarketingListShares. Registered at `@swamp/gcp/dfareporting/remarketinglistshares`. */
 export const model = {
   type: "@swamp/gcp/dfareporting/remarketinglistshares",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -302,6 +304,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: id",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -393,6 +400,7 @@ export const model = {
         if (g["sharedAdvertiserIds"] !== undefined) {
           body["sharedAdvertiserIds"] = g["sharedAdvertiserIds"];
         }
+        if (g["id"] !== undefined) body["id"] = g["id"];
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

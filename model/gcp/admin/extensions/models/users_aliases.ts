@@ -174,7 +174,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Admin SDK Users.Aliases. Registered at `@swamp/gcp/admin/users-aliases`. */
 export const model = {
   type: "@swamp/gcp/admin/users-aliases",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -183,6 +183,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -390,6 +395,7 @@ export const model = {
         resourceUri: z.any().optional(),
         token: z.any().optional(),
         type: z.any().optional(),
+        event: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -400,6 +406,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["userKey"] !== undefined) {
           params["userKey"] = String(g["userKey"]);
+        }
+        if (args["event"] !== undefined) {
+          params["event"] = String(args["event"]);
         }
         const body: Record<string, unknown> = {};
         if (args["address"] !== undefined) body["address"] = args["address"];

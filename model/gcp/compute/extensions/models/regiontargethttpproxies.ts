@@ -281,7 +281,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine RegionTargetHttpProxies. Registered at `@swamp/gcp/compute/regiontargethttpproxies`. */
 export const model = {
   type: "@swamp/gcp/compute/regiontargethttpproxies",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -400,6 +400,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -678,6 +683,7 @@ export const model = {
       description: "set url map",
       arguments: z.object({
         urlMap: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -701,6 +707,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["targetHttpProxy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["urlMap"] !== undefined) body["urlMap"] = args["urlMap"];
         const result = await createResource(

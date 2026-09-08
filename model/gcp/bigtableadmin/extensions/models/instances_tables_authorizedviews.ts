@@ -199,6 +199,9 @@ const GlobalArgsSchema = z.object({
   authorizedViewId: z.string().describe(
     "Required. The id of the AuthorizedView to create. This AuthorizedView must not already exist. The `authorized_view_id` appended to `parent` forms the full AuthorizedView name of the form `projects/{project}/instances/{instance}/tables/{table}/authorizedView/{authorized_view}`.",
   ).optional(),
+  ignoreWarnings: z.string().describe(
+    "Optional. If true, ignore the safety checks when updating the AuthorizedView.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -255,6 +258,9 @@ const InputsSchema = z.object({
   authorizedViewId: z.string().describe(
     "Required. The id of the AuthorizedView to create. This AuthorizedView must not already exist. The `authorized_view_id` appended to `parent` forms the full AuthorizedView name of the form `projects/{project}/instances/{instance}/tables/{table}/authorizedView/{authorized_view}`.",
   ).optional(),
+  ignoreWarnings: z.string().describe(
+    "Optional. If true, ignore the safety checks when updating the AuthorizedView.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -289,7 +295,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Bigtable Admin Instances.Tables.AuthorizedViews. Registered at `@swamp/gcp/bigtableadmin/instances-tables-authorizedviews`. */
 export const model = {
   type: "@swamp/gcp/bigtableadmin/instances-tables-authorizedviews",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -419,6 +425,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: ignoreWarnings",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -565,6 +576,11 @@ export const model = {
           body["deletionProtection"] = g["deletionProtection"];
         }
         if (g["subsetView"] !== undefined) body["subsetView"] = g["subsetView"];
+        if (g["ignoreWarnings"] !== undefined) {
+          params["ignoreWarnings"] = String(g["ignoreWarnings"]);
+        } else if (existing["ignoreWarnings"] !== undefined) {
+          params["ignoreWarnings"] = String(existing["ignoreWarnings"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

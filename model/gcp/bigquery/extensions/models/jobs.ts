@@ -2604,7 +2604,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud BigQuery Jobs. Registered at `@swamp/gcp/bigquery/jobs`. */
 export const model = {
   type: "@swamp/gcp/bigquery/jobs",
-  version: "2026.08.25.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2783,6 +2783,179 @@ export const model = {
       toVersion: "2026.08.25.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: copy, createDisposition, destinationEncryptionConfiguration, kmsKeyName, destinationExpirationTime, destinationTable, datasetId, projectId, tableId, operationType, sourceTable, datasetId, projectId, tableId, sourceTables, datasetId, projectId, tableId, writeDisposition, dryRun, extract, compression, destinationFormat, destinationUri, destinationUris, fieldDelimiter, modelExtractOptions, trialId, printHeader, sourceModel, datasetId, modelId, projectId, sourceTable, datasetId, projectId, tableId, useAvroLogicalTypes, jobTimeoutMs, jobType, labels, load, allowJaggedRows, allowQuotedNewlines, autodetect, clustering, fields, columnNameCharacterMap, connectionProperties, key, value, copyFilesOnly, createDisposition, createSession, dateFormat, datetimeFormat, decimalTargetTypes, destinationEncryptionConfiguration, kmsKeyName, destinationTable, datasetId, projectId, tableId, destinationTableProperties, description, expirationTime, friendlyName, labels, encoding, fieldDelimiter, fileSetSpecType, hivePartitioningOptions, fields, mode, requirePartitionFilter, sourceUriPrefix, ignoreUnknownValues, jsonExtension, maxBadRecords, nullMarker, nullMarkers, parquetOptions, enableListInference, enumAsString, mapTargetType, preserveAsciiControlCharacters, projectionFields, quote, rangePartitioning, field, range, end, interval, start, referenceFileSchemaUri, schema, fields, categories, collation, dataGovernanceTagsInfo, dataPolicies, dataPolicyList, defaultValueExpression, description, fields, foreignTypeDefinition, generatedColumn, maxLength, mode, policyTags, precision, rangeElementType, roundingMode, scale, timestampPrecision, type, foreignTypeInfo, typeSystem, schemaInline, schemaInlineFormat, schemaUpdateOptions, skipLeadingRows, sourceColumnMatch, sourceFormat, sourceUris, timeFormat, timePartitioning, expirationMs, field, requirePartitionFilter, type, timeZone, timestampFormat, timestampTargetPrecision, useAvroLogicalTypes, writeDisposition, maxSlots, query, allowLargeResults, clustering, fields, connectionProperties, key, value, continuous, createDisposition, createSession, defaultDataset, datasetId, projectId, destinationEncryptionConfiguration, kmsKeyName, destinationTable, datasetId, projectId, tableId, flattenResults, maximumBillingTier, maximumBytesBilled, parameterMode, preserveNulls, priority, query, queryParameters, parameterType, arrayType, rangeElementType, structTypes, timestampPrecision, type, parameterValue, arrayValues, rangeValue, structValues, value, rangePartitioning, field, range, end, interval, start, schemaUpdateOptions, scriptOptions, keyResultStatement, statementByteBudget, statementTimeoutMs, systemVariables, types, arrayElementType, rangeElementType, structType, typeKind, values, tableDefinitions, autodetect, avroOptions, useAvroLogicalTypes, bigtableOptions, columnFamilies, ignoreUnspecifiedColumnFamilies, outputColumnFamiliesAsJson, readRowkeyAsString, compression, connectionId, csvOptions, allowJaggedRows, allowQuotedNewlines, encoding, fieldDelimiter, nullMarker, nullMarkers, preserveAsciiControlCharacters, quote, skipLeadingRows, sourceColumnMatch, dateFormat, datetimeFormat, decimalTargetTypes, fileSetSpecType, googleSheetsOptions, range, skipLeadingRows, hivePartitioningOptions, fields, mode, requirePartitionFilter, sourceUriPrefix, ignoreUnknownValues, jsonExtension, jsonOptions, encoding, maxBadRecords, metadataCacheMode, objectMetadata, parquetOptions, enableListInference, enumAsString, mapTargetType, referenceFileSchemaUri, schema, fields, foreignTypeInfo, sourceFormat, sourceUris, timeFormat, timeZone, timestampFormat, timestampTargetPrecision, timePartitioning, expirationMs, field, requirePartitionFilter, type, useLegacySql, useQueryCache, userDefinedFunctionResources, inlineCode, resourceUri, writeDisposition, writeIncrementalResults, reservation, jobId, location, projectId",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          copy: _copy,
+          createDisposition: _createDisposition,
+          destinationEncryptionConfiguration:
+            _destinationEncryptionConfiguration,
+          kmsKeyName: _kmsKeyName,
+          destinationExpirationTime: _destinationExpirationTime,
+          destinationTable: _destinationTable,
+          datasetId: _datasetId,
+          projectId: _projectId,
+          tableId: _tableId,
+          operationType: _operationType,
+          sourceTable: _sourceTable,
+          sourceTables: _sourceTables,
+          writeDisposition: _writeDisposition,
+          dryRun: _dryRun,
+          extract: _extract,
+          compression: _compression,
+          destinationFormat: _destinationFormat,
+          destinationUri: _destinationUri,
+          destinationUris: _destinationUris,
+          fieldDelimiter: _fieldDelimiter,
+          modelExtractOptions: _modelExtractOptions,
+          trialId: _trialId,
+          printHeader: _printHeader,
+          sourceModel: _sourceModel,
+          modelId: _modelId,
+          useAvroLogicalTypes: _useAvroLogicalTypes,
+          jobTimeoutMs: _jobTimeoutMs,
+          jobType: _jobType,
+          labels: _labels,
+          load: _load,
+          allowJaggedRows: _allowJaggedRows,
+          allowQuotedNewlines: _allowQuotedNewlines,
+          autodetect: _autodetect,
+          clustering: _clustering,
+          fields: _fields,
+          columnNameCharacterMap: _columnNameCharacterMap,
+          connectionProperties: _connectionProperties,
+          key: _key,
+          value: _value,
+          copyFilesOnly: _copyFilesOnly,
+          createSession: _createSession,
+          dateFormat: _dateFormat,
+          datetimeFormat: _datetimeFormat,
+          decimalTargetTypes: _decimalTargetTypes,
+          destinationTableProperties: _destinationTableProperties,
+          description: _description,
+          expirationTime: _expirationTime,
+          friendlyName: _friendlyName,
+          encoding: _encoding,
+          fileSetSpecType: _fileSetSpecType,
+          hivePartitioningOptions: _hivePartitioningOptions,
+          mode: _mode,
+          requirePartitionFilter: _requirePartitionFilter,
+          sourceUriPrefix: _sourceUriPrefix,
+          ignoreUnknownValues: _ignoreUnknownValues,
+          jsonExtension: _jsonExtension,
+          maxBadRecords: _maxBadRecords,
+          nullMarker: _nullMarker,
+          nullMarkers: _nullMarkers,
+          parquetOptions: _parquetOptions,
+          enableListInference: _enableListInference,
+          enumAsString: _enumAsString,
+          mapTargetType: _mapTargetType,
+          preserveAsciiControlCharacters: _preserveAsciiControlCharacters,
+          projectionFields: _projectionFields,
+          quote: _quote,
+          rangePartitioning: _rangePartitioning,
+          field: _field,
+          range: _range,
+          end: _end,
+          interval: _interval,
+          start: _start,
+          referenceFileSchemaUri: _referenceFileSchemaUri,
+          schema: _schema,
+          categories: _categories,
+          collation: _collation,
+          dataGovernanceTagsInfo: _dataGovernanceTagsInfo,
+          dataPolicies: _dataPolicies,
+          dataPolicyList: _dataPolicyList,
+          defaultValueExpression: _defaultValueExpression,
+          foreignTypeDefinition: _foreignTypeDefinition,
+          generatedColumn: _generatedColumn,
+          maxLength: _maxLength,
+          policyTags: _policyTags,
+          precision: _precision,
+          rangeElementType: _rangeElementType,
+          roundingMode: _roundingMode,
+          scale: _scale,
+          timestampPrecision: _timestampPrecision,
+          type: _type,
+          foreignTypeInfo: _foreignTypeInfo,
+          typeSystem: _typeSystem,
+          schemaInline: _schemaInline,
+          schemaInlineFormat: _schemaInlineFormat,
+          schemaUpdateOptions: _schemaUpdateOptions,
+          skipLeadingRows: _skipLeadingRows,
+          sourceColumnMatch: _sourceColumnMatch,
+          sourceFormat: _sourceFormat,
+          sourceUris: _sourceUris,
+          timeFormat: _timeFormat,
+          timePartitioning: _timePartitioning,
+          expirationMs: _expirationMs,
+          timeZone: _timeZone,
+          timestampFormat: _timestampFormat,
+          timestampTargetPrecision: _timestampTargetPrecision,
+          maxSlots: _maxSlots,
+          query: _query,
+          allowLargeResults: _allowLargeResults,
+          continuous: _continuous,
+          defaultDataset: _defaultDataset,
+          flattenResults: _flattenResults,
+          maximumBillingTier: _maximumBillingTier,
+          maximumBytesBilled: _maximumBytesBilled,
+          parameterMode: _parameterMode,
+          preserveNulls: _preserveNulls,
+          priority: _priority,
+          queryParameters: _queryParameters,
+          parameterType: _parameterType,
+          arrayType: _arrayType,
+          structTypes: _structTypes,
+          parameterValue: _parameterValue,
+          arrayValues: _arrayValues,
+          rangeValue: _rangeValue,
+          structValues: _structValues,
+          scriptOptions: _scriptOptions,
+          keyResultStatement: _keyResultStatement,
+          statementByteBudget: _statementByteBudget,
+          statementTimeoutMs: _statementTimeoutMs,
+          systemVariables: _systemVariables,
+          types: _types,
+          arrayElementType: _arrayElementType,
+          structType: _structType,
+          typeKind: _typeKind,
+          values: _values,
+          tableDefinitions: _tableDefinitions,
+          avroOptions: _avroOptions,
+          bigtableOptions: _bigtableOptions,
+          columnFamilies: _columnFamilies,
+          ignoreUnspecifiedColumnFamilies: _ignoreUnspecifiedColumnFamilies,
+          outputColumnFamiliesAsJson: _outputColumnFamiliesAsJson,
+          readRowkeyAsString: _readRowkeyAsString,
+          connectionId: _connectionId,
+          csvOptions: _csvOptions,
+          googleSheetsOptions: _googleSheetsOptions,
+          jsonOptions: _jsonOptions,
+          metadataCacheMode: _metadataCacheMode,
+          objectMetadata: _objectMetadata,
+          useLegacySql: _useLegacySql,
+          useQueryCache: _useQueryCache,
+          userDefinedFunctionResources: _userDefinedFunctionResources,
+          inlineCode: _inlineCode,
+          resourceUri: _resourceUri,
+          writeIncrementalResults: _writeIncrementalResults,
+          reservation: _reservation,
+          jobId: _jobId,
+          location: _location,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -3043,8 +3216,10 @@ export const model = {
     },
     cancel: {
       description: "cancel",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3065,6 +3240,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["jobId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3090,8 +3268,16 @@ export const model = {
     },
     get_query_results: {
       description: "get query results",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        formatOptions_timestampOutputFormat: z.any().optional(),
+        formatOptions_useInt64Timestamp: z.any().optional(),
+        location: z.any().optional(),
+        maxResults: z.any().optional(),
+        pageToken: z.any().optional(),
+        startIndex: z.any().optional(),
+        timeoutMs: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3112,6 +3298,31 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["jobId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["formatOptions_timestampOutputFormat"] !== undefined) {
+          params["formatOptions.timestampOutputFormat"] = String(
+            args["formatOptions_timestampOutputFormat"],
+          );
+        }
+        if (args["formatOptions_useInt64Timestamp"] !== undefined) {
+          params["formatOptions.useInt64Timestamp"] = String(
+            args["formatOptions_useInt64Timestamp"],
+          );
+        }
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["startIndex"] !== undefined) {
+          params["startIndex"] = String(args["startIndex"]);
+        }
+        if (args["timeoutMs"] !== undefined) {
+          params["timeoutMs"] = String(args["timeoutMs"]);
+        }
         const result = await createResource(
           baseUrl,
           {

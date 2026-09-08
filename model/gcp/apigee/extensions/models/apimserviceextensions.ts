@@ -214,6 +214,9 @@ const GlobalArgsSchema = z.object({
   apimServiceExtensionId: z.string().describe(
     "Optional. ID used to uniquely identify of the service extension. It must conform with RFC-1034, is restricted to lower-cased letters, numbers and hyphens, and can have a maximum length of 63 characters. Additionally, the first character must be a letter and the last a letter or a number.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the service extension is not found, a new service extension will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -302,6 +305,9 @@ const InputsSchema = z.object({
   apimServiceExtensionId: z.string().describe(
     "Optional. ID used to uniquely identify of the service extension. It must conform with RFC-1034, is restricted to lower-cased letters, numbers and hyphens, and can have a maximum length of 63 characters. Additionally, the first character must be a letter and the last a letter or a number.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the service extension is not found, a new service extension will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -333,7 +339,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Apigee ApimServiceExtensions. Registered at `@swamp/gcp/apigee/apimserviceextensions`. */
 export const model = {
   type: "@swamp/gcp/apigee/apimserviceextensions",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -453,6 +459,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -633,6 +644,11 @@ export const model = {
         if (g["network"] !== undefined) body["network"] = g["network"];
         if (g["networkConfigs"] !== undefined) {
           body["networkConfigs"] = g["networkConfigs"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

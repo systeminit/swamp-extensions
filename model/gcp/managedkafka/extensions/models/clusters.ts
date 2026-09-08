@@ -216,6 +216,9 @@ const GlobalArgsSchema = z.object({
   }).describe(
     "Required. Configuration properties for a Kafka cluster deployed to Google Cloud Platform.",
   ).optional(),
+  kafkaVersion: z.string().describe(
+    "Optional. The Apache Kafka version of the cluster (for example, `3.7.x`, `4.3.x`). If not specified during cluster creation, defaults to `3.7.x`.",
+  ).optional(),
   labels: z.record(z.string(), z.string()).describe(
     "Optional. Labels as key value pairs.",
   ).optional(),
@@ -372,6 +375,9 @@ const InputsSchema = z.object({
   }).describe(
     "Required. Configuration properties for a Kafka cluster deployed to Google Cloud Platform.",
   ).optional(),
+  kafkaVersion: z.string().describe(
+    "Optional. The Apache Kafka version of the cluster (for example, `3.7.x`, `4.3.x`). If not specified during cluster creation, defaults to `3.7.x`.",
+  ).optional(),
   labels: z.record(z.string(), z.string()).describe(
     "Optional. Labels as key value pairs.",
   ).optional(),
@@ -448,7 +454,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Managed Service for Apache Kafka Clusters. Registered at `@swamp/gcp/managedkafka/clusters`. */
 export const model = {
   type: "@swamp/gcp/managedkafka/clusters",
-  version: "2026.08.30.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -585,6 +591,11 @@ export const model = {
       description: "Added: brokerCapacityConfig",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: kafkaVersion",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -622,6 +633,9 @@ export const model = {
           body["capacityConfig"] = g["capacityConfig"];
         }
         if (g["gcpConfig"] !== undefined) body["gcpConfig"] = g["gcpConfig"];
+        if (g["kafkaVersion"] !== undefined) {
+          body["kafkaVersion"] = g["kafkaVersion"];
+        }
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["rebalanceConfig"] !== undefined) {

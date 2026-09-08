@@ -884,7 +884,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud People OtherContacts. Registered at `@swamp/gcp/people/othercontacts`. */
 export const model = {
   type: "@swamp/gcp/people/othercontacts",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -998,6 +998,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1233,14 +1238,27 @@ export const model = {
     },
     search: {
       description: "search",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        query: z.any().optional(),
+        readMask: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["readMask"] !== undefined) {
+          params["readMask"] = String(args["readMask"]);
+        }
         const result = await createResource(
           baseUrl,
           {

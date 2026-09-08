@@ -206,6 +206,9 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   userId: z.string().describe("Required. ID of the requesting object.")
     .optional(),
+  allowMissing: z.string().describe(
+    "Optional. Allow missing fields in the update mask.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -250,6 +253,9 @@ const InputsSchema = z.object({
   ).optional(),
   userId: z.string().describe("Required. ID of the requesting object.")
     .optional(),
+  allowMissing: z.string().describe(
+    "Optional. Allow missing fields in the update mask.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -284,7 +290,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud AlloyDB Clusters.Users. Registered at `@swamp/gcp/alloydb/clusters-users`. */
 export const model = {
   type: "@swamp/gcp/alloydb/clusters-users",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -414,6 +420,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -562,6 +573,11 @@ export const model = {
         }
         if (g["password"] !== undefined) body["password"] = g["password"];
         if (g["userType"] !== undefined) body["userType"] = g["userType"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

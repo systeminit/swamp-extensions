@@ -3141,7 +3141,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Security Command Center Sources.Findings. Registered at `@swamp/gcp/securitycenter/sources-findings`. */
 export const model = {
   type: "@swamp/gcp/securitycenter/sources-findings",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -3315,6 +3315,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -3827,6 +3832,8 @@ export const model = {
         canonicalName: z.any().optional(),
         marks: z.any().optional(),
         name: z.any().optional(),
+        startTime: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3836,6 +3843,12 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["startTime"] !== undefined) {
+          params["startTime"] = String(args["startTime"]);
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["canonicalName"] !== undefined) {
           body["canonicalName"] = args["canonicalName"];

@@ -411,7 +411,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Gmail Users.Messages. Registered at `@swamp/gcp/gmail/users-messages`. */
 export const model = {
   type: "@swamp/gcp/gmail/users-messages",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -570,6 +570,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -938,6 +943,10 @@ export const model = {
         sizeEstimate: z.any().optional(),
         snippet: z.any().optional(),
         threadId: z.any().optional(),
+        deleted: z.any().optional(),
+        internalDateSource: z.any().optional(),
+        neverMarkSpam: z.any().optional(),
+        processForCalendar: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -947,6 +956,18 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        if (args["deleted"] !== undefined) {
+          params["deleted"] = String(args["deleted"]);
+        }
+        if (args["internalDateSource"] !== undefined) {
+          params["internalDateSource"] = String(args["internalDateSource"]);
+        }
+        if (args["neverMarkSpam"] !== undefined) {
+          params["neverMarkSpam"] = String(args["neverMarkSpam"]);
+        }
+        if (args["processForCalendar"] !== undefined) {
+          params["processForCalendar"] = String(args["processForCalendar"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["classificationLabelValues"] !== undefined) {
           body["classificationLabelValues"] = args["classificationLabelValues"];

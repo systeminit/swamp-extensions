@@ -423,7 +423,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Channel Accounts.Customers. Registered at `@swamp/gcp/cloudchannel/accounts-customers`. */
 export const model = {
   type: "@swamp/gcp/cloudchannel/accounts-customers",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -562,6 +562,38 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: addressLines, administrativeArea, locality, organization, postalCode, recipients, regionCode, revision, sortingCode, sublocality, displayName, email, firstName, lastName, phone, title",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          addressLines: _addressLines,
+          administrativeArea: _administrativeArea,
+          locality: _locality,
+          organization: _organization,
+          postalCode: _postalCode,
+          recipients: _recipients,
+          regionCode: _regionCode,
+          revision: _revision,
+          sortingCode: _sortingCode,
+          sublocality: _sublocality,
+          displayName: _displayName,
+          email: _email,
+          firstName: _firstName,
+          lastName: _lastName,
+          phone: _phone,
+          title: _title,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -982,8 +1014,17 @@ export const model = {
     },
     list_purchasable_offers: {
       description: "list purchasable offers",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        changeOfferPurchase_billingAccount: z.any().optional(),
+        changeOfferPurchase_entitlement: z.any().optional(),
+        changeOfferPurchase_newSku: z.any().optional(),
+        createEntitlementPurchase_billingAccount: z.any().optional(),
+        createEntitlementPurchase_sku: z.any().optional(),
+        languageCode: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1004,6 +1045,40 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["customer"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["changeOfferPurchase_billingAccount"] !== undefined) {
+          params["changeOfferPurchase.billingAccount"] = String(
+            args["changeOfferPurchase_billingAccount"],
+          );
+        }
+        if (args["changeOfferPurchase_entitlement"] !== undefined) {
+          params["changeOfferPurchase.entitlement"] = String(
+            args["changeOfferPurchase_entitlement"],
+          );
+        }
+        if (args["changeOfferPurchase_newSku"] !== undefined) {
+          params["changeOfferPurchase.newSku"] = String(
+            args["changeOfferPurchase_newSku"],
+          );
+        }
+        if (args["createEntitlementPurchase_billingAccount"] !== undefined) {
+          params["createEntitlementPurchase.billingAccount"] = String(
+            args["createEntitlementPurchase_billingAccount"],
+          );
+        }
+        if (args["createEntitlementPurchase_sku"] !== undefined) {
+          params["createEntitlementPurchase.sku"] = String(
+            args["createEntitlementPurchase_sku"],
+          );
+        }
+        if (args["languageCode"] !== undefined) {
+          params["languageCode"] = String(args["languageCode"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1037,8 +1112,15 @@ export const model = {
     },
     list_purchasable_skus: {
       description: "list purchasable skus",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        changeOfferPurchase_changeType: z.any().optional(),
+        changeOfferPurchase_entitlement: z.any().optional(),
+        createEntitlementPurchase_product: z.any().optional(),
+        languageCode: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1059,6 +1141,30 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["customer"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["changeOfferPurchase_changeType"] !== undefined) {
+          params["changeOfferPurchase.changeType"] = String(
+            args["changeOfferPurchase_changeType"],
+          );
+        }
+        if (args["changeOfferPurchase_entitlement"] !== undefined) {
+          params["changeOfferPurchase.entitlement"] = String(
+            args["changeOfferPurchase_entitlement"],
+          );
+        }
+        if (args["createEntitlementPurchase_product"] !== undefined) {
+          params["createEntitlementPurchase.product"] = String(
+            args["createEntitlementPurchase_product"],
+          );
+        }
+        if (args["languageCode"] !== undefined) {
+          params["languageCode"] = String(args["languageCode"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1145,8 +1251,10 @@ export const model = {
     },
     query_eligible_billing_accounts: {
       description: "query eligible billing accounts",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        skus: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1167,6 +1275,7 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["customer"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["skus"] !== undefined) params["skus"] = String(args["skus"]);
         const result = await createResource(
           baseUrl,
           {

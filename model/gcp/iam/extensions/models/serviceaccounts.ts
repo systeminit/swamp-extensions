@@ -524,7 +524,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Identity and Access Management (IAM) ServiceAccounts. Registered at `@swamp/gcp/iam/serviceaccounts`. */
 export const model = {
   type: "@swamp/gcp/iam/serviceaccounts",
-  version: "2026.08.12.3",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.07.28.1",
@@ -545,6 +545,19 @@ export const model = {
       toVersion: "2026.08.12.3",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description: "Removed: etag",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { etag: _etag, ...rest } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -908,8 +921,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -930,6 +945,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

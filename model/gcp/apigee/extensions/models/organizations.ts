@@ -462,7 +462,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Apigee Organizations. Registered at `@swamp/gcp/apigee/organizations`. */
 export const model = {
   type: "@swamp/gcp/apigee/organizations",
-  version: "2026.09.03.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -591,6 +591,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1021,8 +1026,10 @@ export const model = {
     },
     get_deployed_ingress_config: {
       description: "get deployed ingress config",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        view: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1030,6 +1037,7 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["view"] !== undefined) params["view"] = String(args["view"]);
         const result = await createResource(
           baseUrl,
           {
@@ -1295,6 +1303,7 @@ export const model = {
         analyticsPublisherIdentities: z.any().optional(),
         name: z.any().optional(),
         synchronizerIdentities: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1304,6 +1313,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["analyticsPublisherIdentities"] !== undefined) {
           body["analyticsPublisherIdentities"] =
@@ -1340,6 +1352,7 @@ export const model = {
       arguments: z.object({
         mlRetrainingFeedbackEnabled: z.any().optional(),
         name: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1349,6 +1362,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["mlRetrainingFeedbackEnabled"] !== undefined) {
           body["mlRetrainingFeedbackEnabled"] =

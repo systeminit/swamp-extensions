@@ -769,6 +769,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A unique ID for this request. A random UUID is recommended. Specifying a request ID makes the request idempotent, which ensures that multiple identical requests with the same request ID result in only a single message being created. Subsequent requests with the same request ID return the existing message and do not update the message, even if the requested details differ from the current state. To use this field effectively: - Ensure that subsequent requests are identical and use the same authentication credentials as the original request. - If a message was already created with the provided request ID, the request returns that message. Note that the returned message might not be fully populated; the API echoes the message in your request with the system-assigned resource names populated. To retrieve the latest metadata for the message, call `GetMessage`. - Reusing an existing request ID with a different authenticated user results in an error.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If `true` and the message isn't found, a new message is created and `updateMask` is ignored. The specified message ID must be [client-assigned](https://developers.google.com/workspace/chat/create-messages#name_a_created_message) or the request fails.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -1737,6 +1740,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A unique ID for this request. A random UUID is recommended. Specifying a request ID makes the request idempotent, which ensures that multiple identical requests with the same request ID result in only a single message being created. Subsequent requests with the same request ID return the existing message and do not update the message, even if the requested details differ from the current state. To use this field effectively: - Ensure that subsequent requests are identical and use the same authentication credentials as the original request. - If a message was already created with the provided request ID, the request returns that message. Note that the returned message might not be fully populated; the API echoes the message in your request with the system-assigned resource names populated. To retrieve the latest metadata for the message, call `GetMessage`. - Reusing an existing request ID with a different authenticated user results in an error.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If `true` and the message isn't found, a new message is created and `updateMask` is ignored. The specified message ID must be [client-assigned](https://developers.google.com/workspace/chat/create-messages#name_a_created_message) or the request fails.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -1768,7 +1774,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Chat Spaces.Messages. Registered at `@swamp/gcp/chat/spaces-messages`. */
 export const model = {
   type: "@swamp/gcp/chat/spaces-messages",
-  version: "2026.09.01.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1950,6 +1956,11 @@ export const model = {
     {
       toVersion: "2026.09.01.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -2144,6 +2155,11 @@ export const model = {
         }
         if (g["text"] !== undefined) body["text"] = g["text"];
         if (g["thread"] !== undefined) body["thread"] = g["thread"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

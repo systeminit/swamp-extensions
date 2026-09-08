@@ -369,6 +369,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A unique ID for this request. A random UUID is recommended. Specifying a request ID makes the request idempotent, which ensures that multiple identical requests with the same request ID result in only a single space being created. Subsequent requests with the same request ID return the existing space and do not update the space, even if the requested details differ from the current state. To use this field effectively: - Ensure that subsequent requests are identical and use the same authentication credentials as the original request. - If a space was already created with the provided request ID, the request returns that space. Note that the returned space might not be fully populated; the API echoes the space in your request with the system-assigned resource name populated. To retrieve the latest metadata for the space, call `GetSpace`. - Reusing an existing request ID with a different authenticated user results in an error.",
   ).optional(),
+  useAdminAccess: z.string().describe(
+    "Optional. When `true`, the method runs using the user's Google Workspace administrator privileges. The calling user must be a Google Workspace administrator with the [manage chat and spaces conversations privilege](https://support.google.com/a/answer/13369245). Requires the `chat.admin.spaces` [OAuth 2.0 scope](https://developers.google.com/workspace/chat/authenticate-authorize#chat-api-scopes). Some `FieldMask` values are not supported using admin access. For details, see the description of `update_mask`.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -638,6 +641,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A unique ID for this request. A random UUID is recommended. Specifying a request ID makes the request idempotent, which ensures that multiple identical requests with the same request ID result in only a single space being created. Subsequent requests with the same request ID return the existing space and do not update the space, even if the requested details differ from the current state. To use this field effectively: - Ensure that subsequent requests are identical and use the same authentication credentials as the original request. - If a space was already created with the provided request ID, the request returns that space. Note that the returned space might not be fully populated; the API echoes the space in your request with the system-assigned resource name populated. To retrieve the latest metadata for the space, call `GetSpace`. - Reusing an existing request ID with a different authenticated user results in an error.",
   ).optional(),
+  useAdminAccess: z.string().describe(
+    "Optional. When `true`, the method runs using the user's Google Workspace administrator privileges. The calling user must be a Google Workspace administrator with the [manage chat and spaces conversations privilege](https://support.google.com/a/answer/13369245). Requires the `chat.admin.spaces` [OAuth 2.0 scope](https://developers.google.com/workspace/chat/authenticate-authorize#chat-api-scopes). Some `FieldMask` values are not supported using admin access. For details, see the description of `update_mask`.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -666,7 +672,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Chat Spaces. Registered at `@swamp/gcp/chat/spaces`. */
 export const model = {
   type: "@swamp/gcp/chat/spaces",
-  version: "2026.09.01.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -846,6 +852,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: useAdminAccess",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1010,6 +1021,11 @@ export const model = {
         }
         if (g["spaceHistoryState"] !== undefined) {
           body["spaceHistoryState"] = g["spaceHistoryState"];
+        }
+        if (g["useAdminAccess"] !== undefined) {
+          params["useAdminAccess"] = String(g["useAdminAccess"]);
+        } else if (existing["useAdminAccess"] !== undefined) {
+          params["useAdminAccess"] = String(existing["useAdminAccess"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
@@ -1217,14 +1233,17 @@ export const model = {
     },
     find_direct_message: {
       description: "find direct message",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        name: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["name"] !== undefined) params["name"] = String(args["name"]);
         const result = await createResource(
           baseUrl,
           {
@@ -1246,14 +1265,31 @@ export const model = {
     },
     find_group_chats: {
       description: "find group chats",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        spaceView: z.any().optional(),
+        users: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["spaceView"] !== undefined) {
+          params["spaceView"] = String(args["spaceView"]);
+        }
+        if (args["users"] !== undefined) {
+          params["users"] = String(args["users"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1280,14 +1316,35 @@ export const model = {
     },
     search: {
       description: "search",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        orderBy: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        query: z.any().optional(),
+        useAdminAccess: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["useAdminAccess"] !== undefined) {
+          params["useAdminAccess"] = String(args["useAdminAccess"]);
+        }
         const result = await createResource(
           baseUrl,
           {

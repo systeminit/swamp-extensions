@@ -1457,6 +1457,28 @@ function buildGcpParsedResource(
     }
   }
 
+  // Add query parameters from update/patch methods.
+  // Mirrors the insert query-param pass above. Without this, method-level
+  // query params like valueInputOption are absent from GlobalArgsSchema and
+  // the CRUD update codegen cannot route them to the URL.
+  for (const method of [update, patch]) {
+    if (!method?.parameters) continue;
+    for (const [paramName, param] of Object.entries(method.parameters)) {
+      if (param.location !== "query") continue;
+      if (paramName === "validateOnly") continue;
+      if (paramName === "updateMask") continue;
+      if (param.deprecated === true) continue;
+      if (domainProperties[paramName]) continue;
+
+      updatePropertyNames.add(paramName);
+      domainProperties[paramName] = {
+        type: "string",
+        description: param.description ||
+          `The ${paramName} for this resource`,
+      };
+    }
+  }
+
   // Remove read-only properties from domain
   for (const [name, prop] of Object.entries(domainProperties)) {
     if ((prop as CfProperty & { readOnly?: boolean }).readOnly) {

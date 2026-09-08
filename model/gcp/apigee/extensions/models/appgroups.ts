@@ -180,6 +180,9 @@ const GlobalArgsSchema = z.object({
   status: z.string().describe(
     "Valid values are `active` or `inactive`. Note that the status of the AppGroup should be updated via UpdateAppGroupRequest by setting the action as `active` or `inactive`.",
   ).optional(),
+  action: z.string().describe(
+    "Activate or de-activate the AppGroup by setting the action as `active` or `inactive`. The `Content-Type` header must be set to `application/octet-stream`, with empty body.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -233,6 +236,9 @@ const InputsSchema = z.object({
   status: z.string().describe(
     "Valid values are `active` or `inactive`. Note that the status of the AppGroup should be updated via UpdateAppGroupRequest by setting the action as `active` or `inactive`.",
   ).optional(),
+  action: z.string().describe(
+    "Activate or de-activate the AppGroup by setting the action as `active` or `inactive`. The `Content-Type` header must be set to `application/octet-stream`, with empty body.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -264,7 +270,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Apigee Appgroups. Registered at `@swamp/gcp/apigee/appgroups`. */
 export const model = {
   type: "@swamp/gcp/apigee/appgroups",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -384,6 +390,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: action",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -539,6 +550,10 @@ export const model = {
         }
         if (g["email"] !== undefined) body["email"] = g["email"];
         if (g["status"] !== undefined) body["status"] = g["status"];
+        if (g["action"] !== undefined) params["action"] = String(g["action"]);
+        else if (existing["action"] !== undefined) {
+          params["action"] = String(existing["action"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

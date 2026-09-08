@@ -233,6 +233,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if the original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set as true, will create the resource if it is not found.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -320,6 +323,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if the original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set as true, will create the resource if it is not found.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -351,7 +357,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud BeyondCorp AppConnections. Registered at `@swamp/gcp/beyondcorp/appconnections`. */
 export const model = {
   type: "@swamp/gcp/beyondcorp/appconnections",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -507,6 +513,27 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description: "Removed: host, port, appGateway, ingressPort, l7psc, uri",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          host: _host,
+          port: _port,
+          appGateway: _appGateway,
+          ingressPort: _ingressPort,
+          l7psc: _l7psc,
+          uri: _uri,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -672,6 +699,11 @@ export const model = {
         if (g["gateway"] !== undefined) body["gateway"] = g["gateway"];
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -864,8 +896,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -886,6 +920,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -910,8 +949,12 @@ export const model = {
     },
     resolve: {
       description: "resolve",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        appConnectorId: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -921,6 +964,15 @@ export const model = {
         params["parent"] = `projects/${projectId}/locations/${
           String(g["location"] ?? "")
         }`;
+        if (args["appConnectorId"] !== undefined) {
+          params["appConnectorId"] = String(args["appConnectorId"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {

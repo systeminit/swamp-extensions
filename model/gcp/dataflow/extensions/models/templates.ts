@@ -368,7 +368,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataflow Templates. Registered at `@swamp/gcp/dataflow/templates`. */
 export const model = {
   type: "@swamp/gcp/dataflow/templates",
-  version: "2026.08.25.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -494,6 +494,41 @@ export const model = {
       toVersion: "2026.08.25.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: additionalExperiments, additionalPipelineOptions, additionalUserLabels, bypassTempDirValidation, diskSizeGb, enableStreamingEngine, ipConfiguration, kmsKeyName, machineType, maxWorkers, network, numWorkers, serviceAccountEmail, streamingMode, subnetwork, tempLocation, workerRegion, workerZone, zone",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          additionalExperiments: _additionalExperiments,
+          additionalPipelineOptions: _additionalPipelineOptions,
+          additionalUserLabels: _additionalUserLabels,
+          bypassTempDirValidation: _bypassTempDirValidation,
+          diskSizeGb: _diskSizeGb,
+          enableStreamingEngine: _enableStreamingEngine,
+          ipConfiguration: _ipConfiguration,
+          kmsKeyName: _kmsKeyName,
+          machineType: _machineType,
+          maxWorkers: _maxWorkers,
+          network: _network,
+          numWorkers: _numWorkers,
+          serviceAccountEmail: _serviceAccountEmail,
+          streamingMode: _streamingMode,
+          subnetwork: _subnetwork,
+          tempLocation: _tempLocation,
+          workerRegion: _workerRegion,
+          workerZone: _workerZone,
+          zone: _zone,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -650,6 +685,10 @@ export const model = {
         parameters: z.any().optional(),
         transformNameMapping: z.any().optional(),
         update: z.any().optional(),
+        dynamicTemplate_gcsPath: z.any().optional(),
+        dynamicTemplate_stagingLocation: z.any().optional(),
+        gcsPath: z.any().optional(),
+        validateOnly: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -660,6 +699,22 @@ export const model = {
         const params: Record<string, string> = { projectId: projectId };
         if (g["location"] !== undefined) {
           params["location"] = String(g["location"]);
+        }
+        if (args["dynamicTemplate_gcsPath"] !== undefined) {
+          params["dynamicTemplate.gcsPath"] = String(
+            args["dynamicTemplate_gcsPath"],
+          );
+        }
+        if (args["dynamicTemplate_stagingLocation"] !== undefined) {
+          params["dynamicTemplate.stagingLocation"] = String(
+            args["dynamicTemplate_stagingLocation"],
+          );
+        }
+        if (args["gcsPath"] !== undefined) {
+          params["gcsPath"] = String(args["gcsPath"]);
+        }
+        if (args["validateOnly"] !== undefined) {
+          params["validateOnly"] = String(args["validateOnly"]);
         }
         const body: Record<string, unknown> = {};
         if (args["environment"] !== undefined) {

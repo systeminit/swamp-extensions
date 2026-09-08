@@ -725,7 +725,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Classroom Courses.CourseWork. Registered at `@swamp/gcp/classroom/courses-coursework`. */
 export const model = {
   type: "@swamp/gcp/classroom/courses-coursework",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -839,6 +839,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1246,8 +1251,12 @@ export const model = {
     },
     get_add_on_context: {
       description: "get add on context",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        addOnToken: z.any().optional(),
+        attachmentId: z.any().optional(),
+        postId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1271,6 +1280,15 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["itemId"] = existing["id"]?.toString() ?? g["id"]?.toString() ??
           "";
+        if (args["addOnToken"] !== undefined) {
+          params["addOnToken"] = String(args["addOnToken"]);
+        }
+        if (args["attachmentId"] !== undefined) {
+          params["attachmentId"] = String(args["attachmentId"]);
+        }
+        if (args["postId"] !== undefined) {
+          params["postId"] = String(args["postId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1350,9 +1368,10 @@ export const model = {
         courseWorkId: z.any().optional(),
         creationTime: z.any().optional(),
         criteria: z.any().optional(),
-        id: z.any().optional(),
         sourceSpreadsheetId: z.any().optional(),
         updateTime: z.any().optional(),
+        id: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1378,6 +1397,10 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["courseWorkId"] = existing["id"]?.toString() ??
           g["id"]?.toString() ?? "";
+        if (args["id"] !== undefined) params["id"] = String(args["id"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["courseId"] !== undefined) body["courseId"] = args["courseId"];
         if (args["courseWorkId"] !== undefined) {
@@ -1387,7 +1410,6 @@ export const model = {
           body["creationTime"] = args["creationTime"];
         }
         if (args["criteria"] !== undefined) body["criteria"] = args["criteria"];
-        if (args["id"] !== undefined) body["id"] = args["id"];
         if (args["sourceSpreadsheetId"] !== undefined) {
           body["sourceSpreadsheetId"] = args["sourceSpreadsheetId"];
         }

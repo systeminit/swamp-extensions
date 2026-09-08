@@ -286,7 +286,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Agent Platform Tensorboards.Experiments.Runs.TimeSeries. Registered at `@swamp/gcp/aiplatform/tensorboards-experiments-runs-timeseries`. */
 export const model = {
   type: "@swamp/gcp/aiplatform/tensorboards-experiments-runs-timeseries",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -448,6 +448,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -858,8 +863,11 @@ export const model = {
     },
     read: {
       description: "read",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        maxDataPoints: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -880,6 +888,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["tensorboardTimeSeries"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxDataPoints"] !== undefined) {
+          params["maxDataPoints"] = String(args["maxDataPoints"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -906,8 +920,10 @@ export const model = {
     },
     read_blob_data: {
       description: "read blob data",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        blobIds: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -928,6 +944,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["timeSeries"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["blobIds"] !== undefined) {
+          params["blobIds"] = String(args["blobIds"]);
+        }
         const result = await createResource(
           baseUrl,
           {

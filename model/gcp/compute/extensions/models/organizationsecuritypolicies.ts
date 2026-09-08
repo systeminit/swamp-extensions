@@ -1055,7 +1055,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine OrganizationSecurityPolicies. Registered at `@swamp/gcp/compute/organizationsecuritypolicies`. */
 export const model = {
   type: "@swamp/gcp/compute/organizationsecuritypolicies",
-  version: "2026.08.16.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1214,6 +1214,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.16.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1602,6 +1607,8 @@ export const model = {
         name: z.any().optional(),
         securityPolicyId: z.any().optional(),
         shortName: z.any().optional(),
+        replaceExistingAssociation: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1624,6 +1631,14 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["replaceExistingAssociation"] !== undefined) {
+          params["replaceExistingAssociation"] = String(
+            args["replaceExistingAssociation"],
+          );
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["attachmentId"] !== undefined) {
           body["attachmentId"] = args["attachmentId"];
@@ -1682,6 +1697,7 @@ export const model = {
         priority: z.any().optional(),
         rateLimitOptions: z.any().optional(),
         redirectOptions: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1704,6 +1720,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["action"] !== undefined) body["action"] = args["action"];
         if (args["description"] !== undefined) {
@@ -1753,8 +1772,11 @@ export const model = {
     },
     copy_rules: {
       description: "copy rules",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+        sourceSecurityPolicy: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1775,6 +1797,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
+        if (args["sourceSecurityPolicy"] !== undefined) {
+          params["sourceSecurityPolicy"] = String(args["sourceSecurityPolicy"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1801,8 +1829,10 @@ export const model = {
     },
     get_association: {
       description: "get association",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        name: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1823,6 +1853,7 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["name"] !== undefined) params["name"] = String(args["name"]);
         const result = await createResource(
           baseUrl,
           {
@@ -1848,8 +1879,10 @@ export const model = {
     },
     get_rule: {
       description: "get rule",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        priority: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1870,6 +1903,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["priority"] !== undefined) {
+          params["priority"] = String(args["priority"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1895,14 +1931,19 @@ export const model = {
     },
     list_associations: {
       description: "list associations",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        targetResource: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["targetResource"] !== undefined) {
+          params["targetResource"] = String(args["targetResource"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1924,14 +1965,39 @@ export const model = {
     },
     list_preconfigured_expression_sets: {
       description: "list preconfigured expression sets",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        parentId: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["parentId"] !== undefined) {
+          params["parentId"] = String(args["parentId"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1962,8 +2028,11 @@ export const model = {
     },
     move: {
       description: "move",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        parentId: z.any().optional(),
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1984,6 +2053,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["parentId"] !== undefined) {
+          params["parentId"] = String(args["parentId"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2018,9 +2093,10 @@ export const model = {
         networkMatch: z.any().optional(),
         preconfiguredWafConfig: z.any().optional(),
         preview: z.any().optional(),
-        priority: z.any().optional(),
         rateLimitOptions: z.any().optional(),
         redirectOptions: z.any().optional(),
+        priority: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2043,6 +2119,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["securityPolicy"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["priority"] !== undefined) {
+          params["priority"] = String(args["priority"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["action"] !== undefined) body["action"] = args["action"];
         if (args["description"] !== undefined) {
@@ -2060,7 +2142,6 @@ export const model = {
           body["preconfiguredWafConfig"] = args["preconfiguredWafConfig"];
         }
         if (args["preview"] !== undefined) body["preview"] = args["preview"];
-        if (args["priority"] !== undefined) body["priority"] = args["priority"];
         if (args["rateLimitOptions"] !== undefined) {
           body["rateLimitOptions"] = args["rateLimitOptions"];
         }

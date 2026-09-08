@@ -430,6 +430,9 @@ const GlobalArgsSchema = z.object({
   useExplicitDryRunSpec: z.boolean().describe(
     'Use explicit dry run spec flag. Ordinarily, a dry-run spec implicitly exists for all Service Perimeters, and that spec is identical to the status for those Service Perimeters. When this flag is set, it inhibits the generation of the implicit spec, thereby allowing the user to explicitly provide a configuration ("spec") to use in a dry-run version of the Service Perimeter. This allows the user to test changes to the enforced config ("status") without actually enforcing them. This testing is done through analyzing the differences between currently enforced and suggested restrictions. use_explicit_dry_run_spec must bet set to True if any of the fields in the spec are set to non-default values.',
   ).optional(),
+  deletedPrincipalSyntax: z.string().describe(
+    "Optional. If true, the response will contain the deleted principal syntax for identities that support it and the request can contain identities with deleted principal syntax.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -805,6 +808,9 @@ const InputsSchema = z.object({
   useExplicitDryRunSpec: z.boolean().describe(
     'Use explicit dry run spec flag. Ordinarily, a dry-run spec implicitly exists for all Service Perimeters, and that spec is identical to the status for those Service Perimeters. When this flag is set, it inhibits the generation of the implicit spec, thereby allowing the user to explicitly provide a configuration ("spec") to use in a dry-run version of the Service Perimeter. This allows the user to test changes to the enforced config ("status") without actually enforcing them. This testing is done through analyzing the differences between currently enforced and suggested restrictions. use_explicit_dry_run_spec must bet set to True if any of the fields in the spec are set to non-default values.',
   ).optional(),
+  deletedPrincipalSyntax: z.string().describe(
+    "Optional. If true, the response will contain the deleted principal syntax for identities that support it and the request can contain identities with deleted principal syntax.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -836,7 +842,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Access Context Manager AccessPolicies.ServicePerimeters. Registered at `@swamp/gcp/accesscontextmanager/accesspolicies-serviceperimeters`. */
 export const model = {
   type: "@swamp/gcp/accesscontextmanager/accesspolicies-serviceperimeters",
-  version: "2026.08.25.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1028,6 +1034,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: deletedPrincipalSyntax",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1185,6 +1196,15 @@ export const model = {
         if (g["title"] !== undefined) body["title"] = g["title"];
         if (g["useExplicitDryRunSpec"] !== undefined) {
           body["useExplicitDryRunSpec"] = g["useExplicitDryRunSpec"];
+        }
+        if (g["deletedPrincipalSyntax"] !== undefined) {
+          params["deletedPrincipalSyntax"] = String(
+            g["deletedPrincipalSyntax"],
+          );
+        } else if (existing["deletedPrincipalSyntax"] !== undefined) {
+          params["deletedPrincipalSyntax"] = String(
+            existing["deletedPrincipalSyntax"],
+          );
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

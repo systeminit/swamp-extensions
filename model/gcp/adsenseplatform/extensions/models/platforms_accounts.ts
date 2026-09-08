@@ -221,7 +221,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud AdSense Platform Platforms.Accounts. Registered at `@swamp/gcp/adsenseplatform/platforms-accounts`. */
 export const model = {
   type: "@swamp/gcp/adsenseplatform/platforms-accounts",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -345,6 +345,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -598,8 +603,10 @@ export const model = {
     },
     lookup: {
       description: "lookup",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        creationRequestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -607,6 +614,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["creationRequestId"] !== undefined) {
+          params["creationRequestId"] = String(args["creationRequestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {

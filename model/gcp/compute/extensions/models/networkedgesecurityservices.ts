@@ -236,6 +236,7 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  paths: z.string().describe("The paths for this resource").optional(),
 });
 
 const StateSchema = z.object({
@@ -279,6 +280,7 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  paths: z.string().describe("The paths for this resource").optional(),
 });
 
 const _credentialKeys = new Set([
@@ -307,7 +309,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine NetworkEdgeSecurityServices. Registered at `@swamp/gcp/compute/networkedgesecurityservices`. */
 export const model = {
   type: "@swamp/gcp/compute/networkedgesecurityservices",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -427,6 +429,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: paths",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -576,6 +583,10 @@ export const model = {
         if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["securityPolicy"] !== undefined) {
           body["securityPolicy"] = g["securityPolicy"];
+        }
+        if (g["paths"] !== undefined) params["paths"] = String(g["paths"]);
+        else if (existing["paths"] !== undefined) {
+          params["paths"] = String(existing["paths"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

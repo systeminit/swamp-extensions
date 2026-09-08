@@ -1759,7 +1759,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Agent Platform Models. Registered at `@swamp/gcp/aiplatform/models`. */
 export const model = {
   type: "@swamp/gcp/aiplatform/models",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1930,6 +1930,130 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: genieSource, baseModelUri, modelGardenSource, publicModelName, skipHfModelCache, checkpointId, epoch, step, args, command, deploymentTimeout, env, value, grpcPorts, containerPort, healthProbe, exec, command, failureThreshold, grpc, port, service, httpGet, host, httpHeaders, value, path, port, scheme, initialDelaySeconds, periodSeconds, successThreshold, tcpSocket, host, port, timeoutSeconds, healthRoute, imageUri, invokeRoutePrefix, livenessProbe, exec, command, failureThreshold, grpc, port, service, httpGet, host, httpHeaders, value, path, port, scheme, initialDelaySeconds, periodSeconds, successThreshold, tcpSocket, host, port, timeoutSeconds, ports, containerPort, predictRoute, sharedMemorySizeMb, startupProbe, exec, command, failureThreshold, grpc, port, service, httpGet, host, httpHeaders, value, path, port, scheme, initialDelaySeconds, periodSeconds, successThreshold, tcpSocket, host, port, timeoutSeconds, testAnnotationsCount, testDataItemsCount, trainingAnnotationsCount, trainingDataItemsCount, validationAnnotationsCount, validationDataItemsCount, checkpointId, deployedModelId, endpoint, kmsKeyName, featureAttributionsSchemaUri, inputs, denseShapeTensorName, encodedBaselines, encodedTensorName, encoding, featureValueDomain, maxValue, minValue, originalMean, originalStddev, groupName, indexFeatureMapping, indicesTensorName, inputBaselines, inputTensorName, modality, visualization, clipPercentLowerbound, clipPercentUpperbound, colorMap, overlayType, polarity, type, latentSpaceSource, outputs, displayNameMappingKey, indexDisplayNameMapping, outputTensorName, parameters, examples, exampleGcsSource, dataFormat, gcsSource, uris, nearestNeighborSearchConfig, neighborCount, presets, modality, query, integratedGradientsAttribution, blurBaselineConfig, maxBlurSigma, smoothGradConfig, featureNoiseSigma, noiseSigma, noiseSigma, noisySampleCount, stepCount, outputIndices, sampledShapleyAttribution, pathCount, topK, xraiAttribution, blurBaselineConfig, maxBlurSigma, smoothGradConfig, featureNoiseSigma, noiseSigma, noiseSigma, noisySampleCount, stepCount, copy, sourceType, model, instanceSchemaUri, parametersSchemaUri, predictionSchemaUri, exportableContents, id",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          genieSource: _genieSource,
+          baseModelUri: _baseModelUri,
+          modelGardenSource: _modelGardenSource,
+          publicModelName: _publicModelName,
+          skipHfModelCache: _skipHfModelCache,
+          checkpointId: _checkpointId,
+          epoch: _epoch,
+          step: _step,
+          args: _args,
+          command: _command,
+          deploymentTimeout: _deploymentTimeout,
+          env: _env,
+          value: _value,
+          grpcPorts: _grpcPorts,
+          containerPort: _containerPort,
+          healthProbe: _healthProbe,
+          exec: _exec,
+          failureThreshold: _failureThreshold,
+          grpc: _grpc,
+          port: _port,
+          service: _service,
+          httpGet: _httpGet,
+          host: _host,
+          httpHeaders: _httpHeaders,
+          path: _path,
+          scheme: _scheme,
+          initialDelaySeconds: _initialDelaySeconds,
+          periodSeconds: _periodSeconds,
+          successThreshold: _successThreshold,
+          tcpSocket: _tcpSocket,
+          timeoutSeconds: _timeoutSeconds,
+          healthRoute: _healthRoute,
+          imageUri: _imageUri,
+          invokeRoutePrefix: _invokeRoutePrefix,
+          livenessProbe: _livenessProbe,
+          ports: _ports,
+          predictRoute: _predictRoute,
+          sharedMemorySizeMb: _sharedMemorySizeMb,
+          startupProbe: _startupProbe,
+          testAnnotationsCount: _testAnnotationsCount,
+          testDataItemsCount: _testDataItemsCount,
+          trainingAnnotationsCount: _trainingAnnotationsCount,
+          trainingDataItemsCount: _trainingDataItemsCount,
+          validationAnnotationsCount: _validationAnnotationsCount,
+          validationDataItemsCount: _validationDataItemsCount,
+          deployedModelId: _deployedModelId,
+          endpoint: _endpoint,
+          kmsKeyName: _kmsKeyName,
+          featureAttributionsSchemaUri: _featureAttributionsSchemaUri,
+          inputs: _inputs,
+          denseShapeTensorName: _denseShapeTensorName,
+          encodedBaselines: _encodedBaselines,
+          encodedTensorName: _encodedTensorName,
+          encoding: _encoding,
+          featureValueDomain: _featureValueDomain,
+          maxValue: _maxValue,
+          minValue: _minValue,
+          originalMean: _originalMean,
+          originalStddev: _originalStddev,
+          groupName: _groupName,
+          indexFeatureMapping: _indexFeatureMapping,
+          indicesTensorName: _indicesTensorName,
+          inputBaselines: _inputBaselines,
+          inputTensorName: _inputTensorName,
+          modality: _modality,
+          visualization: _visualization,
+          clipPercentLowerbound: _clipPercentLowerbound,
+          clipPercentUpperbound: _clipPercentUpperbound,
+          colorMap: _colorMap,
+          overlayType: _overlayType,
+          polarity: _polarity,
+          type: _type,
+          latentSpaceSource: _latentSpaceSource,
+          outputs: _outputs,
+          displayNameMappingKey: _displayNameMappingKey,
+          indexDisplayNameMapping: _indexDisplayNameMapping,
+          outputTensorName: _outputTensorName,
+          parameters: _parameters,
+          examples: _examples,
+          exampleGcsSource: _exampleGcsSource,
+          dataFormat: _dataFormat,
+          gcsSource: _gcsSource,
+          uris: _uris,
+          nearestNeighborSearchConfig: _nearestNeighborSearchConfig,
+          neighborCount: _neighborCount,
+          presets: _presets,
+          query: _query,
+          integratedGradientsAttribution: _integratedGradientsAttribution,
+          blurBaselineConfig: _blurBaselineConfig,
+          maxBlurSigma: _maxBlurSigma,
+          smoothGradConfig: _smoothGradConfig,
+          featureNoiseSigma: _featureNoiseSigma,
+          noiseSigma: _noiseSigma,
+          noisySampleCount: _noisySampleCount,
+          stepCount: _stepCount,
+          outputIndices: _outputIndices,
+          sampledShapleyAttribution: _sampledShapleyAttribution,
+          pathCount: _pathCount,
+          topK: _topK,
+          xraiAttribution: _xraiAttribution,
+          copy: _copy,
+          sourceType: _sourceType,
+          model: _model,
+          instanceSchemaUri: _instanceSchemaUri,
+          parametersSchemaUri: _parametersSchemaUri,
+          predictionSchemaUri: _predictionSchemaUri,
+          exportableContents: _exportableContents,
+          id: _id,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -2400,8 +2524,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2422,6 +2548,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2446,8 +2577,11 @@ export const model = {
     },
     list_checkpoints: {
       description: "list checkpoints",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2459,6 +2593,12 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
         }
         const result = await createResource(
           baseUrl,
@@ -2485,8 +2625,14 @@ export const model = {
     },
     list_versions: {
       description: "list versions",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        readMask: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2498,6 +2644,21 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["readMask"] !== undefined) {
+          params["readMask"] = String(args["readMask"]);
         }
         const result = await createResource(
           baseUrl,
@@ -2617,8 +2778,10 @@ export const model = {
     },
     test_iam_permissions: {
       description: "test iam permissions",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        permissions: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2639,6 +2802,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["permissions"] !== undefined) {
+          params["permissions"] = String(args["permissions"]);
+        }
         const result = await createResource(
           baseUrl,
           {

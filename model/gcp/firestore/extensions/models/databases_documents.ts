@@ -288,6 +288,21 @@ const GlobalArgsSchema = z.object({
   collectionId: z.string().describe(
     "Optional. The collection ID, relative to `parent`, to list. For example: `chatrooms` or `messages`. This is optional, and when not provided, Firestore will list documents from all collections under the provided `parent`.",
   ),
+  currentDocument_exists: z.string().describe(
+    "When set to `true`, the target document must exist. When set to `false`, the target document must not exist.",
+  ).optional(),
+  currentDocument_updateTime: z.string().describe(
+    "When set, the target document must exist and have been last updated at that time. Timestamp must be microsecond aligned.",
+  ).optional(),
+  mask_fieldPaths: z.string().describe(
+    "The list of field paths in the mask. See Document.fields for a field path syntax reference.",
+  ).optional(),
+  requestOptions_requestTags: z.string().describe(
+    "Optional. The request tags for the request. Request tags are user-provided strings used for usage monitoring, cost management, and observability. Callers can associate custom application context (such as component, microservice, feature name, or operation type) with database requests. These tags are collected and aggregated in usage and monitoring reports, allowing billable operations and usage metrics to be sliced and analyzed by tag. These tags *only* show up in monitoring and are visible in administrative operations (such as usage reports). They do not affect data storage, query semantics, or request execution. Cardinality and Best Practices: - Request tags are most effective when using a bounded set of distinct values (e.g., fewer than 100 distinct tags across an entire database). Using a large number of distinct tags may result in tags being omitted from top usage dashboards. - Use structured identifiers (for example: `app=cart`, `env=prod`, `service=checkout`) and avoid high-cardinality values such as UUIDs, request IDs, timestamps, user IDs, or document keys. - Do not include sensitive data or personally identifiable information (PII) in request tags, as they show up in administrative monitoring. The tags are processed as follows: - Leading and trailing whitespace is trimmed. - Empty tags (after trimming) are filtered out. - Truncated to a maximum of 510 characters. - Deduplicated within the same request. - Limited to a maximum of 50 tags per request (excess tags are silently discarded).",
+  ).optional(),
+  updateMask_fieldPaths: z.string().describe(
+    "The list of field paths in the mask. See Document.fields for a field path syntax reference.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -406,6 +421,21 @@ const InputsSchema = z.object({
   collectionId: z.string().describe(
     "Optional. The collection ID, relative to `parent`, to list. For example: `chatrooms` or `messages`. This is optional, and when not provided, Firestore will list documents from all collections under the provided `parent`.",
   ).optional(),
+  currentDocument_exists: z.string().describe(
+    "When set to `true`, the target document must exist. When set to `false`, the target document must not exist.",
+  ).optional(),
+  currentDocument_updateTime: z.string().describe(
+    "When set, the target document must exist and have been last updated at that time. Timestamp must be microsecond aligned.",
+  ).optional(),
+  mask_fieldPaths: z.string().describe(
+    "The list of field paths in the mask. See Document.fields for a field path syntax reference.",
+  ).optional(),
+  requestOptions_requestTags: z.string().describe(
+    "Optional. The request tags for the request. Request tags are user-provided strings used for usage monitoring, cost management, and observability. Callers can associate custom application context (such as component, microservice, feature name, or operation type) with database requests. These tags are collected and aggregated in usage and monitoring reports, allowing billable operations and usage metrics to be sliced and analyzed by tag. These tags *only* show up in monitoring and are visible in administrative operations (such as usage reports). They do not affect data storage, query semantics, or request execution. Cardinality and Best Practices: - Request tags are most effective when using a bounded set of distinct values (e.g., fewer than 100 distinct tags across an entire database). Using a large number of distinct tags may result in tags being omitted from top usage dashboards. - Use structured identifiers (for example: `app=cart`, `env=prod`, `service=checkout`) and avoid high-cardinality values such as UUIDs, request IDs, timestamps, user IDs, or document keys. - Do not include sensitive data or personally identifiable information (PII) in request tags, as they show up in administrative monitoring. The tags are processed as follows: - Leading and trailing whitespace is trimmed. - Empty tags (after trimming) are filtered out. - Truncated to a maximum of 510 characters. - Deduplicated within the same request. - Limited to a maximum of 50 tags per request (excess tags are silently discarded).",
+  ).optional(),
+  updateMask_fieldPaths: z.string().describe(
+    "The list of field paths in the mask. See Document.fields for a field path syntax reference.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -440,7 +470,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Firestore Databases.Documents. Registered at `@swamp/gcp/firestore/databases-documents`. */
 export const model = {
   type: "@swamp/gcp/firestore/databases-documents",
-  version: "2026.08.20.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -632,6 +662,44 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description:
+        "Added: currentDocument_exists, currentDocument_updateTime, mask_fieldPaths, requestOptions_requestTags, updateMask_fieldPaths",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: arrayValue, values, booleanValue, bytesValue, doubleValue, fieldReferenceValue, functionValue, args, options, geoPointValue, latitude, longitude, integerValue, mapValue, nullValue, pipelineValue, stages, args, options, referenceValue, stringValue, timestampValue, variableReferenceValue",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          arrayValue: _arrayValue,
+          values: _values,
+          booleanValue: _booleanValue,
+          bytesValue: _bytesValue,
+          doubleValue: _doubleValue,
+          fieldReferenceValue: _fieldReferenceValue,
+          functionValue: _functionValue,
+          args: _args,
+          options: _options,
+          geoPointValue: _geoPointValue,
+          latitude: _latitude,
+          longitude: _longitude,
+          integerValue: _integerValue,
+          mapValue: _mapValue,
+          nullValue: _nullValue,
+          pipelineValue: _pipelineValue,
+          stages: _stages,
+          referenceValue: _referenceValue,
+          stringValue: _stringValue,
+          timestampValue: _timestampValue,
+          variableReferenceValue: _variableReferenceValue,
+          ...rest
+        } = old;
+        return rest;
+      },
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -711,6 +779,21 @@ export const model = {
         if (g["createTime"] !== undefined) body["createTime"] = g["createTime"];
         if (g["fields"] !== undefined) body["fields"] = g["fields"];
         if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
+        if (g["currentDocument_exists"] !== undefined) {
+          body["currentDocument_exists"] = g["currentDocument_exists"];
+        }
+        if (g["currentDocument_updateTime"] !== undefined) {
+          body["currentDocument_updateTime"] = g["currentDocument_updateTime"];
+        }
+        if (g["mask_fieldPaths"] !== undefined) {
+          body["mask_fieldPaths"] = g["mask_fieldPaths"];
+        }
+        if (g["requestOptions_requestTags"] !== undefined) {
+          body["requestOptions_requestTags"] = g["requestOptions_requestTags"];
+        }
+        if (g["updateMask_fieldPaths"] !== undefined) {
+          body["updateMask_fieldPaths"] = g["updateMask_fieldPaths"];
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -1162,6 +1245,9 @@ export const model = {
         fields: z.any().optional(),
         name: z.any().optional(),
         updateTime: z.any().optional(),
+        documentId: z.any().optional(),
+        mask_fieldPaths: z.any().optional(),
+        requestOptions_requestTags: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1173,6 +1259,17 @@ export const model = {
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
         if (g["collectionId"] !== undefined) {
           params["collectionId"] = String(g["collectionId"]);
+        }
+        if (args["documentId"] !== undefined) {
+          params["documentId"] = String(args["documentId"]);
+        }
+        if (args["mask_fieldPaths"] !== undefined) {
+          params["mask.fieldPaths"] = String(args["mask_fieldPaths"]);
+        }
+        if (args["requestOptions_requestTags"] !== undefined) {
+          params["requestOptions.requestTags"] = String(
+            args["requestOptions_requestTags"],
+          );
         }
         const body: Record<string, unknown> = {};
         if (args["createTime"] !== undefined) {
@@ -1325,8 +1422,18 @@ export const model = {
     },
     list_documents: {
       description: "list documents",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        mask_fieldPaths: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        readTime: z.any().optional(),
+        recursive: z.any().optional(),
+        requestOptions_requestTags: z.any().optional(),
+        showMissing: z.any().optional(),
+        transaction: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1336,6 +1443,35 @@ export const model = {
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
         if (g["collectionId"] !== undefined) {
           params["collectionId"] = String(g["collectionId"]);
+        }
+        if (args["mask_fieldPaths"] !== undefined) {
+          params["mask.fieldPaths"] = String(args["mask_fieldPaths"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["readTime"] !== undefined) {
+          params["readTime"] = String(args["readTime"]);
+        }
+        if (args["recursive"] !== undefined) {
+          params["recursive"] = String(args["recursive"]);
+        }
+        if (args["requestOptions_requestTags"] !== undefined) {
+          params["requestOptions.requestTags"] = String(
+            args["requestOptions_requestTags"],
+          );
+        }
+        if (args["showMissing"] !== undefined) {
+          params["showMissing"] = String(args["showMissing"]);
+        }
+        if (args["transaction"] !== undefined) {
+          params["transaction"] = String(args["transaction"]);
         }
         const result = await createResource(
           baseUrl,

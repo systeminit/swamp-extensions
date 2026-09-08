@@ -1191,7 +1191,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dialogflow Agents.Flows. Registered at `@swamp/gcp/dialogflow/agents-flows`. */
 export const model = {
   type: "@swamp/gcp/dialogflow/agents-flows",
-  version: "2026.08.17.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1340,6 +1340,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.17.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1770,8 +1775,10 @@ export const model = {
     },
     get_validation_result: {
       description: "get validation result",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        languageCode: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1783,6 +1790,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["languageCode"] !== undefined) {
+          params["languageCode"] = String(args["languageCode"]);
         }
         const result = await createResource(
           baseUrl,

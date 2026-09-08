@@ -311,7 +311,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Agent Registry Bindings. Registered at `@swamp/gcp/agentregistry/bindings`. */
 export const model = {
   type: "@swamp/gcp/agentregistry/bindings",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.21.2",
@@ -325,6 +325,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -685,8 +690,13 @@ export const model = {
     },
     fetch_available: {
       description: "fetch available",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        sourceIdentifier: z.any().optional(),
+        targetIdentifier: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -696,6 +706,18 @@ export const model = {
         params["parent"] = `projects/${projectId}/locations/${
           String(g["location"] ?? "")
         }`;
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["sourceIdentifier"] !== undefined) {
+          params["sourceIdentifier"] = String(args["sourceIdentifier"]);
+        }
+        if (args["targetIdentifier"] !== undefined) {
+          params["targetIdentifier"] = String(args["targetIdentifier"]);
+        }
         const result = await createResource(
           baseUrl,
           {

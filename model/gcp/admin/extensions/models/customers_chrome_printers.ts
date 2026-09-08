@@ -181,6 +181,9 @@ const GlobalArgsSchema = z.object({
   useDriverlessConfig: z.boolean().describe(
     "Editable. flag to use driverless configuration or not. If it's set to be true, make_and_model can be ignored",
   ).optional(),
+  clearMask: z.string().describe(
+    "The list of fields to be cleared. Note, some of the fields are read only and cannot be updated. Values for not specified fields will be patched.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -231,6 +234,9 @@ const InputsSchema = z.object({
   useDriverlessConfig: z.boolean().describe(
     "Editable. flag to use driverless configuration or not. If it's set to be true, make_and_model can be ignored",
   ).optional(),
+  clearMask: z.string().describe(
+    "The list of fields to be cleared. Note, some of the fields are read only and cannot be updated. Values for not specified fields will be patched.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -262,7 +268,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Admin SDK Customers.Chrome.Printers. Registered at `@swamp/gcp/admin/customers-chrome-printers`. */
 export const model = {
   type: "@swamp/gcp/admin/customers-chrome-printers",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -272,6 +278,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: clearMask",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -419,6 +430,11 @@ export const model = {
         if (g["uri"] !== undefined) body["uri"] = g["uri"];
         if (g["useDriverlessConfig"] !== undefined) {
           body["useDriverlessConfig"] = g["useDriverlessConfig"];
+        }
+        if (g["clearMask"] !== undefined) {
+          params["clearMask"] = String(g["clearMask"]);
+        } else if (existing["clearMask"] !== undefined) {
+          params["clearMask"] = String(existing["clearMask"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
@@ -685,8 +701,12 @@ export const model = {
     },
     list_printer_models: {
       description: "list printer models",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -694,6 +714,15 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {

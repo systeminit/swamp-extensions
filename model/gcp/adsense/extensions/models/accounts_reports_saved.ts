@@ -144,7 +144,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud AdSense Management Accounts.Reports.Saved. Registered at `@swamp/gcp/adsense/accounts-reports-saved`. */
 export const model = {
   type: "@swamp/gcp/adsense/accounts-reports-saved",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -248,6 +248,16 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -411,8 +421,19 @@ export const model = {
     },
     generate: {
       description: "generate",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        currencyCode: z.any().optional(),
+        dateRange: z.any().optional(),
+        endDate_day: z.any().optional(),
+        endDate_month: z.any().optional(),
+        endDate_year: z.any().optional(),
+        languageCode: z.any().optional(),
+        reportingTimeZone: z.any().optional(),
+        startDate_day: z.any().optional(),
+        startDate_month: z.any().optional(),
+        startDate_year: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -420,6 +441,36 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["currencyCode"] !== undefined) {
+          params["currencyCode"] = String(args["currencyCode"]);
+        }
+        if (args["dateRange"] !== undefined) {
+          params["dateRange"] = String(args["dateRange"]);
+        }
+        if (args["endDate_day"] !== undefined) {
+          params["endDate.day"] = String(args["endDate_day"]);
+        }
+        if (args["endDate_month"] !== undefined) {
+          params["endDate.month"] = String(args["endDate_month"]);
+        }
+        if (args["endDate_year"] !== undefined) {
+          params["endDate.year"] = String(args["endDate_year"]);
+        }
+        if (args["languageCode"] !== undefined) {
+          params["languageCode"] = String(args["languageCode"]);
+        }
+        if (args["reportingTimeZone"] !== undefined) {
+          params["reportingTimeZone"] = String(args["reportingTimeZone"]);
+        }
+        if (args["startDate_day"] !== undefined) {
+          params["startDate.day"] = String(args["startDate_day"]);
+        }
+        if (args["startDate_month"] !== undefined) {
+          params["startDate.month"] = String(args["startDate_month"]);
+        }
+        if (args["startDate_year"] !== undefined) {
+          params["startDate.year"] = String(args["startDate_year"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -453,8 +504,19 @@ export const model = {
     },
     generate_csv: {
       description: "generate csv",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        currencyCode: z.any().optional(),
+        dateRange: z.any().optional(),
+        endDate_day: z.any().optional(),
+        endDate_month: z.any().optional(),
+        endDate_year: z.any().optional(),
+        languageCode: z.any().optional(),
+        reportingTimeZone: z.any().optional(),
+        startDate_day: z.any().optional(),
+        startDate_month: z.any().optional(),
+        startDate_year: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -462,6 +524,36 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["currencyCode"] !== undefined) {
+          params["currencyCode"] = String(args["currencyCode"]);
+        }
+        if (args["dateRange"] !== undefined) {
+          params["dateRange"] = String(args["dateRange"]);
+        }
+        if (args["endDate_day"] !== undefined) {
+          params["endDate.day"] = String(args["endDate_day"]);
+        }
+        if (args["endDate_month"] !== undefined) {
+          params["endDate.month"] = String(args["endDate_month"]);
+        }
+        if (args["endDate_year"] !== undefined) {
+          params["endDate.year"] = String(args["endDate_year"]);
+        }
+        if (args["languageCode"] !== undefined) {
+          params["languageCode"] = String(args["languageCode"]);
+        }
+        if (args["reportingTimeZone"] !== undefined) {
+          params["reportingTimeZone"] = String(args["reportingTimeZone"]);
+        }
+        if (args["startDate_day"] !== undefined) {
+          params["startDate.day"] = String(args["startDate_day"]);
+        }
+        if (args["startDate_month"] !== undefined) {
+          params["startDate.month"] = String(args["startDate_month"]);
+        }
+        if (args["startDate_year"] !== undefined) {
+          params["startDate.year"] = String(args["startDate_year"]);
+        }
         const result = await createResource(
           baseUrl,
           {

@@ -252,6 +252,12 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  force: z.string().describe(
+    "Optional. If set to true, will not check plan duration against backup vault enforcement duration.",
+  ).optional(),
+  forceUpdateAccessRestriction: z.string().describe(
+    "Optional. If set to true, we will force update access restriction even if some non compliant data sources are present. The default is 'false'.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -333,6 +339,12 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  force: z.string().describe(
+    "Optional. If set to true, will not check plan duration against backup vault enforcement duration.",
+  ).optional(),
+  forceUpdateAccessRestriction: z.string().describe(
+    "Optional. If set to true, we will force update access restriction even if some non compliant data sources are present. The default is 'false'.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -364,7 +376,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Backup and DR Service BackupVaults. Registered at `@swamp/gcp/backupdr/backupvaults`. */
 export const model = {
   type: "@swamp/gcp/backupdr/backupvaults",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -499,6 +511,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: force, forceUpdateAccessRestriction",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -697,6 +714,19 @@ export const model = {
           body["encryptionConfig"] = g["encryptionConfig"];
         }
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["force"] !== undefined) params["force"] = String(g["force"]);
+        else if (existing["force"] !== undefined) {
+          params["force"] = String(existing["force"]);
+        }
+        if (g["forceUpdateAccessRestriction"] !== undefined) {
+          params["forceUpdateAccessRestriction"] = String(
+            g["forceUpdateAccessRestriction"],
+          );
+        } else if (existing["forceUpdateAccessRestriction"] !== undefined) {
+          params["forceUpdateAccessRestriction"] = String(
+            existing["forceUpdateAccessRestriction"],
+          );
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -897,8 +927,13 @@ export const model = {
     },
     fetch_usable: {
       description: "fetch usable",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -908,6 +943,18 @@ export const model = {
         params["parent"] = `projects/${projectId}/locations/${
           String(g["location"] ?? "")
         }`;
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {

@@ -174,6 +174,9 @@ const GlobalArgsSchema = z.object({
     "DELETED",
     "EXPIRED",
   ]).describe("Output only. The states of the CmekConfig.").optional(),
+  setDefault: z.string().describe(
+    "Set the following CmekConfig as the default to be used for child resources if one is not specified.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -242,6 +245,9 @@ const InputsSchema = z.object({
     "DELETED",
     "EXPIRED",
   ]).describe("Output only. The states of the CmekConfig.").optional(),
+  setDefault: z.string().describe(
+    "Set the following CmekConfig as the default to be used for child resources if one is not specified.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -273,7 +279,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Discovery Engine CmekConfigs. Registered at `@swamp/gcp/discoveryengine/cmekconfigs`. */
 export const model = {
   type: "@swamp/gcp/discoveryengine/cmekconfigs",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -405,6 +411,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: setDefault",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -515,6 +526,11 @@ export const model = {
           body["singleRegionKeys"] = g["singleRegionKeys"];
         }
         if (g["state"] !== undefined) body["state"] = g["state"];
+        if (g["setDefault"] !== undefined) {
+          params["setDefault"] = String(g["setDefault"]);
+        } else if (existing["setDefault"] !== undefined) {
+          params["setDefault"] = String(existing["setDefault"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

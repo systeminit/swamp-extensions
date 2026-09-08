@@ -598,6 +598,12 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   userProject: z.string().describe("The project to be billed for this request.")
     .optional(),
+  ifMetagenerationMatch: z.string().describe(
+    "Makes the return of the bucket metadata conditional on whether the bucket's current metageneration matches the given value.",
+  ).optional(),
+  ifMetagenerationNotMatch: z.string().describe(
+    "Makes the return of the bucket metadata conditional on whether the bucket's current metageneration does not match the given value.",
+  ).optional(),
 });
 
 const iamBindingMethods = {
@@ -1376,6 +1382,12 @@ const InputsSchema = z.object({
   ).optional(),
   userProject: z.string().describe("The project to be billed for this request.")
     .optional(),
+  ifMetagenerationMatch: z.string().describe(
+    "Makes the return of the bucket metadata conditional on whether the bucket's current metageneration matches the given value.",
+  ).optional(),
+  ifMetagenerationNotMatch: z.string().describe(
+    "Makes the return of the bucket metadata conditional on whether the bucket's current metageneration does not match the given value.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -1403,7 +1415,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Storage JSON Buckets. Registered at `@swamp/gcp/storage/buckets`. */
 export const model = {
   type: "@swamp/gcp/storage/buckets",
-  version: "2026.08.12.3",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1578,6 +1590,11 @@ export const model = {
     {
       toVersion: "2026.08.12.3",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: ifMetagenerationMatch, ifMetagenerationNotMatch",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1848,6 +1865,22 @@ export const model = {
         if (g["updated"] !== undefined) body["updated"] = g["updated"];
         if (g["versioning"] !== undefined) body["versioning"] = g["versioning"];
         if (g["website"] !== undefined) body["website"] = g["website"];
+        if (g["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(g["ifMetagenerationMatch"]);
+        } else if (existing["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(
+            existing["ifMetagenerationMatch"],
+          );
+        }
+        if (g["ifMetagenerationNotMatch"] !== undefined) {
+          params["ifMetagenerationNotMatch"] = String(
+            g["ifMetagenerationNotMatch"],
+          );
+        } else if (existing["ifMetagenerationNotMatch"] !== undefined) {
+          params["ifMetagenerationNotMatch"] = String(
+            existing["ifMetagenerationNotMatch"],
+          );
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -2049,8 +2082,11 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        optionsRequestedPolicyVersion: z.any().optional(),
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2071,6 +2107,14 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["bucket"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2096,8 +2140,10 @@ export const model = {
     },
     get_storage_layout: {
       description: "get storage layout",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        prefix: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2118,6 +2164,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["bucket"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["prefix"] !== undefined) {
+          params["prefix"] = String(args["prefix"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2142,14 +2191,19 @@ export const model = {
     },
     lock_retention_policy: {
       description: "lock retention policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (g["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(g["ifMetagenerationMatch"]);
+        }
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -2164,8 +2218,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["bucket"] = existing["bucket"]?.toString() ??
           g["bucket"]?.toString() ?? "";
-        params["ifMetagenerationMatch"] = existing["name"]?.toString() ??
-          g["name"]?.toString() ?? "";
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2258,8 +2313,11 @@ export const model = {
     },
     restore: {
       description: "restore",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        projection: z.any().optional(),
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2283,6 +2341,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["bucket"] = existing["bucket"]?.toString() ??
           g["bucket"]?.toString() ?? "";
+        if (args["projection"] !== undefined) {
+          params["projection"] = String(args["projection"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2315,6 +2379,7 @@ export const model = {
         kind: z.any().optional(),
         resourceId: z.any().optional(),
         version: z.any().optional(),
+        userProject: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2337,6 +2402,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["bucket"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["bindings"] !== undefined) body["bindings"] = args["bindings"];
         if (args["etag"] !== undefined) body["etag"] = args["etag"];
@@ -2369,8 +2437,10 @@ export const model = {
     },
     test_iam_permissions: {
       description: "test iam permissions",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2393,6 +2463,9 @@ export const model = {
           g["bucket"]?.toString() ?? "";
         params["permissions"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {

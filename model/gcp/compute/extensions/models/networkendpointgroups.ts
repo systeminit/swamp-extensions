@@ -453,7 +453,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine NetworkEndpointGroups. Registered at `@swamp/gcp/compute/networkendpointgroups`. */
 export const model = {
   type: "@swamp/gcp/compute/networkendpointgroups",
-  version: "2026.08.28.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -617,6 +617,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.28.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -905,6 +910,7 @@ export const model = {
       description: "attach network endpoints",
       arguments: z.object({
         networkEndpoints: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -928,6 +934,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["networkEndpointGroup"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["networkEndpoints"] !== undefined) {
           body["networkEndpoints"] = args["networkEndpoints"];
@@ -961,6 +970,7 @@ export const model = {
       description: "detach network endpoints",
       arguments: z.object({
         networkEndpoints: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -984,6 +994,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["networkEndpointGroup"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["networkEndpoints"] !== undefined) {
           body["networkEndpoints"] = args["networkEndpoints"];
@@ -1017,6 +1030,11 @@ export const model = {
       description: "list network endpoints",
       arguments: z.object({
         healthStatus: z.any().optional(),
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1040,6 +1058,21 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["networkEndpointGroup"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["healthStatus"] !== undefined) {
           body["healthStatus"] = args["healthStatus"];

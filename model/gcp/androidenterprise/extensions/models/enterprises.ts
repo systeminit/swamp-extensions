@@ -161,7 +161,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Play EMM Enterprises. Registered at `@swamp/gcp/androidenterprise/enterprises`. */
 export const model = {
   type: "@swamp/gcp/androidenterprise/enterprises",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -270,6 +270,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -427,14 +432,19 @@ export const model = {
     },
     acknowledge_notification_set: {
       description: "acknowledge notification set",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        notificationSetId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["notificationSetId"] !== undefined) {
+          params["notificationSetId"] = String(args["notificationSetId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -457,14 +467,23 @@ export const model = {
     },
     complete_signup: {
       description: "complete signup",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        completionToken: z.any().optional(),
+        enterpriseToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["completionToken"] !== undefined) {
+          params["completionToken"] = String(args["completionToken"]);
+        }
+        if (args["enterpriseToken"] !== undefined) {
+          params["enterpriseToken"] = String(args["enterpriseToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -637,8 +656,11 @@ export const model = {
     },
     generate_enterprise_upgrade_url: {
       description: "generate enterprise upgrade url",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        adminEmail: z.any().optional(),
+        allowedDomains: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -659,6 +681,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["enterpriseId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["adminEmail"] !== undefined) {
+          params["adminEmail"] = String(args["adminEmail"]);
+        }
+        if (args["allowedDomains"] !== undefined) {
+          params["allowedDomains"] = String(args["allowedDomains"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -685,14 +713,27 @@ export const model = {
     },
     generate_signup_url: {
       description: "generate signup url",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        adminEmail: z.any().optional(),
+        allowedDomains: z.any().optional(),
+        callbackUrl: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["adminEmail"] !== undefined) {
+          params["adminEmail"] = String(args["adminEmail"]);
+        }
+        if (args["allowedDomains"] !== undefined) {
+          params["allowedDomains"] = String(args["allowedDomains"]);
+        }
+        if (args["callbackUrl"] !== undefined) {
+          params["callbackUrl"] = String(args["callbackUrl"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -718,8 +759,10 @@ export const model = {
     },
     get_service_account: {
       description: "get service account",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        keyType: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -740,6 +783,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["enterpriseId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["keyType"] !== undefined) {
+          params["keyType"] = String(args["keyType"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -811,14 +857,19 @@ export const model = {
     },
     pull_notification_set: {
       description: "pull notification set",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestMode: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["requestMode"] !== undefined) {
+          params["requestMode"] = String(args["requestMode"]);
+        }
         const result = await createResource(
           baseUrl,
           {

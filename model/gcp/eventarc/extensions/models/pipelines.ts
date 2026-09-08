@@ -321,6 +321,9 @@ const GlobalArgsSchema = z.object({
   pipelineId: z.string().describe(
     "Required. The user-provided ID to be assigned to the Pipeline. It should match the format `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the Pipeline is not found, a new Pipeline will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -540,6 +543,9 @@ const InputsSchema = z.object({
   pipelineId: z.string().describe(
     "Required. The user-provided ID to be assigned to the Pipeline. It should match the format `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the Pipeline is not found, a new Pipeline will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -571,7 +577,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Eventarc Pipelines. Registered at `@swamp/gcp/eventarc/pipelines`. */
 export const model = {
   type: "@swamp/gcp/eventarc/pipelines",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -702,6 +708,47 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: authenticationConfig, googleOidc, audience, serviceAccount, oauthToken, scope, serviceAccount, httpEndpoint, messageBindingTemplate, uri, messageBus, networkConfig, networkAttachment, outputPayloadFormat, avro, schemaDefinition, json, protobuf, schemaDefinition, topic, workflow, avro, schemaDefinition, json, protobuf, schemaDefinition, logSeverity, transformation, transformationTemplate, maxAttempts, maxRetryDelay, minRetryDelay",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          authenticationConfig: _authenticationConfig,
+          googleOidc: _googleOidc,
+          audience: _audience,
+          serviceAccount: _serviceAccount,
+          oauthToken: _oauthToken,
+          scope: _scope,
+          httpEndpoint: _httpEndpoint,
+          messageBindingTemplate: _messageBindingTemplate,
+          uri: _uri,
+          messageBus: _messageBus,
+          networkConfig: _networkConfig,
+          networkAttachment: _networkAttachment,
+          outputPayloadFormat: _outputPayloadFormat,
+          avro: _avro,
+          schemaDefinition: _schemaDefinition,
+          json: _json,
+          protobuf: _protobuf,
+          topic: _topic,
+          workflow: _workflow,
+          logSeverity: _logSeverity,
+          transformation: _transformation,
+          transformationTemplate: _transformationTemplate,
+          maxAttempts: _maxAttempts,
+          maxRetryDelay: _maxRetryDelay,
+          minRetryDelay: _minRetryDelay,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -888,6 +935,11 @@ export const model = {
         if (g["mediations"] !== undefined) body["mediations"] = g["mediations"];
         if (g["retryPolicy"] !== undefined) {
           body["retryPolicy"] = g["retryPolicy"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
@@ -1081,8 +1133,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1103,6 +1157,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

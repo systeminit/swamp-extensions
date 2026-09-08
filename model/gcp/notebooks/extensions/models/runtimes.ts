@@ -786,7 +786,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Notebooks Runtimes. Registered at `@swamp/gcp/notebooks/runtimes`. */
 export const model = {
   type: "@swamp/gcp/notebooks/runtimes",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -797,6 +797,80 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: accessType, proxyUri, runtimeOwner, customGpuDriverPath, disableTerminal, enableHealthMonitoring, idleShutdown, idleShutdownTimeout, installGpuDriver, kernels, repository, tag, mixerDisabled, notebookUpgradeSchedule, postStartupScript, postStartupScriptBehavior, upgradeable, version, instanceId, instanceName, virtualMachineConfig, acceleratorConfig, coreCount, type, bootImage, containerImages, repository, tag, dataDisk, autoDelete, boot, deviceName, guestOsFeatures, type, index, initializeParams, description, diskName, diskSizeGb, diskType, interface, kind, licenses, mode, source, type, encryptionConfig, kmsKey, guestAttributes, internalIpOnly, machineType, metadata, network, nicType, reservedIpRange, shieldedInstanceConfig, enableIntegrityMonitoring, enableSecureBoot, enableVtpm, subnet, tags, zone",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          accessType: _accessType,
+          proxyUri: _proxyUri,
+          runtimeOwner: _runtimeOwner,
+          customGpuDriverPath: _customGpuDriverPath,
+          disableTerminal: _disableTerminal,
+          enableHealthMonitoring: _enableHealthMonitoring,
+          idleShutdown: _idleShutdown,
+          idleShutdownTimeout: _idleShutdownTimeout,
+          installGpuDriver: _installGpuDriver,
+          kernels: _kernels,
+          repository: _repository,
+          tag: _tag,
+          mixerDisabled: _mixerDisabled,
+          notebookUpgradeSchedule: _notebookUpgradeSchedule,
+          postStartupScript: _postStartupScript,
+          postStartupScriptBehavior: _postStartupScriptBehavior,
+          upgradeable: _upgradeable,
+          version: _version,
+          instanceId: _instanceId,
+          instanceName: _instanceName,
+          virtualMachineConfig: _virtualMachineConfig,
+          acceleratorConfig: _acceleratorConfig,
+          coreCount: _coreCount,
+          type: _type,
+          bootImage: _bootImage,
+          containerImages: _containerImages,
+          dataDisk: _dataDisk,
+          autoDelete: _autoDelete,
+          boot: _boot,
+          deviceName: _deviceName,
+          guestOsFeatures: _guestOsFeatures,
+          index: _index,
+          initializeParams: _initializeParams,
+          description: _description,
+          diskName: _diskName,
+          diskSizeGb: _diskSizeGb,
+          diskType: _diskType,
+          interface: _interface,
+          kind: _kind,
+          licenses: _licenses,
+          mode: _mode,
+          source: _source,
+          encryptionConfig: _encryptionConfig,
+          kmsKey: _kmsKey,
+          guestAttributes: _guestAttributes,
+          internalIpOnly: _internalIpOnly,
+          machineType: _machineType,
+          metadata: _metadata,
+          network: _network,
+          nicType: _nicType,
+          reservedIpRange: _reservedIpRange,
+          shieldedInstanceConfig: _shieldedInstanceConfig,
+          enableIntegrityMonitoring: _enableIntegrityMonitoring,
+          enableSecureBoot: _enableSecureBoot,
+          enableVtpm: _enableVtpm,
+          subnet: _subnet,
+          tags: _tags,
+          zone: _zone,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1209,8 +1283,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1231,6 +1307,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

@@ -1392,7 +1392,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Domains Registrations. Registered at `@swamp/gcp/domains/registrations`. */
 export const model = {
   type: "@swamp/gcp/domains/registrations",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1558,6 +1558,60 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: adminContact, email, faxNumber, phoneNumber, postalAddress, addressLines, administrativeArea, languageCode, locality, organization, postalCode, recipients, regionCode, revision, sortingCode, sublocality, privacy, registrantContact, email, faxNumber, phoneNumber, postalAddress, addressLines, administrativeArea, languageCode, locality, organization, postalCode, recipients, regionCode, revision, sortingCode, sublocality, technicalContact, email, faxNumber, phoneNumber, postalAddress, addressLines, administrativeArea, languageCode, locality, organization, postalCode, recipients, regionCode, revision, sortingCode, sublocality, customDns, dsRecords, algorithm, digest, digestType, keyTag, nameServers, glueRecords, hostName, ipv4Addresses, ipv6Addresses, googleDomainsDns, dsRecords, algorithm, digest, digestType, keyTag, dsState, nameServers, googleDomainsRedirectsDataAvailable, effectiveTransferLockState, preferredRenewalMethod, renewalMethod, transferLockState, adminContact, email, faxNumber, phoneNumber, postalAddress, addressLines, administrativeArea, languageCode, locality, organization, postalCode, recipients, regionCode, revision, sortingCode, sublocality, privacy, registrantContact, email, faxNumber, phoneNumber, postalAddress, addressLines, administrativeArea, languageCode, locality, organization, postalCode, recipients, regionCode, revision, sortingCode, sublocality, technicalContact, email, faxNumber, phoneNumber, postalAddress, addressLines, administrativeArea, languageCode, locality, organization, postalCode, recipients, regionCode, revision, sortingCode, sublocality",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          adminContact: _adminContact,
+          email: _email,
+          faxNumber: _faxNumber,
+          phoneNumber: _phoneNumber,
+          postalAddress: _postalAddress,
+          addressLines: _addressLines,
+          administrativeArea: _administrativeArea,
+          languageCode: _languageCode,
+          locality: _locality,
+          organization: _organization,
+          postalCode: _postalCode,
+          recipients: _recipients,
+          regionCode: _regionCode,
+          revision: _revision,
+          sortingCode: _sortingCode,
+          sublocality: _sublocality,
+          privacy: _privacy,
+          registrantContact: _registrantContact,
+          technicalContact: _technicalContact,
+          customDns: _customDns,
+          dsRecords: _dsRecords,
+          algorithm: _algorithm,
+          digest: _digest,
+          digestType: _digestType,
+          keyTag: _keyTag,
+          nameServers: _nameServers,
+          glueRecords: _glueRecords,
+          hostName: _hostName,
+          ipv4Addresses: _ipv4Addresses,
+          ipv6Addresses: _ipv6Addresses,
+          googleDomainsDns: _googleDomainsDns,
+          dsState: _dsState,
+          googleDomainsRedirectsDataAvailable:
+            _googleDomainsRedirectsDataAvailable,
+          effectiveTransferLockState: _effectiveTransferLockState,
+          preferredRenewalMethod: _preferredRenewalMethod,
+          renewalMethod: _renewalMethod,
+          transferLockState: _transferLockState,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -2090,8 +2144,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2112,6 +2168,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2435,8 +2496,11 @@ export const model = {
     },
     retrieve_google_domains_dns_records: {
       description: "retrieve google domains dns records",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2457,6 +2521,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["registration"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2529,8 +2599,11 @@ export const model = {
     },
     retrieve_importable_domains: {
       description: "retrieve importable domains",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2539,6 +2612,12 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["location"] !== undefined) {
           params["location"] = String(g["location"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
         }
         const result = await createResource(
           baseUrl,
@@ -2566,8 +2645,10 @@ export const model = {
     },
     retrieve_register_parameters: {
       description: "retrieve register parameters",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        domainName: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2576,6 +2657,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["location"] !== undefined) {
           params["location"] = String(g["location"]);
+        }
+        if (args["domainName"] !== undefined) {
+          params["domainName"] = String(args["domainName"]);
         }
         const result = await createResource(
           baseUrl,
@@ -2602,8 +2686,10 @@ export const model = {
     },
     retrieve_transfer_parameters: {
       description: "retrieve transfer parameters",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        domainName: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2612,6 +2698,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["location"] !== undefined) {
           params["location"] = String(g["location"]);
+        }
+        if (args["domainName"] !== undefined) {
+          params["domainName"] = String(args["domainName"]);
         }
         const result = await createResource(
           baseUrl,
@@ -2638,8 +2727,10 @@ export const model = {
     },
     search_domains: {
       description: "search domains",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        query: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2648,6 +2739,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["location"] !== undefined) {
           params["location"] = String(g["location"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
         }
         const result = await createResource(
           baseUrl,

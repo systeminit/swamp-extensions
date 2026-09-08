@@ -749,7 +749,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Payments Reseller Subscription Partners.Subscriptions. Registered at `@swamp/gcp/paymentsresellersubscription/partners-subscriptions`. */
 export const model = {
   type: "@swamp/gcp/paymentsresellersubscription/partners-subscriptions",
-  version: "2026.08.18.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -922,6 +922,69 @@ export const model = {
       toVersion: "2026.08.18.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: amount, amountMicros, currencyCode, bundleDetails, bundleElementDetails, product, userAccountLinkedTime, description, finiteBillingCycleDetails, billingCycleCountLimit, lineItemFreeTrialEndTime, lineItemIndex, lineItemPromotionSpecs, freeTrialDuration, count, unit, introductoryPricingDetails, introductoryPricingSpecs, promotion, type, oneTimeRecurrenceDetails, servicePeriod, endTime, startTime, product, productPayload, googleHomePayload, attachedToGoogleStructure, googleStructureId, partnerStructureId, googleOnePayload, campaigns, offering, salesChannel, storeId, youtubePayload, accessEndTime, partnerEligibilityIds, partnerPlanType, recurrenceType, state, freeTrialDuration, count, unit, introductoryPricingDetails, introductoryPricingSpecs, discountAmount, discountRatioMicros, recurrenceCount, regionCode, promotion, type, postalCode, regionCode, billingCycleSpec, previousSubscriptionId",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          amount: _amount,
+          amountMicros: _amountMicros,
+          currencyCode: _currencyCode,
+          bundleDetails: _bundleDetails,
+          bundleElementDetails: _bundleElementDetails,
+          product: _product,
+          userAccountLinkedTime: _userAccountLinkedTime,
+          description: _description,
+          finiteBillingCycleDetails: _finiteBillingCycleDetails,
+          billingCycleCountLimit: _billingCycleCountLimit,
+          lineItemFreeTrialEndTime: _lineItemFreeTrialEndTime,
+          lineItemIndex: _lineItemIndex,
+          lineItemPromotionSpecs: _lineItemPromotionSpecs,
+          freeTrialDuration: _freeTrialDuration,
+          count: _count,
+          unit: _unit,
+          introductoryPricingDetails: _introductoryPricingDetails,
+          introductoryPricingSpecs: _introductoryPricingSpecs,
+          promotion: _promotion,
+          type: _type,
+          oneTimeRecurrenceDetails: _oneTimeRecurrenceDetails,
+          servicePeriod: _servicePeriod,
+          endTime: _endTime,
+          startTime: _startTime,
+          productPayload: _productPayload,
+          googleHomePayload: _googleHomePayload,
+          attachedToGoogleStructure: _attachedToGoogleStructure,
+          googleStructureId: _googleStructureId,
+          partnerStructureId: _partnerStructureId,
+          googleOnePayload: _googleOnePayload,
+          campaigns: _campaigns,
+          offering: _offering,
+          salesChannel: _salesChannel,
+          storeId: _storeId,
+          youtubePayload: _youtubePayload,
+          accessEndTime: _accessEndTime,
+          partnerEligibilityIds: _partnerEligibilityIds,
+          partnerPlanType: _partnerPlanType,
+          recurrenceType: _recurrenceType,
+          state: _state,
+          discountAmount: _discountAmount,
+          discountRatioMicros: _discountRatioMicros,
+          recurrenceCount: _recurrenceCount,
+          regionCode: _regionCode,
+          postalCode: _postalCode,
+          billingCycleSpec: _billingCycleSpec,
+          previousSubscriptionId: _previousSubscriptionId,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1252,6 +1315,9 @@ export const model = {
         state: z.any().optional(),
         updateTime: z.any().optional(),
         upgradeDowngradeDetails: z.any().optional(),
+        cycleOptions_initialCycleDuration_count: z.any().optional(),
+        cycleOptions_initialCycleDuration_unit: z.any().optional(),
+        subscriptionId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1261,6 +1327,19 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["cycleOptions_initialCycleDuration_count"] !== undefined) {
+          params["cycleOptions.initialCycleDuration.count"] = String(
+            args["cycleOptions_initialCycleDuration_count"],
+          );
+        }
+        if (args["cycleOptions_initialCycleDuration_unit"] !== undefined) {
+          params["cycleOptions.initialCycleDuration.unit"] = String(
+            args["cycleOptions_initialCycleDuration_unit"],
+          );
+        }
+        if (args["subscriptionId"] !== undefined) {
+          params["subscriptionId"] = String(args["subscriptionId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["cancellationDetails"] !== undefined) {
           body["cancellationDetails"] = args["cancellationDetails"];

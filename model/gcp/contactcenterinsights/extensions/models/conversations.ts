@@ -348,6 +348,13 @@ const GlobalArgsSchema = z.object({
   conversationId: z.string().describe(
     "A unique ID for the new conversation. This ID will become the final component of the conversation's resource name. If no ID is specified, a server-generated ID will be used. This value should be 4-64 characters and must match the regular expression `^[a-z0-9-]{4,64}$`. Valid characters are `a-z-`",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. Defaults to false. If set to true, and the conversation is not found, a new conversation will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
+  conversationAutoLabelingUpdateConfig_allowAutoLabelingUpdate: z.string()
+    .describe(
+      "Optional. If set to true, the conversation will be updated with auto labeling results.",
+    ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -825,6 +832,13 @@ const InputsSchema = z.object({
   conversationId: z.string().describe(
     "A unique ID for the new conversation. This ID will become the final component of the conversation's resource name. If no ID is specified, a server-generated ID will be used. This value should be 4-64 characters and must match the regular expression `^[a-z0-9-]{4,64}$`. Valid characters are `a-z-`",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. Defaults to false. If set to true, and the conversation is not found, a new conversation will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
+  conversationAutoLabelingUpdateConfig_allowAutoLabelingUpdate: z.string()
+    .describe(
+      "Optional. If set to true, the conversation will be updated with auto labeling results.",
+    ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -856,7 +870,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Contact Center AI Insights Conversations. Registered at `@swamp/gcp/contactcenterinsights/conversations`. */
 export const model = {
   type: "@swamp/gcp/contactcenterinsights/conversations",
-  version: "2026.08.27.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1053,6 +1067,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description:
+        "Added: allowMissing, conversationAutoLabelingUpdateConfig_allowAutoLabelingUpdate",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1236,6 +1256,18 @@ export const model = {
         }
         if (g["startTime"] !== undefined) body["startTime"] = g["startTime"];
         if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
+        if (
+          g["conversationAutoLabelingUpdateConfig_allowAutoLabelingUpdate"] !==
+            undefined
+        ) {
+          body["conversationAutoLabelingUpdateConfig_allowAutoLabelingUpdate"] =
+            g["conversationAutoLabelingUpdateConfig_allowAutoLabelingUpdate"];
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -1530,8 +1562,10 @@ export const model = {
     },
     calculate_stats: {
       description: "calculate stats",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1540,6 +1574,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["location"] !== undefined) {
           params["location"] = String(g["location"]);
+        }
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
         }
         const result = await createResource(
           baseUrl,

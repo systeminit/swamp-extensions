@@ -363,7 +363,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud YouTube Data Captions. Registered at `@swamp/gcp/youtube/captions`. */
 export const model = {
   type: "@swamp/gcp/youtube/captions",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -487,6 +487,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.13.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -818,8 +823,13 @@ export const model = {
     },
     download: {
       description: "download",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        onBehalfOf: z.any().optional(),
+        onBehalfOfContentOwner: z.any().optional(),
+        tfmt: z.any().optional(),
+        tlang: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -827,6 +837,18 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        if (args["onBehalfOf"] !== undefined) {
+          params["onBehalfOf"] = String(args["onBehalfOf"]);
+        }
+        if (args["onBehalfOfContentOwner"] !== undefined) {
+          params["onBehalfOfContentOwner"] = String(
+            args["onBehalfOfContentOwner"],
+          );
+        }
+        if (args["tfmt"] !== undefined) params["tfmt"] = String(args["tfmt"]);
+        if (args["tlang"] !== undefined) {
+          params["tlang"] = String(args["tlang"]);
+        }
         const result = await createResource(
           baseUrl,
           {

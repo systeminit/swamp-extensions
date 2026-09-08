@@ -159,7 +159,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Connectors Locations. Registered at `@swamp/gcp/connectors/locations`. */
 export const model = {
   type: "@swamp/gcp/connectors/locations",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -168,6 +168,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -403,6 +408,7 @@ export const model = {
         name: z.any().optional(),
         networkConfig: z.any().optional(),
         provisioned: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -412,6 +418,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["client"] !== undefined) body["client"] = args["client"];
         if (args["encryptionConfig"] !== undefined) {

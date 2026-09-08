@@ -930,7 +930,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Discovery Engine Collections.DataStores. Registered at `@swamp/gcp/discoveryengine/collections-datastores`. */
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-datastores",
-  version: "2026.09.01.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1103,6 +1103,71 @@ export const model = {
       toVersion: "2026.09.01.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: disableAutomaticRefresh, disableInitialIndex, chunkingConfig, layoutBasedChunkingConfig, chunkSize, includeAncestorHeadings, defaultParsingConfig, digitalParsingConfig, layoutParsingConfig, enableGetProcessedDocument, enableImageAnnotation, enableLlmLayoutParsing, enableTableAnnotation, excludeHtmlClasses, excludeHtmlElements, excludeHtmlIds, structuredContentTypes, ocrParsingConfig, enhancedDocumentElements, useNativeText, parsingConfigOverrides, digitalParsingConfig, layoutParsingConfig, enableGetProcessedDocument, enableImageAnnotation, enableLlmLayoutParsing, enableTableAnnotation, excludeHtmlClasses, excludeHtmlElements, excludeHtmlIds, structuredContentTypes, ocrParsingConfig, enhancedDocumentElements, useNativeText, alloyDbConfig, alloydbAiNlConfig, nlConfigId, alloydbConnectionConfig, authMode, database, enablePsvs, instance, password, user, returnedFields, notebooklmConfig, searchConfig, thirdPartyOauthConfig, appName, instanceName, enableConfigurableSchema, enableStaticIndexingForBatchIngestion, initialFilterGroups, mode, disabledForServing, jsonSchema, structSchema, dasherCustomerId, superAdminEmailAddress, superAdminServiceAccount, type",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          disableAutomaticRefresh: _disableAutomaticRefresh,
+          disableInitialIndex: _disableInitialIndex,
+          chunkingConfig: _chunkingConfig,
+          layoutBasedChunkingConfig: _layoutBasedChunkingConfig,
+          chunkSize: _chunkSize,
+          includeAncestorHeadings: _includeAncestorHeadings,
+          defaultParsingConfig: _defaultParsingConfig,
+          digitalParsingConfig: _digitalParsingConfig,
+          layoutParsingConfig: _layoutParsingConfig,
+          enableGetProcessedDocument: _enableGetProcessedDocument,
+          enableImageAnnotation: _enableImageAnnotation,
+          enableLlmLayoutParsing: _enableLlmLayoutParsing,
+          enableTableAnnotation: _enableTableAnnotation,
+          excludeHtmlClasses: _excludeHtmlClasses,
+          excludeHtmlElements: _excludeHtmlElements,
+          excludeHtmlIds: _excludeHtmlIds,
+          structuredContentTypes: _structuredContentTypes,
+          ocrParsingConfig: _ocrParsingConfig,
+          enhancedDocumentElements: _enhancedDocumentElements,
+          useNativeText: _useNativeText,
+          parsingConfigOverrides: _parsingConfigOverrides,
+          alloyDbConfig: _alloyDbConfig,
+          alloydbAiNlConfig: _alloydbAiNlConfig,
+          nlConfigId: _nlConfigId,
+          alloydbConnectionConfig: _alloydbConnectionConfig,
+          authMode: _authMode,
+          database: _database,
+          enablePsvs: _enablePsvs,
+          instance: _instance,
+          password: _password,
+          user: _user,
+          returnedFields: _returnedFields,
+          notebooklmConfig: _notebooklmConfig,
+          searchConfig: _searchConfig,
+          thirdPartyOauthConfig: _thirdPartyOauthConfig,
+          appName: _appName,
+          instanceName: _instanceName,
+          enableConfigurableSchema: _enableConfigurableSchema,
+          enableStaticIndexingForBatchIngestion:
+            _enableStaticIndexingForBatchIngestion,
+          initialFilterGroups: _initialFilterGroups,
+          mode: _mode,
+          disabledForServing: _disabledForServing,
+          jsonSchema: _jsonSchema,
+          structSchema: _structSchema,
+          dasherCustomerId: _dasherCustomerId,
+          superAdminEmailAddress: _superAdminEmailAddress,
+          superAdminServiceAccount: _superAdminServiceAccount,
+          type: _type,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1529,8 +1594,13 @@ export const model = {
     },
     complete_query: {
       description: "complete query",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        includeTailSuggestions: z.any().optional(),
+        query: z.any().optional(),
+        queryModel: z.any().optional(),
+        userPseudoId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1551,6 +1621,20 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["dataStore"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["includeTailSuggestions"] !== undefined) {
+          params["includeTailSuggestions"] = String(
+            args["includeTailSuggestions"],
+          );
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["queryModel"] !== undefined) {
+          params["queryModel"] = String(args["queryModel"]);
+        }
+        if (args["userPseudoId"] !== undefined) {
+          params["userPseudoId"] = String(args["userPseudoId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1579,8 +1663,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1601,6 +1687,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

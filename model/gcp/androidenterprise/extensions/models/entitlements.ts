@@ -182,6 +182,9 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   enterpriseId: z.string().describe("The ID of the enterprise."),
   userId: z.string().describe("The ID of the user."),
+  install: z.string().describe(
+    "Set to true to also install the product on all the user's devices where possible. Failure to install on one or more devices will not prevent this operation from returning successfully, as long as the entitlement was successfully assigned to the user.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -207,6 +210,9 @@ const InputsSchema = z.object({
   ).optional(),
   enterpriseId: z.string().describe("The ID of the enterprise.").optional(),
   userId: z.string().describe("The ID of the user.").optional(),
+  install: z.string().describe(
+    "Set to true to also install the product on all the user's devices where possible. Failure to install on one or more devices will not prevent this operation from returning successfully, as long as the entitlement was successfully assigned to the user.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -235,7 +241,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Play EMM Entitlements. Registered at `@swamp/gcp/androidenterprise/entitlements`. */
 export const model = {
   type: "@swamp/gcp/androidenterprise/entitlements",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -352,6 +358,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: install",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -443,6 +454,11 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["productId"] !== undefined) body["productId"] = g["productId"];
         if (g["reason"] !== undefined) body["reason"] = g["reason"];
+        if (g["install"] !== undefined) {
+          params["install"] = String(g["install"]);
+        } else if (existing["install"] !== undefined) {
+          params["install"] = String(existing["install"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

@@ -286,6 +286,9 @@ const GlobalArgsSchema = z.object({
   triggerId: z.string().describe(
     "Required. The user-provided ID to be assigned to the trigger.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the trigger is not found, a new trigger will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -454,6 +457,9 @@ const InputsSchema = z.object({
   triggerId: z.string().describe(
     "Required. The user-provided ID to be assigned to the trigger.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the trigger is not found, a new trigger will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -485,7 +491,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Eventarc Triggers. Registered at `@swamp/gcp/eventarc/triggers`. */
 export const model = {
   type: "@swamp/gcp/eventarc/triggers",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -616,6 +622,42 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: cloudFunction, cloudRun, path, region, service, gke, cluster, namespace, path, service, httpEndpoint, uri, networkConfig, networkAttachment, workflow, attribute, operator, value, maxAttempts, pubsub, subscription, topic",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          cloudFunction: _cloudFunction,
+          cloudRun: _cloudRun,
+          path: _path,
+          region: _region,
+          service: _service,
+          gke: _gke,
+          cluster: _cluster,
+          namespace: _namespace,
+          httpEndpoint: _httpEndpoint,
+          uri: _uri,
+          networkConfig: _networkConfig,
+          networkAttachment: _networkAttachment,
+          workflow: _workflow,
+          attribute: _attribute,
+          operator: _operator,
+          value: _value,
+          maxAttempts: _maxAttempts,
+          pubsub: _pubsub,
+          subscription: _subscription,
+          topic: _topic,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -793,6 +835,11 @@ export const model = {
           body["serviceAccount"] = g["serviceAccount"];
         }
         if (g["transport"] !== undefined) body["transport"] = g["transport"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -985,8 +1032,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1007,6 +1056,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

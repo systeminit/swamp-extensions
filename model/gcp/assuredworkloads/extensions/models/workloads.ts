@@ -526,7 +526,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Assured Workloads Workloads. Registered at `@swamp/gcp/assuredworkloads/workloads`. */
 export const model = {
   type: "@swamp/gcp/assuredworkloads/workloads",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -669,6 +669,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1056,8 +1061,13 @@ export const model = {
     },
     analyze_workload_move: {
       description: "analyze workload move",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        assetTypes: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        project: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1078,6 +1088,18 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["target"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["assetTypes"] !== undefined) {
+          params["assetTypes"] = String(args["assetTypes"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["project"] !== undefined) {
+          params["project"] = String(args["project"]);
+        }
         const result = await createResource(
           baseUrl,
           {

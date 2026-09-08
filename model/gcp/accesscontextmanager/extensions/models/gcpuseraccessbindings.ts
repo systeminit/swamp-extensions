@@ -299,6 +299,9 @@ const GlobalArgsSchema = z.object({
   }).describe(
     "Optional. The Google Cloud session length (GCSL) policy for the group key.",
   ).optional(),
+  append: z.string().describe(
+    'Optional. This field controls whether or not certain repeated settings in the update request overwrite or append to existing settings on the binding. If true, then append. Otherwise overwrite. So far, only scoped_access_settings with session_settings supports appending. Global access_levels, access_levels in scoped_access_settings, dry_run_access_levels, and session_settings are not compatible with append functionality, and the request will return an error if append=true when these settings are in the update_mask. The request will also return an error if append=true when "scoped_access_settings" is not set in the update_mask.',
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -503,6 +506,9 @@ const InputsSchema = z.object({
   }).describe(
     "Optional. The Google Cloud session length (GCSL) policy for the group key.",
   ).optional(),
+  append: z.string().describe(
+    'Optional. This field controls whether or not certain repeated settings in the update request overwrite or append to existing settings on the binding. If true, then append. Otherwise overwrite. So far, only scoped_access_settings with session_settings supports appending. Global access_levels, access_levels in scoped_access_settings, dry_run_access_levels, and session_settings are not compatible with append functionality, and the request will return an error if append=true when these settings are in the update_mask. The request will also return an error if append=true when "scoped_access_settings" is not set in the update_mask.',
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -534,7 +540,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Access Context Manager GcpUserAccessBindings. Registered at `@swamp/gcp/accesscontextmanager/gcpuseraccessbindings`. */
 export const model = {
   type: "@swamp/gcp/accesscontextmanager/gcpuseraccessbindings",
-  version: "2026.09.04.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -690,6 +696,11 @@ export const model = {
     {
       toVersion: "2026.09.04.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: append",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -853,6 +864,10 @@ export const model = {
         }
         if (g["sessionSettings"] !== undefined) {
           body["sessionSettings"] = g["sessionSettings"];
+        }
+        if (g["append"] !== undefined) params["append"] = String(g["append"]);
+        else if (existing["append"] !== undefined) {
+          params["append"] = String(existing["append"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

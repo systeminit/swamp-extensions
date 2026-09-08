@@ -517,7 +517,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud DoubleClick Bid Manager Queries. Registered at `@swamp/gcp/doubleclickbidmanager/queries`. */
 export const model = {
   type: "@swamp/gcp/doubleclickbidmanager/queries",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -631,6 +631,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -863,6 +868,7 @@ export const model = {
       description: "run",
       arguments: z.object({
         dataRange: z.any().optional(),
+        synchronous: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -885,6 +891,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["queryId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["synchronous"] !== undefined) {
+          params["synchronous"] = String(args["synchronous"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["dataRange"] !== undefined) {
           body["dataRange"] = args["dataRange"];

@@ -159,7 +159,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataform Locations. Registered at `@swamp/gcp/dataform/locations`. */
 export const model = {
   type: "@swamp/gcp/dataform/locations",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -288,6 +288,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -487,8 +492,13 @@ export const model = {
     },
     query_user_root_contents: {
       description: "query user root contents",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -509,6 +519,18 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["location"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -540,6 +562,7 @@ export const model = {
         defaultKmsKeyName: z.any().optional(),
         internalMetadata: z.any().optional(),
         name: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -549,6 +572,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["defaultKmsKeyName"] !== undefined) {
           body["defaultKmsKeyName"] = args["defaultKmsKeyName"];

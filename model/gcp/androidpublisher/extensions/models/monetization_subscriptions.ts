@@ -441,6 +441,12 @@ const GlobalArgsSchema = z.object({
   regionsVersion_version: z.string().describe(
     "Required. A string representing the version of available regions being used for the specified resource. Regional prices and latest supported version for the resource have to be specified according to the information published in [this article](https://support.google.com/googleplay/android-developer/answer/10532353). Each time the supported locations substantially change, the version will be incremented. Using this field will ensure that creating and updating the resource with an older region's version and set of regional prices and currencies will succeed even though a new version is available.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the subscription with the given package_name and product_id doesn't exist, the subscription will be created. If a new subscription is created, update_mask is ignored.",
+  ).optional(),
+  latencyTolerance: z.string().describe(
+    "Optional. The latency tolerance for the propagation of this product update. Defaults to latency-sensitive.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -777,6 +783,12 @@ const InputsSchema = z.object({
   regionsVersion_version: z.string().describe(
     "Required. A string representing the version of available regions being used for the specified resource. Regional prices and latest supported version for the resource have to be specified according to the information published in [this article](https://support.google.com/googleplay/android-developer/answer/10532353). Each time the supported locations substantially change, the version will be incremented. Using this field will ensure that creating and updating the resource with an older region's version and set of regional prices and currencies will succeed even though a new version is available.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the subscription with the given package_name and product_id doesn't exist, the subscription will be created. If a new subscription is created, update_mask is ignored.",
+  ).optional(),
+  latencyTolerance: z.string().describe(
+    "Optional. The latency tolerance for the propagation of this product update. Defaults to latency-sensitive.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -805,7 +817,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Play Android Developer Monetization.Subscriptions. Registered at `@swamp/gcp/androidpublisher/monetization-subscriptions`. */
 export const model = {
   type: "@swamp/gcp/androidpublisher/monetization-subscriptions",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -972,6 +984,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing, latencyTolerance",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1113,6 +1130,16 @@ export const model = {
         }
         if (g["taxAndComplianceSettings"] !== undefined) {
           body["taxAndComplianceSettings"] = g["taxAndComplianceSettings"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
+        if (g["latencyTolerance"] !== undefined) {
+          params["latencyTolerance"] = String(g["latencyTolerance"]);
+        } else if (existing["latencyTolerance"] !== undefined) {
+          params["latencyTolerance"] = String(existing["latencyTolerance"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
@@ -1334,8 +1361,10 @@ export const model = {
     },
     batch_get: {
       description: "batch get",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        productIds: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1344,6 +1373,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["packageName"] !== undefined) {
           params["packageName"] = String(g["packageName"]);
+        }
+        if (args["productIds"] !== undefined) {
+          params["productIds"] = String(args["productIds"]);
         }
         const result = await createResource(
           baseUrl,

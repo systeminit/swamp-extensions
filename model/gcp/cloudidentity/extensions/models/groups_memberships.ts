@@ -446,7 +446,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Identity Groups.Memberships. Registered at `@swamp/gcp/cloudidentity/groups-memberships`. */
 export const model = {
   type: "@swamp/gcp/cloudidentity/groups-memberships",
-  version: "2026.08.12.3",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -582,6 +582,29 @@ export const model = {
       toVersion: "2026.08.12.3",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: id, namespace, expiryDetail, expireTime, restrictionEvaluations, memberRestrictionEvaluation, state",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          id: _id,
+          namespace: _namespace,
+          expiryDetail: _expiryDetail,
+          expireTime: _expireTime,
+          restrictionEvaluations: _restrictionEvaluations,
+          memberRestrictionEvaluation: _memberRestrictionEvaluation,
+          state: _state,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -846,8 +869,10 @@ export const model = {
     },
     check_transitive_membership: {
       description: "check transitive membership",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        query: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -855,6 +880,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -879,8 +907,10 @@ export const model = {
     },
     get_membership_graph: {
       description: "get membership graph",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        query: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -888,6 +918,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -912,8 +945,11 @@ export const model = {
     },
     lookup: {
       description: "lookup",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        memberKey_id: z.any().optional(),
+        memberKey_namespace: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -921,6 +957,12 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["memberKey_id"] !== undefined) {
+          params["memberKey.id"] = String(args["memberKey_id"]);
+        }
+        if (args["memberKey_namespace"] !== undefined) {
+          params["memberKey.namespace"] = String(args["memberKey_namespace"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -993,8 +1035,13 @@ export const model = {
     },
     search_direct_groups: {
       description: "search direct groups",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        orderBy: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        query: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1002,6 +1049,18 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1029,8 +1088,12 @@ export const model = {
     },
     search_transitive_groups: {
       description: "search transitive groups",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        query: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1038,6 +1101,15 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1064,8 +1136,11 @@ export const model = {
     },
     search_transitive_memberships: {
       description: "search transitive memberships",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1073,6 +1148,12 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {

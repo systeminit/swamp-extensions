@@ -280,7 +280,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine InstanceGroups. Registered at `@swamp/gcp/compute/instancegroups`. */
 export const model = {
   type: "@swamp/gcp/compute/instancegroups",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -399,6 +399,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -664,6 +669,7 @@ export const model = {
       description: "add instances",
       arguments: z.object({
         instances: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -687,6 +693,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroup"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instances"] !== undefined) {
           body["instances"] = args["instances"];
@@ -720,6 +729,11 @@ export const model = {
       description: "list instances",
       arguments: z.object({
         instanceState: z.any().optional(),
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -743,6 +757,21 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroup"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instanceState"] !== undefined) {
           body["instanceState"] = args["instanceState"];
@@ -781,6 +810,7 @@ export const model = {
       arguments: z.object({
         fingerprint: z.any().optional(),
         namedPorts: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -804,6 +834,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroup"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["fingerprint"] !== undefined) {
           body["fingerprint"] = args["fingerprint"];

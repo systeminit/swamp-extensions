@@ -200,6 +200,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is recommended. This request is idempotent only if a `request_id` is provided.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true and the process is not found, the request inserts it.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -257,6 +260,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is recommended. This request is idempotent only if a `request_id` is provided.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true and the process is not found, the request inserts it.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -288,7 +294,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Data Lineage Processes. Registered at `@swamp/gcp/datalineage/processes`. */
 export const model = {
   type: "@swamp/gcp/datalineage/processes",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -460,6 +466,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -611,6 +622,11 @@ export const model = {
           body["displayName"] = g["displayName"];
         }
         if (g["origin"] !== undefined) body["origin"] = g["origin"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

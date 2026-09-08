@@ -497,7 +497,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Agent Platform FeatureOnlineStores.FeatureViews. Registered at `@swamp/gcp/aiplatform/featureonlinestores-featureviews`. */
 export const model = {
   type: "@swamp/gcp/aiplatform/featureonlinestores-featureviews",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -666,6 +666,42 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: entityIdColumns, uri, featureGroups, featureGroupId, featureIds, projectNumber, bruteForceConfig, crowdingColumn, distanceMeasureType, embeddingColumn, embeddingDimension, filterColumns, treeAhConfig, leafNodeEmbeddingCount, automaticResources, maxReplicaCount, minReplicaCount, continuous, cron, ragCorpusId, uri",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          entityIdColumns: _entityIdColumns,
+          uri: _uri,
+          featureGroups: _featureGroups,
+          featureGroupId: _featureGroupId,
+          featureIds: _featureIds,
+          projectNumber: _projectNumber,
+          bruteForceConfig: _bruteForceConfig,
+          crowdingColumn: _crowdingColumn,
+          distanceMeasureType: _distanceMeasureType,
+          embeddingColumn: _embeddingColumn,
+          embeddingDimension: _embeddingDimension,
+          filterColumns: _filterColumns,
+          treeAhConfig: _treeAhConfig,
+          leafNodeEmbeddingCount: _leafNodeEmbeddingCount,
+          automaticResources: _automaticResources,
+          maxReplicaCount: _maxReplicaCount,
+          minReplicaCount: _minReplicaCount,
+          continuous: _continuous,
+          cron: _cron,
+          ragCorpusId: _ragCorpusId,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1188,8 +1224,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1210,6 +1248,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1385,8 +1428,10 @@ export const model = {
     },
     test_iam_permissions: {
       description: "test iam permissions",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        permissions: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1407,6 +1452,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["permissions"] !== undefined) {
+          params["permissions"] = String(args["permissions"]);
+        }
         const result = await createResource(
           baseUrl,
           {

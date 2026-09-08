@@ -531,7 +531,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Classroom Courses.CourseWorkMaterials. Registered at `@swamp/gcp/classroom/courses-courseworkmaterials`. */
 export const model = {
   type: "@swamp/gcp/classroom/courses-courseworkmaterials",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -645,6 +645,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1027,8 +1032,12 @@ export const model = {
     },
     get_add_on_context: {
       description: "get add on context",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        addOnToken: z.any().optional(),
+        attachmentId: z.any().optional(),
+        postId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1052,6 +1061,15 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["itemId"] = existing["id"]?.toString() ?? g["id"]?.toString() ??
           "";
+        if (args["addOnToken"] !== undefined) {
+          params["addOnToken"] = String(args["addOnToken"]);
+        }
+        if (args["attachmentId"] !== undefined) {
+          params["attachmentId"] = String(args["attachmentId"]);
+        }
+        if (args["postId"] !== undefined) {
+          params["postId"] = String(args["postId"]);
+        }
         const result = await createResource(
           baseUrl,
           {

@@ -255,6 +255,9 @@ const GlobalArgsSchema = z.object({
   bareMetalNodePoolId: z.string().describe(
     "The ID to use for the node pool, which will become the final component of the node pool's resource name. This value must be up to 63 characters, and valid characters are /a-z-/. The value must not be permitted to be a UUID (or UUID-like: anything matching /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i).",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the bare metal node pool is not found, the request will create a new bare metal node pool with the provided configuration. The user must have both create and update permission to call Update with allow_missing set to true.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -392,6 +395,9 @@ const InputsSchema = z.object({
   bareMetalNodePoolId: z.string().describe(
     "The ID to use for the node pool, which will become the final component of the node pool's resource name. This value must be up to 63 characters, and valid characters are /a-z-/. The value must not be permitted to be a UUID (or UUID-like: anything matching /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i).",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the bare metal node pool is not found, the request will create a new bare metal node pool with the provided configuration. The user must have both create and update permission to call Update with allow_missing set to true.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -426,7 +432,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud GKE On-Prem BareMetalClusters.BareMetalNodePools. Registered at `@swamp/gcp/gkeonprem/baremetalclusters-baremetalnodepools`. */
 export const model = {
   type: "@swamp/gcp/gkeonprem/baremetalclusters-baremetalnodepools",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -560,6 +566,37 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: kubeletConfig, registryBurst, registryPullQps, serializeImagePullsDisabled, labels, nodeConfigs, labels, nodeIp, operatingSystem, taints, effect, key, value, parallelUpgradeConfig, concurrentNodes, minimumAvailableNodes",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          kubeletConfig: _kubeletConfig,
+          registryBurst: _registryBurst,
+          registryPullQps: _registryPullQps,
+          serializeImagePullsDisabled: _serializeImagePullsDisabled,
+          labels: _labels,
+          nodeConfigs: _nodeConfigs,
+          nodeIp: _nodeIp,
+          operatingSystem: _operatingSystem,
+          taints: _taints,
+          effect: _effect,
+          key: _key,
+          value: _value,
+          parallelUpgradeConfig: _parallelUpgradeConfig,
+          concurrentNodes: _concurrentNodes,
+          minimumAvailableNodes: _minimumAvailableNodes,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -736,6 +773,11 @@ export const model = {
         }
         if (g["upgradePolicy"] !== undefined) {
           body["upgradePolicy"] = g["upgradePolicy"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
@@ -968,8 +1010,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -990,6 +1034,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1117,8 +1166,12 @@ export const model = {
     },
     unenroll: {
       description: "unenroll",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        allowMissing: z.any().optional(),
+        etag: z.any().optional(),
+        validateOnly: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1130,6 +1183,13 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(args["allowMissing"]);
+        }
+        if (args["etag"] !== undefined) params["etag"] = String(args["etag"]);
+        if (args["validateOnly"] !== undefined) {
+          params["validateOnly"] = String(args["validateOnly"]);
         }
         const result = await createResource(
           baseUrl,

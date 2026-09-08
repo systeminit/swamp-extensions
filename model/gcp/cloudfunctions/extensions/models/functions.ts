@@ -1051,7 +1051,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Functions Functions. Registered at `@swamp/gcp/cloudfunctions/functions`. */
 export const model = {
   type: "@swamp/gcp/cloudfunctions/functions",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1190,6 +1190,90 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: automaticUpdatePolicy, build, dockerRegistry, dockerRepository, entryPoint, environmentVariables, onDeployUpdatePolicy, runtimeVersion, runtime, serviceAccount, source, gitUri, repoSource, branchName, commitSha, dir, projectId, repoName, tagName, storageSource, bucket, generation, object, sourceUploadUrl, sourceProvenance, gitUri, resolvedRepoSource, branchName, commitSha, dir, projectId, repoName, tagName, resolvedStorageSource, bucket, generation, object, sourceUploadUrl, sourceToken, workerPool, channel, eventFilters, attribute, operator, value, eventType, pubsubTopic, retryPolicy, service, serviceAccountEmail, trigger, triggerRegion, allTrafficOnLatestRevision, availableCpu, availableMemory, binaryAuthorizationPolicy, directVpcEgress, directVpcNetworkInterface, network, subnetwork, tags, environmentVariables, ingressSettings, maxInstanceCount, maxInstanceRequestConcurrency, minInstanceCount, revision, secretEnvironmentVariables, key, projectId, secret, version, secretVolumes, mountPath, projectId, secret, versions, path, version, securityLevel, service, serviceAccountEmail, timeoutSeconds, uri, vpcConnector, vpcConnectorEgressSettings",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          automaticUpdatePolicy: _automaticUpdatePolicy,
+          build: _build,
+          dockerRegistry: _dockerRegistry,
+          dockerRepository: _dockerRepository,
+          entryPoint: _entryPoint,
+          environmentVariables: _environmentVariables,
+          onDeployUpdatePolicy: _onDeployUpdatePolicy,
+          runtimeVersion: _runtimeVersion,
+          runtime: _runtime,
+          serviceAccount: _serviceAccount,
+          source: _source,
+          gitUri: _gitUri,
+          repoSource: _repoSource,
+          branchName: _branchName,
+          commitSha: _commitSha,
+          dir: _dir,
+          projectId: _projectId,
+          repoName: _repoName,
+          tagName: _tagName,
+          storageSource: _storageSource,
+          bucket: _bucket,
+          generation: _generation,
+          object: _object,
+          sourceUploadUrl: _sourceUploadUrl,
+          sourceProvenance: _sourceProvenance,
+          resolvedRepoSource: _resolvedRepoSource,
+          resolvedStorageSource: _resolvedStorageSource,
+          sourceToken: _sourceToken,
+          workerPool: _workerPool,
+          channel: _channel,
+          eventFilters: _eventFilters,
+          attribute: _attribute,
+          operator: _operator,
+          value: _value,
+          eventType: _eventType,
+          pubsubTopic: _pubsubTopic,
+          retryPolicy: _retryPolicy,
+          service: _service,
+          serviceAccountEmail: _serviceAccountEmail,
+          trigger: _trigger,
+          triggerRegion: _triggerRegion,
+          allTrafficOnLatestRevision: _allTrafficOnLatestRevision,
+          availableCpu: _availableCpu,
+          availableMemory: _availableMemory,
+          binaryAuthorizationPolicy: _binaryAuthorizationPolicy,
+          directVpcEgress: _directVpcEgress,
+          directVpcNetworkInterface: _directVpcNetworkInterface,
+          network: _network,
+          subnetwork: _subnetwork,
+          tags: _tags,
+          ingressSettings: _ingressSettings,
+          maxInstanceCount: _maxInstanceCount,
+          maxInstanceRequestConcurrency: _maxInstanceRequestConcurrency,
+          minInstanceCount: _minInstanceCount,
+          revision: _revision,
+          secretEnvironmentVariables: _secretEnvironmentVariables,
+          key: _key,
+          secret: _secret,
+          version: _version,
+          secretVolumes: _secretVolumes,
+          mountPath: _mountPath,
+          versions: _versions,
+          path: _path,
+          securityLevel: _securityLevel,
+          timeoutSeconds: _timeoutSeconds,
+          uri: _uri,
+          vpcConnector: _vpcConnector,
+          vpcConnectorEgressSettings: _vpcConnectorEgressSettings,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1804,8 +1888,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1826,6 +1912,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

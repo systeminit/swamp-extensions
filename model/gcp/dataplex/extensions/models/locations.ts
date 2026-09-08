@@ -159,7 +159,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataplex Locations. Registered at `@swamp/gcp/dataplex/locations`. */
 export const model = {
   type: "@swamp/gcp/dataplex/locations",
-  version: "2026.08.29.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -323,6 +323,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.29.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -530,8 +535,13 @@ export const model = {
     },
     lookup_entry: {
       description: "lookup entry",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        aspectTypes: z.any().optional(),
+        entry: z.any().optional(),
+        paths: z.any().optional(),
+        view: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -539,6 +549,16 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["aspectTypes"] !== undefined) {
+          params["aspectTypes"] = String(args["aspectTypes"]);
+        }
+        if (args["entry"] !== undefined) {
+          params["entry"] = String(args["entry"]);
+        }
+        if (args["paths"] !== undefined) {
+          params["paths"] = String(args["paths"]);
+        }
+        if (args["view"] !== undefined) params["view"] = String(args["view"]);
         const result = await createResource(
           baseUrl,
           {
@@ -566,8 +586,14 @@ export const model = {
     },
     lookup_entry_links: {
       description: "lookup entry links",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        entry: z.any().optional(),
+        entryLinkTypes: z.any().optional(),
+        entryMode: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -575,6 +601,21 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["entry"] !== undefined) {
+          params["entry"] = String(args["entry"]);
+        }
+        if (args["entryLinkTypes"] !== undefined) {
+          params["entryLinkTypes"] = String(args["entryLinkTypes"]);
+        }
+        if (args["entryMode"] !== undefined) {
+          params["entryMode"] = String(args["entryMode"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -649,8 +690,16 @@ export const model = {
     },
     search_entries: {
       description: "search entries",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        contexts: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        query: z.any().optional(),
+        scope: z.any().optional(),
+        semanticSearch: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -658,6 +707,27 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["contexts"] !== undefined) {
+          params["contexts"] = String(args["contexts"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["scope"] !== undefined) {
+          params["scope"] = String(args["scope"]);
+        }
+        if (args["semanticSearch"] !== undefined) {
+          params["semanticSearch"] = String(args["semanticSearch"]);
+        }
         const result = await createResource(
           baseUrl,
           {

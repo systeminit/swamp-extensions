@@ -974,7 +974,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Database Migration MigrationJobs. Registered at `@swamp/gcp/datamigration/migrationjobs`. */
 export const model = {
   type: "@swamp/gcp/datamigration/migrationjobs",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1123,6 +1123,69 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: commitId, engine, provider, value, isPrimaryDestination, sourceObjectsConfig, objectConfigs, objectIdentifier, database, schema, table, objectsSelectionType, oracleSourceConfig, binaryLogParser, logFileDirectories, archivedLogDirectory, onlineLogDirectory, oracleAsmLogFileAccess, cdcStartPosition, logMiner, maxConcurrentCdcConnections, maxConcurrentFullDumpConnections, skipFullDump, postgresDestinationConfig, maxConcurrentConnections, transactionTimeout, dumpParallelLevel, isNativeLogical, maxAdditionalSubscriptions, postgresSourceConfig, skipFullDump, sqlserverDestinationConfig, maxConcurrentConnections, transactionTimeout, vm, vmIp, vmPort, vpc, engine, provider, backupFilePattern, dagConfig, linkedServer, sourceAg, databaseBackups, database, encryptionOptions, certPath, pvkPassword, pvkPath, promoteWhenReady, useDiffBackup, postgresDestinationConfig, maxConcurrentConnections, transactionTimeout, sqlserverSourceConfig, cdcStartPosition, maxConcurrentCdcConnections, maxConcurrentFullDumpConnections, skipFullDump, vpc",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          commitId: _commitId,
+          engine: _engine,
+          provider: _provider,
+          value: _value,
+          isPrimaryDestination: _isPrimaryDestination,
+          sourceObjectsConfig: _sourceObjectsConfig,
+          objectConfigs: _objectConfigs,
+          objectIdentifier: _objectIdentifier,
+          database: _database,
+          schema: _schema,
+          table: _table,
+          objectsSelectionType: _objectsSelectionType,
+          oracleSourceConfig: _oracleSourceConfig,
+          binaryLogParser: _binaryLogParser,
+          logFileDirectories: _logFileDirectories,
+          archivedLogDirectory: _archivedLogDirectory,
+          onlineLogDirectory: _onlineLogDirectory,
+          oracleAsmLogFileAccess: _oracleAsmLogFileAccess,
+          cdcStartPosition: _cdcStartPosition,
+          logMiner: _logMiner,
+          maxConcurrentCdcConnections: _maxConcurrentCdcConnections,
+          maxConcurrentFullDumpConnections: _maxConcurrentFullDumpConnections,
+          skipFullDump: _skipFullDump,
+          postgresDestinationConfig: _postgresDestinationConfig,
+          maxConcurrentConnections: _maxConcurrentConnections,
+          transactionTimeout: _transactionTimeout,
+          dumpParallelLevel: _dumpParallelLevel,
+          isNativeLogical: _isNativeLogical,
+          maxAdditionalSubscriptions: _maxAdditionalSubscriptions,
+          postgresSourceConfig: _postgresSourceConfig,
+          sqlserverDestinationConfig: _sqlserverDestinationConfig,
+          vm: _vm,
+          vmIp: _vmIp,
+          vmPort: _vmPort,
+          vpc: _vpc,
+          backupFilePattern: _backupFilePattern,
+          dagConfig: _dagConfig,
+          linkedServer: _linkedServer,
+          sourceAg: _sourceAg,
+          databaseBackups: _databaseBackups,
+          encryptionOptions: _encryptionOptions,
+          certPath: _certPath,
+          pvkPassword: _pvkPassword,
+          pvkPath: _pvkPath,
+          promoteWhenReady: _promoteWhenReady,
+          useDiffBackup: _useDiffBackup,
+          sqlserverSourceConfig: _sqlserverSourceConfig,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1798,8 +1861,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1820,6 +1885,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

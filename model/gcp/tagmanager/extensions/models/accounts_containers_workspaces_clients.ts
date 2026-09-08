@@ -327,7 +327,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Tag Manager Accounts.Containers.Workspaces.Clients. Registered at `@swamp/gcp/tagmanager/accounts-containers-workspaces-clients`. */
 export const model = {
   type: "@swamp/gcp/tagmanager/accounts-containers-workspaces-clients",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -451,6 +451,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.13.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -778,8 +783,10 @@ export const model = {
     },
     revert: {
       description: "revert",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        fingerprint: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -787,6 +794,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        if (args["fingerprint"] !== undefined) {
+          params["fingerprint"] = String(args["fingerprint"]);
+        }
         const result = await createResource(
           baseUrl,
           {

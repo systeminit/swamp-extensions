@@ -498,6 +498,9 @@ const GlobalArgsSchema = z.object({
   jobId: z.string().describe(
     "Optional. The unique identifier for the Job. The name of the job becomes {parent}/jobs/{job_id}. If not provided, the server will generate a unique `job_id`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and if the Job does not exist, it will create a new one. Caller must have both create and update permissions for this call if this is set to true.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -1002,6 +1005,9 @@ const InputsSchema = z.object({
   jobId: z.string().describe(
     "Optional. The unique identifier for the Job. The name of the job becomes {parent}/jobs/{job_id}. If not provided, the server will generate a unique `job_id`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and if the Job does not exist, it will create a new one. Caller must have both create and update permissions for this call if this is set to true.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -1033,7 +1039,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Run Admin Jobs. Registered at `@swamp/gcp/run/jobs`. */
 export const model = {
   type: "@swamp/gcp/run/jobs",
-  version: "2026.09.03.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1206,6 +1212,90 @@ export const model = {
       toVersion: "2026.09.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: breakglassJustification, policy, useDefault, delayExecution, parallelism, taskCount, containers, args, baseImageUri, buildInfo, functionTarget, sourceLocation, command, dependsOn, env, image, livenessProbe, failureThreshold, grpc, httpGet, initialDelaySeconds, periodSeconds, tcpSocket, timeoutSeconds, ports, readinessProbe, failureThreshold, grpc, httpGet, initialDelaySeconds, periodSeconds, tcpSocket, timeoutSeconds, resources, cpuIdle, limits, startupCpuBoost, sandboxLauncher, sourceCode, cloudStorageSource, inlinedSource, startupProbe, failureThreshold, grpc, httpGet, initialDelaySeconds, periodSeconds, tcpSocket, timeoutSeconds, volumeMounts, workingDir, encryptionKey, executionEnvironment, gpuZonalRedundancyDisabled, maxRetries, nodeSelector, accelerator, serviceAccount, timeout, volumes, cloudSqlInstance, instances, emptyDir, medium, sizeLimit, gcs, bucket, mountOptions, readOnly, nfs, path, readOnly, server, secret, defaultMode, items, secret, vpcAccess, connector, egress, networkInterfaces, network, subnetwork, tags",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          breakglassJustification: _breakglassJustification,
+          policy: _policy,
+          useDefault: _useDefault,
+          delayExecution: _delayExecution,
+          parallelism: _parallelism,
+          taskCount: _taskCount,
+          containers: _containers,
+          args: _args,
+          baseImageUri: _baseImageUri,
+          buildInfo: _buildInfo,
+          functionTarget: _functionTarget,
+          sourceLocation: _sourceLocation,
+          command: _command,
+          dependsOn: _dependsOn,
+          env: _env,
+          image: _image,
+          livenessProbe: _livenessProbe,
+          failureThreshold: _failureThreshold,
+          grpc: _grpc,
+          httpGet: _httpGet,
+          initialDelaySeconds: _initialDelaySeconds,
+          periodSeconds: _periodSeconds,
+          tcpSocket: _tcpSocket,
+          timeoutSeconds: _timeoutSeconds,
+          ports: _ports,
+          readinessProbe: _readinessProbe,
+          resources: _resources,
+          cpuIdle: _cpuIdle,
+          limits: _limits,
+          startupCpuBoost: _startupCpuBoost,
+          sandboxLauncher: _sandboxLauncher,
+          sourceCode: _sourceCode,
+          cloudStorageSource: _cloudStorageSource,
+          inlinedSource: _inlinedSource,
+          startupProbe: _startupProbe,
+          volumeMounts: _volumeMounts,
+          workingDir: _workingDir,
+          encryptionKey: _encryptionKey,
+          executionEnvironment: _executionEnvironment,
+          gpuZonalRedundancyDisabled: _gpuZonalRedundancyDisabled,
+          maxRetries: _maxRetries,
+          nodeSelector: _nodeSelector,
+          accelerator: _accelerator,
+          serviceAccount: _serviceAccount,
+          timeout: _timeout,
+          volumes: _volumes,
+          cloudSqlInstance: _cloudSqlInstance,
+          instances: _instances,
+          emptyDir: _emptyDir,
+          medium: _medium,
+          sizeLimit: _sizeLimit,
+          gcs: _gcs,
+          bucket: _bucket,
+          mountOptions: _mountOptions,
+          readOnly: _readOnly,
+          nfs: _nfs,
+          path: _path,
+          server: _server,
+          secret: _secret,
+          defaultMode: _defaultMode,
+          items: _items,
+          vpcAccess: _vpcAccess,
+          connector: _connector,
+          egress: _egress,
+          networkInterfaces: _networkInterfaces,
+          network: _network,
+          subnetwork: _subnetwork,
+          tags: _tags,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1388,6 +1478,11 @@ export const model = {
           body["startExecutionToken"] = g["startExecutionToken"];
         }
         if (g["template"] !== undefined) body["template"] = g["template"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -1570,8 +1665,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1592,6 +1689,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

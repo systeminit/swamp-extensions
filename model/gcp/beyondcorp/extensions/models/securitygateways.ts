@@ -461,7 +461,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud BeyondCorp SecurityGateways. Registered at `@swamp/gcp/beyondcorp/securitygateways`. */
 export const model = {
   type: "@swamp/gcp/beyondcorp/securitygateways",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -617,6 +617,37 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: internetGateway, assignedIps, allowedClientHeaders, clientIp, contextualHeaders, deviceInfo, outputType, dispatchInfo, outputType, groupInfo, outputType, outputType, userInfo, outputType, gatewayIdentity, metadataHeaders, apiGateway, resourceOverride, path",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          internetGateway: _internetGateway,
+          assignedIps: _assignedIps,
+          allowedClientHeaders: _allowedClientHeaders,
+          clientIp: _clientIp,
+          contextualHeaders: _contextualHeaders,
+          deviceInfo: _deviceInfo,
+          outputType: _outputType,
+          dispatchInfo: _dispatchInfo,
+          groupInfo: _groupInfo,
+          userInfo: _userInfo,
+          gatewayIdentity: _gatewayIdentity,
+          metadataHeaders: _metadataHeaders,
+          apiGateway: _apiGateway,
+          resourceOverride: _resourceOverride,
+          path: _path,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -997,8 +1028,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1019,6 +1052,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

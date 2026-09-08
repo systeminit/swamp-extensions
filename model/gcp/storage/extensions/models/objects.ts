@@ -476,6 +476,9 @@ const GlobalArgsSchema = z.object({
   userProject: z.string().describe(
     "The project to be billed for this request. Required for Requester Pays buckets.",
   ).optional(),
+  overrideUnlockedRetention: z.string().describe(
+    "Must be true to remove the retention configuration, reduce its unlocked retention period, or change its mode from unlocked to locked.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -732,6 +735,9 @@ const InputsSchema = z.object({
   userProject: z.string().describe(
     "The project to be billed for this request. Required for Requester Pays buckets.",
   ).optional(),
+  overrideUnlockedRetention: z.string().describe(
+    "Must be true to remove the retention configuration, reduce its unlocked retention period, or change its mode from unlocked to locked.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -760,7 +766,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Storage JSON Objects. Registered at `@swamp/gcp/storage/objects`. */
 export const model = {
   type: "@swamp/gcp/storage/objects",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -900,6 +906,11 @@ export const model = {
     {
       toVersion: "2026.08.13.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: overrideUnlockedRetention",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1194,6 +1205,15 @@ export const model = {
           body["timeStorageClassUpdated"] = g["timeStorageClassUpdated"];
         }
         if (g["updated"] !== undefined) body["updated"] = g["updated"];
+        if (g["overrideUnlockedRetention"] !== undefined) {
+          params["overrideUnlockedRetention"] = String(
+            g["overrideUnlockedRetention"],
+          );
+        } else if (existing["overrideUnlockedRetention"] !== undefined) {
+          params["overrideUnlockedRetention"] = String(
+            existing["overrideUnlockedRetention"],
+          );
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -1509,6 +1529,12 @@ export const model = {
         destination: z.any().optional(),
         kind: z.any().optional(),
         sourceObjects: z.any().optional(),
+        destinationPredefinedAcl: z.any().optional(),
+        dropContextGroups: z.any().optional(),
+        ifGenerationMatch: z.any().optional(),
+        ifMetagenerationMatch: z.any().optional(),
+        kmsKeyName: z.any().optional(),
+        userProject: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1534,6 +1560,28 @@ export const model = {
             g["destinationBucket"]?.toString() ?? "";
         params["destinationObject"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["destinationPredefinedAcl"] !== undefined) {
+          params["destinationPredefinedAcl"] = String(
+            args["destinationPredefinedAcl"],
+          );
+        }
+        if (args["dropContextGroups"] !== undefined) {
+          params["dropContextGroups"] = String(args["dropContextGroups"]);
+        }
+        if (args["ifGenerationMatch"] !== undefined) {
+          params["ifGenerationMatch"] = String(args["ifGenerationMatch"]);
+        }
+        if (args["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(
+            args["ifMetagenerationMatch"],
+          );
+        }
+        if (args["kmsKeyName"] !== undefined) {
+          params["kmsKeyName"] = String(args["kmsKeyName"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["deleteSourceObjects"] !== undefined) {
           body["deleteSourceObjects"] = args["deleteSourceObjects"];
@@ -1614,6 +1662,19 @@ export const model = {
         timeFinalized: z.any().optional(),
         timeStorageClassUpdated: z.any().optional(),
         updated: z.any().optional(),
+        destinationKmsKeyName: z.any().optional(),
+        destinationPredefinedAcl: z.any().optional(),
+        ifGenerationMatch: z.any().optional(),
+        ifGenerationNotMatch: z.any().optional(),
+        ifMetagenerationMatch: z.any().optional(),
+        ifMetagenerationNotMatch: z.any().optional(),
+        ifSourceGenerationMatch: z.any().optional(),
+        ifSourceGenerationNotMatch: z.any().optional(),
+        ifSourceMetagenerationMatch: z.any().optional(),
+        ifSourceMetagenerationNotMatch: z.any().optional(),
+        projection: z.any().optional(),
+        sourceGeneration: z.any().optional(),
+        userProject: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1643,6 +1704,61 @@ export const model = {
             g["destinationBucket"]?.toString() ?? "";
         params["destinationObject"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["destinationKmsKeyName"] !== undefined) {
+          params["destinationKmsKeyName"] = String(
+            args["destinationKmsKeyName"],
+          );
+        }
+        if (args["destinationPredefinedAcl"] !== undefined) {
+          params["destinationPredefinedAcl"] = String(
+            args["destinationPredefinedAcl"],
+          );
+        }
+        if (args["ifGenerationMatch"] !== undefined) {
+          params["ifGenerationMatch"] = String(args["ifGenerationMatch"]);
+        }
+        if (args["ifGenerationNotMatch"] !== undefined) {
+          params["ifGenerationNotMatch"] = String(args["ifGenerationNotMatch"]);
+        }
+        if (args["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(
+            args["ifMetagenerationMatch"],
+          );
+        }
+        if (args["ifMetagenerationNotMatch"] !== undefined) {
+          params["ifMetagenerationNotMatch"] = String(
+            args["ifMetagenerationNotMatch"],
+          );
+        }
+        if (args["ifSourceGenerationMatch"] !== undefined) {
+          params["ifSourceGenerationMatch"] = String(
+            args["ifSourceGenerationMatch"],
+          );
+        }
+        if (args["ifSourceGenerationNotMatch"] !== undefined) {
+          params["ifSourceGenerationNotMatch"] = String(
+            args["ifSourceGenerationNotMatch"],
+          );
+        }
+        if (args["ifSourceMetagenerationMatch"] !== undefined) {
+          params["ifSourceMetagenerationMatch"] = String(
+            args["ifSourceMetagenerationMatch"],
+          );
+        }
+        if (args["ifSourceMetagenerationNotMatch"] !== undefined) {
+          params["ifSourceMetagenerationNotMatch"] = String(
+            args["ifSourceMetagenerationNotMatch"],
+          );
+        }
+        if (args["projection"] !== undefined) {
+          params["projection"] = String(args["projection"]);
+        }
+        if (args["sourceGeneration"] !== undefined) {
+          params["sourceGeneration"] = String(args["sourceGeneration"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["acl"] !== undefined) body["acl"] = args["acl"];
         if (args["bucket"] !== undefined) body["bucket"] = args["bucket"];
@@ -1775,8 +1891,11 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        generation: z.any().optional(),
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1798,6 +1917,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["object"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["generation"] !== undefined) {
+          params["generation"] = String(args["generation"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1824,8 +1949,19 @@ export const model = {
     },
     move: {
       description: "move",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        ifGenerationMatch: z.any().optional(),
+        ifGenerationNotMatch: z.any().optional(),
+        ifMetagenerationMatch: z.any().optional(),
+        ifMetagenerationNotMatch: z.any().optional(),
+        ifSourceGenerationMatch: z.any().optional(),
+        ifSourceGenerationNotMatch: z.any().optional(),
+        ifSourceMetagenerationMatch: z.any().optional(),
+        ifSourceMetagenerationNotMatch: z.any().optional(),
+        projection: z.any().optional(),
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1849,6 +1985,48 @@ export const model = {
           g["sourceObject"]?.toString() ?? "";
         params["destinationObject"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["ifGenerationMatch"] !== undefined) {
+          params["ifGenerationMatch"] = String(args["ifGenerationMatch"]);
+        }
+        if (args["ifGenerationNotMatch"] !== undefined) {
+          params["ifGenerationNotMatch"] = String(args["ifGenerationNotMatch"]);
+        }
+        if (args["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(
+            args["ifMetagenerationMatch"],
+          );
+        }
+        if (args["ifMetagenerationNotMatch"] !== undefined) {
+          params["ifMetagenerationNotMatch"] = String(
+            args["ifMetagenerationNotMatch"],
+          );
+        }
+        if (args["ifSourceGenerationMatch"] !== undefined) {
+          params["ifSourceGenerationMatch"] = String(
+            args["ifSourceGenerationMatch"],
+          );
+        }
+        if (args["ifSourceGenerationNotMatch"] !== undefined) {
+          params["ifSourceGenerationNotMatch"] = String(
+            args["ifSourceGenerationNotMatch"],
+          );
+        }
+        if (args["ifSourceMetagenerationMatch"] !== undefined) {
+          params["ifSourceMetagenerationMatch"] = String(
+            args["ifSourceMetagenerationMatch"],
+          );
+        }
+        if (args["ifSourceMetagenerationNotMatch"] !== undefined) {
+          params["ifSourceMetagenerationNotMatch"] = String(
+            args["ifSourceMetagenerationNotMatch"],
+          );
+        }
+        if (args["projection"] !== undefined) {
+          params["projection"] = String(args["projection"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1884,8 +2062,17 @@ export const model = {
     },
     restore: {
       description: "restore",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        copySourceAcl: z.any().optional(),
+        ifGenerationMatch: z.any().optional(),
+        ifGenerationNotMatch: z.any().optional(),
+        ifMetagenerationMatch: z.any().optional(),
+        ifMetagenerationNotMatch: z.any().optional(),
+        projection: z.any().optional(),
+        restoreToken: z.any().optional(),
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1910,6 +2097,34 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["object"] = existing["object"]?.toString() ??
           g["object"]?.toString() ?? "";
+        if (args["copySourceAcl"] !== undefined) {
+          params["copySourceAcl"] = String(args["copySourceAcl"]);
+        }
+        if (args["ifGenerationMatch"] !== undefined) {
+          params["ifGenerationMatch"] = String(args["ifGenerationMatch"]);
+        }
+        if (args["ifGenerationNotMatch"] !== undefined) {
+          params["ifGenerationNotMatch"] = String(args["ifGenerationNotMatch"]);
+        }
+        if (args["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(
+            args["ifMetagenerationMatch"],
+          );
+        }
+        if (args["ifMetagenerationNotMatch"] !== undefined) {
+          params["ifMetagenerationNotMatch"] = String(
+            args["ifMetagenerationNotMatch"],
+          );
+        }
+        if (args["projection"] !== undefined) {
+          params["projection"] = String(args["projection"]);
+        }
+        if (args["restoreToken"] !== undefined) {
+          params["restoreToken"] = String(args["restoreToken"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1982,6 +2197,22 @@ export const model = {
         timeFinalized: z.any().optional(),
         timeStorageClassUpdated: z.any().optional(),
         updated: z.any().optional(),
+        destinationKmsKeyName: z.any().optional(),
+        destinationPredefinedAcl: z.any().optional(),
+        dropContextGroups: z.any().optional(),
+        ifGenerationMatch: z.any().optional(),
+        ifGenerationNotMatch: z.any().optional(),
+        ifMetagenerationMatch: z.any().optional(),
+        ifMetagenerationNotMatch: z.any().optional(),
+        ifSourceGenerationMatch: z.any().optional(),
+        ifSourceGenerationNotMatch: z.any().optional(),
+        ifSourceMetagenerationMatch: z.any().optional(),
+        ifSourceMetagenerationNotMatch: z.any().optional(),
+        maxBytesRewrittenPerCall: z.any().optional(),
+        projection: z.any().optional(),
+        rewriteToken: z.any().optional(),
+        sourceGeneration: z.any().optional(),
+        userProject: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2011,6 +2242,72 @@ export const model = {
             g["destinationBucket"]?.toString() ?? "";
         params["destinationObject"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["destinationKmsKeyName"] !== undefined) {
+          params["destinationKmsKeyName"] = String(
+            args["destinationKmsKeyName"],
+          );
+        }
+        if (args["destinationPredefinedAcl"] !== undefined) {
+          params["destinationPredefinedAcl"] = String(
+            args["destinationPredefinedAcl"],
+          );
+        }
+        if (args["dropContextGroups"] !== undefined) {
+          params["dropContextGroups"] = String(args["dropContextGroups"]);
+        }
+        if (args["ifGenerationMatch"] !== undefined) {
+          params["ifGenerationMatch"] = String(args["ifGenerationMatch"]);
+        }
+        if (args["ifGenerationNotMatch"] !== undefined) {
+          params["ifGenerationNotMatch"] = String(args["ifGenerationNotMatch"]);
+        }
+        if (args["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(
+            args["ifMetagenerationMatch"],
+          );
+        }
+        if (args["ifMetagenerationNotMatch"] !== undefined) {
+          params["ifMetagenerationNotMatch"] = String(
+            args["ifMetagenerationNotMatch"],
+          );
+        }
+        if (args["ifSourceGenerationMatch"] !== undefined) {
+          params["ifSourceGenerationMatch"] = String(
+            args["ifSourceGenerationMatch"],
+          );
+        }
+        if (args["ifSourceGenerationNotMatch"] !== undefined) {
+          params["ifSourceGenerationNotMatch"] = String(
+            args["ifSourceGenerationNotMatch"],
+          );
+        }
+        if (args["ifSourceMetagenerationMatch"] !== undefined) {
+          params["ifSourceMetagenerationMatch"] = String(
+            args["ifSourceMetagenerationMatch"],
+          );
+        }
+        if (args["ifSourceMetagenerationNotMatch"] !== undefined) {
+          params["ifSourceMetagenerationNotMatch"] = String(
+            args["ifSourceMetagenerationNotMatch"],
+          );
+        }
+        if (args["maxBytesRewrittenPerCall"] !== undefined) {
+          params["maxBytesRewrittenPerCall"] = String(
+            args["maxBytesRewrittenPerCall"],
+          );
+        }
+        if (args["projection"] !== undefined) {
+          params["projection"] = String(args["projection"]);
+        }
+        if (args["rewriteToken"] !== undefined) {
+          params["rewriteToken"] = String(args["rewriteToken"]);
+        }
+        if (args["sourceGeneration"] !== undefined) {
+          params["sourceGeneration"] = String(args["sourceGeneration"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["acl"] !== undefined) body["acl"] = args["acl"];
         if (args["bucket"] !== undefined) body["bucket"] = args["bucket"];
@@ -2152,6 +2449,8 @@ export const model = {
         kind: z.any().optional(),
         resourceId: z.any().optional(),
         version: z.any().optional(),
+        generation: z.any().optional(),
+        userProject: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2175,6 +2474,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["object"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["generation"] !== undefined) {
+          params["generation"] = String(args["generation"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["bindings"] !== undefined) body["bindings"] = args["bindings"];
         if (args["etag"] !== undefined) body["etag"] = args["etag"];
@@ -2209,8 +2514,11 @@ export const model = {
     },
     test_iam_permissions: {
       description: "test iam permissions",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        generation: z.any().optional(),
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2234,6 +2542,12 @@ export const model = {
           g["object"]?.toString() ?? "";
         params["permissions"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["generation"] !== undefined) {
+          params["generation"] = String(args["generation"]);
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {

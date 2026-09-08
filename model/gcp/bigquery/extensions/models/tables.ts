@@ -969,6 +969,9 @@ const GlobalArgsSchema = z.object({
       .optional(),
   }).describe("Optional. The view definition.").optional(),
   datasetId: z.string().describe("Required. Dataset ID of the new table"),
+  autodetect_schema: z.string().describe(
+    "Optional. When true will autodetect schema, else will keep original schema",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -2133,6 +2136,9 @@ const InputsSchema = z.object({
   }).describe("Optional. The view definition.").optional(),
   datasetId: z.string().describe("Required. Dataset ID of the new table")
     .optional(),
+  autodetect_schema: z.string().describe(
+    "Optional. When true will autodetect schema, else will keep original schema",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -2161,7 +2167,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud BigQuery Tables. Registered at `@swamp/gcp/bigquery/tables`. */
 export const model = {
   type: "@swamp/gcp/bigquery/tables",
-  version: "2026.08.25.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2333,6 +2339,11 @@ export const model = {
     {
       toVersion: "2026.08.25.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: autodetect_schema",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -2582,6 +2593,11 @@ export const model = {
           body["timePartitioning"] = g["timePartitioning"];
         }
         if (g["view"] !== undefined) body["view"] = g["view"];
+        if (g["autodetect_schema"] !== undefined) {
+          params["autodetect_schema"] = String(g["autodetect_schema"]);
+        } else if (existing["autodetect_schema"] !== undefined) {
+          params["autodetect_schema"] = String(existing["autodetect_schema"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

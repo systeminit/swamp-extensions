@@ -285,6 +285,12 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   location: z.string().describe("Optional. Region of the Cloud SQL instance.")
     .optional(),
+  revokeExistingRoles: z.string().describe(
+    "Optional. Specifies whether to revoke existing roles that are not present in the `database_roles` field. If `false` or unset, the database roles specified in `database_roles` are added to the user's existing roles.",
+  ).optional(),
+  revokeExistingServerRoles: z.string().describe(
+    "Optional. Specifies whether to revoke existing roles that are not present in the `server_roles` field. If `false` or unset, the server roles specified in `server_roles` are added to the user's existing server roles.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -400,6 +406,12 @@ const InputsSchema = z.object({
   ).optional(),
   location: z.string().describe("Optional. Region of the Cloud SQL instance.")
     .optional(),
+  revokeExistingRoles: z.string().describe(
+    "Optional. Specifies whether to revoke existing roles that are not present in the `database_roles` field. If `false` or unset, the database roles specified in `database_roles` are added to the user's existing roles.",
+  ).optional(),
+  revokeExistingServerRoles: z.string().describe(
+    "Optional. Specifies whether to revoke existing roles that are not present in the `server_roles` field. If `false` or unset, the server roles specified in `server_roles` are added to the user's existing server roles.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -427,7 +439,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud SQL Admin Users. Registered at `@swamp/gcp/sqladmin/users`. */
 export const model = {
   type: "@swamp/gcp/sqladmin/users",
-  version: "2026.08.29.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -582,6 +594,11 @@ export const model = {
     {
       toVersion: "2026.08.29.1",
       description: "Added: location",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: revokeExistingRoles, revokeExistingServerRoles",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -757,6 +774,22 @@ export const model = {
           body["sqlserverUserDetails"] = g["sqlserverUserDetails"];
         }
         if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["revokeExistingRoles"] !== undefined) {
+          params["revokeExistingRoles"] = String(g["revokeExistingRoles"]);
+        } else if (existing["revokeExistingRoles"] !== undefined) {
+          params["revokeExistingRoles"] = String(
+            existing["revokeExistingRoles"],
+          );
+        }
+        if (g["revokeExistingServerRoles"] !== undefined) {
+          params["revokeExistingServerRoles"] = String(
+            g["revokeExistingServerRoles"],
+          );
+        } else if (existing["revokeExistingServerRoles"] !== undefined) {
+          params["revokeExistingServerRoles"] = String(
+            existing["revokeExistingServerRoles"],
+          );
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

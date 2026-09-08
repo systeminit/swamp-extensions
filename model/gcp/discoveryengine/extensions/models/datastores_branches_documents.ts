@@ -215,6 +215,9 @@ const GlobalArgsSchema = z.object({
   documentId: z.string().describe(
     "Required. The ID to use for the Document, which becomes the final component of the Document.name. If the caller does not have permission to create the Document, regardless of whether or not it exists, a `PERMISSION_DENIED` error is returned. This field must be unique among all Documents with the same parent. Otherwise, an `ALREADY_EXISTS` error is returned. This field must conform to [RFC-1034](https://tools.ietf.org/html/rfc1034) standard with a length limit of 128 characters. Otherwise, an `INVALID_ARGUMENT` error is returned.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to `true` and the Document is not found, a new Document is be created.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -318,6 +321,9 @@ const InputsSchema = z.object({
   documentId: z.string().describe(
     "Required. The ID to use for the Document, which becomes the final component of the Document.name. If the caller does not have permission to create the Document, regardless of whether or not it exists, a `PERMISSION_DENIED` error is returned. This field must be unique among all Documents with the same parent. Otherwise, an `ALREADY_EXISTS` error is returned. This field must conform to [RFC-1034](https://tools.ietf.org/html/rfc1034) standard with a length limit of 128 characters. Otherwise, an `INVALID_ARGUMENT` error is returned.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to `true` and the Document is not found, a new Document is be created.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -352,7 +358,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Discovery Engine DataStores.Branches.Documents. Registered at `@swamp/gcp/discoveryengine/datastores-branches-documents`. */
 export const model = {
   type: "@swamp/gcp/discoveryengine/datastores-branches-documents",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -490,6 +496,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -646,6 +657,11 @@ export const model = {
         }
         if (g["schemaId"] !== undefined) body["schemaId"] = g["schemaId"];
         if (g["structData"] !== undefined) body["structData"] = g["structData"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

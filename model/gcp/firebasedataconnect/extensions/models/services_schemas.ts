@@ -275,6 +275,9 @@ const GlobalArgsSchema = z.object({
   schemaId: z.string().describe(
     "Required. The ID to use for the schema, which will become the final component of the schema's resource name. Currently, only `main` is supported and any other schema ID will result in an error.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If true and the Schema is not found, a new Schema will be created. In this case, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -409,6 +412,9 @@ const InputsSchema = z.object({
   schemaId: z.string().describe(
     "Required. The ID to use for the schema, which will become the final component of the schema's resource name. Currently, only `main` is supported and any other schema ID will result in an error.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If true and the Schema is not found, a new Schema will be created. In this case, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -443,7 +449,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Firebase SQL Connect Services.Schemas. Registered at `@swamp/gcp/firebasedataconnect/services-schemas`. */
 export const model = {
   type: "@swamp/gcp/firebasedataconnect/services-schemas",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -620,6 +626,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -781,6 +792,11 @@ export const model = {
         }
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["source"] !== undefined) body["source"] = g["source"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

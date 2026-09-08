@@ -196,6 +196,12 @@ const GlobalArgsSchema = z.object({
   entryLinkId: z.string().describe(
     "Required. Entry Link identifier * Must contain only lowercase letters, numbers and hyphens. * Must start with a letter. * Must be between 1-63 characters. * Must end with a number or a letter. * Must be unique within the EntryGroup.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true and the entry link doesn't exist, the service will create it.",
+  ).optional(),
+  aspectKeys: z.string().describe(
+    "Optional. The map keys of the Aspects which the service should modify. It should be the aspect type reference in the format {project_id_or_number}.{location_id}.{aspect_type_id}.If this field is left empty, the service treats it as specifying exactly those Aspects present in the request.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -281,6 +287,12 @@ const InputsSchema = z.object({
   entryLinkId: z.string().describe(
     "Required. Entry Link identifier * Must contain only lowercase letters, numbers and hyphens. * Must start with a letter. * Must be between 1-63 characters. * Must end with a number or a letter. * Must be unique within the EntryGroup.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true and the entry link doesn't exist, the service will create it.",
+  ).optional(),
+  aspectKeys: z.string().describe(
+    "Optional. The map keys of the Aspects which the service should modify. It should be the aspect type reference in the format {project_id_or_number}.{location_id}.{aspect_type_id}.If this field is left empty, the service treats it as specifying exactly those Aspects present in the request.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -315,7 +327,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataplex EntryGroups.EntryLinks. Registered at `@swamp/gcp/dataplex/entrygroups-entrylinks`. */
 export const model = {
   type: "@swamp/gcp/dataplex/entrygroups-entrylinks",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -440,6 +452,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing, aspectKeys",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -579,6 +596,16 @@ export const model = {
         }
         const body: Record<string, unknown> = {};
         if (g["aspects"] !== undefined) body["aspects"] = g["aspects"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
+        if (g["aspectKeys"] !== undefined) {
+          params["aspectKeys"] = String(g["aspectKeys"]);
+        } else if (existing["aspectKeys"] !== undefined) {
+          params["aspectKeys"] = String(existing["aspectKeys"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

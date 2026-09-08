@@ -189,6 +189,9 @@ const GlobalArgsSchema = z.object({
   courseId: z.string().describe("Required. Identifier of the course."),
   postId: z.string().describe("Optional. Deprecated, use `item_id` instead."),
   attachmentId: z.string().describe("Required. Identifier of the attachment."),
+  itemId: z.string().describe(
+    "Identifier of the `Announcement`, `CourseWork`, or `CourseWorkMaterial` under which the attachment is attached. This field is required, but is not marked as such while we are migrating from post_id.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -237,6 +240,9 @@ const InputsSchema = z.object({
     .optional(),
   attachmentId: z.string().describe("Required. Identifier of the attachment.")
     .optional(),
+  itemId: z.string().describe(
+    "Identifier of the `Announcement`, `CourseWork`, or `CourseWorkMaterial` under which the attachment is attached. This field is required, but is not marked as such while we are migrating from post_id.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -266,7 +272,7 @@ function _buildGcpCredentials(
 export const model = {
   type:
     "@swamp/gcp/classroom/courses-posts-addonattachments-studentsubmissions",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -398,6 +404,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: itemId",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -505,6 +516,10 @@ export const model = {
           body["postSubmissionState"] = g["postSubmissionState"];
         }
         if (g["userId"] !== undefined) body["userId"] = g["userId"];
+        if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+        else if (existing["itemId"] !== undefined) {
+          params["itemId"] = String(existing["itemId"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

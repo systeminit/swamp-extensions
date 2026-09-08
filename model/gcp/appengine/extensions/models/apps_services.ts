@@ -186,6 +186,9 @@ const GlobalArgsSchema = z.object({
   appsId: z.string().describe(
     "Part of `name`. Required. Name of the resource requested. Example: apps/myapp/services/default.",
   ),
+  migrateTraffic: z.string().describe(
+    "Set to true to gradually shift traffic to one or more versions that you specify. By default, traffic is shifted immediately. For gradual traffic migration, the target versions must be located within instances that are configured for both warmup requests (https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions#InboundServiceType) and automatic scaling (https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions#AutomaticScaling). You must specify the shardBy (https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services#ShardBy) field in the Service resource. Gradual traffic migration is not supported in the App Engine flexible environment. For examples, see Migrating and Splitting Traffic (https://cloud.google.com/appengine/docs/admin-api/migrating-splitting-traffic).",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -245,6 +248,9 @@ const InputsSchema = z.object({
   appsId: z.string().describe(
     "Part of `name`. Required. Name of the resource requested. Example: apps/myapp/services/default.",
   ).optional(),
+  migrateTraffic: z.string().describe(
+    "Set to true to gradually shift traffic to one or more versions that you specify. By default, traffic is shifted immediately. For gradual traffic migration, the target versions must be located within instances that are configured for both warmup requests (https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions#InboundServiceType) and automatic scaling (https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions#AutomaticScaling). You must specify the shardBy (https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services#ShardBy) field in the Service resource. Gradual traffic migration is not supported in the App Engine flexible environment. For examples, see Migrating and Splitting Traffic (https://cloud.google.com/appengine/docs/admin-api/migrating-splitting-traffic).",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -273,7 +279,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud App Engine Admin Apps.Services. Registered at `@swamp/gcp/appengine/apps-services`. */
 export const model = {
   type: "@swamp/gcp/appengine/apps-services",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -400,6 +406,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: migrateTraffic",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -492,6 +503,11 @@ export const model = {
           body["networkSettings"] = g["networkSettings"];
         }
         if (g["split"] !== undefined) body["split"] = g["split"];
+        if (g["migrateTraffic"] !== undefined) {
+          params["migrateTraffic"] = String(g["migrateTraffic"]);
+        } else if (existing["migrateTraffic"] !== undefined) {
+          params["migrateTraffic"] = String(existing["migrateTraffic"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

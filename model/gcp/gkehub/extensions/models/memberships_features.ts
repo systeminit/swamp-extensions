@@ -595,6 +595,9 @@ const GlobalArgsSchema = z.object({
     "Required. The ID of the membership_feature to create.",
   ).optional(),
   requestId: z.string().describe("Idempotent request UUID.").optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the MembershipFeature is not found, a new MembershipFeature will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -1439,6 +1442,9 @@ const InputsSchema = z.object({
     "Required. The ID of the membership_feature to create.",
   ).optional(),
   requestId: z.string().describe("Idempotent request UUID.").optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the MembershipFeature is not found, a new MembershipFeature will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -1473,7 +1479,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud GKE Hub Memberships.Features. Registered at `@swamp/gcp/gkehub/memberships-features`. */
 export const model = {
   type: "@swamp/gcp/gkehub/memberships-features",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1658,6 +1664,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1795,6 +1806,11 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["spec"] !== undefined) body["spec"] = g["spec"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

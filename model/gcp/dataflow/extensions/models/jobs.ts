@@ -1967,7 +1967,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataflow Jobs. Registered at `@swamp/gcp/dataflow/jobs`. */
 export const model = {
   type: "@swamp/gcp/dataflow/jobs",
-  version: "2026.09.05.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2169,6 +2169,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.05.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -2557,14 +2562,41 @@ export const model = {
     },
     aggregated: {
       description: "aggregated",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        location: z.any().optional(),
+        name: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        regionalFanoutRequested: z.any().optional(),
+        view: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { projectId: projectId };
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
+        if (args["name"] !== undefined) params["name"] = String(args["name"]);
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["regionalFanoutRequested"] !== undefined) {
+          params["regionalFanoutRequested"] = String(
+            args["regionalFanoutRequested"],
+          );
+        }
+        if (args["view"] !== undefined) params["view"] = String(args["view"]);
         const result = await createResource(
           baseUrl,
           {
@@ -2595,8 +2627,11 @@ export const model = {
     },
     get_metrics: {
       description: "get metrics",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+        startTime: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2617,6 +2652,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["jobId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
+        if (args["startTime"] !== undefined) {
+          params["startTime"] = String(args["startTime"]);
+        }
         const result = await createResource(
           baseUrl,
           {

@@ -296,6 +296,9 @@ const GlobalArgsSchema = z.object({
   useDomainAdminAccess: z.string().describe(
     "Issue the request as a domain administrator. If set to `true`, and if the following additional conditions are met, the requester is granted access: 1. The file ID parameter refers to a shared drive. 2. The requester is an administrator of the domain to which the shared drive belongs. For more information, see [Manage shared drives as domain administrators](https://developers.google.com/workspace/drive/api/guides/manage-shareddrives#manage-administrators).",
   ).optional(),
+  removeExpiration: z.string().describe(
+    "Whether to remove the expiration date.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -377,6 +380,9 @@ const InputsSchema = z.object({
   useDomainAdminAccess: z.string().describe(
     "Issue the request as a domain administrator. If set to `true`, and if the following additional conditions are met, the requester is granted access: 1. The file ID parameter refers to a shared drive. 2. The requester is an administrator of the domain to which the shared drive belongs. For more information, see [Manage shared drives as domain administrators](https://developers.google.com/workspace/drive/api/guides/manage-shareddrives#manage-administrators).",
   ).optional(),
+  removeExpiration: z.string().describe(
+    "Whether to remove the expiration date.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -405,7 +411,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Drive Permissions. Registered at `@swamp/gcp/drive/permissions`. */
 export const model = {
   type: "@swamp/gcp/drive/permissions",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -580,6 +586,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: removeExpiration",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -746,6 +757,11 @@ export const model = {
         if (g["role"] !== undefined) body["role"] = g["role"];
         if (g["type"] !== undefined) body["type"] = g["type"];
         if (g["view"] !== undefined) body["view"] = g["view"];
+        if (g["removeExpiration"] !== undefined) {
+          params["removeExpiration"] = String(g["removeExpiration"]);
+        } else if (existing["removeExpiration"] !== undefined) {
+          params["removeExpiration"] = String(existing["removeExpiration"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

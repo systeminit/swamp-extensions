@@ -403,13 +403,24 @@ For update/patch methods, the same routing applies: properties declared with
 parameters, not in the request body. When the property also exists in the stored
 state, the generator emits a fallback from `existing[propName]` so that query
 params like `name` (used by `sqladmin/users` to identify the target user) are
-always present on the URL even when the caller doesn't re-supply them.
+always present on the URL even when the caller doesn't re-supply them. The
+pipeline collects query parameters from update/patch method configs into
+`domainProperties` and `updatePropertyNames`, mirroring the insert query-param
+collection pass, so they appear in `GlobalArgsSchema` and the CRUD update
+codegen routes them automatically.
 
 Additionally, `updateMask` is auto-computed when the method config declares it
 as a query parameter (`location: "query"`). The mask is set to the comma-joined
 keys of the request body _before_ fingerprint/etag carry-forward, so it contains
 only user-supplied field names. This follows the protobuf FieldMask JSON
 encoding convention (camelCase field paths).
+
+For action methods (non-CRUD methods like `append`, `batch_get`, `start`),
+query-location parameters from `action.config.parameters` are added to the
+action's `arguments` schema and routed to the `params` map in the execute body.
+This ensures that API-required query parameters (e.g., `valueInputOption` on
+Sheets `values.append`) are reachable by the caller and sent as URL query
+strings rather than in the request body.
 
 ---
 

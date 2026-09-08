@@ -226,6 +226,12 @@ const GlobalArgsSchema = z.object({
   insightsConfigId: z.string().describe(
     "Required. ID of the requesting InsightsConfig.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the insightsConfig is not found a new insightsConfig will be created. In this situation `update_mask` is ignored. The creation will succeed only if the input insightsConfig has all the necessary information (e.g a github_config with both user_oauth_token and installation_id properties).",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes after the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -334,6 +340,12 @@ const InputsSchema = z.object({
   insightsConfigId: z.string().describe(
     "Required. ID of the requesting InsightsConfig.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the insightsConfig is not found a new insightsConfig will be created. In this situation `update_mask` is ignored. The creation will succeed only if the input insightsConfig has all the necessary information (e.g a github_config with both user_oauth_token and installation_id properties).",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes after the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -365,7 +377,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Developer Connect InsightsConfigs. Registered at `@swamp/gcp/developerconnect/insightsconfigs`. */
 export const model = {
   type: "@swamp/gcp/developerconnect/insightsconfigs",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -495,6 +507,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing, requestId",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -660,6 +677,16 @@ export const model = {
         }
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["projects"] !== undefined) body["projects"] = g["projects"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
+        if (g["requestId"] !== undefined) {
+          params["requestId"] = String(g["requestId"]);
+        } else if (existing["requestId"] !== undefined) {
+          params["requestId"] = String(existing["requestId"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

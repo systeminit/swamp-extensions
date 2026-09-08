@@ -438,6 +438,9 @@ const GlobalArgsSchema = z.object({
   customerId: z.string().describe(
     "The unique ID for the customer's Google Workspace account. As an account administrator, you can also use the `my_customer` alias to represent your account's `customerId`. The `customerId` is also returned as part of the [Users resource](https://developers.google.com/workspace/admin/directory/v1/reference/users).",
   ),
+  projection: z.string().describe(
+    "Determines whether the response contains the full list of properties or only a subset.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -861,6 +864,9 @@ const InputsSchema = z.object({
   customerId: z.string().describe(
     "The unique ID for the customer's Google Workspace account. As an account administrator, you can also use the `my_customer` alias to represent your account's `customerId`. The `customerId` is also returned as part of the [Users resource](https://developers.google.com/workspace/admin/directory/v1/reference/users).",
   ).optional(),
+  projection: z.string().describe(
+    "Determines whether the response contains the full list of properties or only a subset.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -889,7 +895,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Admin SDK Chromeosdevices. Registered at `@swamp/gcp/admin/chromeosdevices`. */
 export const model = {
   type: "@swamp/gcp/admin/chromeosdevices",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -904,6 +910,11 @@ export const model = {
     {
       toVersion: "2026.08.13.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: projection",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1119,6 +1130,11 @@ export const model = {
         }
         if (g["willAutoRenew"] !== undefined) {
           body["willAutoRenew"] = g["willAutoRenew"];
+        }
+        if (g["projection"] !== undefined) {
+          params["projection"] = String(g["projection"]);
+        } else if (existing["projection"] !== undefined) {
+          params["projection"] = String(existing["projection"]);
         }
         for (const key of Object.keys(existing)) {
           if (

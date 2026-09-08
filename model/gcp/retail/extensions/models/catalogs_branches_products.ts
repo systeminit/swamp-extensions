@@ -372,6 +372,9 @@ const GlobalArgsSchema = z.object({
   productId: z.string().describe(
     "Required. The ID to use for the Product, which will become the final component of the Product.name. If the caller does not have permission to create the Product, regardless of whether or not it exists, a PERMISSION_DENIED error is returned. This field must be unique among all Products with the same parent. Otherwise, an ALREADY_EXISTS error is returned. This field must be a UTF-8 encoded string with a length limit of 128 characters. Otherwise, an INVALID_ARGUMENT error is returned.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the Product is not found, a new Product will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -785,6 +788,9 @@ const InputsSchema = z.object({
   productId: z.string().describe(
     "Required. The ID to use for the Product, which will become the final component of the Product.name. If the caller does not have permission to create the Product, regardless of whether or not it exists, a PERMISSION_DENIED error is returned. This field must be unique among all Products with the same parent. Otherwise, an ALREADY_EXISTS error is returned. This field must be a UTF-8 encoded string with a length limit of 128 characters. Otherwise, an INVALID_ARGUMENT error is returned.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the Product is not found, a new Product will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -819,7 +825,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud AI Commerce Search Catalogs.Branches.Products. Registered at `@swamp/gcp/retail/catalogs-branches-products`. */
 export const model = {
   type: "@swamp/gcp/retail/catalogs-branches-products",
-  version: "2026.08.18.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -979,6 +985,11 @@ export const model = {
     {
       toVersion: "2026.08.18.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1212,6 +1223,11 @@ export const model = {
         if (g["title"] !== undefined) body["title"] = g["title"];
         if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
         if (g["uri"] !== undefined) body["uri"] = g["uri"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

@@ -434,6 +434,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server ignores the request if it has already been completed. The server guarantees that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if the original operation with the same request ID was received, and if so, ignores the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, update succeeds even if instance is not found. In that case, a new instance is created and `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -807,6 +810,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server ignores the request if it has already been completed. The server guarantees that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if the original operation with the same request ID was received, and if so, ignores the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, update succeeds even if instance is not found. In that case, a new instance is created and `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -841,7 +847,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud AlloyDB Clusters.Instances. Registered at `@swamp/gcp/alloydb/clusters-instances`. */
 export const model = {
   type: "@swamp/gcp/alloydb/clusters-instances",
-  version: "2026.09.04.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1019,6 +1025,11 @@ export const model = {
     {
       toVersion: "2026.09.04.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1265,6 +1276,11 @@ export const model = {
         if (g["readPoolConfig"] !== undefined) {
           body["readPoolConfig"] = g["readPoolConfig"];
         }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -1493,6 +1509,9 @@ export const model = {
         uid: z.any().optional(),
         updateTime: z.any().optional(),
         writableNode: z.any().optional(),
+        instanceId: z.any().optional(),
+        requestId: z.any().optional(),
+        validateOnly: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1502,6 +1521,15 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["instanceId"] !== undefined) {
+          params["instanceId"] = String(args["instanceId"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
+        if (args["validateOnly"] !== undefined) {
+          params["validateOnly"] = String(args["validateOnly"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["activationPolicy"] !== undefined) {
           body["activationPolicy"] = args["activationPolicy"];
@@ -1660,8 +1688,10 @@ export const model = {
     },
     get_connection_info: {
       description: "get connection info",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1669,6 +1699,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {

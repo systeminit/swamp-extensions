@@ -224,6 +224,9 @@ const GlobalArgsSchema = z.object({
   serviceId: z.string().describe(
     "Required. The ID to use for the service, which will become the final component of the service's resource name.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If true and the Service is not found, a new Service will be created. In this case, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -339,6 +342,9 @@ const InputsSchema = z.object({
   serviceId: z.string().describe(
     "Required. The ID to use for the service, which will become the final component of the service's resource name.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If true and the Service is not found, a new Service will be created. In this case, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -370,7 +376,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Firebase SQL Connect Services. Registered at `@swamp/gcp/firebasedataconnect/services`. */
 export const model = {
   type: "@swamp/gcp/firebasedataconnect/services",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -537,6 +543,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -696,6 +707,11 @@ export const model = {
         }
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["source"] !== undefined) body["source"] = g["source"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

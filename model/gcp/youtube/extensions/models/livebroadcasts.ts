@@ -965,7 +965,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud YouTube Data LiveBroadcasts. Registered at `@swamp/gcp/youtube/livebroadcasts`. */
 export const model = {
   type: "@swamp/gcp/youtube/livebroadcasts",
-  version: "2026.08.21.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1094,6 +1094,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.21.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1447,8 +1452,12 @@ export const model = {
     },
     bind: {
       description: "bind",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        onBehalfOfContentOwner: z.any().optional(),
+        onBehalfOfContentOwnerChannel: z.any().optional(),
+        streamId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1457,6 +1466,19 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["id"] !== undefined) params["id"] = String(g["id"]);
         if (g["part"] !== undefined) params["part"] = String(g["part"]);
+        if (args["onBehalfOfContentOwner"] !== undefined) {
+          params["onBehalfOfContentOwner"] = String(
+            args["onBehalfOfContentOwner"],
+          );
+        }
+        if (args["onBehalfOfContentOwnerChannel"] !== undefined) {
+          params["onBehalfOfContentOwnerChannel"] = String(
+            args["onBehalfOfContentOwnerChannel"],
+          );
+        }
+        if (args["streamId"] !== undefined) {
+          params["streamId"] = String(args["streamId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1488,9 +1510,12 @@ export const model = {
         cueType: z.any().optional(),
         durationSecs: z.any().optional(),
         etag: z.any().optional(),
-        id: z.any().optional(),
         insertionOffsetTimeMs: z.any().optional(),
         walltimeMs: z.any().optional(),
+        id: z.any().optional(),
+        onBehalfOfContentOwner: z.any().optional(),
+        onBehalfOfContentOwnerChannel: z.any().optional(),
+        part: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1499,13 +1524,24 @@ export const model = {
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["id"] !== undefined) params["id"] = String(args["id"]);
+        if (args["onBehalfOfContentOwner"] !== undefined) {
+          params["onBehalfOfContentOwner"] = String(
+            args["onBehalfOfContentOwner"],
+          );
+        }
+        if (args["onBehalfOfContentOwnerChannel"] !== undefined) {
+          params["onBehalfOfContentOwnerChannel"] = String(
+            args["onBehalfOfContentOwnerChannel"],
+          );
+        }
+        if (args["part"] !== undefined) params["part"] = String(args["part"]);
         const body: Record<string, unknown> = {};
         if (args["cueType"] !== undefined) body["cueType"] = args["cueType"];
         if (args["durationSecs"] !== undefined) {
           body["durationSecs"] = args["durationSecs"];
         }
         if (args["etag"] !== undefined) body["etag"] = args["etag"];
-        if (args["id"] !== undefined) body["id"] = args["id"];
         if (args["insertionOffsetTimeMs"] !== undefined) {
           body["insertionOffsetTimeMs"] = args["insertionOffsetTimeMs"];
         }
@@ -1538,8 +1574,11 @@ export const model = {
     },
     transition: {
       description: "transition",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        onBehalfOfContentOwner: z.any().optional(),
+        onBehalfOfContentOwnerChannel: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1562,6 +1601,16 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["broadcastStatus"] = existing["broadcastStatus"]?.toString() ??
           g["broadcastStatus"]?.toString() ?? "";
+        if (args["onBehalfOfContentOwner"] !== undefined) {
+          params["onBehalfOfContentOwner"] = String(
+            args["onBehalfOfContentOwner"],
+          );
+        }
+        if (args["onBehalfOfContentOwnerChannel"] !== undefined) {
+          params["onBehalfOfContentOwnerChannel"] = String(
+            args["onBehalfOfContentOwnerChannel"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

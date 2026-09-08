@@ -392,7 +392,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataform Repositories. Registered at `@swamp/gcp/dataform/repositories`. */
 export const model = {
   type: "@swamp/gcp/dataform/repositories",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -576,6 +576,34 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: authenticationTokenSecretVersion, defaultBranch, effectiveDefaultBranch, gitRepositoryLink, sshAuthenticationConfig, hostPublicKey, userPrivateKeySecretVersion, tokenStatus, url, defaultDatabase, schemaSuffix, tablePrefix",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          authenticationTokenSecretVersion: _authenticationTokenSecretVersion,
+          defaultBranch: _defaultBranch,
+          effectiveDefaultBranch: _effectiveDefaultBranch,
+          gitRepositoryLink: _gitRepositoryLink,
+          sshAuthenticationConfig: _sshAuthenticationConfig,
+          hostPublicKey: _hostPublicKey,
+          userPrivateKeySecretVersion: _userPrivateKeySecretVersion,
+          tokenStatus: _tokenStatus,
+          url: _url,
+          defaultDatabase: _defaultDatabase,
+          schemaSuffix: _schemaSuffix,
+          tablePrefix: _tablePrefix,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1040,8 +1068,11 @@ export const model = {
     },
     fetch_history: {
       description: "fetch history",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1053,6 +1084,12 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
         }
         const result = await createResource(
           baseUrl,
@@ -1115,8 +1152,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1137,6 +1176,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1203,8 +1247,13 @@ export const model = {
     },
     query_directory_contents: {
       description: "query directory contents",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        commitSha: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        path: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1217,6 +1266,16 @@ export const model = {
             String(g["name"]),
           );
         }
+        if (args["commitSha"] !== undefined) {
+          params["commitSha"] = String(args["commitSha"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["path"] !== undefined) params["path"] = String(args["path"]);
         const result = await createResource(
           baseUrl,
           {
@@ -1245,8 +1304,11 @@ export const model = {
     },
     read_file: {
       description: "read file",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        commitSha: z.any().optional(),
+        path: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1259,6 +1321,10 @@ export const model = {
             String(g["name"]),
           );
         }
+        if (args["commitSha"] !== undefined) {
+          params["commitSha"] = String(args["commitSha"]);
+        }
+        if (args["path"] !== undefined) params["path"] = String(args["path"]);
         const result = await createResource(
           baseUrl,
           {

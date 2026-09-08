@@ -205,6 +205,9 @@ const GlobalArgsSchema = z.object({
   enrollmentId: z.string().describe(
     "Required. The user-provided ID to be assigned to the Enrollment. It should match the format `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the Enrollment is not found, a new Enrollment will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -256,6 +259,9 @@ const InputsSchema = z.object({
   enrollmentId: z.string().describe(
     "Required. The user-provided ID to be assigned to the Enrollment. It should match the format `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the Enrollment is not found, a new Enrollment will be created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -287,7 +293,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Eventarc Enrollments. Registered at `@swamp/gcp/eventarc/enrollments`. */
 export const model = {
   type: "@swamp/gcp/eventarc/enrollments",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -839,6 +845,51 @@ export const model = {
         return rest;
       },
     },
+    {
+      toVersion: "2026.09.07.1",
+      description:
+        "Added: allowMissing. Removed: createTime, etag, uid, updateTime, g, type, version, upgrades, globalArguments, inputsSchema, resources, methods",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          createTime: _createTime,
+          etag: _etag,
+          uid: _uid,
+          updateTime: _updateTime,
+          g: _g,
+          type: _type,
+          version: _version,
+          upgrades: _upgrades,
+          globalArguments: _globalArguments,
+          inputsSchema: _inputsSchema,
+          resources: _resources,
+          methods: _methods,
+          ...rest
+        } = old;
+        return rest;
+      },
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: createTime, etag, uid, updateTime, type, version, upgrades, globalArguments, inputsSchema, resources, methods",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          createTime: _createTime,
+          etag: _etag,
+          uid: _uid,
+          updateTime: _updateTime,
+          type: _type,
+          version: _version,
+          upgrades: _upgrades,
+          globalArguments: _globalArguments,
+          inputsSchema: _inputsSchema,
+          resources: _resources,
+          methods: _methods,
+          ...rest
+        } = old;
+        return rest;
+      },
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1003,6 +1054,11 @@ export const model = {
           body["displayName"] = g["displayName"];
         }
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -1195,8 +1251,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1217,6 +1275,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

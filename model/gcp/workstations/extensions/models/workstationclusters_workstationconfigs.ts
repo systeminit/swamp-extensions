@@ -445,6 +445,9 @@ const GlobalArgsSchema = z.object({
   workstationConfigId: z.string().describe(
     "Required. ID to use for the workstation configuration.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set and the workstation configuration is not found, a new workstation configuration will be created. In this situation, update_mask is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -835,6 +838,9 @@ const InputsSchema = z.object({
   workstationConfigId: z.string().describe(
     "Required. ID to use for the workstation configuration.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set and the workstation configuration is not found, a new workstation configuration will be created. In this situation, update_mask is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -869,7 +875,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Workstations WorkstationClusters.WorkstationConfigs. Registered at `@swamp/gcp/workstations/workstationclusters-workstationconfigs`. */
 export const model = {
   type: "@swamp/gcp/workstations/workstationclusters-workstationconfigs",
-  version: "2026.09.05.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1060,6 +1066,71 @@ export const model = {
       toVersion: "2026.09.05.1",
       description: "Added: idleAction",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: first, last, args, command, env, image, runAsUser, workingDir, kmsKey, kmsKeyServiceAccount, gcePd, diskType, readOnly, sourceImage, sourceSnapshot, mountPath, gceInstance, accelerators, count, type, boostConfigs, accelerators, bootDiskSizeGb, enableNestedVirtualization, id, machineType, poolSize, bootDiskSizeGb, confidentialInstanceConfig, enableConfidentialCompute, disablePublicIpAddresses, disableSsh, enableNestedVirtualization, instanceMetadata, machineType, poolSize, pooledInstances, serviceAccount, serviceAccountScopes, shieldedInstanceConfig, enableIntegrityMonitoring, enableSecureBoot, enableVtpm, startupScriptUri, tags, vmTags, gceHd, archiveTimeout, maxSizeGb, reclaimPolicy, sizeGb, sourceSnapshot, gcePd, archiveTimeout, diskType, fsType, maxSizeGb, reclaimPolicy, sizeGb, sourceSnapshot, mountPath, path, port",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          first: _first,
+          last: _last,
+          args: _args,
+          command: _command,
+          env: _env,
+          image: _image,
+          runAsUser: _runAsUser,
+          workingDir: _workingDir,
+          kmsKey: _kmsKey,
+          kmsKeyServiceAccount: _kmsKeyServiceAccount,
+          gcePd: _gcePd,
+          diskType: _diskType,
+          readOnly: _readOnly,
+          sourceImage: _sourceImage,
+          sourceSnapshot: _sourceSnapshot,
+          mountPath: _mountPath,
+          gceInstance: _gceInstance,
+          accelerators: _accelerators,
+          count: _count,
+          type: _type,
+          boostConfigs: _boostConfigs,
+          bootDiskSizeGb: _bootDiskSizeGb,
+          enableNestedVirtualization: _enableNestedVirtualization,
+          id: _id,
+          machineType: _machineType,
+          poolSize: _poolSize,
+          confidentialInstanceConfig: _confidentialInstanceConfig,
+          enableConfidentialCompute: _enableConfidentialCompute,
+          disablePublicIpAddresses: _disablePublicIpAddresses,
+          disableSsh: _disableSsh,
+          instanceMetadata: _instanceMetadata,
+          pooledInstances: _pooledInstances,
+          serviceAccount: _serviceAccount,
+          serviceAccountScopes: _serviceAccountScopes,
+          shieldedInstanceConfig: _shieldedInstanceConfig,
+          enableIntegrityMonitoring: _enableIntegrityMonitoring,
+          enableSecureBoot: _enableSecureBoot,
+          enableVtpm: _enableVtpm,
+          startupScriptUri: _startupScriptUri,
+          tags: _tags,
+          vmTags: _vmTags,
+          gceHd: _gceHd,
+          archiveTimeout: _archiveTimeout,
+          maxSizeGb: _maxSizeGb,
+          reclaimPolicy: _reclaimPolicy,
+          sizeGb: _sizeGb,
+          fsType: _fsType,
+          path: _path,
+          port: _port,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1286,6 +1357,11 @@ export const model = {
         if (g["runningTimeout"] !== undefined) {
           body["runningTimeout"] = g["runningTimeout"];
         }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -1470,8 +1546,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1492,6 +1570,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1517,8 +1600,11 @@ export const model = {
     },
     list_usable: {
       description: "list usable",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1526,6 +1612,12 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {

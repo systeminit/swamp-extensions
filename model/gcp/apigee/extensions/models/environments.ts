@@ -331,7 +331,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Apigee Environments. Registered at `@swamp/gcp/apigee/environments`. */
 export const model = {
   type: "@swamp/gcp/apigee/environments",
-  version: "2026.08.18.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -492,6 +492,30 @@ export const model = {
       toVersion: "2026.08.18.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: headerIndexAlgorithm, ipHeaderIndex, ipHeaderName, currentAggregateNodeCount, maxNodeCount, minNodeCount, property, value",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          headerIndexAlgorithm: _headerIndexAlgorithm,
+          ipHeaderIndex: _ipHeaderIndex,
+          ipHeaderName: _ipHeaderName,
+          currentAggregateNodeCount: _currentAggregateNodeCount,
+          maxNodeCount: _maxNodeCount,
+          minNodeCount: _minNodeCount,
+          property: _property,
+          value: _value,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -952,8 +976,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -974,6 +1000,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1083,6 +1114,7 @@ export const model = {
         properties: z.any().optional(),
         state: z.any().optional(),
         type: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1096,6 +1128,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
         }
         const body: Record<string, unknown> = {};
         if (args["apiProxyType"] !== undefined) {
@@ -1340,6 +1375,8 @@ export const model = {
         responseJSONPaths: z.any().optional(),
         responseXPaths: z.any().optional(),
         variables: z.any().optional(),
+        replaceRepeatedFields: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1353,6 +1390,14 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["replaceRepeatedFields"] !== undefined) {
+          params["replaceRepeatedFields"] = String(
+            args["replaceRepeatedFields"],
+          );
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
         }
         const body: Record<string, unknown> = {};
         if (args["faultJSONPaths"] !== undefined) {
@@ -1496,6 +1541,7 @@ export const model = {
         enabled: z.any().optional(),
         name: z.any().optional(),
         updateTime: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1509,6 +1555,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
         }
         const body: Record<string, unknown> = {};
         if (args["enabled"] !== undefined) body["enabled"] = args["enabled"];
@@ -1549,6 +1598,7 @@ export const model = {
         samplingConfig: z.any().optional(),
         spanSemantics: z.any().optional(),
         traceProtocol: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1562,6 +1612,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
         }
         const body: Record<string, unknown> = {};
         if (args["endpoint"] !== undefined) body["endpoint"] = args["endpoint"];

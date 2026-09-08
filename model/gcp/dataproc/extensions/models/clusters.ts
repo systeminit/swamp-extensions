@@ -1154,6 +1154,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A unique ID used to identify the request. If the server receives two CreateClusterRequest (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.CreateClusterRequest)s with the same id, then the second request will be ignored and the first google.longrunning.Operation created and stored in the backend is returned.It is recommended to always set this value to a UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). The maximum length is 40 characters.",
   ).optional(),
+  gracefulDecommissionTimeout: z.string().describe(
+    "Optional. Timeout for graceful YARN decommissioning. Graceful decommissioning allows removing nodes from the cluster without interrupting jobs in progress. Timeout specifies how long to wait for jobs in progress to finish before forcefully removing nodes (and potentially interrupting jobs). Default timeout is 0 (for forceful decommission), and the maximum allowed timeout is 1 day. (see JSON representation of Duration (https://developers.google.com/protocol-buffers/docs/proto3#json)).Supported in image versions 1.2 and higher.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -2469,6 +2472,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A unique ID used to identify the request. If the server receives two CreateClusterRequest (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.CreateClusterRequest)s with the same id, then the second request will be ignored and the first google.longrunning.Operation created and stored in the backend is returned.It is recommended to always set this value to a UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). The maximum length is 40 characters.",
   ).optional(),
+  gracefulDecommissionTimeout: z.string().describe(
+    "Optional. Timeout for graceful YARN decommissioning. Graceful decommissioning allows removing nodes from the cluster without interrupting jobs in progress. Timeout specifies how long to wait for jobs in progress to finish before forcefully removing nodes (and potentially interrupting jobs). Default timeout is 0 (for forceful decommission), and the maximum allowed timeout is 1 day. (see JSON representation of Duration (https://developers.google.com/protocol-buffers/docs/proto3#json)).Supported in image versions 1.2 and higher.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -2497,7 +2503,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataproc Clusters. Registered at `@swamp/gcp/dataproc/clusters`. */
 export const model = {
   type: "@swamp/gcp/dataproc/clusters",
-  version: "2026.09.05.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2727,6 +2733,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: gracefulDecommissionTimeout",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -2863,6 +2874,15 @@ export const model = {
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["virtualClusterConfig"] !== undefined) {
           body["virtualClusterConfig"] = g["virtualClusterConfig"];
+        }
+        if (g["gracefulDecommissionTimeout"] !== undefined) {
+          params["gracefulDecommissionTimeout"] = String(
+            g["gracefulDecommissionTimeout"],
+          );
+        } else if (existing["gracefulDecommissionTimeout"] !== undefined) {
+          params["gracefulDecommissionTimeout"] = String(
+            existing["gracefulDecommissionTimeout"],
+          );
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

@@ -148,6 +148,18 @@ const GlobalArgsSchema = z.object({
   spreadsheetId: z.string().describe(
     "The ID of the spreadsheet to retrieve data from.",
   ),
+  includeValuesInResponse: z.string().describe(
+    "Determines if the update response should include the values of the cells that were updated. By default, responses do not include the updated values. If the range to write was larger than the range actually written, the response includes all values in the requested range (excluding trailing empty rows and columns).",
+  ).optional(),
+  responseDateTimeRenderOption: z.string().describe(
+    "Determines how dates, times, and durations in the response should be rendered. This is ignored if response_value_render_option is FORMATTED_VALUE. The default dateTime render option is SERIAL_NUMBER.",
+  ).optional(),
+  responseValueRenderOption: z.string().describe(
+    "Determines how values in the response should be rendered. The default render option is FORMATTED_VALUE.",
+  ).optional(),
+  valueInputOption: z.string().describe(
+    "How the input data should be interpreted.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -178,6 +190,18 @@ const InputsSchema = z.object({
   spreadsheetId: z.string().describe(
     "The ID of the spreadsheet to retrieve data from.",
   ).optional(),
+  includeValuesInResponse: z.string().describe(
+    "Determines if the update response should include the values of the cells that were updated. By default, responses do not include the updated values. If the range to write was larger than the range actually written, the response includes all values in the requested range (excluding trailing empty rows and columns).",
+  ).optional(),
+  responseDateTimeRenderOption: z.string().describe(
+    "Determines how dates, times, and durations in the response should be rendered. This is ignored if response_value_render_option is FORMATTED_VALUE. The default dateTime render option is SERIAL_NUMBER.",
+  ).optional(),
+  responseValueRenderOption: z.string().describe(
+    "Determines how values in the response should be rendered. The default render option is FORMATTED_VALUE.",
+  ).optional(),
+  valueInputOption: z.string().describe(
+    "How the input data should be interpreted.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -206,7 +230,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Sheets Spreadsheets.Values. Registered at `@swamp/gcp/sheets/spreadsheets-values`. */
 export const model = {
   type: "@swamp/gcp/sheets/spreadsheets-values",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -323,6 +347,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description:
+        "Added: includeValuesInResponse, responseDateTimeRenderOption, responseValueRenderOption, valueInputOption",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -410,6 +440,38 @@ export const model = {
           body["majorDimension"] = g["majorDimension"];
         }
         if (g["values"] !== undefined) body["values"] = g["values"];
+        if (g["includeValuesInResponse"] !== undefined) {
+          params["includeValuesInResponse"] = String(
+            g["includeValuesInResponse"],
+          );
+        } else if (existing["includeValuesInResponse"] !== undefined) {
+          params["includeValuesInResponse"] = String(
+            existing["includeValuesInResponse"],
+          );
+        }
+        if (g["responseDateTimeRenderOption"] !== undefined) {
+          params["responseDateTimeRenderOption"] = String(
+            g["responseDateTimeRenderOption"],
+          );
+        } else if (existing["responseDateTimeRenderOption"] !== undefined) {
+          params["responseDateTimeRenderOption"] = String(
+            existing["responseDateTimeRenderOption"],
+          );
+        }
+        if (g["responseValueRenderOption"] !== undefined) {
+          params["responseValueRenderOption"] = String(
+            g["responseValueRenderOption"],
+          );
+        } else if (existing["responseValueRenderOption"] !== undefined) {
+          params["responseValueRenderOption"] = String(
+            existing["responseValueRenderOption"],
+          );
+        }
+        if (g["valueInputOption"] !== undefined) {
+          params["valueInputOption"] = String(g["valueInputOption"]);
+        } else if (existing["valueInputOption"] !== undefined) {
+          params["valueInputOption"] = String(existing["valueInputOption"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -508,6 +570,11 @@ export const model = {
         majorDimension: z.any().optional(),
         range: z.any().optional(),
         values: z.any().optional(),
+        includeValuesInResponse: z.any().optional(),
+        insertDataOption: z.any().optional(),
+        responseDateTimeRenderOption: z.any().optional(),
+        responseValueRenderOption: z.any().optional(),
+        valueInputOption: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -520,6 +587,27 @@ export const model = {
           params["spreadsheetId"] = String(g["spreadsheetId"]);
         }
         if (g["range"] !== undefined) params["range"] = String(g["range"]);
+        if (args["includeValuesInResponse"] !== undefined) {
+          params["includeValuesInResponse"] = String(
+            args["includeValuesInResponse"],
+          );
+        }
+        if (args["insertDataOption"] !== undefined) {
+          params["insertDataOption"] = String(args["insertDataOption"]);
+        }
+        if (args["responseDateTimeRenderOption"] !== undefined) {
+          params["responseDateTimeRenderOption"] = String(
+            args["responseDateTimeRenderOption"],
+          );
+        }
+        if (args["responseValueRenderOption"] !== undefined) {
+          params["responseValueRenderOption"] = String(
+            args["responseValueRenderOption"],
+          );
+        }
+        if (args["valueInputOption"] !== undefined) {
+          params["valueInputOption"] = String(args["valueInputOption"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["majorDimension"] !== undefined) {
           body["majorDimension"] = args["majorDimension"];
@@ -634,8 +722,13 @@ export const model = {
     },
     batch_get: {
       description: "batch get",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        dateTimeRenderOption: z.any().optional(),
+        majorDimension: z.any().optional(),
+        ranges: z.any().optional(),
+        valueRenderOption: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -644,6 +737,18 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["spreadsheetId"] !== undefined) {
           params["spreadsheetId"] = String(g["spreadsheetId"]);
+        }
+        if (args["dateTimeRenderOption"] !== undefined) {
+          params["dateTimeRenderOption"] = String(args["dateTimeRenderOption"]);
+        }
+        if (args["majorDimension"] !== undefined) {
+          params["majorDimension"] = String(args["majorDimension"]);
+        }
+        if (args["ranges"] !== undefined) {
+          params["ranges"] = String(args["ranges"]);
+        }
+        if (args["valueRenderOption"] !== undefined) {
+          params["valueRenderOption"] = String(args["valueRenderOption"]);
         }
         const result = await createResource(
           baseUrl,

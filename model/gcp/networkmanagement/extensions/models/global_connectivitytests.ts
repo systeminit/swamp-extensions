@@ -942,7 +942,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Network Management Global.ConnectivityTests. Registered at `@swamp/gcp/networkmanagement/global-connectivitytests`. */
 export const model = {
   type: "@swamp/gcp/networkmanagement/global-connectivitytests",
-  version: "2026.08.25.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1142,6 +1142,46 @@ export const model = {
       toVersion: "2026.08.25.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: appEngineVersion, uri, cloudFunction, uri, cloudRunJob, cloudRunRevision, serviceUri, uri, workerPoolUri, cloudSqlInstance, dmsPrivateConnection, forwardingRule, forwardingRuleTarget, fqdn, gkeMasterCluster, gkePod, instance, ipAddress, loadBalancerId, loadBalancerType, network, networkType, port, projectId, redisCluster, redisInstance, appEngineVersion, uri, cloudFunction, uri, cloudRunJob, cloudRunRevision, serviceUri, uri, workerPoolUri, cloudSqlInstance, dmsPrivateConnection, forwardingRule, forwardingRuleTarget, fqdn, gkeMasterCluster, gkePod, instance, ipAddress, loadBalancerId, loadBalancerType, network, networkType, port, projectId, redisCluster, redisInstance",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          appEngineVersion: _appEngineVersion,
+          uri: _uri,
+          cloudFunction: _cloudFunction,
+          cloudRunJob: _cloudRunJob,
+          cloudRunRevision: _cloudRunRevision,
+          serviceUri: _serviceUri,
+          workerPoolUri: _workerPoolUri,
+          cloudSqlInstance: _cloudSqlInstance,
+          dmsPrivateConnection: _dmsPrivateConnection,
+          forwardingRule: _forwardingRule,
+          forwardingRuleTarget: _forwardingRuleTarget,
+          fqdn: _fqdn,
+          gkeMasterCluster: _gkeMasterCluster,
+          gkePod: _gkePod,
+          instance: _instance,
+          ipAddress: _ipAddress,
+          loadBalancerId: _loadBalancerId,
+          loadBalancerType: _loadBalancerType,
+          network: _network,
+          networkType: _networkType,
+          port: _port,
+          projectId: _projectId,
+          redisCluster: _redisCluster,
+          redisInstance: _redisInstance,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1498,8 +1538,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1520,6 +1562,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

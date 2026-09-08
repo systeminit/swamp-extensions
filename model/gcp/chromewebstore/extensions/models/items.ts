@@ -213,7 +213,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Chrome Web Store Items. Registered at `@swamp/gcp/chromewebstore/items`. */
 export const model = {
   type: "@swamp/gcp/chromewebstore/items",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.06.07.1",
@@ -257,6 +257,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -470,9 +475,10 @@ export const model = {
     publish: {
       description: "publish",
       arguments: z.object({
-        deployPercentage: z.any().optional(),
-        reviewExemption: z.any().optional(),
         target: z.any().optional(),
+        deployPercentage: z.any().optional(),
+        publishTarget: z.any().optional(),
+        reviewExemption: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -495,13 +501,16 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["itemId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
-        const body: Record<string, unknown> = {};
         if (args["deployPercentage"] !== undefined) {
-          body["deployPercentage"] = args["deployPercentage"];
+          params["deployPercentage"] = String(args["deployPercentage"]);
+        }
+        if (args["publishTarget"] !== undefined) {
+          params["publishTarget"] = String(args["publishTarget"]);
         }
         if (args["reviewExemption"] !== undefined) {
-          body["reviewExemption"] = args["reviewExemption"];
+          params["reviewExemption"] = String(args["reviewExemption"]);
         }
+        const body: Record<string, unknown> = {};
         if (args["target"] !== undefined) body["target"] = args["target"];
         const result = await createResource(
           baseUrl,

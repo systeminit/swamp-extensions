@@ -241,7 +241,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Tag Manager Accounts.Containers.Workspaces. Registered at `@swamp/gcp/tagmanager/accounts-containers-workspaces`. */
 export const model = {
   type: "@swamp/gcp/tagmanager/accounts-containers-workspaces",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -360,6 +360,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.13.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -819,6 +824,7 @@ export const model = {
         trigger: z.any().optional(),
         variable: z.any().optional(),
         zone: z.any().optional(),
+        fingerprint: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -828,6 +834,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        if (args["fingerprint"] !== undefined) {
+          params["fingerprint"] = String(args["fingerprint"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["builtInVariable"] !== undefined) {
           body["builtInVariable"] = args["builtInVariable"];

@@ -267,6 +267,9 @@ const GlobalArgsSchema = z.object({
   version: z.enum(["VERSION_UNSPECIFIED", "V1", "V2"]).describe(
     "Output only. The version of the Data Policy resource.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the data policy is not found, a new data policy will be created. In this situation, update_mask is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -405,6 +408,9 @@ const InputsSchema = z.object({
   version: z.enum(["VERSION_UNSPECIFIED", "V1", "V2"]).describe(
     "Output only. The version of the Data Policy resource.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the data policy is not found, a new data policy will be created. In this situation, update_mask is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -436,7 +442,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud BigQuery Data Policy DataPolicies. Registered at `@swamp/gcp/bigquerydatapolicy/datapolicies`. */
 export const model = {
   type: "@swamp/gcp/bigquerydatapolicy/datapolicies",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -608,6 +614,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -770,6 +781,11 @@ export const model = {
         if (g["grantees"] !== undefined) body["grantees"] = g["grantees"];
         if (g["policyTag"] !== undefined) body["policyTag"] = g["policyTag"];
         if (g["version"] !== undefined) body["version"] = g["version"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

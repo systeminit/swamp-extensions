@@ -1116,6 +1116,12 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   location: z.string().describe("Optional. Region of the Cloud SQL instance.")
     .optional(),
+  reconcilePscNetworking: z.string().describe(
+    "Optional. Set PSC config to the same value as the existing config to reconcile the PSC networking.",
+  ).optional(),
+  reconcilePscNetworkingForce: z.string().describe(
+    "Optional. Set PSC config to the same value as the existing config and force reconcile the PSC networking.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -2428,6 +2434,12 @@ const InputsSchema = z.object({
   ).optional(),
   location: z.string().describe("Optional. Region of the Cloud SQL instance.")
     .optional(),
+  reconcilePscNetworking: z.string().describe(
+    "Optional. Set PSC config to the same value as the existing config to reconcile the PSC networking.",
+  ).optional(),
+  reconcilePscNetworkingForce: z.string().describe(
+    "Optional. Set PSC config to the same value as the existing config and force reconcile the PSC networking.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -2455,7 +2467,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud SQL Admin Instances. Registered at `@swamp/gcp/sqladmin/instances`. */
 export const model = {
   type: "@swamp/gcp/sqladmin/instances",
-  version: "2026.08.29.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2675,6 +2687,11 @@ export const model = {
     {
       toVersion: "2026.08.29.1",
       description: "Added: location",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: reconcilePscNetworking, reconcilePscNetworkingForce",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -2989,6 +3006,13 @@ export const model = {
           body["switchTransactionLogsToCloudStorageEnabled"] =
             g["switchTransactionLogsToCloudStorageEnabled"];
         }
+        if (g["reconcilePscNetworking"] !== undefined) {
+          body["reconcilePscNetworking"] = g["reconcilePscNetworking"];
+        }
+        if (g["reconcilePscNetworkingForce"] !== undefined) {
+          body["reconcilePscNetworkingForce"] =
+            g["reconcilePscNetworkingForce"];
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -3175,6 +3199,7 @@ export const model = {
       description: "acquire ssrs lease",
       arguments: z.object({
         acquireSsrsLeaseContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3197,6 +3222,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["acquireSsrsLeaseContext"] !== undefined) {
           body["acquireSsrsLeaseContext"] = args["acquireSsrsLeaseContext"];
@@ -3227,8 +3255,10 @@ export const model = {
     },
     add_entra_id_certificate: {
       description: "add entra id certificate",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3249,6 +3279,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3275,8 +3308,10 @@ export const model = {
     },
     add_server_ca: {
       description: "add server ca",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3297,6 +3332,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3322,8 +3360,10 @@ export const model = {
     },
     add_server_certificate: {
       description: "add server certificate",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3344,6 +3384,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3372,6 +3415,7 @@ export const model = {
       description: "clone",
       arguments: z.object({
         cloneContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3394,6 +3438,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["cloneContext"] !== undefined) {
           body["cloneContext"] = args["cloneContext"];
@@ -3425,6 +3472,7 @@ export const model = {
       description: "demote",
       arguments: z.object({
         demoteContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3447,6 +3495,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["demoteContext"] !== undefined) {
           body["demoteContext"] = args["demoteContext"];
@@ -3478,6 +3529,7 @@ export const model = {
       description: "demote master",
       arguments: z.object({
         demoteMasterContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3500,6 +3552,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["demoteMasterContext"] !== undefined) {
           body["demoteMasterContext"] = args["demoteMasterContext"];
@@ -3538,6 +3593,7 @@ export const model = {
         rowLimit: z.any().optional(),
         sqlStatement: z.any().optional(),
         user: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3560,6 +3616,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["application"] !== undefined) {
           body["application"] = args["application"];
@@ -3606,6 +3665,7 @@ export const model = {
       description: "export",
       arguments: z.object({
         exportContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3628,6 +3688,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["exportContext"] !== undefined) {
           body["exportContext"] = args["exportContext"];
@@ -3659,6 +3722,7 @@ export const model = {
       description: "failover",
       arguments: z.object({
         failoverContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3681,6 +3745,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["failoverContext"] !== undefined) {
           body["failoverContext"] = args["failoverContext"];
@@ -3712,6 +3779,7 @@ export const model = {
       description: "import",
       arguments: z.object({
         importContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3734,6 +3802,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["importContext"] !== undefined) {
           body["importContext"] = args["importContext"];
@@ -3763,8 +3834,10 @@ export const model = {
     },
     list_entra_id_certificates: {
       description: "list entra id certificates",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3785,6 +3858,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3811,8 +3887,10 @@ export const model = {
     },
     list_server_cas: {
       description: "list server cas",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3833,6 +3911,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3858,8 +3939,10 @@ export const model = {
     },
     list_server_certificates: {
       description: "list server certificates",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3880,6 +3963,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3981,6 +4067,7 @@ export const model = {
       description: "pre check major version upgrade",
       arguments: z.object({
         preCheckMajorVersionUpgradeContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4003,6 +4090,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["preCheckMajorVersionUpgradeContext"] !== undefined) {
           body["preCheckMajorVersionUpgradeContext"] =
@@ -4034,8 +4124,11 @@ export const model = {
     },
     promote_replica: {
       description: "promote replica",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        failover: z.any().optional(),
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4056,6 +4149,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["failover"] !== undefined) {
+          params["failover"] = String(args["failover"]);
+        }
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4084,6 +4183,7 @@ export const model = {
       description: "reencrypt",
       arguments: z.object({
         backupReencryptionConfig: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4106,6 +4206,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["backupReencryptionConfig"] !== undefined) {
           body["backupReencryptionConfig"] = args["backupReencryptionConfig"];
@@ -4135,8 +4238,10 @@ export const model = {
     },
     release_ssrs_lease: {
       description: "release ssrs lease",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4157,6 +4262,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4183,8 +4291,11 @@ export const model = {
     },
     reset_ssl_config: {
       description: "reset ssl config",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+        mode: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4205,6 +4316,10 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
+        if (args["mode"] !== undefined) params["mode"] = String(args["mode"]);
         const result = await createResource(
           baseUrl,
           {
@@ -4231,8 +4346,10 @@ export const model = {
     },
     restart: {
       description: "restart",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4253,6 +4370,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4285,6 +4405,7 @@ export const model = {
         restoreBackupContext: z.any().optional(),
         restoreInstanceClearOverridesFieldNames: z.any().optional(),
         restoreInstanceSettings: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4307,6 +4428,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["backup"] !== undefined) body["backup"] = args["backup"];
         if (args["backupdrBackup"] !== undefined) {
@@ -4352,6 +4476,7 @@ export const model = {
       description: "rotate entra id certificate",
       arguments: z.object({
         rotateEntraIdCertificateContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4374,6 +4499,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["rotateEntraIdCertificateContext"] !== undefined) {
           body["rotateEntraIdCertificateContext"] =
@@ -4407,6 +4535,7 @@ export const model = {
       description: "rotate server ca",
       arguments: z.object({
         rotateServerCaContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4429,6 +4558,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["rotateServerCaContext"] !== undefined) {
           body["rotateServerCaContext"] = args["rotateServerCaContext"];
@@ -4460,6 +4592,7 @@ export const model = {
       description: "rotate server certificate",
       arguments: z.object({
         rotateServerCertificateContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4482,6 +4615,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["rotateServerCertificateContext"] !== undefined) {
           body["rotateServerCertificateContext"] =
@@ -4513,8 +4649,10 @@ export const model = {
     },
     start_replica: {
       description: "start replica",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4535,6 +4673,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4560,8 +4701,10 @@ export const model = {
     },
     stop_replica: {
       description: "stop replica",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4582,6 +4725,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4607,8 +4753,11 @@ export const model = {
     },
     switchover: {
       description: "switchover",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        dbTimeout: z.any().optional(),
+        location: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4629,6 +4778,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["dbTimeout"] !== undefined) {
+          params["dbTimeout"] = String(args["dbTimeout"]);
+        }
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4657,6 +4812,7 @@ export const model = {
       description: "truncate log",
       arguments: z.object({
         truncateLogContext: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4679,6 +4835,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instance"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["truncateLogContext"] !== undefined) {
           body["truncateLogContext"] = args["truncateLogContext"];

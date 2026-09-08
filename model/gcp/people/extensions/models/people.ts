@@ -896,7 +896,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud People People. Registered at `@swamp/gcp/people/people`. */
 export const model = {
   type: "@swamp/gcp/people/people",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1005,6 +1005,16 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1300,6 +1310,8 @@ export const model = {
         taglines: z.any().optional(),
         urls: z.any().optional(),
         userDefined: z.any().optional(),
+        personFields: z.any().optional(),
+        sources: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1308,6 +1320,12 @@ export const model = {
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["personFields"] !== undefined) {
+          params["personFields"] = String(args["personFields"]);
+        }
+        if (args["sources"] !== undefined) {
+          params["sources"] = String(args["sources"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["addresses"] !== undefined) {
           body["addresses"] = args["addresses"];
@@ -1423,14 +1441,33 @@ export const model = {
     },
     get_batch_get: {
       description: "get batch get",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        personFields: z.any().optional(),
+        requestMask_includeField: z.any().optional(),
+        resourceNames: z.any().optional(),
+        sources: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["personFields"] !== undefined) {
+          params["personFields"] = String(args["personFields"]);
+        }
+        if (args["requestMask_includeField"] !== undefined) {
+          params["requestMask.includeField"] = String(
+            args["requestMask_includeField"],
+          );
+        }
+        if (args["resourceNames"] !== undefined) {
+          params["resourceNames"] = String(args["resourceNames"]);
+        }
+        if (args["sources"] !== undefined) {
+          params["sources"] = String(args["sources"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1457,14 +1494,43 @@ export const model = {
     },
     list_directory_people: {
       description: "list directory people",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        mergeSources: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        readMask: z.any().optional(),
+        requestSyncToken: z.any().optional(),
+        sources: z.any().optional(),
+        syncToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["mergeSources"] !== undefined) {
+          params["mergeSources"] = String(args["mergeSources"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["readMask"] !== undefined) {
+          params["readMask"] = String(args["readMask"]);
+        }
+        if (args["requestSyncToken"] !== undefined) {
+          params["requestSyncToken"] = String(args["requestSyncToken"]);
+        }
+        if (args["sources"] !== undefined) {
+          params["sources"] = String(args["sources"]);
+        }
+        if (args["syncToken"] !== undefined) {
+          params["syncToken"] = String(args["syncToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1494,14 +1560,31 @@ export const model = {
     },
     search_contacts: {
       description: "search contacts",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        query: z.any().optional(),
+        readMask: z.any().optional(),
+        sources: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["readMask"] !== undefined) {
+          params["readMask"] = String(args["readMask"]);
+        }
+        if (args["sources"] !== undefined) {
+          params["sources"] = String(args["sources"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1528,14 +1611,39 @@ export const model = {
     },
     search_directory_people: {
       description: "search directory people",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        mergeSources: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        query: z.any().optional(),
+        readMask: z.any().optional(),
+        sources: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["mergeSources"] !== undefined) {
+          params["mergeSources"] = String(args["mergeSources"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["readMask"] !== undefined) {
+          params["readMask"] = String(args["readMask"]);
+        }
+        if (args["sources"] !== undefined) {
+          params["sources"] = String(args["sources"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1603,6 +1711,9 @@ export const model = {
         taglines: z.any().optional(),
         urls: z.any().optional(),
         userDefined: z.any().optional(),
+        personFields: z.any().optional(),
+        sources: z.any().optional(),
+        updatePersonFields: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1625,6 +1736,15 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resourceName"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["personFields"] !== undefined) {
+          params["personFields"] = String(args["personFields"]);
+        }
+        if (args["sources"] !== undefined) {
+          params["sources"] = String(args["sources"]);
+        }
+        if (args["updatePersonFields"] !== undefined) {
+          params["updatePersonFields"] = String(args["updatePersonFields"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["addresses"] !== undefined) {
           body["addresses"] = args["addresses"];

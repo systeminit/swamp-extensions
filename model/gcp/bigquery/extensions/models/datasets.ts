@@ -365,6 +365,9 @@ const GlobalArgsSchema = z.object({
   accessPolicyVersion: z.string().describe(
     "Optional. The version of the provided access policy schema. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. This version refers to the schema version of the access policy and not the version of access policy. This field's value can be equal or more than the access policy schema provided in the request. For example, * Requests with conditional access policy binding in datasets must specify version 3. * But dataset with no conditional role bindings in access policy may specify any valid value or leave the field unset. If unset or if 0 or 1 value is used for dataset with conditional bindings, request will be rejected. This field will be mapped to IAM Policy version (https://cloud.google.com/iam/docs/policies#versions) and will be used to set policy in IAM.",
   ).optional(),
+  updateMode: z.string().describe(
+    "Optional. Specifies the fields of dataset that update/patch operation is targeting By default, both metadata and ACL fields are updated.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -640,6 +643,9 @@ const InputsSchema = z.object({
   accessPolicyVersion: z.string().describe(
     "Optional. The version of the provided access policy schema. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. This version refers to the schema version of the access policy and not the version of access policy. This field's value can be equal or more than the access policy schema provided in the request. For example, * Requests with conditional access policy binding in datasets must specify version 3. * But dataset with no conditional role bindings in access policy may specify any valid value or leave the field unset. If unset or if 0 or 1 value is used for dataset with conditional bindings, request will be rejected. This field will be mapped to IAM Policy version (https://cloud.google.com/iam/docs/policies#versions) and will be used to set policy in IAM.",
   ).optional(),
+  updateMode: z.string().describe(
+    "Optional. Specifies the fields of dataset that update/patch operation is targeting By default, both metadata and ACL fields are updated.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -668,7 +674,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud BigQuery Datasets. Registered at `@swamp/gcp/bigquery/datasets`. */
 export const model = {
   type: "@swamp/gcp/bigquery/datasets",
-  version: "2026.08.25.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -805,6 +811,11 @@ export const model = {
     {
       toVersion: "2026.08.25.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: updateMode",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1016,6 +1027,11 @@ export const model = {
         }
         if (g["storageBillingModel"] !== undefined) {
           body["storageBillingModel"] = g["storageBillingModel"];
+        }
+        if (g["updateMode"] !== undefined) {
+          params["updateMode"] = String(g["updateMode"]);
+        } else if (existing["updateMode"] !== undefined) {
+          params["updateMode"] = String(existing["updateMode"]);
         }
         for (const key of Object.keys(existing)) {
           if (

@@ -171,6 +171,9 @@ const GlobalArgsSchema = z.object({
   updateTime: z.string().describe(
     "Output only. The time the group was last updated.",
   ).optional(),
+  requestId: z.string().describe(
+    "Optional. A request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server knows to ignore the request if it has already been completed. The server guarantees that a request doesn't result in creation of duplicate commitments for at least 60 minutes. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check to see whether the original operation was received. If it was, the server ignores the second request. This behavior prevents clients from mistakenly creating duplicate commitments. The request ID must be a valid UUID, with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -240,6 +243,9 @@ const InputsSchema = z.object({
   updateTime: z.string().describe(
     "Output only. The time the group was last updated.",
   ).optional(),
+  requestId: z.string().describe(
+    "Optional. A request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server knows to ignore the request if it has already been completed. The server guarantees that a request doesn't result in creation of duplicate commitments for at least 60 minutes. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check to see whether the original operation was received. If it was, the server ignores the second request. This behavior prevents clients from mistakenly creating duplicate commitments. The request ID must be a valid UUID, with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -274,7 +280,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Network Connectivity Global.Hubs.Groups. Registered at `@swamp/gcp/networkconnectivity/global-hubs-groups`. */
 export const model = {
   type: "@swamp/gcp/networkconnectivity/global-hubs-groups",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -406,6 +412,19 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: requestId",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description: "Removed: autoAcceptProjects",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { autoAcceptProjects: _autoAcceptProjects, ...rest } = old;
+        return rest;
+      },
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -509,6 +528,11 @@ export const model = {
         if (g["state"] !== undefined) body["state"] = g["state"];
         if (g["uid"] !== undefined) body["uid"] = g["uid"];
         if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
+        if (g["requestId"] !== undefined) {
+          params["requestId"] = String(g["requestId"]);
+        } else if (existing["requestId"] !== undefined) {
+          params["requestId"] = String(existing["requestId"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -669,8 +693,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -691,6 +717,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

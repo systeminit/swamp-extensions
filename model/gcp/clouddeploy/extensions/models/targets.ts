@@ -327,6 +327,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server knows to ignore the request if it has already been completed. The server guarantees that for at least 60 minutes after the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, updating a `Target` that does not exist will result in the creation of a new `Target`.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -527,6 +530,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "Optional. A request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server knows to ignore the request if it has already been completed. The server guarantees that for at least 60 minutes after the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, updating a `Target` that does not exist will result in the creation of a new `Target`.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -558,7 +564,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Deploy Targets. Registered at `@swamp/gcp/clouddeploy/targets`. */
 export const model = {
   type: "@swamp/gcp/clouddeploy/targets",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -689,6 +695,39 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: membership, anthosClusters, membership, gkeClusters, cluster, dnsEndpoint, internalIp, proxyUrl, customTargetType, artifactStorage, defaultPool, artifactStorage, serviceAccount, executionTimeout, privatePool, artifactStorage, serviceAccount, workerPool, serviceAccount, usages, verbose, workerPool, cluster, dnsEndpoint, internalIp, proxyUrl, targetIds",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          membership: _membership,
+          anthosClusters: _anthosClusters,
+          gkeClusters: _gkeClusters,
+          cluster: _cluster,
+          dnsEndpoint: _dnsEndpoint,
+          internalIp: _internalIp,
+          proxyUrl: _proxyUrl,
+          customTargetType: _customTargetType,
+          artifactStorage: _artifactStorage,
+          defaultPool: _defaultPool,
+          serviceAccount: _serviceAccount,
+          executionTimeout: _executionTimeout,
+          privatePool: _privatePool,
+          workerPool: _workerPool,
+          usages: _usages,
+          verbose: _verbose,
+          targetIds: _targetIds,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -891,6 +930,11 @@ export const model = {
           body["requireApproval"] = g["requireApproval"];
         }
         if (g["run"] !== undefined) body["run"] = g["run"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -1083,8 +1127,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1105,6 +1151,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

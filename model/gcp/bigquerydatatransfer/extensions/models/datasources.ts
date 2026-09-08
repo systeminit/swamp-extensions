@@ -140,6 +140,7 @@ const StateSchema = z.object({
     recurse: z.boolean(),
     repeated: z.boolean(),
     required: z.boolean(),
+    secretManagerAllowed: z.boolean(),
     type: z.string(),
     validationDescription: z.string(),
     validationHelpUrl: z.string(),
@@ -193,7 +194,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud BigQuery Data Transfer DataSources. Registered at `@swamp/gcp/bigquerydatatransfer/datasources`. */
 export const model = {
   type: "@swamp/gcp/bigquerydatatransfer/datasources",
-  version: "2026.08.18.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -322,6 +323,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.18.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

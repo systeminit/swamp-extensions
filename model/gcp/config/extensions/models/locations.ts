@@ -159,7 +159,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Infrastructure Manager Locations. Registered at `@swamp/gcp/config/locations`. */
 export const model = {
   type: "@swamp/gcp/config/locations",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -288,6 +288,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -491,6 +496,7 @@ export const model = {
         autoMigrationEnabled: z.any().optional(),
         name: z.any().optional(),
         updateTime: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -500,6 +506,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["autoMigrationEnabled"] !== undefined) {
           body["autoMigrationEnabled"] = args["autoMigrationEnabled"];

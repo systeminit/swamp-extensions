@@ -255,7 +255,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Connectors Connections.EntityTypes.Entities. Registered at `@swamp/gcp/connectors/connections-entitytypes-entities`. */
 export const model = {
   type: "@swamp/gcp/connectors/connections-entitytypes-entities",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -379,6 +379,16 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -720,6 +730,8 @@ export const model = {
         fields: z.any().optional(),
         metadata: z.any().optional(),
         name: z.any().optional(),
+        conditions: z.any().optional(),
+        executionConfig_headers: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -742,6 +754,14 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["entityType"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["conditions"] !== undefined) {
+          params["conditions"] = String(args["conditions"]);
+        }
+        if (args["executionConfig_headers"] !== undefined) {
+          params["executionConfig.headers"] = String(
+            args["executionConfig_headers"],
+          );
+        }
         const body: Record<string, unknown> = {};
         if (args["fields"] !== undefined) body["fields"] = args["fields"];
         if (args["metadata"] !== undefined) body["metadata"] = args["metadata"];

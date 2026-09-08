@@ -215,7 +215,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Network Management NetworkMonitoringProviders. Registered at `@swamp/gcp/networkmanagement/networkmonitoringproviders`. */
 export const model = {
   type: "@swamp/gcp/networkmanagement/networkmonitoringproviders",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -224,6 +224,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -488,8 +493,10 @@ export const model = {
     },
     generate_monitoring_point_config: {
       description: "generate monitoring point config",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        privateConnectivityEnabled: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -500,6 +507,11 @@ export const model = {
           params["name"] = buildResourceName(
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
+          );
+        }
+        if (args["privateConnectivityEnabled"] !== undefined) {
+          params["privateConnectivityEnabled"] = String(
+            args["privateConnectivityEnabled"],
           );
         }
         const result = await createResource(
@@ -527,8 +539,10 @@ export const model = {
     },
     generate_provider_access_token: {
       description: "generate provider access token",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        gcpAccessToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -540,6 +554,9 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["gcpAccessToken"] !== undefined) {
+          params["gcpAccessToken"] = String(args["gcpAccessToken"]);
         }
         const result = await createResource(
           baseUrl,

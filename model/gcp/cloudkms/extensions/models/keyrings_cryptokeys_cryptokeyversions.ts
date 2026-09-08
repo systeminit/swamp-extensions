@@ -314,7 +314,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Key Management Service (KMS) KeyRings.CryptoKeys.CryptoKeyVersions. Registered at `@swamp/gcp/cloudkms/keyrings-cryptokeys-cryptokeyversions`. */
 export const model = {
   type: "@swamp/gcp/cloudkms/keyrings-cryptokeys-cryptokeyversions",
-  version: "2026.08.28.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -461,6 +461,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.28.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -997,8 +1002,10 @@ export const model = {
     },
     export_trusted_key_wrapped_crypto_key_version: {
       description: "export trusted key wrapped crypto key version",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        wrappingKey: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1010,6 +1017,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["wrappingKey"] !== undefined) {
+          params["wrappingKey"] = String(args["wrappingKey"]);
         }
         const result = await createResource(
           baseUrl,
@@ -1036,8 +1046,10 @@ export const model = {
     },
     get_public_key: {
       description: "get public key",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        publicKeyFormat: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1049,6 +1061,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["publicKeyFormat"] !== undefined) {
+          params["publicKeyFormat"] = String(args["publicKeyFormat"]);
         }
         const result = await createResource(
           baseUrl,

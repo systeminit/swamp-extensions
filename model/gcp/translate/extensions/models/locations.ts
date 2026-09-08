@@ -159,7 +159,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Translation Locations. Registered at `@swamp/gcp/translate/locations`. */
 export const model = {
   type: "@swamp/gcp/translate/locations",
-  version: "2026.08.20.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -283,6 +283,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.20.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -689,8 +694,11 @@ export const model = {
     },
     get_supported_languages: {
       description: "get supported languages",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        displayLanguageCode: z.any().optional(),
+        model: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -700,6 +708,12 @@ export const model = {
         params["parent"] = `projects/${projectId}/locations/${
           String(g["location"] ?? "")
         }`;
+        if (args["displayLanguageCode"] !== undefined) {
+          params["displayLanguageCode"] = String(args["displayLanguageCode"]);
+        }
+        if (args["model"] !== undefined) {
+          params["model"] = String(args["model"]);
+        }
         const result = await createResource(
           baseUrl,
           {

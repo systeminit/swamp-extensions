@@ -208,7 +208,7 @@ function _buildGcpCredentials(
 export const model = {
   type:
     "@swamp/gcp/networkmanagement/networkmonitoringproviders-monitoringpoints",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -217,6 +217,16 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -380,8 +390,24 @@ export const model = {
     },
     download_install_script: {
       description: "download install script",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        _password: z.any().optional(),
+        hostname: z.any().optional(),
+        monitoringPointType: z.any().optional(),
+        ntpServerAddress: z.any().optional(),
+        ntpServerSecondaryAddress: z.any().optional(),
+        privateConnectivityEnabled: z.any().optional(),
+        staticIpAddress_dnsServerAddress: z.any().optional(),
+        staticIpAddress_dnsServerSecondaryAddress: z.any().optional(),
+        staticIpAddress_domain: z.any().optional(),
+        staticIpAddress_gatewayAddress: z.any().optional(),
+        staticIpAddress_ipAddress: z.any().optional(),
+        staticIpAddress_netmask: z.any().optional(),
+        timeZone_id: z.any().optional(),
+        timeZone_version: z.any().optional(),
+        useDhcp: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -389,6 +415,67 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["_password"] !== undefined) {
+          params["_password"] = String(args["_password"]);
+        }
+        if (args["hostname"] !== undefined) {
+          params["hostname"] = String(args["hostname"]);
+        }
+        if (args["monitoringPointType"] !== undefined) {
+          params["monitoringPointType"] = String(args["monitoringPointType"]);
+        }
+        if (args["ntpServerAddress"] !== undefined) {
+          params["ntpServerAddress"] = String(args["ntpServerAddress"]);
+        }
+        if (args["ntpServerSecondaryAddress"] !== undefined) {
+          params["ntpServerSecondaryAddress"] = String(
+            args["ntpServerSecondaryAddress"],
+          );
+        }
+        if (args["privateConnectivityEnabled"] !== undefined) {
+          params["privateConnectivityEnabled"] = String(
+            args["privateConnectivityEnabled"],
+          );
+        }
+        if (args["staticIpAddress_dnsServerAddress"] !== undefined) {
+          params["staticIpAddress.dnsServerAddress"] = String(
+            args["staticIpAddress_dnsServerAddress"],
+          );
+        }
+        if (args["staticIpAddress_dnsServerSecondaryAddress"] !== undefined) {
+          params["staticIpAddress.dnsServerSecondaryAddress"] = String(
+            args["staticIpAddress_dnsServerSecondaryAddress"],
+          );
+        }
+        if (args["staticIpAddress_domain"] !== undefined) {
+          params["staticIpAddress.domain"] = String(
+            args["staticIpAddress_domain"],
+          );
+        }
+        if (args["staticIpAddress_gatewayAddress"] !== undefined) {
+          params["staticIpAddress.gatewayAddress"] = String(
+            args["staticIpAddress_gatewayAddress"],
+          );
+        }
+        if (args["staticIpAddress_ipAddress"] !== undefined) {
+          params["staticIpAddress.ipAddress"] = String(
+            args["staticIpAddress_ipAddress"],
+          );
+        }
+        if (args["staticIpAddress_netmask"] !== undefined) {
+          params["staticIpAddress.netmask"] = String(
+            args["staticIpAddress_netmask"],
+          );
+        }
+        if (args["timeZone_id"] !== undefined) {
+          params["timeZone.id"] = String(args["timeZone_id"]);
+        }
+        if (args["timeZone_version"] !== undefined) {
+          params["timeZone.version"] = String(args["timeZone_version"]);
+        }
+        if (args["useDhcp"] !== undefined) {
+          params["useDhcp"] = String(args["useDhcp"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -430,8 +517,10 @@ export const model = {
     },
     download_recreate_install_script: {
       description: "download recreate install script",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        hostname: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -443,6 +532,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["hostname"] !== undefined) {
+          params["hostname"] = String(args["hostname"]);
         }
         const result = await createResource(
           baseUrl,

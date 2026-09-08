@@ -173,6 +173,9 @@ const GlobalArgsSchema = z.object({
   schemaId: z.string().describe(
     "Required. The ID to use for the Schema, which becomes the final component of the Schema.name. This field should conform to [RFC-1034](https://tools.ietf.org/html/rfc1034) standard with a length limit of 63 characters.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the Schema is not found, a new Schema is created. In this situation, `update_mask` is ignored.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -206,6 +209,9 @@ const InputsSchema = z.object({
   ).optional(),
   schemaId: z.string().describe(
     "Required. The ID to use for the Schema, which becomes the final component of the Schema.name. This field should conform to [RFC-1034](https://tools.ietf.org/html/rfc1034) standard with a length limit of 63 characters.",
+  ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the Schema is not found, a new Schema is created. In this situation, `update_mask` is ignored.",
   ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
@@ -241,7 +247,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Discovery Engine Collections.DataStores.Schemas. Registered at `@swamp/gcp/discoveryengine/collections-datastores-schemas`. */
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-datastores-schemas",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -366,6 +372,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -512,6 +523,11 @@ export const model = {
         if (g["jsonSchema"] !== undefined) body["jsonSchema"] = g["jsonSchema"];
         if (g["structSchema"] !== undefined) {
           body["structSchema"] = g["structSchema"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
         }
         for (const key of Object.keys(existing)) {
           if (

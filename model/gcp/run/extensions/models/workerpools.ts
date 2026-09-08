@@ -613,6 +613,12 @@ const GlobalArgsSchema = z.object({
   workerPoolId: z.string().describe(
     "Optional. The unique identifier for the WorkerPool. It must begin with letter, and cannot end with hyphen; must contain fewer than 50 characters. The name of the worker pool becomes `{parent}/workerPools/{worker_pool_id}`. If not provided, the server will generate a unique `worker_pool_id`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and if the WorkerPool does not exist, it will create a new one. The caller must have 'run.workerpools.create' permissions if this is set to true and the WorkerPool does not exist.",
+  ).optional(),
+  forceNewRevision: z.string().describe(
+    "Optional. If set to true, a new revision will be created from the template even if the system doesn't detect any changes from the previously deployed revision. This may be useful for cases where the underlying resources need to be recreated or reinitialized. For example if the image is specified by label, but the underlying image digest has changed) or if the container performs deployment initialization work that needs to be performed again.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -1276,6 +1282,12 @@ const InputsSchema = z.object({
   workerPoolId: z.string().describe(
     "Optional. The unique identifier for the WorkerPool. It must begin with letter, and cannot end with hyphen; must contain fewer than 50 characters. The name of the worker pool becomes `{parent}/workerPools/{worker_pool_id}`. If not provided, the server will generate a unique `worker_pool_id`.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and if the WorkerPool does not exist, it will create a new one. The caller must have 'run.workerpools.create' permissions if this is set to true and the WorkerPool does not exist.",
+  ).optional(),
+  forceNewRevision: z.string().describe(
+    "Optional. If set to true, a new revision will be created from the template even if the system doesn't detect any changes from the previously deployed revision. This may be useful for cases where the underlying resources need to be recreated or reinitialized. For example if the image is specified by label, but the underlying image digest has changed) or if the container performs deployment initialization work that needs to be performed again.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -1307,7 +1319,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Run Admin WorkerPools. Registered at `@swamp/gcp/run/workerpools`. */
 export const model = {
   type: "@swamp/gcp/run/workerpools",
-  version: "2026.09.03.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1491,6 +1503,103 @@ export const model = {
       toVersion: "2026.09.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing, forceNewRevision",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: breakglassJustification, policy, useDefault, percent, revision, type, manualInstanceCount, containers, args, baseImageUri, buildInfo, functionTarget, sourceLocation, command, dependsOn, env, value, valueSource, image, livenessProbe, failureThreshold, grpc, port, service, httpGet, httpHeaders, path, port, initialDelaySeconds, periodSeconds, tcpSocket, port, timeoutSeconds, ports, containerPort, readinessProbe, failureThreshold, grpc, port, service, httpGet, httpHeaders, path, port, initialDelaySeconds, periodSeconds, tcpSocket, port, timeoutSeconds, resources, cpuIdle, limits, startupCpuBoost, sandboxLauncher, sourceCode, cloudStorageSource, bucket, generation, object, inlinedSource, sources, startupProbe, failureThreshold, grpc, port, service, httpGet, httpHeaders, path, port, initialDelaySeconds, periodSeconds, tcpSocket, port, timeoutSeconds, volumeMounts, mountPath, subPath, workingDir, encryptionKey, encryptionKeyRevocationAction, encryptionKeyShutdownDuration, gpuZonalRedundancyDisabled, nodeSelector, accelerator, revision, serviceAccount, serviceMesh, mesh, volumes, cloudSqlInstance, instances, emptyDir, medium, sizeLimit, gcs, bucket, mountOptions, readOnly, nfs, path, readOnly, server, secret, defaultMode, items, secret, vpcAccess, connector, egress, networkInterfaces, network, subnetwork, tags",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          breakglassJustification: _breakglassJustification,
+          policy: _policy,
+          useDefault: _useDefault,
+          percent: _percent,
+          revision: _revision,
+          type: _type,
+          manualInstanceCount: _manualInstanceCount,
+          containers: _containers,
+          args: _args,
+          baseImageUri: _baseImageUri,
+          buildInfo: _buildInfo,
+          functionTarget: _functionTarget,
+          sourceLocation: _sourceLocation,
+          command: _command,
+          dependsOn: _dependsOn,
+          env: _env,
+          value: _value,
+          valueSource: _valueSource,
+          image: _image,
+          livenessProbe: _livenessProbe,
+          failureThreshold: _failureThreshold,
+          grpc: _grpc,
+          port: _port,
+          service: _service,
+          httpGet: _httpGet,
+          httpHeaders: _httpHeaders,
+          path: _path,
+          initialDelaySeconds: _initialDelaySeconds,
+          periodSeconds: _periodSeconds,
+          tcpSocket: _tcpSocket,
+          timeoutSeconds: _timeoutSeconds,
+          ports: _ports,
+          containerPort: _containerPort,
+          readinessProbe: _readinessProbe,
+          resources: _resources,
+          cpuIdle: _cpuIdle,
+          limits: _limits,
+          startupCpuBoost: _startupCpuBoost,
+          sandboxLauncher: _sandboxLauncher,
+          sourceCode: _sourceCode,
+          cloudStorageSource: _cloudStorageSource,
+          bucket: _bucket,
+          generation: _generation,
+          object: _object,
+          inlinedSource: _inlinedSource,
+          sources: _sources,
+          startupProbe: _startupProbe,
+          volumeMounts: _volumeMounts,
+          mountPath: _mountPath,
+          subPath: _subPath,
+          workingDir: _workingDir,
+          encryptionKey: _encryptionKey,
+          encryptionKeyRevocationAction: _encryptionKeyRevocationAction,
+          encryptionKeyShutdownDuration: _encryptionKeyShutdownDuration,
+          gpuZonalRedundancyDisabled: _gpuZonalRedundancyDisabled,
+          nodeSelector: _nodeSelector,
+          accelerator: _accelerator,
+          serviceAccount: _serviceAccount,
+          serviceMesh: _serviceMesh,
+          mesh: _mesh,
+          volumes: _volumes,
+          cloudSqlInstance: _cloudSqlInstance,
+          instances: _instances,
+          emptyDir: _emptyDir,
+          medium: _medium,
+          sizeLimit: _sizeLimit,
+          gcs: _gcs,
+          mountOptions: _mountOptions,
+          readOnly: _readOnly,
+          nfs: _nfs,
+          server: _server,
+          secret: _secret,
+          defaultMode: _defaultMode,
+          items: _items,
+          vpcAccess: _vpcAccess,
+          connector: _connector,
+          egress: _egress,
+          networkInterfaces: _networkInterfaces,
+          network: _network,
+          subnetwork: _subnetwork,
+          tags: _tags,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1677,6 +1786,16 @@ export const model = {
         }
         if (g["scaling"] !== undefined) body["scaling"] = g["scaling"];
         if (g["template"] !== undefined) body["template"] = g["template"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
+        if (g["forceNewRevision"] !== undefined) {
+          params["forceNewRevision"] = String(g["forceNewRevision"]);
+        } else if (existing["forceNewRevision"] !== undefined) {
+          params["forceNewRevision"] = String(existing["forceNewRevision"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -1863,8 +1982,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1885,6 +2006,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

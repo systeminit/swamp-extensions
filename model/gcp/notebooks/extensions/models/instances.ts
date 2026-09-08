@@ -777,7 +777,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Notebooks Instances. Registered at `@swamp/gcp/notebooks/instances`. */
 export const model = {
   type: "@swamp/gcp/notebooks/instances",
-  version: "2026.08.21.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -953,6 +953,65 @@ export const model = {
       toVersion: "2026.08.21.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: acceleratorConfigs, coreCount, type, bootDisk, diskEncryption, diskSizeGb, diskType, kmsKey, confidentialInstanceConfig, confidentialInstanceType, containerImage, repository, tag, dataDisks, diskEncryption, diskSizeGb, diskType, kmsKey, resourcePolicies, disablePublicIp, enableIpForwarding, gpuDriverConfig, customGpuDriverPath, enableGpuDriver, machineType, metadata, minCpuPlatform, networkInterfaces, accessConfigs, externalIp, network, nicType, subnet, reservationAffinity, consumeReservationType, key, values, serviceAccounts, email, shieldedInstanceConfig, enableIntegrityMonitoring, enableSecureBoot, enableVtpm, tags, vmImage, family, imageDescription",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          acceleratorConfigs: _acceleratorConfigs,
+          coreCount: _coreCount,
+          type: _type,
+          bootDisk: _bootDisk,
+          diskEncryption: _diskEncryption,
+          diskSizeGb: _diskSizeGb,
+          diskType: _diskType,
+          kmsKey: _kmsKey,
+          confidentialInstanceConfig: _confidentialInstanceConfig,
+          confidentialInstanceType: _confidentialInstanceType,
+          containerImage: _containerImage,
+          repository: _repository,
+          tag: _tag,
+          dataDisks: _dataDisks,
+          resourcePolicies: _resourcePolicies,
+          disablePublicIp: _disablePublicIp,
+          enableIpForwarding: _enableIpForwarding,
+          gpuDriverConfig: _gpuDriverConfig,
+          customGpuDriverPath: _customGpuDriverPath,
+          enableGpuDriver: _enableGpuDriver,
+          machineType: _machineType,
+          metadata: _metadata,
+          minCpuPlatform: _minCpuPlatform,
+          networkInterfaces: _networkInterfaces,
+          accessConfigs: _accessConfigs,
+          externalIp: _externalIp,
+          network: _network,
+          nicType: _nicType,
+          subnet: _subnet,
+          reservationAffinity: _reservationAffinity,
+          consumeReservationType: _consumeReservationType,
+          key: _key,
+          values: _values,
+          serviceAccounts: _serviceAccounts,
+          email: _email,
+          shieldedInstanceConfig: _shieldedInstanceConfig,
+          enableIntegrityMonitoring: _enableIntegrityMonitoring,
+          enableSecureBoot: _enableSecureBoot,
+          enableVtpm: _enableVtpm,
+          tags: _tags,
+          vmImage: _vmImage,
+          family: _family,
+          imageDescription: _imageDescription,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1539,8 +1598,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1561,6 +1622,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

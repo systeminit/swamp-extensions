@@ -220,6 +220,12 @@ const GlobalArgsSchema = z.object({
   updateTime: z.string().describe(
     "The last update time of the managed folder metadata in RFC 3339 format.",
   ).optional(),
+  ifMetagenerationMatch: z.string().describe(
+    "Makes the operation conditional on whether the metageneration of the managed folder matches the specified value.",
+  ).optional(),
+  ifMetagenerationNotMatch: z.string().describe(
+    "Makes the operation conditional on whether the metageneration of the managed folder doesn't match the specified value.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -279,6 +285,12 @@ const InputsSchema = z.object({
   updateTime: z.string().describe(
     "The last update time of the managed folder metadata in RFC 3339 format.",
   ).optional(),
+  ifMetagenerationMatch: z.string().describe(
+    "Makes the operation conditional on whether the metageneration of the managed folder matches the specified value.",
+  ).optional(),
+  ifMetagenerationNotMatch: z.string().describe(
+    "Makes the operation conditional on whether the metageneration of the managed folder doesn't match the specified value.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -307,7 +319,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Storage JSON ManagedFolders. Registered at `@swamp/gcp/storage/managedfolders`. */
 export const model = {
   type: "@swamp/gcp/storage/managedfolders",
-  version: "2026.08.14.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -427,6 +439,11 @@ export const model = {
     {
       toVersion: "2026.08.14.1",
       description: "Added: rapidCacheConfig",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: ifMetagenerationMatch, ifMetagenerationNotMatch",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -570,6 +587,22 @@ export const model = {
           body["rapidCacheConfig"] = g["rapidCacheConfig"];
         }
         if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
+        if (g["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(g["ifMetagenerationMatch"]);
+        } else if (existing["ifMetagenerationMatch"] !== undefined) {
+          params["ifMetagenerationMatch"] = String(
+            existing["ifMetagenerationMatch"],
+          );
+        }
+        if (g["ifMetagenerationNotMatch"] !== undefined) {
+          params["ifMetagenerationNotMatch"] = String(
+            g["ifMetagenerationNotMatch"],
+          );
+        } else if (existing["ifMetagenerationNotMatch"] !== undefined) {
+          params["ifMetagenerationNotMatch"] = String(
+            existing["ifMetagenerationNotMatch"],
+          );
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -748,8 +781,11 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        optionsRequestedPolicyVersion: z.any().optional(),
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -771,6 +807,14 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["managedFolder"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -803,6 +847,7 @@ export const model = {
         kind: z.any().optional(),
         resourceId: z.any().optional(),
         version: z.any().optional(),
+        userProject: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -826,6 +871,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["managedFolder"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["bindings"] !== undefined) body["bindings"] = args["bindings"];
         if (args["etag"] !== undefined) body["etag"] = args["etag"];
@@ -859,8 +907,10 @@ export const model = {
     },
     test_iam_permissions: {
       description: "test iam permissions",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        userProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -884,6 +934,9 @@ export const model = {
           g["managedFolder"]?.toString() ?? "";
         params["permissions"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["userProject"] !== undefined) {
+          params["userProject"] = String(args["userProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {

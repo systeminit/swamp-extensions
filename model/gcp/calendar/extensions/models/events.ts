@@ -709,6 +709,9 @@ const GlobalArgsSchema = z.object({
   supportsAttachments: z.string().describe(
     "Whether API client performing operation supports event attachments. Optional. The default is False.",
   ).optional(),
+  alwaysIncludeEmail: z.string().describe(
+    "Deprecated and ignored. A value will always be returned in the email field for the organizer, creator and attendees, even if no real email address is available (i.e. a generated, non-working value will be provided).",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -1312,6 +1315,9 @@ const InputsSchema = z.object({
   supportsAttachments: z.string().describe(
     "Whether API client performing operation supports event attachments. Optional. The default is False.",
   ).optional(),
+  alwaysIncludeEmail: z.string().describe(
+    "Deprecated and ignored. A value will always be returned in the email field for the organizer, creator and attendees, even if no real email address is available (i.e. a generated, non-working value will be provided).",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -1340,7 +1346,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Calendar Events. Registered at `@swamp/gcp/calendar/events`. */
 export const model = {
   type: "@swamp/gcp/calendar/events",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1475,6 +1481,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: alwaysIncludeEmail",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1766,6 +1777,11 @@ export const model = {
         if (g["visibility"] !== undefined) body["visibility"] = g["visibility"];
         if (g["workingLocationProperties"] !== undefined) {
           body["workingLocationProperties"] = g["workingLocationProperties"];
+        }
+        if (g["alwaysIncludeEmail"] !== undefined) {
+          params["alwaysIncludeEmail"] = String(g["alwaysIncludeEmail"]);
+        } else if (existing["alwaysIncludeEmail"] !== undefined) {
+          params["alwaysIncludeEmail"] = String(existing["alwaysIncludeEmail"]);
         }
         for (const key of Object.keys(existing)) {
           if (
@@ -2088,6 +2104,9 @@ export const model = {
         updated: z.any().optional(),
         visibility: z.any().optional(),
         workingLocationProperties: z.any().optional(),
+        conferenceDataVersion: z.any().optional(),
+        eventLabelVersion: z.any().optional(),
+        supportsAttachments: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2098,6 +2117,17 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["calendarId"] !== undefined) {
           params["calendarId"] = String(g["calendarId"]);
+        }
+        if (args["conferenceDataVersion"] !== undefined) {
+          params["conferenceDataVersion"] = String(
+            args["conferenceDataVersion"],
+          );
+        }
+        if (args["eventLabelVersion"] !== undefined) {
+          params["eventLabelVersion"] = String(args["eventLabelVersion"]);
+        }
+        if (args["supportsAttachments"] !== undefined) {
+          params["supportsAttachments"] = String(args["supportsAttachments"]);
         }
         const body: Record<string, unknown> = {};
         if (args["anyoneCanAddSelf"] !== undefined) {
@@ -2222,8 +2252,18 @@ export const model = {
     },
     instances: {
       description: "instances",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        alwaysIncludeEmail: z.any().optional(),
+        maxAttendees: z.any().optional(),
+        maxResults: z.any().optional(),
+        originalStart: z.any().optional(),
+        pageToken: z.any().optional(),
+        showDeleted: z.any().optional(),
+        timeMax: z.any().optional(),
+        timeMin: z.any().optional(),
+        timeZone: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2247,6 +2287,33 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["eventId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["alwaysIncludeEmail"] !== undefined) {
+          params["alwaysIncludeEmail"] = String(args["alwaysIncludeEmail"]);
+        }
+        if (args["maxAttendees"] !== undefined) {
+          params["maxAttendees"] = String(args["maxAttendees"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["originalStart"] !== undefined) {
+          params["originalStart"] = String(args["originalStart"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["showDeleted"] !== undefined) {
+          params["showDeleted"] = String(args["showDeleted"]);
+        }
+        if (args["timeMax"] !== undefined) {
+          params["timeMax"] = String(args["timeMax"]);
+        }
+        if (args["timeMin"] !== undefined) {
+          params["timeMin"] = String(args["timeMin"]);
+        }
+        if (args["timeZone"] !== undefined) {
+          params["timeZone"] = String(args["timeZone"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2280,8 +2347,11 @@ export const model = {
     },
     move: {
       description: "move",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        sendNotifications: z.any().optional(),
+        sendUpdates: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2307,6 +2377,12 @@ export const model = {
           g["eventId"]?.toString() ?? "";
         params["destination"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["sendNotifications"] !== undefined) {
+          params["sendNotifications"] = String(args["sendNotifications"]);
+        }
+        if (args["sendUpdates"] !== undefined) {
+          params["sendUpdates"] = String(args["sendUpdates"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2334,8 +2410,11 @@ export const model = {
     },
     quick_add: {
       description: "quick add",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        sendNotifications: z.any().optional(),
+        sendUpdates: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2359,6 +2438,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["text"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["sendNotifications"] !== undefined) {
+          params["sendNotifications"] = String(args["sendNotifications"]);
+        }
+        if (args["sendUpdates"] !== undefined) {
+          params["sendUpdates"] = String(args["sendUpdates"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2396,6 +2481,24 @@ export const model = {
         resourceUri: z.any().optional(),
         token: z.any().optional(),
         type: z.any().optional(),
+        alwaysIncludeEmail: z.any().optional(),
+        eventTypes: z.any().optional(),
+        iCalUID: z.any().optional(),
+        maxAttendees: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        privateExtendedProperty: z.any().optional(),
+        q: z.any().optional(),
+        sharedExtendedProperty: z.any().optional(),
+        showDeleted: z.any().optional(),
+        showHiddenInvitations: z.any().optional(),
+        singleEvents: z.any().optional(),
+        syncToken: z.any().optional(),
+        timeMax: z.any().optional(),
+        timeMin: z.any().optional(),
+        timeZone: z.any().optional(),
+        updatedMin: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2406,6 +2509,64 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["calendarId"] !== undefined) {
           params["calendarId"] = String(g["calendarId"]);
+        }
+        if (args["alwaysIncludeEmail"] !== undefined) {
+          params["alwaysIncludeEmail"] = String(args["alwaysIncludeEmail"]);
+        }
+        if (args["eventTypes"] !== undefined) {
+          params["eventTypes"] = String(args["eventTypes"]);
+        }
+        if (args["iCalUID"] !== undefined) {
+          params["iCalUID"] = String(args["iCalUID"]);
+        }
+        if (args["maxAttendees"] !== undefined) {
+          params["maxAttendees"] = String(args["maxAttendees"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["privateExtendedProperty"] !== undefined) {
+          params["privateExtendedProperty"] = String(
+            args["privateExtendedProperty"],
+          );
+        }
+        if (args["q"] !== undefined) params["q"] = String(args["q"]);
+        if (args["sharedExtendedProperty"] !== undefined) {
+          params["sharedExtendedProperty"] = String(
+            args["sharedExtendedProperty"],
+          );
+        }
+        if (args["showDeleted"] !== undefined) {
+          params["showDeleted"] = String(args["showDeleted"]);
+        }
+        if (args["showHiddenInvitations"] !== undefined) {
+          params["showHiddenInvitations"] = String(
+            args["showHiddenInvitations"],
+          );
+        }
+        if (args["singleEvents"] !== undefined) {
+          params["singleEvents"] = String(args["singleEvents"]);
+        }
+        if (args["syncToken"] !== undefined) {
+          params["syncToken"] = String(args["syncToken"]);
+        }
+        if (args["timeMax"] !== undefined) {
+          params["timeMax"] = String(args["timeMax"]);
+        }
+        if (args["timeMin"] !== undefined) {
+          params["timeMin"] = String(args["timeMin"]);
+        }
+        if (args["timeZone"] !== undefined) {
+          params["timeZone"] = String(args["timeZone"]);
+        }
+        if (args["updatedMin"] !== undefined) {
+          params["updatedMin"] = String(args["updatedMin"]);
         }
         const body: Record<string, unknown> = {};
         if (args["address"] !== undefined) body["address"] = args["address"];

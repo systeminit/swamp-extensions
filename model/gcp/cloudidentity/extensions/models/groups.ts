@@ -311,7 +311,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Identity Groups. Registered at `@swamp/gcp/cloudidentity/groups`. */
 export const model = {
   type: "@swamp/gcp/cloudidentity/groups",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -447,6 +447,29 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: queries, query, resourceType, status, status, statusTime, id, namespace",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          queries: _queries,
+          query: _query,
+          resourceType: _resourceType,
+          status: _status,
+          statusTime: _statusTime,
+          id: _id,
+          namespace: _namespace,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -782,8 +805,10 @@ export const model = {
     },
     get_security_settings: {
       description: "get security settings",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        readMask: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -791,6 +816,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["readMask"] !== undefined) {
+          params["readMask"] = String(args["readMask"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -815,14 +843,23 @@ export const model = {
     },
     lookup: {
       description: "lookup",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        groupKey_id: z.any().optional(),
+        groupKey_namespace: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["groupKey_id"] !== undefined) {
+          params["groupKey.id"] = String(args["groupKey_id"]);
+        }
+        if (args["groupKey_namespace"] !== undefined) {
+          params["groupKey.namespace"] = String(args["groupKey_namespace"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -847,14 +884,29 @@ export const model = {
     },
     search: {
       description: "search",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        query: z.any().optional(),
+        view: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["view"] !== undefined) params["view"] = String(args["view"]);
         const result = await createResource(
           baseUrl,
           {
@@ -884,6 +936,7 @@ export const model = {
       arguments: z.object({
         memberRestriction: z.any().optional(),
         name: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -893,6 +946,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["memberRestriction"] !== undefined) {
           body["memberRestriction"] = args["memberRestriction"];

@@ -1657,7 +1657,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Campaign Manager 360 Placements. Registered at `@swamp/gcp/dfareporting/placements`. */
 export const model = {
   type: "@swamp/gcp/dfareporting/placements",
-  version: "2026.08.13.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1778,6 +1778,86 @@ export const model = {
       toVersion: "2026.08.13.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: height, iab, kind, width, dimensionName, etag, kind, matchType, value, dimensionName, etag, kind, matchType, value, conversionDomains, conversionDomainId, conversionDomainValue, time, dimensionName, etag, kind, matchType, value, dimensionName, etag, kind, matchType, value, time, clickDuration, postImpressionActivitiesDuration, linkStatus, measurementPartner, tagWrappingMode, wrappedTag, dimensionName, etag, kind, matchType, value, capCostOption, endDate, flighted, floodlightActivityId, pricingPeriods, endDate, pricingComment, rateOrCostNanos, startDate, units, pricingType, startDate, testingStartDate, time, dimensionName, etag, kind, matchType, value, height, iab, kind, width, additionalKeyValues, includeClickThroughUrls, includeClickTracking, includeUnescapedlpurlMacro, keywordOption, companionSettings, companionsDisabled, enabledSizes, height, iab, kind, width, imageOnly, kind, durationSeconds, kind, obaEnabled, obaSettings, iconClickThroughUrl, iconClickTrackingUrl, iconViewTrackingUrl, program, resourceUrl, height, iab, kind, width, xPosition, yPosition, orientation, publisherSpecificationId, skippableSettings, kind, progressOffset, offsetPercentage, offsetSeconds, skipOffset, offsetPercentage, offsetSeconds, skippable, transcodeSettings, enabledVideoFormats, kind, businessLogoCreativeIds, businessName, callToActions, descriptions, headlines, longHeadlines",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          height: _height,
+          iab: _iab,
+          kind: _kind,
+          width: _width,
+          dimensionName: _dimensionName,
+          etag: _etag,
+          matchType: _matchType,
+          value: _value,
+          conversionDomains: _conversionDomains,
+          conversionDomainId: _conversionDomainId,
+          conversionDomainValue: _conversionDomainValue,
+          time: _time,
+          clickDuration: _clickDuration,
+          postImpressionActivitiesDuration: _postImpressionActivitiesDuration,
+          linkStatus: _linkStatus,
+          measurementPartner: _measurementPartner,
+          tagWrappingMode: _tagWrappingMode,
+          wrappedTag: _wrappedTag,
+          capCostOption: _capCostOption,
+          endDate: _endDate,
+          flighted: _flighted,
+          floodlightActivityId: _floodlightActivityId,
+          pricingPeriods: _pricingPeriods,
+          pricingComment: _pricingComment,
+          rateOrCostNanos: _rateOrCostNanos,
+          startDate: _startDate,
+          units: _units,
+          pricingType: _pricingType,
+          testingStartDate: _testingStartDate,
+          additionalKeyValues: _additionalKeyValues,
+          includeClickThroughUrls: _includeClickThroughUrls,
+          includeClickTracking: _includeClickTracking,
+          includeUnescapedlpurlMacro: _includeUnescapedlpurlMacro,
+          keywordOption: _keywordOption,
+          companionSettings: _companionSettings,
+          companionsDisabled: _companionsDisabled,
+          enabledSizes: _enabledSizes,
+          imageOnly: _imageOnly,
+          durationSeconds: _durationSeconds,
+          obaEnabled: _obaEnabled,
+          obaSettings: _obaSettings,
+          iconClickThroughUrl: _iconClickThroughUrl,
+          iconClickTrackingUrl: _iconClickTrackingUrl,
+          iconViewTrackingUrl: _iconViewTrackingUrl,
+          program: _program,
+          resourceUrl: _resourceUrl,
+          xPosition: _xPosition,
+          yPosition: _yPosition,
+          orientation: _orientation,
+          publisherSpecificationId: _publisherSpecificationId,
+          skippableSettings: _skippableSettings,
+          progressOffset: _progressOffset,
+          offsetPercentage: _offsetPercentage,
+          offsetSeconds: _offsetSeconds,
+          skipOffset: _skipOffset,
+          skippable: _skippable,
+          transcodeSettings: _transcodeSettings,
+          enabledVideoFormats: _enabledVideoFormats,
+          businessLogoCreativeIds: _businessLogoCreativeIds,
+          businessName: _businessName,
+          callToActions: _callToActions,
+          descriptions: _descriptions,
+          headlines: _headlines,
+          longHeadlines: _longHeadlines,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -2373,8 +2453,15 @@ export const model = {
     },
     generatetags: {
       description: "generatetags",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        campaignId: z.any().optional(),
+        placementIds: z.any().optional(),
+        tagFormats: z.any().optional(),
+        tagProperties_dcDbmMacroIncluded: z.any().optional(),
+        tagProperties_gppMacrosIncluded: z.any().optional(),
+        tagProperties_tcfGdprMacrosIncluded: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2383,6 +2470,30 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["profileId"] !== undefined) {
           params["profileId"] = String(g["profileId"]);
+        }
+        if (args["campaignId"] !== undefined) {
+          params["campaignId"] = String(args["campaignId"]);
+        }
+        if (args["placementIds"] !== undefined) {
+          params["placementIds"] = String(args["placementIds"]);
+        }
+        if (args["tagFormats"] !== undefined) {
+          params["tagFormats"] = String(args["tagFormats"]);
+        }
+        if (args["tagProperties_dcDbmMacroIncluded"] !== undefined) {
+          params["tagProperties.dcDbmMacroIncluded"] = String(
+            args["tagProperties_dcDbmMacroIncluded"],
+          );
+        }
+        if (args["tagProperties_gppMacrosIncluded"] !== undefined) {
+          params["tagProperties.gppMacrosIncluded"] = String(
+            args["tagProperties_gppMacrosIncluded"],
+          );
+        }
+        if (args["tagProperties_tcfGdprMacrosIncluded"] !== undefined) {
+          params["tagProperties.tcfGdprMacrosIncluded"] = String(
+            args["tagProperties_tcfGdprMacrosIncluded"],
+          );
         }
         const result = await createResource(
           baseUrl,

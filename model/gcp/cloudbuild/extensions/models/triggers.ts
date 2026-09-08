@@ -1424,6 +1424,9 @@ const GlobalArgsSchema = z.object({
   projectId: z.string().describe(
     "Required. ID of the project for which to configure automatic builds.",
   ).optional(),
+  triggerId: z.string().describe(
+    "Required. ID of the `BuildTrigger` to update.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -3151,6 +3154,9 @@ const InputsSchema = z.object({
   projectId: z.string().describe(
     "Required. ID of the project for which to configure automatic builds.",
   ).optional(),
+  triggerId: z.string().describe(
+    "Required. ID of the `BuildTrigger` to update.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -3182,7 +3188,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Build Triggers. Registered at `@swamp/gcp/cloudbuild/triggers`. */
 export const model = {
   type: "@swamp/gcp/cloudbuild/triggers",
-  version: "2026.08.23.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -3207,6 +3213,11 @@ export const model = {
     {
       toVersion: "2026.08.23.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: triggerId",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -3462,6 +3473,11 @@ export const model = {
         if (g["webhookConfig"] !== undefined) {
           body["webhookConfig"] = g["webhookConfig"];
         }
+        if (g["triggerId"] !== undefined) {
+          params["triggerId"] = String(g["triggerId"]);
+        } else if (existing["triggerId"] !== undefined) {
+          params["triggerId"] = String(existing["triggerId"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -3706,6 +3722,9 @@ export const model = {
         contentType: z.any().optional(),
         data: z.any().optional(),
         extensions: z.any().optional(),
+        projectId: z.any().optional(),
+        secret: z.any().optional(),
+        trigger: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -3721,6 +3740,15 @@ export const model = {
               : `projects/${projectId}/locations/${String(g["location"])}`,
             String(g["name"]),
           );
+        }
+        if (args["projectId"] !== undefined) {
+          params["projectId"] = String(args["projectId"]);
+        }
+        if (args["secret"] !== undefined) {
+          params["secret"] = String(args["secret"]);
+        }
+        if (args["trigger"] !== undefined) {
+          params["trigger"] = String(args["trigger"]);
         }
         const body: Record<string, unknown> = {};
         if (args["contentType"] !== undefined) {

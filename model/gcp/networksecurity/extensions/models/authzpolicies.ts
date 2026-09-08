@@ -756,7 +756,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Network Security AuthzPolicies. Registered at `@swamp/gcp/networksecurity/authzpolicies`. */
 export const model = {
   type: "@swamp/gcp/networksecurity/authzpolicies",
-  version: "2026.08.29.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -927,6 +927,41 @@ export const model = {
       toVersion: "2026.08.29.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: authzExtension, resources, cloudIap, from, notSources, ipBlocks, principals, resources, sources, ipBlocks, principals, resources, to, notOperations, headerSet, hosts, mcp, methods, paths, snis, operations, headerSet, hosts, mcp, methods, paths, snis, when, from, notSources, ipBlocks, principals, resources, sources, ipBlocks, principals, resources, to, notOperations, headerSet, hosts, mcp, methods, paths, snis, operations, headerSet, hosts, mcp, methods, paths, snis, when, loadBalancingScheme, resources",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          authzExtension: _authzExtension,
+          resources: _resources,
+          cloudIap: _cloudIap,
+          from: _from,
+          notSources: _notSources,
+          ipBlocks: _ipBlocks,
+          principals: _principals,
+          sources: _sources,
+          to: _to,
+          notOperations: _notOperations,
+          headerSet: _headerSet,
+          hosts: _hosts,
+          mcp: _mcp,
+          methods: _methods,
+          paths: _paths,
+          snis: _snis,
+          operations: _operations,
+          when: _when,
+          loadBalancingScheme: _loadBalancingScheme,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1291,8 +1326,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1313,6 +1350,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

@@ -401,7 +401,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine Networks. Registered at `@swamp/gcp/compute/networks`. */
 export const model = {
   type: "@swamp/gcp/compute/networks",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -575,6 +575,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -931,6 +936,7 @@ export const model = {
         name: z.any().optional(),
         networkPeering: z.any().optional(),
         peerNetwork: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -953,6 +959,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["network"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["autoCreateRoutes"] !== undefined) {
           body["autoCreateRoutes"] = args["autoCreateRoutes"];
@@ -991,6 +1000,7 @@ export const model = {
       description: "cancel request remove peering",
       arguments: z.object({
         name: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1013,6 +1023,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["network"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["name"] !== undefined) body["name"] = args["name"];
         const result = await createResource(
@@ -1088,8 +1101,17 @@ export const model = {
     },
     list_peering_routes: {
       description: "list peering routes",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        direction: z.any().optional(),
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        peeringName: z.any().optional(),
+        region: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1110,6 +1132,30 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["network"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["direction"] !== undefined) {
+          params["direction"] = String(args["direction"]);
+        }
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["peeringName"] !== undefined) {
+          params["peeringName"] = String(args["peeringName"]);
+        }
+        if (args["region"] !== undefined) {
+          params["region"] = String(args["region"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1145,6 +1191,7 @@ export const model = {
       description: "request remove peering",
       arguments: z.object({
         name: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1167,6 +1214,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["network"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["name"] !== undefined) body["name"] = args["name"];
         const result = await createResource(
@@ -1195,8 +1245,10 @@ export const model = {
     },
     switch_to_custom_mode: {
       description: "switch to custom mode",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1217,6 +1269,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["network"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1245,6 +1300,7 @@ export const model = {
       description: "update peering",
       arguments: z.object({
         networkPeering: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1267,6 +1323,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["network"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["networkPeering"] !== undefined) {
           body["networkPeering"] = args["networkPeering"];

@@ -300,7 +300,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Number Registry CustomRanges. Registered at `@swamp/gcp/cloudnumberregistry/customranges`. */
 export const model = {
   type: "@swamp/gcp/cloudnumberregistry/customranges",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.05.19.1",
@@ -389,6 +389,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -757,8 +762,12 @@ export const model = {
     },
     find_free_ip_ranges: {
       description: "find free ip ranges",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        cidrPrefixLength: z.any().optional(),
+        rangeCount: z.any().optional(),
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -770,6 +779,15 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["cidrPrefixLength"] !== undefined) {
+          params["cidrPrefixLength"] = String(args["cidrPrefixLength"]);
+        }
+        if (args["rangeCount"] !== undefined) {
+          params["rangeCount"] = String(args["rangeCount"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
         }
         const result = await createResource(
           baseUrl,

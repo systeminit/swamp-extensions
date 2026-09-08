@@ -396,6 +396,7 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  paths: z.string().describe("The paths for this resource").optional(),
 });
 
 const StateSchema = z.object({
@@ -674,6 +675,7 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  paths: z.string().describe("The paths for this resource").optional(),
 });
 
 const _credentialKeys = new Set([
@@ -702,7 +704,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine Disks. Registered at `@swamp/gcp/compute/disks`. */
 export const model = {
   type: "@swamp/gcp/compute/disks",
-  version: "2026.09.06.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -930,6 +932,11 @@ export const model = {
     {
       toVersion: "2026.09.06.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: paths",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1218,6 +1225,10 @@ export const model = {
           body["storagePool"] = g["storagePool"];
         }
         if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["paths"] !== undefined) params["paths"] = String(g["paths"]);
+        else if (existing["paths"] !== undefined) {
+          params["paths"] = String(existing["paths"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -1418,6 +1429,7 @@ export const model = {
       description: "add resource policies",
       arguments: z.object({
         resourcePolicies: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1441,6 +1453,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["disk"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["resourcePolicies"] !== undefined) {
           body["resourcePolicies"] = args["resourcePolicies"];
@@ -1476,6 +1491,7 @@ export const model = {
         instantSnapshotGroupParameters: z.any().optional(),
         snapshotGroupParameters: z.any().optional(),
         sourceConsistencyGroupPolicy: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1485,6 +1501,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["zone"] !== undefined) params["zone"] = String(g["zone"]);
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instantSnapshotGroupParameters"] !== undefined) {
           body["instantSnapshotGroupParameters"] =
@@ -1524,6 +1543,8 @@ export const model = {
       description: "bulk set labels",
       arguments: z.object({
         requests: z.any().optional(),
+        requestId: z.any().optional(),
+        resource: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1533,6 +1554,12 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["zone"] !== undefined) params["zone"] = String(g["zone"]);
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
+        if (args["resource"] !== undefined) {
+          params["resource"] = String(args["resource"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["requests"] !== undefined) body["requests"] = args["requests"];
         const result = await createResource(
@@ -1571,7 +1598,6 @@ export const model = {
         diskSizeGb: z.any().optional(),
         downloadBytes: z.any().optional(),
         enableConfidentialCompute: z.any().optional(),
-        guestFlush: z.any().optional(),
         guestOsFeatures: z.any().optional(),
         id: z.any().optional(),
         kind: z.any().optional(),
@@ -1603,6 +1629,8 @@ export const model = {
         storageBytes: z.any().optional(),
         storageBytesStatus: z.any().optional(),
         storageLocations: z.any().optional(),
+        guestFlush: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1626,6 +1654,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["disk"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["guestFlush"] !== undefined) {
+          params["guestFlush"] = String(args["guestFlush"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["architecture"] !== undefined) {
           body["architecture"] = args["architecture"];
@@ -1653,9 +1687,6 @@ export const model = {
         }
         if (args["enableConfidentialCompute"] !== undefined) {
           body["enableConfidentialCompute"] = args["enableConfidentialCompute"];
-        }
-        if (args["guestFlush"] !== undefined) {
-          body["guestFlush"] = args["guestFlush"];
         }
         if (args["guestOsFeatures"] !== undefined) {
           body["guestOsFeatures"] = args["guestOsFeatures"];
@@ -1764,8 +1795,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        optionsRequestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1787,6 +1820,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1816,6 +1854,7 @@ export const model = {
       description: "resize",
       arguments: z.object({
         sizeGb: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1839,6 +1878,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["disk"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["sizeGb"] !== undefined) body["sizeGb"] = args["sizeGb"];
         const result = await createResource(
@@ -1927,6 +1969,7 @@ export const model = {
       arguments: z.object({
         labelFingerprint: z.any().optional(),
         labels: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1950,6 +1993,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["labelFingerprint"] !== undefined) {
           body["labelFingerprint"] = args["labelFingerprint"];
@@ -1984,6 +2030,7 @@ export const model = {
       description: "start async replication",
       arguments: z.object({
         asyncSecondaryDisk: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2007,6 +2054,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["disk"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["asyncSecondaryDisk"] !== undefined) {
           body["asyncSecondaryDisk"] = args["asyncSecondaryDisk"];
@@ -2038,8 +2088,10 @@ export const model = {
     },
     stop_async_replication: {
       description: "stop async replication",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2061,6 +2113,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["disk"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2090,6 +2145,7 @@ export const model = {
       description: "stop group async replication",
       arguments: z.object({
         resourcePolicy: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2099,6 +2155,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["zone"] !== undefined) params["zone"] = String(g["zone"]);
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["resourcePolicy"] !== undefined) {
           body["resourcePolicy"] = args["resourcePolicy"];
@@ -2186,6 +2245,7 @@ export const model = {
       description: "update kms key",
       arguments: z.object({
         kmsKeyName: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2209,6 +2269,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["disk"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["kmsKeyName"] !== undefined) {
           body["kmsKeyName"] = args["kmsKeyName"];

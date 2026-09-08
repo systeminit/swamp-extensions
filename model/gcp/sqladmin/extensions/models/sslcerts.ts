@@ -224,7 +224,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud SQL Admin SslCerts. Registered at `@swamp/gcp/sqladmin/sslcerts`. */
 export const model = {
   type: "@swamp/gcp/sqladmin/sslcerts",
-  version: "2026.08.29.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -348,6 +348,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.29.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -586,6 +591,7 @@ export const model = {
       arguments: z.object({
         access_token: z.any().optional(),
         public_key: z.any().optional(),
+        location: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -596,6 +602,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["instance"] !== undefined) {
           params["instance"] = String(g["instance"]);
+        }
+        if (args["location"] !== undefined) {
+          params["location"] = String(args["location"]);
         }
         const body: Record<string, unknown> = {};
         if (args["access_token"] !== undefined) {

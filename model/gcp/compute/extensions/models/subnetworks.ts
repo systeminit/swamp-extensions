@@ -347,6 +347,9 @@ const GlobalArgsSchema = z.object({
   requestId: z.string().describe(
     "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  drainTimeoutSeconds: z.string().describe(
+    "The drain timeout specifies the upper bound in seconds on the amount of time allowed to drain connections from the current ACTIVE subnetwork to the current BACKUP subnetwork. The drain timeout is only applicable when the following conditions are true: - the subnetwork being patched has purpose = INTERNAL_HTTPS_LOAD_BALANCER - the subnetwork being patched has role = BACKUP - the patch request is setting the role to ACTIVE. Note that after this patch operation the roles of the ACTIVE and BACKUP subnetworks will be swapped.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -578,6 +581,9 @@ const InputsSchema = z.object({
   requestId: z.string().describe(
     "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
   ).optional(),
+  drainTimeoutSeconds: z.string().describe(
+    "The drain timeout specifies the upper bound in seconds on the amount of time allowed to drain connections from the current ACTIVE subnetwork to the current BACKUP subnetwork. The drain timeout is only applicable when the following conditions are true: - the subnetwork being patched has purpose = INTERNAL_HTTPS_LOAD_BALANCER - the subnetwork being patched has role = BACKUP - the patch request is setting the role to ACTIVE. Note that after this patch operation the roles of the ACTIVE and BACKUP subnetworks will be swapped.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -606,7 +612,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine Subnetworks. Registered at `@swamp/gcp/compute/subnetworks`. */
 export const model = {
   type: "@swamp/gcp/compute/subnetworks",
-  version: "2026.08.28.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -754,6 +760,11 @@ export const model = {
     {
       toVersion: "2026.08.28.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: drainTimeoutSeconds",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -988,6 +999,13 @@ export const model = {
           body["secondaryIpRanges"] = g["secondaryIpRanges"];
         }
         if (g["stackType"] !== undefined) body["stackType"] = g["stackType"];
+        if (g["drainTimeoutSeconds"] !== undefined) {
+          params["drainTimeoutSeconds"] = String(g["drainTimeoutSeconds"]);
+        } else if (existing["drainTimeoutSeconds"] !== undefined) {
+          params["drainTimeoutSeconds"] = String(
+            existing["drainTimeoutSeconds"],
+          );
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -1192,6 +1210,7 @@ export const model = {
       description: "expand ip cidr range",
       arguments: z.object({
         ipCidrRange: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1215,6 +1234,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["subnetwork"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["ipCidrRange"] !== undefined) {
           body["ipCidrRange"] = args["ipCidrRange"];
@@ -1246,8 +1268,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        optionsRequestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1269,6 +1293,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1296,14 +1325,39 @@ export const model = {
     },
     list_usable: {
       description: "list usable",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
+        serviceProject: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
+        if (args["serviceProject"] !== undefined) {
+          params["serviceProject"] = String(args["serviceProject"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1392,6 +1446,7 @@ export const model = {
       description: "set private ip google access",
       arguments: z.object({
         privateIpGoogleAccess: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1415,6 +1470,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["subnetwork"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["privateIpGoogleAccess"] !== undefined) {
           body["privateIpGoogleAccess"] = args["privateIpGoogleAccess"];

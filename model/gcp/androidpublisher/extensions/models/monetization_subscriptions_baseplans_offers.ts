@@ -440,6 +440,12 @@ const GlobalArgsSchema = z.object({
   regionsVersion_version: z.string().describe(
     "Required. A string representing the version of available regions being used for the specified resource. Regional prices and latest supported version for the resource have to be specified according to the information published in [this article](https://support.google.com/googleplay/android-developer/answer/10532353). Each time the supported locations substantially change, the version will be incremented. Using this field will ensure that creating and updating the resource with an older region's version and set of regional prices and currencies will succeed even though a new version is available.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the subscription offer with the given package_name, product_id, base_plan_id and offer_id doesn't exist, an offer will be created. If a new offer is created, update_mask is ignored.",
+  ).optional(),
+  latencyTolerance: z.string().describe(
+    "Optional. The latency tolerance for the propagation of this product update. Defaults to latency-sensitive.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -733,6 +739,12 @@ const InputsSchema = z.object({
   regionsVersion_version: z.string().describe(
     "Required. A string representing the version of available regions being used for the specified resource. Regional prices and latest supported version for the resource have to be specified according to the information published in [this article](https://support.google.com/googleplay/android-developer/answer/10532353). Each time the supported locations substantially change, the version will be incremented. Using this field will ensure that creating and updating the resource with an older region's version and set of regional prices and currencies will succeed even though a new version is available.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true, and the subscription offer with the given package_name, product_id, base_plan_id and offer_id doesn't exist, an offer will be created. If a new offer is created, update_mask is ignored.",
+  ).optional(),
+  latencyTolerance: z.string().describe(
+    "Optional. The latency tolerance for the propagation of this product update. Defaults to latency-sensitive.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -762,7 +774,7 @@ function _buildGcpCredentials(
 export const model = {
   type:
     "@swamp/gcp/androidpublisher/monetization-subscriptions-baseplans-offers",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -892,6 +904,11 @@ export const model = {
     {
       toVersion: "2026.08.13.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing, latencyTolerance",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1076,6 +1093,16 @@ export const model = {
           body["regionalConfigs"] = g["regionalConfigs"];
         }
         if (g["targeting"] !== undefined) body["targeting"] = g["targeting"];
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
+        if (g["latencyTolerance"] !== undefined) {
+          params["latencyTolerance"] = String(g["latencyTolerance"]);
+        } else if (existing["latencyTolerance"] !== undefined) {
+          params["latencyTolerance"] = String(existing["latencyTolerance"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

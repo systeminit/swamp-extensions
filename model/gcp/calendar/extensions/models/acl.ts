@@ -292,7 +292,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Calendar Acl. Registered at `@swamp/gcp/calendar/acl`. */
 export const model = {
   type: "@swamp/gcp/calendar/acl",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -421,6 +421,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -753,6 +758,10 @@ export const model = {
         resourceUri: z.any().optional(),
         token: z.any().optional(),
         type: z.any().optional(),
+        maxResults: z.any().optional(),
+        pageToken: z.any().optional(),
+        showDeleted: z.any().optional(),
+        syncToken: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -763,6 +772,18 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["calendarId"] !== undefined) {
           params["calendarId"] = String(g["calendarId"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["showDeleted"] !== undefined) {
+          params["showDeleted"] = String(args["showDeleted"]);
+        }
+        if (args["syncToken"] !== undefined) {
+          params["syncToken"] = String(args["syncToken"]);
         }
         const body: Record<string, unknown> = {};
         if (args["address"] !== undefined) body["address"] = args["address"];

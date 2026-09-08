@@ -346,6 +346,10 @@ const GlobalArgsSchema = z.object({
   fetchImages: z.string().describe("The fetchImages for this resource")
     .optional(),
   isDraft: z.string().describe("The isDraft for this resource").optional(),
+  maxComments: z.string().describe("The maxComments for this resource")
+    .optional(),
+  publish: z.string().describe("The publish for this resource").optional(),
+  revert: z.string().describe("The revert for this resource").optional(),
 });
 
 const StateSchema = z.object({
@@ -536,6 +540,10 @@ const InputsSchema = z.object({
   fetchImages: z.string().describe("The fetchImages for this resource")
     .optional(),
   isDraft: z.string().describe("The isDraft for this resource").optional(),
+  maxComments: z.string().describe("The maxComments for this resource")
+    .optional(),
+  publish: z.string().describe("The publish for this resource").optional(),
+  revert: z.string().describe("The revert for this resource").optional(),
 });
 
 const _credentialKeys = new Set([
@@ -564,7 +572,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Blogger Posts. Registered at `@swamp/gcp/blogger/posts`. */
 export const model = {
   type: "@swamp/gcp/blogger/posts",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -694,6 +702,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: maxComments, publish, revert",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -856,6 +869,20 @@ export const model = {
         if (g["trashed"] !== undefined) body["trashed"] = g["trashed"];
         if (g["updated"] !== undefined) body["updated"] = g["updated"];
         if (g["url"] !== undefined) body["url"] = g["url"];
+        if (g["maxComments"] !== undefined) {
+          params["maxComments"] = String(g["maxComments"]);
+        } else if (existing["maxComments"] !== undefined) {
+          params["maxComments"] = String(existing["maxComments"]);
+        }
+        if (g["publish"] !== undefined) {
+          params["publish"] = String(g["publish"]);
+        } else if (existing["publish"] !== undefined) {
+          params["publish"] = String(existing["publish"]);
+        }
+        if (g["revert"] !== undefined) params["revert"] = String(g["revert"]);
+        else if (existing["revert"] !== undefined) {
+          params["revert"] = String(existing["revert"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -1061,8 +1088,11 @@ export const model = {
     },
     get_by_path: {
       description: "get by path",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        maxComments: z.any().optional(),
+        view: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1084,6 +1114,10 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["path"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["maxComments"] !== undefined) {
+          params["maxComments"] = String(args["maxComments"]);
+        }
+        if (args["view"] !== undefined) params["view"] = String(args["view"]);
         const result = await createResource(
           baseUrl,
           {
@@ -1110,8 +1144,10 @@ export const model = {
     },
     publish: {
       description: "publish",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        publishDate: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1133,6 +1169,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["postId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["publishDate"] !== undefined) {
+          params["publishDate"] = String(args["publishDate"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1205,8 +1244,11 @@ export const model = {
     },
     search: {
       description: "search",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        fetchBodies: z.any().optional(),
+        orderBy: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1228,6 +1270,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["q"] = existing["name"]?.toString() ?? g["name"]?.toString() ??
           "";
+        if (args["fetchBodies"] !== undefined) {
+          params["fetchBodies"] = String(args["fetchBodies"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
         const result = await createResource(
           baseUrl,
           {

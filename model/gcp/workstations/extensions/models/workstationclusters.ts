@@ -236,6 +236,9 @@ const GlobalArgsSchema = z.object({
   workstationClusterId: z.string().describe(
     "Required. ID to use for the workstation cluster.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set, and the workstation cluster is not found, a new workstation cluster will be created. In this situation, update_mask is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -344,6 +347,9 @@ const InputsSchema = z.object({
   workstationClusterId: z.string().describe(
     "Required. ID to use for the workstation cluster.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set, and the workstation cluster is not found, a new workstation cluster will be created. In this situation, update_mask is ignored.",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -375,7 +381,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Workstations WorkstationClusters. Registered at `@swamp/gcp/workstations/workstationclusters`. */
 export const model = {
   type: "@swamp/gcp/workstations/workstationclusters",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -515,6 +521,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -706,6 +717,11 @@ export const model = {
         }
         if (g["workstationLaunchUrl"] !== undefined) {
           body["workstationLaunchUrl"] = g["workstationLaunchUrl"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

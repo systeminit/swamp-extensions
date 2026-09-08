@@ -350,6 +350,9 @@ const GlobalArgsSchema = z.object({
   connectionId: z.string().describe(
     "Required. The ID to use for the Connection, which will become the final component of the Connection's resource name. Names must be unique per-project per-location. Allows alphanumeric characters and any of -._~%!$&'()*+,;=@.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the connection is not found a new connection will be created. In this situation `update_mask` is ignored. The creation will succeed only if the input connection has all the necessary information (e.g a github_config with both user_oauth_token and installation_id properties).",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -623,6 +626,9 @@ const InputsSchema = z.object({
   connectionId: z.string().describe(
     "Required. The ID to use for the Connection, which will become the final component of the Connection's resource name. Names must be unique per-project per-location. Allows alphanumeric characters and any of -._~%!$&'()*+,;=@.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the connection is not found a new connection will be created. In this situation `update_mask` is ignored. The creation will succeed only if the input connection has all the necessary information (e.g a github_config with both user_oauth_token and installation_id properties).",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -654,7 +660,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Build Connections. Registered at `@swamp/gcp/cloudbuild/connections`. */
 export const model = {
   type: "@swamp/gcp/cloudbuild/connections",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -788,6 +794,39 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: authorizerCredential, userTokenSecretVersion, username, readAuthorizerCredential, userTokenSecretVersion, username, webhookSecretSecretVersion, workspace, authorizerCredential, userTokenSecretVersion, username, hostUri, readAuthorizerCredential, userTokenSecretVersion, username, serverVersion, serviceDirectoryConfig, service, sslCa, webhookSecretSecretVersion, appInstallationId, authorizerCredential, oauthTokenSecretVersion, username, apiKey, appId, appInstallationId, appSlug, hostUri, privateKeySecretVersion, serverVersion, serviceDirectoryConfig, service, sslCa, webhookSecretSecretVersion, authorizerCredential, userTokenSecretVersion, username, hostUri, readAuthorizerCredential, userTokenSecretVersion, username, serverVersion, serviceDirectoryConfig, service, sslCa, webhookSecretSecretVersion",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          authorizerCredential: _authorizerCredential,
+          userTokenSecretVersion: _userTokenSecretVersion,
+          username: _username,
+          readAuthorizerCredential: _readAuthorizerCredential,
+          webhookSecretSecretVersion: _webhookSecretSecretVersion,
+          workspace: _workspace,
+          hostUri: _hostUri,
+          serverVersion: _serverVersion,
+          serviceDirectoryConfig: _serviceDirectoryConfig,
+          service: _service,
+          sslCa: _sslCa,
+          appInstallationId: _appInstallationId,
+          oauthTokenSecretVersion: _oauthTokenSecretVersion,
+          apiKey: _apiKey,
+          appId: _appId,
+          appSlug: _appSlug,
+          privateKeySecretVersion: _privateKeySecretVersion,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -967,6 +1006,11 @@ export const model = {
         }
         if (g["gitlabConfig"] !== undefined) {
           body["gitlabConfig"] = g["gitlabConfig"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
@@ -1154,8 +1198,11 @@ export const model = {
     },
     fetch_linkable_repositories: {
       description: "fetch linkable repositories",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1176,6 +1223,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["connection"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1202,8 +1255,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1224,6 +1279,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1252,6 +1312,7 @@ export const model = {
         contentType: z.any().optional(),
         data: z.any().optional(),
         extensions: z.any().optional(),
+        webhookKey: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1263,6 +1324,9 @@ export const model = {
         params["parent"] = `projects/${projectId}/locations/${
           String(g["location"] ?? "")
         }`;
+        if (args["webhookKey"] !== undefined) {
+          params["webhookKey"] = String(args["webhookKey"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["contentType"] !== undefined) {
           body["contentType"] = args["contentType"];

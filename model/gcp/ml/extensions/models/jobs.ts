@@ -1348,7 +1348,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud AI Platform Training & Prediction Jobs. Registered at `@swamp/gcp/ml/jobs`. */
 export const model = {
   type: "@swamp/gcp/ml/jobs",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1489,6 +1489,108 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: batchSize, dataFormat, inputPaths, maxWorkerCount, modelName, outputDataFormat, outputPath, region, runtimeVersion, signatureName, uri, versionName, errorCount, nodeHours, outputPath, predictionCount, args, enableWebAccess, encryptionConfig, kmsKeyName, evaluatorConfig, acceleratorConfig, count, type, containerArgs, containerCommand, diskConfig, bootDiskSizeGb, bootDiskType, imageUri, tpuTfVersion, evaluatorCount, evaluatorType, hyperparameters, algorithm, enableTrialEarlyStopping, goal, hyperparameterMetricTag, maxFailedTrials, maxParallelTrials, maxTrials, params, categoricalValues, discreteValues, maxValue, minValue, parameterName, scaleType, type, resumePreviousJobId, jobDir, masterConfig, acceleratorConfig, count, type, containerArgs, containerCommand, diskConfig, bootDiskSizeGb, bootDiskType, imageUri, tpuTfVersion, masterType, network, packageUris, parameterServerConfig, acceleratorConfig, count, type, containerArgs, containerCommand, diskConfig, bootDiskSizeGb, bootDiskType, imageUri, tpuTfVersion, parameterServerCount, parameterServerType, pythonModule, pythonVersion, region, runtimeVersion, scaleTier, scheduling, maxRunningTime, maxWaitTime, priority, serviceAccount, useChiefInTfConfig, workerConfig, acceleratorConfig, count, type, containerArgs, containerCommand, diskConfig, bootDiskSizeGb, bootDiskType, imageUri, tpuTfVersion, workerCount, workerType, builtInAlgorithmOutput, framework, modelPath, pythonVersion, runtimeVersion, completedTrialCount, consumedMLUnits, hyperparameterMetricTag, isBuiltInAlgorithmJob, isHyperparameterTuningJob, trials, allMetrics, objectiveValue, trainingStep, builtInAlgorithmOutput, framework, modelPath, pythonVersion, runtimeVersion, endTime, finalMetric, objectiveValue, trainingStep, hyperparameters, isTrialStoppedEarly, startTime, state, trialId, webAccessUris, webAccessUris",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          batchSize: _batchSize,
+          dataFormat: _dataFormat,
+          inputPaths: _inputPaths,
+          maxWorkerCount: _maxWorkerCount,
+          modelName: _modelName,
+          outputDataFormat: _outputDataFormat,
+          outputPath: _outputPath,
+          region: _region,
+          runtimeVersion: _runtimeVersion,
+          signatureName: _signatureName,
+          uri: _uri,
+          versionName: _versionName,
+          errorCount: _errorCount,
+          nodeHours: _nodeHours,
+          predictionCount: _predictionCount,
+          args: _args,
+          enableWebAccess: _enableWebAccess,
+          encryptionConfig: _encryptionConfig,
+          kmsKeyName: _kmsKeyName,
+          evaluatorConfig: _evaluatorConfig,
+          acceleratorConfig: _acceleratorConfig,
+          count: _count,
+          type: _type,
+          containerArgs: _containerArgs,
+          containerCommand: _containerCommand,
+          diskConfig: _diskConfig,
+          bootDiskSizeGb: _bootDiskSizeGb,
+          bootDiskType: _bootDiskType,
+          imageUri: _imageUri,
+          tpuTfVersion: _tpuTfVersion,
+          evaluatorCount: _evaluatorCount,
+          evaluatorType: _evaluatorType,
+          hyperparameters: _hyperparameters,
+          algorithm: _algorithm,
+          enableTrialEarlyStopping: _enableTrialEarlyStopping,
+          goal: _goal,
+          hyperparameterMetricTag: _hyperparameterMetricTag,
+          maxFailedTrials: _maxFailedTrials,
+          maxParallelTrials: _maxParallelTrials,
+          maxTrials: _maxTrials,
+          params: _params,
+          categoricalValues: _categoricalValues,
+          discreteValues: _discreteValues,
+          maxValue: _maxValue,
+          minValue: _minValue,
+          parameterName: _parameterName,
+          scaleType: _scaleType,
+          resumePreviousJobId: _resumePreviousJobId,
+          jobDir: _jobDir,
+          masterConfig: _masterConfig,
+          masterType: _masterType,
+          network: _network,
+          packageUris: _packageUris,
+          parameterServerConfig: _parameterServerConfig,
+          parameterServerCount: _parameterServerCount,
+          parameterServerType: _parameterServerType,
+          pythonModule: _pythonModule,
+          pythonVersion: _pythonVersion,
+          scaleTier: _scaleTier,
+          scheduling: _scheduling,
+          maxRunningTime: _maxRunningTime,
+          maxWaitTime: _maxWaitTime,
+          priority: _priority,
+          serviceAccount: _serviceAccount,
+          useChiefInTfConfig: _useChiefInTfConfig,
+          workerConfig: _workerConfig,
+          workerCount: _workerCount,
+          workerType: _workerType,
+          builtInAlgorithmOutput: _builtInAlgorithmOutput,
+          framework: _framework,
+          modelPath: _modelPath,
+          completedTrialCount: _completedTrialCount,
+          consumedMLUnits: _consumedMLUnits,
+          isBuiltInAlgorithmJob: _isBuiltInAlgorithmJob,
+          isHyperparameterTuningJob: _isHyperparameterTuningJob,
+          trials: _trials,
+          allMetrics: _allMetrics,
+          objectiveValue: _objectiveValue,
+          trainingStep: _trainingStep,
+          endTime: _endTime,
+          finalMetric: _finalMetric,
+          isTrialStoppedEarly: _isTrialStoppedEarly,
+          startTime: _startTime,
+          state: _state,
+          trialId: _trialId,
+          webAccessUris: _webAccessUris,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1854,8 +1956,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1876,6 +1980,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

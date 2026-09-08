@@ -149,7 +149,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Shell Users.Environments. Registered at `@swamp/gcp/cloudshell/users-environments`. */
 export const model = {
   type: "@swamp/gcp/cloudshell/users-environments",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -258,6 +258,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -492,8 +497,11 @@ export const model = {
     },
     generate_access_token: {
       description: "generate access token",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        expireTime: z.any().optional(),
+        ttl: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -514,6 +522,10 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["environment"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["expireTime"] !== undefined) {
+          params["expireTime"] = String(args["expireTime"]);
+        }
+        if (args["ttl"] !== undefined) params["ttl"] = String(args["ttl"]);
         const result = await createResource(
           baseUrl,
           {

@@ -178,6 +178,9 @@ const GlobalArgsSchema = z.object({
   schemaBundleId: z.string().describe(
     "Required. The unique ID to use for the schema bundle, which will become the final component of the schema bundle's resource name.",
   ).optional(),
+  ignoreWarnings: z.string().describe(
+    "Optional. If set, ignore the safety checks when updating the Schema Bundle. The safety checks are: - The new Schema Bundle is backwards compatible with the existing Schema Bundle.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -214,6 +217,9 @@ const InputsSchema = z.object({
   schemaBundleId: z.string().describe(
     "Required. The unique ID to use for the schema bundle, which will become the final component of the schema bundle's resource name.",
   ).optional(),
+  ignoreWarnings: z.string().describe(
+    "Optional. If set, ignore the safety checks when updating the Schema Bundle. The safety checks are: - The new Schema Bundle is backwards compatible with the existing Schema Bundle.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -248,7 +254,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Bigtable Admin Instances.Tables.SchemaBundles. Registered at `@swamp/gcp/bigtableadmin/instances-tables-schemabundles`. */
 export const model = {
   type: "@swamp/gcp/bigtableadmin/instances-tables-schemabundles",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -400,6 +406,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: ignoreWarnings",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -541,6 +552,11 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["protoSchema"] !== undefined) {
           body["protoSchema"] = g["protoSchema"];
+        }
+        if (g["ignoreWarnings"] !== undefined) {
+          params["ignoreWarnings"] = String(g["ignoreWarnings"]);
+        } else if (existing["ignoreWarnings"] !== undefined) {
+          params["ignoreWarnings"] = String(existing["ignoreWarnings"]);
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

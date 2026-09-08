@@ -307,7 +307,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine TargetPools. Registered at `@swamp/gcp/compute/targetpools`. */
 export const model = {
   type: "@swamp/gcp/compute/targetpools",
-  version: "2026.08.16.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -431,6 +431,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.16.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -706,6 +711,7 @@ export const model = {
       description: "add health check",
       arguments: z.object({
         healthChecks: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -729,6 +735,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["targetPool"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["healthChecks"] !== undefined) {
           body["healthChecks"] = args["healthChecks"];
@@ -762,6 +771,7 @@ export const model = {
       description: "add instance",
       arguments: z.object({
         instances: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -785,6 +795,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["targetPool"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instances"] !== undefined) {
           body["instances"] = args["instances"];
@@ -871,6 +884,8 @@ export const model = {
       description: "set backup",
       arguments: z.object({
         target: z.any().optional(),
+        failoverRatio: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -894,6 +909,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["targetPool"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["failoverRatio"] !== undefined) {
+          params["failoverRatio"] = String(args["failoverRatio"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["target"] !== undefined) body["target"] = args["target"];
         const result = await createResource(
@@ -926,6 +947,7 @@ export const model = {
       description: "set security policy",
       arguments: z.object({
         securityPolicy: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -949,6 +971,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["targetPool"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["securityPolicy"] !== undefined) {
           body["securityPolicy"] = args["securityPolicy"];

@@ -624,7 +624,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud API hub Plugins. Registered at `@swamp/gcp/apihub/plugins`. */
 export const model = {
   type: "@swamp/gcp/apihub/plugins",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -763,6 +763,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1167,6 +1172,7 @@ export const model = {
         contents: z.any().optional(),
         linter: z.any().optional(),
         name: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1180,6 +1186,9 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
         }
         const body: Record<string, unknown> = {};
         if (args["contents"] !== undefined) body["contents"] = args["contents"];

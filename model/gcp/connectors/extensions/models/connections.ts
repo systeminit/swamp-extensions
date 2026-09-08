@@ -2506,7 +2506,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Connectors Connections. Registered at `@swamp/gcp/connectors/connections`. */
 export const model = {
   type: "@swamp/gcp/connectors/connections",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -2517,6 +2517,96 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: filterKey, filterType, intValue, stringListValues, listValues, stringValue, additionalVariables, boolValue, encryptionKeyValue, kmsKeyName, type, intValue, key, secretValue, secretVersion, stringValue, authKey, authType, oauth2AuthCodeFlow, authCode, authUri, clientId, clientSecret, secretVersion, enablePkce, pkceVerifier, redirectUri, oauth2AuthCodeFlowGoogleManaged, authCode, redirectUri, oauth2ClientCredentials, clientId, clientSecret, secretVersion, oauth2JwtBearer, clientKey, secretVersion, jwtClaims, audience, issuer, subject, sshPublicKey, certType, sshClientCert, secretVersion, sshClientCertPass, secretVersion, username, userPassword, password, secretVersion, username, boolValue, encryptionKeyValue, kmsKeyName, type, intValue, key, secretValue, secretVersion, stringValue, destinations, host, port, serviceAttachment, key, additionalVariables, boolValue, encryptionKeyValue, kmsKeyName, type, intValue, key, secretValue, secretVersion, stringValue, authKey, authType, oauth2AuthCodeFlow, authCode, authUri, clientId, clientSecret, secretVersion, enablePkce, pkceVerifier, redirectUri, oauth2AuthCodeFlowGoogleManaged, authCode, redirectUri, oauth2ClientCredentials, clientId, clientSecret, secretVersion, oauth2JwtBearer, clientKey, secretVersion, jwtClaims, audience, issuer, subject, sshPublicKey, certType, sshClientCert, secretVersion, sshClientCertPass, secretVersion, username, userPassword, password, secretVersion, username, additionalVariables, boolValue, encryptionKeyValue, kmsKeyName, type, intValue, key, secretValue, secretVersion, stringValue, allowedEventTypes, additionalVariables, boolValue, encryptionKeyValue, kmsKeyName, type, intValue, key, secretValue, secretVersion, stringValue, authKey, authType, oauth2AuthCodeFlow, authCode, authUri, clientId, clientSecret, secretVersion, enablePkce, pkceVerifier, redirectUri, oauth2AuthCodeFlowGoogleManaged, authCode, redirectUri, oauth2ClientCredentials, clientId, clientSecret, secretVersion, oauth2JwtBearer, clientKey, secretVersion, jwtClaims, audience, issuer, subject, sshPublicKey, certType, sshClientCert, secretVersion, sshClientCertPass, secretVersion, username, userPassword, password, secretVersion, username, deadLetterConfig, projectId, topic, enrichmentConfig, appendAcl, enrichmentEnabled, eventsListenerIngressEndpoint, globalEventFilter, listenerAuthConfig, additionalVariables, boolValue, encryptionKeyValue, kmsKeyName, type, intValue, key, secretValue, secretVersion, stringValue, authKey, authType, oauth2AuthCodeFlow, authCode, authUri, clientId, clientSecret, secretVersion, enablePkce, pkceVerifier, redirectUri, oauth2AuthCodeFlowGoogleManaged, authCode, redirectUri, oauth2ClientCredentials, clientId, clientSecret, secretVersion, oauth2JwtBearer, clientKey, secretVersion, jwtClaims, audience, issuer, subject, sshPublicKey, certType, sshClientCert, secretVersion, sshClientCertPass, secretVersion, username, userPassword, password, secretVersion, username, privateConnectivityAllowlistedProjects, privateConnectivityEnabled, proxyDestinationConfig, destinations, host, port, serviceAttachment, key, registrationDestinationConfig, destinations, host, port, serviceAttachment, key, additionalVariables, boolValue, encryptionKeyValue, kmsKeyName, type, intValue, key, secretValue, secretVersion, stringValue, clientCertType, clientCertificate, secretVersion, clientPrivateKey, secretVersion, clientPrivateKeyPass, secretVersion, privateServerCertificate, secretVersion, serverCertType, trustModel, type, useSsl, locked, reason, enabled, level, maxNodeCount, minNodeCount, additionalVariables, boolValue, encryptionKeyValue, kmsKeyName, type, intValue, key, secretValue, secretVersion, stringValue, clientCertType, clientCertificate, secretVersion, clientPrivateKey, secretVersion, clientPrivateKeyPass, secretVersion, privateServerCertificate, secretVersion, serverCertType, trustModel, type, useSsl, duration, quotaLimit",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          filterKey: _filterKey,
+          filterType: _filterType,
+          intValue: _intValue,
+          stringListValues: _stringListValues,
+          listValues: _listValues,
+          stringValue: _stringValue,
+          additionalVariables: _additionalVariables,
+          boolValue: _boolValue,
+          encryptionKeyValue: _encryptionKeyValue,
+          kmsKeyName: _kmsKeyName,
+          type: _type,
+          key: _key,
+          secretValue: _secretValue,
+          secretVersion: _secretVersion,
+          authKey: _authKey,
+          authType: _authType,
+          oauth2AuthCodeFlow: _oauth2AuthCodeFlow,
+          authCode: _authCode,
+          authUri: _authUri,
+          clientId: _clientId,
+          clientSecret: _clientSecret,
+          enablePkce: _enablePkce,
+          pkceVerifier: _pkceVerifier,
+          redirectUri: _redirectUri,
+          oauth2AuthCodeFlowGoogleManaged: _oauth2AuthCodeFlowGoogleManaged,
+          oauth2ClientCredentials: _oauth2ClientCredentials,
+          oauth2JwtBearer: _oauth2JwtBearer,
+          clientKey: _clientKey,
+          jwtClaims: _jwtClaims,
+          audience: _audience,
+          issuer: _issuer,
+          subject: _subject,
+          sshPublicKey: _sshPublicKey,
+          certType: _certType,
+          sshClientCert: _sshClientCert,
+          sshClientCertPass: _sshClientCertPass,
+          username: _username,
+          userPassword: _userPassword,
+          password: _password,
+          destinations: _destinations,
+          host: _host,
+          port: _port,
+          serviceAttachment: _serviceAttachment,
+          allowedEventTypes: _allowedEventTypes,
+          deadLetterConfig: _deadLetterConfig,
+          projectId: _projectId,
+          topic: _topic,
+          enrichmentConfig: _enrichmentConfig,
+          appendAcl: _appendAcl,
+          enrichmentEnabled: _enrichmentEnabled,
+          eventsListenerIngressEndpoint: _eventsListenerIngressEndpoint,
+          globalEventFilter: _globalEventFilter,
+          listenerAuthConfig: _listenerAuthConfig,
+          privateConnectivityAllowlistedProjects:
+            _privateConnectivityAllowlistedProjects,
+          privateConnectivityEnabled: _privateConnectivityEnabled,
+          proxyDestinationConfig: _proxyDestinationConfig,
+          registrationDestinationConfig: _registrationDestinationConfig,
+          clientCertType: _clientCertType,
+          clientCertificate: _clientCertificate,
+          clientPrivateKey: _clientPrivateKey,
+          clientPrivateKeyPass: _clientPrivateKeyPass,
+          privateServerCertificate: _privateServerCertificate,
+          serverCertType: _serverCertType,
+          trustModel: _trustModel,
+          useSsl: _useSsl,
+          locked: _locked,
+          reason: _reason,
+          enabled: _enabled,
+          level: _level,
+          maxNodeCount: _maxNodeCount,
+          minNodeCount: _minNodeCount,
+          duration: _duration,
+          quotaLimit: _quotaLimit,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -3051,8 +3141,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3073,6 +3165,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -3223,8 +3320,12 @@ export const model = {
     },
     search: {
       description: "search",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        query: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3236,6 +3337,15 @@ export const model = {
             `projects/${projectId}/locations/${String(g["location"] ?? "")}`,
             String(g["name"]),
           );
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
         }
         const result = await createResource(
           baseUrl,

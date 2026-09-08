@@ -239,6 +239,9 @@ const GlobalArgsSchema = z.object({
   preview: z.string().describe(
     'If set to true, creates a deployment and creates "shell" resources but does not actually instantiate these resources. This allows you to preview what your deployment looks like. After previewing a deployment, you can deploy your resources by making a request with the `update()` method or you can use the `cancelPreview()` method to cancel the preview altogether. Note that the deployment will still exist after you cancel the preview and you must separately delete this deployment if you want to remove it.',
   ).optional(),
+  deletePolicy: z.string().describe(
+    "Sets the policy to use for deleting resources.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -387,6 +390,9 @@ const InputsSchema = z.object({
   preview: z.string().describe(
     'If set to true, creates a deployment and creates "shell" resources but does not actually instantiate these resources. This allows you to preview what your deployment looks like. After previewing a deployment, you can deploy your resources by making a request with the `update()` method or you can use the `cancelPreview()` method to cancel the preview altogether. Note that the deployment will still exist after you cancel the preview and you must separately delete this deployment if you want to remove it.',
   ).optional(),
+  deletePolicy: z.string().describe(
+    "Sets the policy to use for deleting resources.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -415,7 +421,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Deployment Manager Deployments. Registered at `@swamp/gcp/deploymentmanager/deployments`. */
 export const model = {
   type: "@swamp/gcp/deploymentmanager/deployments",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -554,6 +560,26 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: deletePolicy",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description: "Removed: key, value, config, content, imports, content",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          key: _key,
+          value: _value,
+          config: _config,
+          content: _content,
+          imports: _imports,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -697,6 +723,11 @@ export const model = {
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["target"] !== undefined) body["target"] = g["target"];
+        if (g["deletePolicy"] !== undefined) {
+          params["deletePolicy"] = String(g["deletePolicy"]);
+        } else if (existing["deletePolicy"] !== undefined) {
+          params["deletePolicy"] = String(existing["deletePolicy"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||
@@ -928,8 +959,11 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        header_bypassBillingFilter: z.any().optional(),
+        optionsRequestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -950,6 +984,16 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["header_bypassBillingFilter"] !== undefined) {
+          params["header.bypassBillingFilter"] = String(
+            args["header_bypassBillingFilter"],
+          );
+        }
+        if (args["optionsRequestedPolicyVersion"] !== undefined) {
+          params["optionsRequestedPolicyVersion"] = String(
+            args["optionsRequestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1091,6 +1135,7 @@ export const model = {
       description: "test iam permissions",
       arguments: z.object({
         permissions: z.any().optional(),
+        header_bypassBillingFilter: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1113,6 +1158,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["header_bypassBillingFilter"] !== undefined) {
+          params["header.bypassBillingFilter"] = String(
+            args["header_bypassBillingFilter"],
+          );
+        }
         const body: Record<string, unknown> = {};
         if (args["permissions"] !== undefined) {
           body["permissions"] = args["permissions"];

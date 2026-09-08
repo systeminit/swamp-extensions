@@ -178,6 +178,9 @@ const GlobalArgsSchema = z.object({
   status: z.string().describe(
     "Status of the App. Valid values include `approved` or `revoked`.",
   ).optional(),
+  action: z.string().describe(
+    "Approve or revoke the consumer key by setting this value to `approve` or `revoke`. The `Content-Type` header must be set to `application/octet-stream`, with empty body.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -250,6 +253,9 @@ const InputsSchema = z.object({
   status: z.string().describe(
     "Status of the App. Valid values include `approved` or `revoked`.",
   ).optional(),
+  action: z.string().describe(
+    "Approve or revoke the consumer key by setting this value to `approve` or `revoke`. The `Content-Type` header must be set to `application/octet-stream`, with empty body.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -280,7 +286,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Apigee Appgroups.Apps. Registered at `@swamp/gcp/apigee/appgroups-apps`. */
 export const model = {
   type: "@swamp/gcp/apigee/appgroups-apps",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -400,6 +406,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: action",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -559,6 +570,10 @@ export const model = {
         }
         if (g["scopes"] !== undefined) body["scopes"] = g["scopes"];
         if (g["status"] !== undefined) body["status"] = g["status"];
+        if (g["action"] !== undefined) params["action"] = String(g["action"]);
+        else if (existing["action"] !== undefined) {
+          params["action"] = String(existing["action"]);
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

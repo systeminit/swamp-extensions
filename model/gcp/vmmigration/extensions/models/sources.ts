@@ -500,7 +500,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud VM Migration Sources. Registered at `@swamp/gcp/vmmigration/sources`. */
 export const model = {
   type: "@swamp/gcp/vmmigration/sources",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -629,6 +629,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -972,8 +977,12 @@ export const model = {
     },
     fetch_inventory: {
       description: "fetch inventory",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        forceRefresh: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -994,6 +1003,15 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["source"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["forceRefresh"] !== undefined) {
+          params["forceRefresh"] = String(args["forceRefresh"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1020,8 +1038,13 @@ export const model = {
     },
     fetch_storage_inventory: {
       description: "fetch storage inventory",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        forceRefresh: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        type: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1042,6 +1065,16 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["source"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["forceRefresh"] !== undefined) {
+          params["forceRefresh"] = String(args["forceRefresh"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["type"] !== undefined) params["type"] = String(args["type"]);
         const result = await createResource(
           baseUrl,
           {

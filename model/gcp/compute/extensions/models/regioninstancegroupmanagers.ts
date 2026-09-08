@@ -895,7 +895,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine RegionInstanceGroupManagers. Registered at `@swamp/gcp/compute/regioninstancegroupmanagers`. */
 export const model = {
   type: "@swamp/gcp/compute/regioninstancegroupmanagers",
-  version: "2026.09.06.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -1113,6 +1113,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.06.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1556,6 +1561,7 @@ export const model = {
       description: "abandon instances",
       arguments: z.object({
         instances: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1579,6 +1585,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instances"] !== undefined) {
           body["instances"] = args["instances"];
@@ -1680,6 +1689,7 @@ export const model = {
       description: "create instances",
       arguments: z.object({
         instances: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1703,6 +1713,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instances"] !== undefined) {
           body["instances"] = args["instances"];
@@ -1734,8 +1747,14 @@ export const model = {
     },
     list_errors: {
       description: "list errors",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1757,6 +1776,21 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1788,8 +1822,14 @@ export const model = {
     },
     list_managed_instances: {
       description: "list managed instances",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1811,6 +1851,21 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1842,8 +1897,14 @@ export const model = {
     },
     list_per_instance_configs: {
       description: "list per instance configs",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        filter: z.any().optional(),
+        maxResults: z.any().optional(),
+        orderBy: z.any().optional(),
+        pageToken: z.any().optional(),
+        returnPartialSuccess: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1865,6 +1926,21 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["orderBy"] !== undefined) {
+          params["orderBy"] = String(args["orderBy"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["returnPartialSuccess"] !== undefined) {
+          params["returnPartialSuccess"] = String(args["returnPartialSuccess"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1898,6 +1974,7 @@ export const model = {
       description: "patch per instance configs",
       arguments: z.object({
         perInstanceConfigs: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1921,6 +1998,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["perInstanceConfigs"] !== undefined) {
           body["perInstanceConfigs"] = args["perInstanceConfigs"];
@@ -1954,6 +2034,8 @@ export const model = {
       description: "recreate instances",
       arguments: z.object({
         instances: z.any().optional(),
+        noGracefulShutdown: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1977,6 +2059,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["noGracefulShutdown"] !== undefined) {
+          params["noGracefulShutdown"] = String(args["noGracefulShutdown"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instances"] !== undefined) {
           body["instances"] = args["instances"];
@@ -2009,8 +2097,10 @@ export const model = {
     },
     resize: {
       description: "resize",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2035,6 +2125,9 @@ export const model = {
             g["instanceGroupManager"]?.toString() ?? "";
         params["size"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2070,6 +2163,7 @@ export const model = {
       description: "resume instances",
       arguments: z.object({
         instances: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2093,6 +2187,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instances"] !== undefined) {
           body["instances"] = args["instances"];
@@ -2126,6 +2223,7 @@ export const model = {
       description: "set instance template",
       arguments: z.object({
         instanceTemplate: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2149,6 +2247,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instanceTemplate"] !== undefined) {
           body["instanceTemplate"] = args["instanceTemplate"];
@@ -2183,6 +2284,7 @@ export const model = {
       arguments: z.object({
         fingerprint: z.any().optional(),
         targetPools: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2206,6 +2308,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["fingerprint"] !== undefined) {
           body["fingerprint"] = args["fingerprint"];
@@ -2242,6 +2347,7 @@ export const model = {
       description: "start instances",
       arguments: z.object({
         instances: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2265,6 +2371,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["instances"] !== undefined) {
           body["instances"] = args["instances"];
@@ -2299,6 +2408,8 @@ export const model = {
       arguments: z.object({
         forceStop: z.any().optional(),
         instances: z.any().optional(),
+        noGracefulShutdown: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2322,6 +2433,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["noGracefulShutdown"] !== undefined) {
+          params["noGracefulShutdown"] = String(args["noGracefulShutdown"]);
+        }
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["forceStop"] !== undefined) {
           body["forceStop"] = args["forceStop"];
@@ -2360,6 +2477,7 @@ export const model = {
       arguments: z.object({
         forceSuspend: z.any().optional(),
         instances: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2383,6 +2501,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["forceSuspend"] !== undefined) {
           body["forceSuspend"] = args["forceSuspend"];
@@ -2419,6 +2540,7 @@ export const model = {
       description: "update per instance configs",
       arguments: z.object({
         perInstanceConfigs: z.any().optional(),
+        requestId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2442,6 +2564,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["instanceGroupManager"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["requestId"] !== undefined) {
+          params["requestId"] = String(args["requestId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["perInstanceConfigs"] !== undefined) {
           body["perInstanceConfigs"] = args["perInstanceConfigs"];

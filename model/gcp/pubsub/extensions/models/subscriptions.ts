@@ -1338,7 +1338,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Pub/Sub Subscriptions. Registered at `@swamp/gcp/pubsub/subscriptions`. */
 export const model = {
   type: "@swamp/gcp/pubsub/subscriptions",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1535,6 +1535,65 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: dropUnknownFields, serviceAccountEmail, state, table, useTableSchema, useTopicSchema, writeMetadata, appProfileId, serviceAccountEmail, state, table, writeMetadata, avroConfig, useTopicSchema, writeMetadata, bucket, filenameDatetimeFormat, filenamePrefix, filenameSuffix, maxBytes, maxDuration, maxMessages, serviceAccountEmail, state, textConfig, deadLetterTopic, maxDeliveryAttempts, ttl, aiInference, endpoint, serviceAccountEmail, unstructuredInference, parameters, compression, compressionAlgorithm, compressionMode, disabled, enabled, javascriptUdf, code, functionName, attributes, noWrapper, writeMetadata, oidcToken, audience, serviceAccountEmail, pubsubWrapper, pushEndpoint, maximumBackoff, minimumBackoff, analyticsHubSubscriptionInfo, listing, dropUnknownFields, serviceAccountEmail, state, table, useTableSchema, useTopicSchema, writeMetadata, appProfileId, serviceAccountEmail, state, table, writeMetadata, avroConfig, useTopicSchema, writeMetadata, bucket, filenameDatetimeFormat, filenamePrefix, filenameSuffix, maxBytes, maxDuration, maxMessages, serviceAccountEmail, state, textConfig, deadLetterTopic, maxDeliveryAttempts, ttl, aiInference, endpoint, serviceAccountEmail, unstructuredInference, parameters, compression, compressionAlgorithm, compressionMode, disabled, enabled, javascriptUdf, code, functionName, attributes, noWrapper, writeMetadata, oidcToken, audience, serviceAccountEmail, pubsubWrapper, pushEndpoint, maximumBackoff, minimumBackoff, state, topicMessageRetentionDuration",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          dropUnknownFields: _dropUnknownFields,
+          serviceAccountEmail: _serviceAccountEmail,
+          state: _state,
+          table: _table,
+          useTableSchema: _useTableSchema,
+          useTopicSchema: _useTopicSchema,
+          writeMetadata: _writeMetadata,
+          appProfileId: _appProfileId,
+          avroConfig: _avroConfig,
+          bucket: _bucket,
+          filenameDatetimeFormat: _filenameDatetimeFormat,
+          filenamePrefix: _filenamePrefix,
+          filenameSuffix: _filenameSuffix,
+          maxBytes: _maxBytes,
+          maxDuration: _maxDuration,
+          maxMessages: _maxMessages,
+          textConfig: _textConfig,
+          deadLetterTopic: _deadLetterTopic,
+          maxDeliveryAttempts: _maxDeliveryAttempts,
+          ttl: _ttl,
+          aiInference: _aiInference,
+          endpoint: _endpoint,
+          unstructuredInference: _unstructuredInference,
+          parameters: _parameters,
+          compression: _compression,
+          compressionAlgorithm: _compressionAlgorithm,
+          compressionMode: _compressionMode,
+          disabled: _disabled,
+          enabled: _enabled,
+          javascriptUdf: _javascriptUdf,
+          code: _code,
+          functionName: _functionName,
+          attributes: _attributes,
+          noWrapper: _noWrapper,
+          oidcToken: _oidcToken,
+          audience: _audience,
+          pubsubWrapper: _pubsubWrapper,
+          pushEndpoint: _pushEndpoint,
+          maximumBackoff: _maximumBackoff,
+          minimumBackoff: _minimumBackoff,
+          analyticsHubSubscriptionInfo: _analyticsHubSubscriptionInfo,
+          listing: _listing,
+          topicMessageRetentionDuration: _topicMessageRetentionDuration,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1957,8 +2016,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1979,6 +2040,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

@@ -220,6 +220,9 @@ const GlobalArgsSchema = z.object({
   updateTime: z.string().optional(),
   environmentId: z.string().describe("The environmentId for this resource")
     .optional(),
+  allowLoadToDraftAndDiscardChanges: z.string().describe(
+    "The allowLoadToDraftAndDiscardChanges for this resource",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -325,6 +328,9 @@ const InputsSchema = z.object({
   updateTime: z.string().optional(),
   environmentId: z.string().describe("The environmentId for this resource")
     .optional(),
+  allowLoadToDraftAndDiscardChanges: z.string().describe(
+    "The allowLoadToDraftAndDiscardChanges for this resource",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -359,7 +365,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dialogflow Agent.Environments. Registered at `@swamp/gcp/dialogflow/agent-environments`. */
 export const model = {
   type: "@swamp/gcp/dialogflow/agent-environments",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -369,6 +375,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowLoadToDraftAndDiscardChanges",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -551,6 +562,17 @@ export const model = {
           body["textToSpeechSettings"] = g["textToSpeechSettings"];
         }
         if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
+        if (g["allowLoadToDraftAndDiscardChanges"] !== undefined) {
+          params["allowLoadToDraftAndDiscardChanges"] = String(
+            g["allowLoadToDraftAndDiscardChanges"],
+          );
+        } else if (
+          existing["allowLoadToDraftAndDiscardChanges"] !== undefined
+        ) {
+          params["allowLoadToDraftAndDiscardChanges"] = String(
+            existing["allowLoadToDraftAndDiscardChanges"],
+          );
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -733,8 +755,11 @@ export const model = {
     },
     get_history: {
       description: "get history",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -742,6 +767,12 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {

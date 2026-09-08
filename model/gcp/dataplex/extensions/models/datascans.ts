@@ -1397,7 +1397,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataplex DataScans. Registered at `@swamp/gcp/dataplex/datascans`. */
 export const model = {
   type: "@swamp/gcp/dataplex/datascans",
-  version: "2026.08.29.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1598,6 +1598,108 @@ export const model = {
       toVersion: "2026.08.29.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: entity, resource, bigqueryPublishingConfig, connection, tableType, storageConfig, csvOptions, delimiter, encoding, headerRows, quote, typeInferenceDisabled, excludePatterns, includePatterns, jsonOptions, encoding, typeInferenceDisabled, unstructuredDataOptions, globalEndpointEnabled, semanticInferenceEnabled, catalogPublishingEnabled, generationScopes, sqlDialect, catalogPublishingEnabled, excludeFields, fieldNames, includeFields, fieldNames, mode, postScanActions, bigqueryExport, resultsTable, rowFilter, samplingPercent, catalogPublishingEnabled, enableCatalogBasedRules, filter, postScanActions, bigqueryExport, resultsTable, notificationReport, jobEndTrigger, jobFailureTrigger, recipients, emails, scoreThresholdTrigger, scoreThreshold, rowFilter, rules, attributes, column, debugQueries, sqlStatement, dimension, ignoreNull, nonNullExpectation, rangeExpectation, maxValue, minValue, strictMaxEnabled, strictMinEnabled, regexExpectation, regex, rowConditionExpectation, sqlExpression, ruleSource, rulePathElements, setExpectation, values, sqlAssertion, sqlStatement, statisticRangeExpectation, maxValue, minValue, statistic, strictMaxEnabled, strictMinEnabled, suspended, tableConditionExpectation, sqlExpression, templateReference, resolvedSql, ruleTemplate, capabilities, dimension, inputParameters, sqlCollection, values, threshold, uniquenessExpectation, samplingPercent, dataplexServiceAgent, serviceAccount, email, userCredential, field, trigger, onDemand, oneTime, ttlAfterScanCompletion, schedule, cron, customizedPrompt, globalEndpointEnabled, graphProfilePublishingEnabled",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          entity: _entity,
+          resource: _resource,
+          bigqueryPublishingConfig: _bigqueryPublishingConfig,
+          connection: _connection,
+          tableType: _tableType,
+          storageConfig: _storageConfig,
+          csvOptions: _csvOptions,
+          delimiter: _delimiter,
+          encoding: _encoding,
+          headerRows: _headerRows,
+          quote: _quote,
+          typeInferenceDisabled: _typeInferenceDisabled,
+          excludePatterns: _excludePatterns,
+          includePatterns: _includePatterns,
+          jsonOptions: _jsonOptions,
+          unstructuredDataOptions: _unstructuredDataOptions,
+          globalEndpointEnabled: _globalEndpointEnabled,
+          semanticInferenceEnabled: _semanticInferenceEnabled,
+          catalogPublishingEnabled: _catalogPublishingEnabled,
+          generationScopes: _generationScopes,
+          sqlDialect: _sqlDialect,
+          excludeFields: _excludeFields,
+          fieldNames: _fieldNames,
+          includeFields: _includeFields,
+          mode: _mode,
+          postScanActions: _postScanActions,
+          bigqueryExport: _bigqueryExport,
+          resultsTable: _resultsTable,
+          rowFilter: _rowFilter,
+          samplingPercent: _samplingPercent,
+          enableCatalogBasedRules: _enableCatalogBasedRules,
+          filter: _filter,
+          notificationReport: _notificationReport,
+          jobEndTrigger: _jobEndTrigger,
+          jobFailureTrigger: _jobFailureTrigger,
+          recipients: _recipients,
+          emails: _emails,
+          scoreThresholdTrigger: _scoreThresholdTrigger,
+          scoreThreshold: _scoreThreshold,
+          rules: _rules,
+          attributes: _attributes,
+          column: _column,
+          debugQueries: _debugQueries,
+          sqlStatement: _sqlStatement,
+          dimension: _dimension,
+          ignoreNull: _ignoreNull,
+          nonNullExpectation: _nonNullExpectation,
+          rangeExpectation: _rangeExpectation,
+          maxValue: _maxValue,
+          minValue: _minValue,
+          strictMaxEnabled: _strictMaxEnabled,
+          strictMinEnabled: _strictMinEnabled,
+          regexExpectation: _regexExpectation,
+          regex: _regex,
+          rowConditionExpectation: _rowConditionExpectation,
+          sqlExpression: _sqlExpression,
+          ruleSource: _ruleSource,
+          rulePathElements: _rulePathElements,
+          setExpectation: _setExpectation,
+          values: _values,
+          sqlAssertion: _sqlAssertion,
+          statisticRangeExpectation: _statisticRangeExpectation,
+          statistic: _statistic,
+          suspended: _suspended,
+          tableConditionExpectation: _tableConditionExpectation,
+          templateReference: _templateReference,
+          resolvedSql: _resolvedSql,
+          ruleTemplate: _ruleTemplate,
+          capabilities: _capabilities,
+          inputParameters: _inputParameters,
+          sqlCollection: _sqlCollection,
+          threshold: _threshold,
+          uniquenessExpectation: _uniquenessExpectation,
+          dataplexServiceAgent: _dataplexServiceAgent,
+          serviceAccount: _serviceAccount,
+          email: _email,
+          userCredential: _userCredential,
+          field: _field,
+          trigger: _trigger,
+          onDemand: _onDemand,
+          oneTime: _oneTime,
+          ttlAfterScanCompletion: _ttlAfterScanCompletion,
+          schedule: _schedule,
+          cron: _cron,
+          customizedPrompt: _customizedPrompt,
+          graphProfilePublishingEnabled: _graphProfilePublishingEnabled,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -2045,8 +2147,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2067,6 +2171,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

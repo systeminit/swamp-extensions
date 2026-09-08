@@ -173,7 +173,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Developer Connect AccountConnectors.Users. Registered at `@swamp/gcp/developerconnect/accountconnectors-users`. */
 export const model = {
   type: "@swamp/gcp/developerconnect/accountconnectors-users",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -287,6 +287,16 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -570,8 +580,14 @@ export const model = {
     },
     finish_oauth_flow: {
       description: "finish oauth flow",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        googleOauthParams_scopes: z.any().optional(),
+        googleOauthParams_ticket: z.any().optional(),
+        googleOauthParams_versionInfo: z.any().optional(),
+        oauthParams_code: z.any().optional(),
+        oauthParams_ticket: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -592,6 +608,27 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["accountConnector"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["googleOauthParams_scopes"] !== undefined) {
+          params["googleOauthParams.scopes"] = String(
+            args["googleOauthParams_scopes"],
+          );
+        }
+        if (args["googleOauthParams_ticket"] !== undefined) {
+          params["googleOauthParams.ticket"] = String(
+            args["googleOauthParams_ticket"],
+          );
+        }
+        if (args["googleOauthParams_versionInfo"] !== undefined) {
+          params["googleOauthParams.versionInfo"] = String(
+            args["googleOauthParams_versionInfo"],
+          );
+        }
+        if (args["oauthParams_code"] !== undefined) {
+          params["oauthParams.code"] = String(args["oauthParams_code"]);
+        }
+        if (args["oauthParams_ticket"] !== undefined) {
+          params["oauthParams.ticket"] = String(args["oauthParams_ticket"]);
+        }
         const result = await createResource(
           baseUrl,
           {

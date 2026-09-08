@@ -351,7 +351,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Database Migration ConversionWorkspaces. Registered at `@swamp/gcp/datamigration/conversionworkspaces`. */
 export const model = {
   type: "@swamp/gcp/datamigration/conversionworkspaces",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -482,6 +482,19 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description: "Removed: engine, version, engine, version",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { engine: _engine, version: _version, ...rest } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -983,8 +996,10 @@ export const model = {
     },
     describe_conversion_workspace_revisions: {
       description: "describe conversion workspace revisions",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        commitId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1005,6 +1020,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["conversionWorkspace"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["commitId"] !== undefined) {
+          params["commitId"] = String(args["commitId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1031,8 +1049,16 @@ export const model = {
     },
     describe_database_entities: {
       description: "describe database entities",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        commitId: z.any().optional(),
+        filter: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        tree: z.any().optional(),
+        uncommitted: z.any().optional(),
+        view: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1053,6 +1079,23 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["conversionWorkspace"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["commitId"] !== undefined) {
+          params["commitId"] = String(args["commitId"]);
+        }
+        if (args["filter"] !== undefined) {
+          params["filter"] = String(args["filter"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
+        if (args["tree"] !== undefined) params["tree"] = String(args["tree"]);
+        if (args["uncommitted"] !== undefined) {
+          params["uncommitted"] = String(args["uncommitted"]);
+        }
+        if (args["view"] !== undefined) params["view"] = String(args["view"]);
         const result = await createResource(
           baseUrl,
           {
@@ -1084,8 +1127,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1106,6 +1151,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1167,8 +1217,12 @@ export const model = {
     },
     search_background_jobs: {
       description: "search background jobs",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        completedUntilTime: z.any().optional(),
+        maxSize: z.any().optional(),
+        returnMostRecentPerJobType: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1189,6 +1243,17 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["conversionWorkspace"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["completedUntilTime"] !== undefined) {
+          params["completedUntilTime"] = String(args["completedUntilTime"]);
+        }
+        if (args["maxSize"] !== undefined) {
+          params["maxSize"] = String(args["maxSize"]);
+        }
+        if (args["returnMostRecentPerJobType"] !== undefined) {
+          params["returnMostRecentPerJobType"] = String(
+            args["returnMostRecentPerJobType"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

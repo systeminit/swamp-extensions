@@ -186,7 +186,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud AI Commerce Search Catalogs. Registered at `@swamp/gcp/retail/catalogs`. */
 export const model = {
   type: "@swamp/gcp/retail/catalogs",
-  version: "2026.08.18.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -310,6 +310,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.18.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -543,8 +548,17 @@ export const model = {
     },
     complete_query: {
       description: "complete query",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        dataset: z.any().optional(),
+        deviceType: z.any().optional(),
+        enableAttributeSuggestions: z.any().optional(),
+        entity: z.any().optional(),
+        languageCodes: z.any().optional(),
+        maxSuggestions: z.any().optional(),
+        query: z.any().optional(),
+        visitorId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -565,6 +579,32 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["catalog"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["dataset"] !== undefined) {
+          params["dataset"] = String(args["dataset"]);
+        }
+        if (args["deviceType"] !== undefined) {
+          params["deviceType"] = String(args["deviceType"]);
+        }
+        if (args["enableAttributeSuggestions"] !== undefined) {
+          params["enableAttributeSuggestions"] = String(
+            args["enableAttributeSuggestions"],
+          );
+        }
+        if (args["entity"] !== undefined) {
+          params["entity"] = String(args["entity"]);
+        }
+        if (args["languageCodes"] !== undefined) {
+          params["languageCodes"] = String(args["languageCodes"]);
+        }
+        if (args["maxSuggestions"] !== undefined) {
+          params["maxSuggestions"] = String(args["maxSuggestions"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["visitorId"] !== undefined) {
+          params["visitorId"] = String(args["visitorId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -888,6 +928,7 @@ export const model = {
         attributeConfigLevel: z.any().optional(),
         catalogAttributes: z.any().optional(),
         name: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -897,6 +938,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["attributeConfigLevel"] !== undefined) {
           body["attributeConfigLevel"] = args["attributeConfigLevel"];
@@ -941,6 +985,7 @@ export const model = {
         minPrefixLength: z.any().optional(),
         name: z.any().optional(),
         suggestionsInputConfig: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -950,6 +995,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["allowlistInputConfig"] !== undefined) {
           body["allowlistInputConfig"] = args["allowlistInputConfig"];
@@ -1013,6 +1061,7 @@ export const model = {
         catalog: z.any().optional(),
         intentClassificationConfig: z.any().optional(),
         retailerDisplayName: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1035,6 +1084,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["catalog"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["catalog"] !== undefined) body["catalog"] = args["catalog"];
         if (args["intentClassificationConfig"] !== undefined) {
@@ -1077,6 +1129,7 @@ export const model = {
         finalQuestion: z.any().optional(),
         frequency: z.any().optional(),
         generatedQuestion: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1099,6 +1152,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["catalog"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["allowedInConversation"] !== undefined) {
           body["allowedInConversation"] = args["allowedInConversation"];
@@ -1145,6 +1201,7 @@ export const model = {
         catalog: z.any().optional(),
         featureEnabled: z.any().optional(),
         minimumProducts: z.any().optional(),
+        updateMask: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1167,6 +1224,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["catalog"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["updateMask"] !== undefined) {
+          params["updateMask"] = String(args["updateMask"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["catalog"] !== undefined) body["catalog"] = args["catalog"];
         if (args["featureEnabled"] !== undefined) {

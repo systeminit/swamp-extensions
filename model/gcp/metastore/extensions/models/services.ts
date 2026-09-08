@@ -743,7 +743,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataproc Metastore Services. Registered at `@swamp/gcp/metastore/services`. */
 export const model = {
   type: "@swamp/gcp/metastore/services",
-  version: "2026.08.29.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -890,6 +890,58 @@ export const model = {
       toVersion: "2026.08.29.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: kmsKey, auxiliaryVersions, configOverrides, consumers, version, configOverrides, endpointProtocol, kerberosConfig, keytab, cloudSecret, krb5ConfigGcsUri, principal, version, dayOfWeek, hourOfDay, dataCatalogConfig, enabled, consumers, endpointLocation, endpointUri, subnetwork, autoscalingConfig, autoscalingEnabled, autoscalingFactor, limitConfig, maxScalingFactor, minScalingFactor, instanceSize, scalingFactor, backupLocation, cronSchedule, enabled, latestBackup, backupId, duration, startTime, state, nextScheduledTime, timeZone, logFormat",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          kmsKey: _kmsKey,
+          auxiliaryVersions: _auxiliaryVersions,
+          configOverrides: _configOverrides,
+          consumers: _consumers,
+          version: _version,
+          endpointProtocol: _endpointProtocol,
+          kerberosConfig: _kerberosConfig,
+          keytab: _keytab,
+          cloudSecret: _cloudSecret,
+          krb5ConfigGcsUri: _krb5ConfigGcsUri,
+          principal: _principal,
+          dayOfWeek: _dayOfWeek,
+          hourOfDay: _hourOfDay,
+          dataCatalogConfig: _dataCatalogConfig,
+          enabled: _enabled,
+          endpointLocation: _endpointLocation,
+          endpointUri: _endpointUri,
+          subnetwork: _subnetwork,
+          autoscalingConfig: _autoscalingConfig,
+          autoscalingEnabled: _autoscalingEnabled,
+          autoscalingFactor: _autoscalingFactor,
+          limitConfig: _limitConfig,
+          maxScalingFactor: _maxScalingFactor,
+          minScalingFactor: _minScalingFactor,
+          instanceSize: _instanceSize,
+          scalingFactor: _scalingFactor,
+          backupLocation: _backupLocation,
+          cronSchedule: _cronSchedule,
+          latestBackup: _latestBackup,
+          backupId: _backupId,
+          duration: _duration,
+          startTime: _startTime,
+          state: _state,
+          nextScheduledTime: _nextScheduledTime,
+          timeZone: _timeZone,
+          logFormat: _logFormat,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1576,8 +1628,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1598,6 +1652,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

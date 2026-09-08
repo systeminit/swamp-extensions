@@ -625,7 +625,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataplex Lakes.Tasks. Registered at `@swamp/gcp/dataplex/lakes-tasks`. */
 export const model = {
   type: "@swamp/gcp/dataplex/lakes-tasks",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -759,6 +759,51 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: args, kmsKey, maxJobExecutionLifetime, serviceAccount, archiveUris, fileUris, infrastructureSpec, batch, executorsCount, maxExecutorsCount, containerImage, image, javaJars, properties, pythonPackages, vpcNetwork, network, networkTags, subNetwork, archiveUris, fileUris, infrastructureSpec, batch, executorsCount, maxExecutorsCount, containerImage, image, javaJars, properties, pythonPackages, vpcNetwork, network, networkTags, subNetwork, mainClass, mainJarFileUri, pythonScriptFile, sqlScript, sqlScriptFile, disabled, maxRetries, schedule, startTime, type",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          args: _args,
+          kmsKey: _kmsKey,
+          maxJobExecutionLifetime: _maxJobExecutionLifetime,
+          serviceAccount: _serviceAccount,
+          archiveUris: _archiveUris,
+          fileUris: _fileUris,
+          infrastructureSpec: _infrastructureSpec,
+          batch: _batch,
+          executorsCount: _executorsCount,
+          maxExecutorsCount: _maxExecutorsCount,
+          containerImage: _containerImage,
+          image: _image,
+          javaJars: _javaJars,
+          properties: _properties,
+          pythonPackages: _pythonPackages,
+          vpcNetwork: _vpcNetwork,
+          network: _network,
+          networkTags: _networkTags,
+          subNetwork: _subNetwork,
+          mainClass: _mainClass,
+          mainJarFileUri: _mainJarFileUri,
+          pythonScriptFile: _pythonScriptFile,
+          sqlScript: _sqlScript,
+          sqlScriptFile: _sqlScriptFile,
+          disabled: _disabled,
+          maxRetries: _maxRetries,
+          schedule: _schedule,
+          startTime: _startTime,
+          type: _type,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1134,8 +1179,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1156,6 +1203,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

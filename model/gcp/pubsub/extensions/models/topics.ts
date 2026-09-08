@@ -1331,7 +1331,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Pub/Sub Topics. Registered at `@swamp/gcp/pubsub/topics`. */
 export const model = {
   type: "@swamp/gcp/pubsub/topics",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1512,6 +1512,70 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: awsKinesis, awsRoleArn, consumerArn, gcpServiceAccount, state, streamArn, awsMsk, awsRoleArn, clusterArn, gcpServiceAccount, state, azureEventHubs, clientId, eventHub, gcpServiceAccount, namespace, resourceGroup, state, subscriptionId, tenantId, cloudStorage, avroFormat, bucket, matchGlob, minimumObjectCreateTime, pubsubAvroFormat, state, textFormat, delimiter, confluentCloud, bootstrapServer, clusterId, gcpServiceAccount, identityPoolId, state, platformLogsSettings, severity, allowedPersistenceRegions, enforceInTransit, aiInference, endpoint, serviceAccountEmail, unstructuredInference, parameters, compression, compressionAlgorithm, compressionMode, disabled, enabled, javascriptUdf, code, functionName, encoding, firstRevisionId, lastRevisionId, schema, awsKinesis, awsRoleArn, consumerArn, gcpServiceAccount, state, streamArn, awsMsk, awsRoleArn, clusterArn, gcpServiceAccount, state, azureEventHubs, clientId, eventHub, gcpServiceAccount, namespace, resourceGroup, state, subscriptionId, tenantId, cloudStorage, avroFormat, bucket, matchGlob, minimumObjectCreateTime, pubsubAvroFormat, state, textFormat, delimiter, confluentCloud, bootstrapServer, clusterId, gcpServiceAccount, identityPoolId, state, platformLogsSettings, severity, allowedPersistenceRegions, enforceInTransit, aiInference, endpoint, serviceAccountEmail, unstructuredInference, parameters, compression, compressionAlgorithm, compressionMode, disabled, enabled, javascriptUdf, code, functionName, encoding, firstRevisionId, lastRevisionId, schema, state",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          awsKinesis: _awsKinesis,
+          awsRoleArn: _awsRoleArn,
+          consumerArn: _consumerArn,
+          gcpServiceAccount: _gcpServiceAccount,
+          state: _state,
+          streamArn: _streamArn,
+          awsMsk: _awsMsk,
+          clusterArn: _clusterArn,
+          azureEventHubs: _azureEventHubs,
+          clientId: _clientId,
+          eventHub: _eventHub,
+          namespace: _namespace,
+          resourceGroup: _resourceGroup,
+          subscriptionId: _subscriptionId,
+          tenantId: _tenantId,
+          cloudStorage: _cloudStorage,
+          avroFormat: _avroFormat,
+          bucket: _bucket,
+          matchGlob: _matchGlob,
+          minimumObjectCreateTime: _minimumObjectCreateTime,
+          pubsubAvroFormat: _pubsubAvroFormat,
+          textFormat: _textFormat,
+          delimiter: _delimiter,
+          confluentCloud: _confluentCloud,
+          bootstrapServer: _bootstrapServer,
+          clusterId: _clusterId,
+          identityPoolId: _identityPoolId,
+          platformLogsSettings: _platformLogsSettings,
+          severity: _severity,
+          allowedPersistenceRegions: _allowedPersistenceRegions,
+          enforceInTransit: _enforceInTransit,
+          aiInference: _aiInference,
+          endpoint: _endpoint,
+          serviceAccountEmail: _serviceAccountEmail,
+          unstructuredInference: _unstructuredInference,
+          parameters: _parameters,
+          compression: _compression,
+          compressionAlgorithm: _compressionAlgorithm,
+          compressionMode: _compressionMode,
+          disabled: _disabled,
+          enabled: _enabled,
+          javascriptUdf: _javascriptUdf,
+          code: _code,
+          functionName: _functionName,
+          encoding: _encoding,
+          firstRevisionId: _firstRevisionId,
+          lastRevisionId: _lastRevisionId,
+          schema: _schema,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1839,8 +1903,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1861,6 +1927,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

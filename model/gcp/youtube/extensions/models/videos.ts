@@ -3350,7 +3350,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud YouTube Data Videos. Registered at `@swamp/gcp/youtube/videos`. */
 export const model = {
   type: "@swamp/gcp/youtube/videos",
-  version: "2026.08.21.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -3494,6 +3494,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.21.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -3935,14 +3940,25 @@ export const model = {
     },
     batch_get_stats: {
       description: "batch get stats",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        id: z.any().optional(),
+        onBehalfOfContentOwner: z.any().optional(),
+        part: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["id"] !== undefined) params["id"] = String(args["id"]);
+        if (args["onBehalfOfContentOwner"] !== undefined) {
+          params["onBehalfOfContentOwner"] = String(
+            args["onBehalfOfContentOwner"],
+          );
+        }
+        if (args["part"] !== undefined) params["part"] = String(args["part"]);
         const result = await createResource(
           baseUrl,
           {
@@ -3968,8 +3984,10 @@ export const model = {
     },
     get_rating: {
       description: "get rating",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        onBehalfOfContentOwner: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -3977,6 +3995,11 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        if (args["onBehalfOfContentOwner"] !== undefined) {
+          params["onBehalfOfContentOwner"] = String(
+            args["onBehalfOfContentOwner"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -4054,6 +4077,7 @@ export const model = {
         reasonId: z.any().optional(),
         secondaryReasonId: z.any().optional(),
         videoId: z.any().optional(),
+        onBehalfOfContentOwner: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -4062,6 +4086,11 @@ export const model = {
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["onBehalfOfContentOwner"] !== undefined) {
+          params["onBehalfOfContentOwner"] = String(
+            args["onBehalfOfContentOwner"],
+          );
+        }
         const body: Record<string, unknown> = {};
         if (args["comments"] !== undefined) body["comments"] = args["comments"];
         if (args["language"] !== undefined) body["language"] = args["language"];

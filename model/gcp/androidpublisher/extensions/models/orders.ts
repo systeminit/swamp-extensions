@@ -261,7 +261,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Play Android Developer Orders. Registered at `@swamp/gcp/androidpublisher/orders`. */
 export const model = {
   type: "@swamp/gcp/androidpublisher/orders",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -393,6 +393,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -509,8 +514,10 @@ export const model = {
     },
     batchget: {
       description: "batchget",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        orderIds: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -519,6 +526,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["packageName"] !== undefined) {
           params["packageName"] = String(g["packageName"]);
+        }
+        if (args["orderIds"] !== undefined) {
+          params["orderIds"] = String(args["orderIds"]);
         }
         const result = await createResource(
           baseUrl,
@@ -545,8 +555,10 @@ export const model = {
     },
     refund: {
       description: "refund",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        revoke: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -570,6 +582,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["orderId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["revoke"] !== undefined) {
+          params["revoke"] = String(args["revoke"]);
+        }
         const result = await createResource(
           baseUrl,
           {

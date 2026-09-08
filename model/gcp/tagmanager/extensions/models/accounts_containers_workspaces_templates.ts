@@ -312,7 +312,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Tag Manager Accounts.Containers.Workspaces.Templates. Registered at `@swamp/gcp/tagmanager/accounts-containers-workspaces-templates`. */
 export const model = {
   type: "@swamp/gcp/tagmanager/accounts-containers-workspaces-templates",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -436,6 +436,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.13.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -762,8 +767,13 @@ export const model = {
     },
     import_from_gallery: {
       description: "import_from_gallery",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        acknowledgePermissions: z.any().optional(),
+        galleryOwner: z.any().optional(),
+        galleryRepository: z.any().optional(),
+        gallerySha: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -771,6 +781,20 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        if (args["acknowledgePermissions"] !== undefined) {
+          params["acknowledgePermissions"] = String(
+            args["acknowledgePermissions"],
+          );
+        }
+        if (args["galleryOwner"] !== undefined) {
+          params["galleryOwner"] = String(args["galleryOwner"]);
+        }
+        if (args["galleryRepository"] !== undefined) {
+          params["galleryRepository"] = String(args["galleryRepository"]);
+        }
+        if (args["gallerySha"] !== undefined) {
+          params["gallerySha"] = String(args["gallerySha"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -799,8 +823,10 @@ export const model = {
     },
     revert: {
       description: "revert",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        fingerprint: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -808,6 +834,9 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        if (args["fingerprint"] !== undefined) {
+          params["fingerprint"] = String(args["fingerprint"]);
+        }
         const result = await createResource(
           baseUrl,
           {

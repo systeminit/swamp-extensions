@@ -217,7 +217,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Talent Solution Tenants. Registered at `@swamp/gcp/jobs/tenants`. */
 export const model = {
   type: "@swamp/gcp/jobs/tenants",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -341,6 +341,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -664,8 +669,15 @@ export const model = {
     },
     complete_query: {
       description: "complete query",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        company: z.any().optional(),
+        languageCodes: z.any().optional(),
+        pageSize: z.any().optional(),
+        query: z.any().optional(),
+        scope: z.any().optional(),
+        type: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -686,6 +698,22 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["tenant"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["company"] !== undefined) {
+          params["company"] = String(args["company"]);
+        }
+        if (args["languageCodes"] !== undefined) {
+          params["languageCodes"] = String(args["languageCodes"]);
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["query"] !== undefined) {
+          params["query"] = String(args["query"]);
+        }
+        if (args["scope"] !== undefined) {
+          params["scope"] = String(args["scope"]);
+        }
+        if (args["type"] !== undefined) params["type"] = String(args["type"]);
         const result = await createResource(
           baseUrl,
           {

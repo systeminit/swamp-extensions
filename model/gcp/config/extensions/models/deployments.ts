@@ -439,7 +439,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Infrastructure Manager Deployments. Registered at `@swamp/gcp/config/deployments`. */
 export const model = {
   type: "@swamp/gcp/config/deployments",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -598,6 +598,34 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: sourceType, externalValues, deploymentSource, deployment, outputName, gcsSource, gitSource, directory, ref, repo, inputValues, inputValue",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          sourceType: _sourceType,
+          externalValues: _externalValues,
+          deploymentSource: _deploymentSource,
+          deployment: _deployment,
+          outputName: _outputName,
+          gcsSource: _gcsSource,
+          gitSource: _gitSource,
+          directory: _directory,
+          ref: _ref,
+          repo: _repo,
+          inputValues: _inputValues,
+          inputValue: _inputValue,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1078,8 +1106,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1100,6 +1130,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

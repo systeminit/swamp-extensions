@@ -997,7 +997,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Agent Platform ReasoningEngines. Registered at `@swamp/gcp/aiplatform/reasoningengines`. */
 export const model = {
   type: "@swamp/gcp/aiplatform/reasoningengines",
-  version: "2026.08.18.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1203,6 +1203,107 @@ export const model = {
       toVersion: "2026.08.18.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: memoryBankConfig, customizationConfigs, consolidationConfig, revisionsPerCandidateCount, disableNaturalLanguageMemories, enableThirdPersonMemories, generateMemoriesExamples, memoryTopics, scopeKeys, disableMemoryRevisions, generationConfig, generationTriggerConfig, generationRule, eventCount, fixedInterval, idleDuration, overlapEventCount, model, similaritySearchConfig, embeddingModel, ttlConfig, defaultTtl, granularTtlConfig, createTtl, generateCreatedTtl, generateUpdatedTtl, memoryRevisionDefaultTtl, kmsKeyName, agentFramework, buildSpec, serviceAccount, workerPool, classMethods, containerSpec, imageUri, port, deploymentSpec, agentGatewayConfig, agentToAnywhereConfig, agentGateway, clientToAgentConfig, agentGateway, containerConcurrency, env, value, keepAliveProbe, httpGet, path, port, maxSeconds, maxInstances, minInstances, pscInterfaceConfig, dnsPeeringConfigs, domain, targetNetwork, targetProject, networkAttachment, resourceLimits, secretEnv, secretRef, secret, version, effectiveIdentity, identityType, packageSpec, dependencyFilesGcsUri, pickleObjectGcsUri, pythonVersion, requirementsGcsUri, serviceAccount, sourceCodeSpec, agentConfigSource, adkConfig, jsonConfig, inlineSource, sourceArchive, developerConnectSource, config, dir, gitRepositoryLink, revision, imageSpec, buildArgs, inlineSource, sourceArchive, pythonSpec, entrypointModule, entrypointObject, requirementsFile, version",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          memoryBankConfig: _memoryBankConfig,
+          customizationConfigs: _customizationConfigs,
+          consolidationConfig: _consolidationConfig,
+          revisionsPerCandidateCount: _revisionsPerCandidateCount,
+          disableNaturalLanguageMemories: _disableNaturalLanguageMemories,
+          enableThirdPersonMemories: _enableThirdPersonMemories,
+          generateMemoriesExamples: _generateMemoriesExamples,
+          memoryTopics: _memoryTopics,
+          scopeKeys: _scopeKeys,
+          disableMemoryRevisions: _disableMemoryRevisions,
+          generationConfig: _generationConfig,
+          generationTriggerConfig: _generationTriggerConfig,
+          generationRule: _generationRule,
+          eventCount: _eventCount,
+          fixedInterval: _fixedInterval,
+          idleDuration: _idleDuration,
+          overlapEventCount: _overlapEventCount,
+          model: _model,
+          similaritySearchConfig: _similaritySearchConfig,
+          embeddingModel: _embeddingModel,
+          ttlConfig: _ttlConfig,
+          defaultTtl: _defaultTtl,
+          granularTtlConfig: _granularTtlConfig,
+          createTtl: _createTtl,
+          generateCreatedTtl: _generateCreatedTtl,
+          generateUpdatedTtl: _generateUpdatedTtl,
+          memoryRevisionDefaultTtl: _memoryRevisionDefaultTtl,
+          kmsKeyName: _kmsKeyName,
+          agentFramework: _agentFramework,
+          buildSpec: _buildSpec,
+          serviceAccount: _serviceAccount,
+          workerPool: _workerPool,
+          classMethods: _classMethods,
+          containerSpec: _containerSpec,
+          imageUri: _imageUri,
+          port: _port,
+          deploymentSpec: _deploymentSpec,
+          agentGatewayConfig: _agentGatewayConfig,
+          agentToAnywhereConfig: _agentToAnywhereConfig,
+          agentGateway: _agentGateway,
+          clientToAgentConfig: _clientToAgentConfig,
+          containerConcurrency: _containerConcurrency,
+          env: _env,
+          value: _value,
+          keepAliveProbe: _keepAliveProbe,
+          httpGet: _httpGet,
+          path: _path,
+          maxSeconds: _maxSeconds,
+          maxInstances: _maxInstances,
+          minInstances: _minInstances,
+          pscInterfaceConfig: _pscInterfaceConfig,
+          dnsPeeringConfigs: _dnsPeeringConfigs,
+          domain: _domain,
+          targetNetwork: _targetNetwork,
+          targetProject: _targetProject,
+          networkAttachment: _networkAttachment,
+          resourceLimits: _resourceLimits,
+          secretEnv: _secretEnv,
+          secretRef: _secretRef,
+          secret: _secret,
+          version: _version,
+          effectiveIdentity: _effectiveIdentity,
+          identityType: _identityType,
+          packageSpec: _packageSpec,
+          dependencyFilesGcsUri: _dependencyFilesGcsUri,
+          pickleObjectGcsUri: _pickleObjectGcsUri,
+          pythonVersion: _pythonVersion,
+          requirementsGcsUri: _requirementsGcsUri,
+          sourceCodeSpec: _sourceCodeSpec,
+          agentConfigSource: _agentConfigSource,
+          adkConfig: _adkConfig,
+          jsonConfig: _jsonConfig,
+          inlineSource: _inlineSource,
+          sourceArchive: _sourceArchive,
+          developerConnectSource: _developerConnectSource,
+          config: _config,
+          dir: _dir,
+          gitRepositoryLink: _gitRepositoryLink,
+          revision: _revision,
+          imageSpec: _imageSpec,
+          buildArgs: _buildArgs,
+          pythonSpec: _pythonSpec,
+          entrypointModule: _entrypointModule,
+          entrypointObject: _entrypointObject,
+          requirementsFile: _requirementsFile,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1700,8 +1801,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1722,6 +1825,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -1885,8 +1993,10 @@ export const model = {
     },
     test_iam_permissions: {
       description: "test iam permissions",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        permissions: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1907,6 +2017,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["permissions"] !== undefined) {
+          params["permissions"] = String(args["permissions"]);
+        }
         const result = await createResource(
           baseUrl,
           {

@@ -391,7 +391,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Tag Manager Accounts.Containers. Registered at `@swamp/gcp/tagmanager/accounts-containers`. */
 export const model = {
   type: "@swamp/gcp/tagmanager/accounts-containers",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -515,6 +515,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.13.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -843,8 +848,12 @@ export const model = {
     },
     combine: {
       description: "combine",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        allowUserPermissionFeatureUpdate: z.any().optional(),
+        containerId: z.any().optional(),
+        settingSource: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -852,6 +861,17 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        if (args["allowUserPermissionFeatureUpdate"] !== undefined) {
+          params["allowUserPermissionFeatureUpdate"] = String(
+            args["allowUserPermissionFeatureUpdate"],
+          );
+        }
+        if (args["containerId"] !== undefined) {
+          params["containerId"] = String(args["containerId"]);
+        }
+        if (args["settingSource"] !== undefined) {
+          params["settingSource"] = String(args["settingSource"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -878,14 +898,23 @@ export const model = {
     },
     lookup: {
       description: "lookup",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        destinationId: z.any().optional(),
+        tagId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["destinationId"] !== undefined) {
+          params["destinationId"] = String(args["destinationId"]);
+        }
+        if (args["tagId"] !== undefined) {
+          params["tagId"] = String(args["tagId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -910,8 +939,15 @@ export const model = {
     },
     move_tag_id: {
       description: "move_tag_id",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        allowUserPermissionFeatureUpdate: z.any().optional(),
+        copySettings: z.any().optional(),
+        copyTermsOfService: z.any().optional(),
+        copyUsers: z.any().optional(),
+        tagId: z.any().optional(),
+        tagName: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -919,6 +955,26 @@ export const model = {
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
         if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        if (args["allowUserPermissionFeatureUpdate"] !== undefined) {
+          params["allowUserPermissionFeatureUpdate"] = String(
+            args["allowUserPermissionFeatureUpdate"],
+          );
+        }
+        if (args["copySettings"] !== undefined) {
+          params["copySettings"] = String(args["copySettings"]);
+        }
+        if (args["copyTermsOfService"] !== undefined) {
+          params["copyTermsOfService"] = String(args["copyTermsOfService"]);
+        }
+        if (args["copyUsers"] !== undefined) {
+          params["copyUsers"] = String(args["copyUsers"]);
+        }
+        if (args["tagId"] !== undefined) {
+          params["tagId"] = String(args["tagId"]);
+        }
+        if (args["tagName"] !== undefined) {
+          params["tagName"] = String(args["tagName"]);
+        }
         const result = await createResource(
           baseUrl,
           {

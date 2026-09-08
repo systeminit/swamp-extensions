@@ -143,7 +143,14 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Agent Platform Publishers.V1.Responses. Registered at `@swamp/gcp/aiplatform/publishers-v1-responses`. */
 export const model = {
   type: "@swamp/gcp/aiplatform/publishers-v1-responses",
-  version: "2026.08.22.1",
+  version: "2026.09.07.1",
+  upgrades: [
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -287,6 +294,7 @@ export const model = {
         contentType: z.any().optional(),
         data: z.any().optional(),
         extensions: z.any().optional(),
+        deployedModelId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -309,6 +317,9 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["endpoint"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["deployedModelId"] !== undefined) {
+          params["deployedModelId"] = String(args["deployedModelId"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["contentType"] !== undefined) {
           body["contentType"] = args["contentType"];

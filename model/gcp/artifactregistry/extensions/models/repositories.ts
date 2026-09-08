@@ -867,7 +867,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Artifact Registry Repositories. Registered at `@swamp/gcp/artifactregistry/repositories`. */
 export const model = {
   type: "@swamp/gcp/artifactregistry/repositories",
-  version: "2026.08.30.1",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1023,6 +1023,63 @@ export const model = {
       toVersion: "2026.08.30.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: action, condition, newerThan, olderThan, packageNamePrefixes, tagPrefixes, tagState, versionNamePrefixes, id, mostRecentVersions, keepCount, packageNamePrefixes, immutableTags, allowSnapshotOverwrites, versionPolicy, loggingState, severityLevel, aptRepository, customRepository, uri, publicRepository, repositoryBase, repositoryPath, commonRepository, uri, disableUpstreamValidation, dockerRepository, customRepository, uri, publicRepository, mavenRepository, customRepository, uri, publicRepository, noCache, npmRepository, customRepository, uri, publicRepository, pythonRepository, customRepository, uri, publicRepository, upstreamCredentials, usernamePasswordCredentials, passwordSecretVersion, username, yumRepository, customRepository, uri, publicRepository, repositoryBase, repositoryPath, upstreamPolicies, id, priority, repository, enablementConfig, enablementState, enablementStateReason, lastEnableTime",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          action: _action,
+          condition: _condition,
+          newerThan: _newerThan,
+          olderThan: _olderThan,
+          packageNamePrefixes: _packageNamePrefixes,
+          tagPrefixes: _tagPrefixes,
+          tagState: _tagState,
+          versionNamePrefixes: _versionNamePrefixes,
+          id: _id,
+          mostRecentVersions: _mostRecentVersions,
+          keepCount: _keepCount,
+          immutableTags: _immutableTags,
+          allowSnapshotOverwrites: _allowSnapshotOverwrites,
+          versionPolicy: _versionPolicy,
+          loggingState: _loggingState,
+          severityLevel: _severityLevel,
+          aptRepository: _aptRepository,
+          customRepository: _customRepository,
+          uri: _uri,
+          publicRepository: _publicRepository,
+          repositoryBase: _repositoryBase,
+          repositoryPath: _repositoryPath,
+          commonRepository: _commonRepository,
+          disableUpstreamValidation: _disableUpstreamValidation,
+          dockerRepository: _dockerRepository,
+          mavenRepository: _mavenRepository,
+          noCache: _noCache,
+          npmRepository: _npmRepository,
+          pythonRepository: _pythonRepository,
+          upstreamCredentials: _upstreamCredentials,
+          usernamePasswordCredentials: _usernamePasswordCredentials,
+          passwordSecretVersion: _passwordSecretVersion,
+          username: _username,
+          yumRepository: _yumRepository,
+          upstreamPolicies: _upstreamPolicies,
+          priority: _priority,
+          repository: _repository,
+          enablementConfig: _enablementConfig,
+          enablementState: _enablementState,
+          enablementStateReason: _enablementStateReason,
+          lastEnableTime: _lastEnableTime,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1540,8 +1597,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1562,6 +1621,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

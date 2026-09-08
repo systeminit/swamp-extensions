@@ -221,7 +221,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Apigee Developers.Apps.Keys. Registered at `@swamp/gcp/apigee/developers-apps-keys`. */
 export const model = {
   type: "@swamp/gcp/apigee/developers-apps-keys",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -335,6 +335,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -623,6 +628,7 @@ export const model = {
         issuedAt: z.any().optional(),
         scopes: z.any().optional(),
         status: z.any().optional(),
+        action: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -636,6 +642,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["action"] !== undefined) {
+          params["action"] = String(args["action"]);
         }
         const body: Record<string, unknown> = {};
         if (args["apiProducts"] !== undefined) {

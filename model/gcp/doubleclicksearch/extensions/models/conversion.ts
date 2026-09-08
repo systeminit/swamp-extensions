@@ -441,7 +441,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Search Ads 360 Conversion. Registered at `@swamp/gcp/doubleclicksearch/conversion`. */
 export const model = {
   type: "@swamp/gcp/doubleclicksearch/conversion",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -551,6 +551,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -800,8 +805,16 @@ export const model = {
     },
     get_by_customer_id: {
       description: "get by customer id",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        adGroupId: z.any().optional(),
+        adId: z.any().optional(),
+        advertiserId: z.any().optional(),
+        agencyId: z.any().optional(),
+        campaignId: z.any().optional(),
+        criterionId: z.any().optional(),
+        engineAccountId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -833,6 +846,25 @@ export const model = {
           g["customerId"]?.toString() ?? "";
         params["startRow"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["adGroupId"] !== undefined) {
+          params["adGroupId"] = String(args["adGroupId"]);
+        }
+        if (args["adId"] !== undefined) params["adId"] = String(args["adId"]);
+        if (args["advertiserId"] !== undefined) {
+          params["advertiserId"] = String(args["advertiserId"]);
+        }
+        if (args["agencyId"] !== undefined) {
+          params["agencyId"] = String(args["agencyId"]);
+        }
+        if (args["campaignId"] !== undefined) {
+          params["campaignId"] = String(args["campaignId"]);
+        }
+        if (args["criterionId"] !== undefined) {
+          params["criterionId"] = String(args["criterionId"]);
+        }
+        if (args["engineAccountId"] !== undefined) {
+          params["engineAccountId"] = String(args["engineAccountId"]);
+        }
         const result = await createResource(
           baseUrl,
           {

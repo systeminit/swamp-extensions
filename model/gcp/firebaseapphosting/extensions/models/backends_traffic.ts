@@ -178,6 +178,9 @@ const GlobalArgsSchema = z.object({
   updateTime: z.string().describe(
     "Output only. Time at which the backend was last updated.",
   ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and t he request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -301,6 +304,9 @@ const InputsSchema = z.object({
   updateTime: z.string().describe(
     "Output only. Time at which the backend was last updated.",
   ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and t he request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -329,7 +335,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Firebase App Hosting Backends.Traffic. Registered at `@swamp/gcp/firebaseapphosting/backends-traffic`. */
 export const model = {
   type: "@swamp/gcp/firebaseapphosting/backends-traffic",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -486,6 +492,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: requestId",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -578,6 +589,11 @@ export const model = {
         if (g["target"] !== undefined) body["target"] = g["target"];
         if (g["uid"] !== undefined) body["uid"] = g["uid"];
         if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
+        if (g["requestId"] !== undefined) {
+          params["requestId"] = String(g["requestId"]);
+        } else if (existing["requestId"] !== undefined) {
+          params["requestId"] = String(existing["requestId"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");

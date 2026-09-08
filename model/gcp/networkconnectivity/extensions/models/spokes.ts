@@ -634,7 +634,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Network Connectivity Spokes. Registered at `@swamp/gcp/networkconnectivity/spokes`. */
 export const model = {
   type: "@swamp/gcp/networkconnectivity/spokes",
-  version: "2026.08.12.2",
+  version: "2026.09.07.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -770,6 +770,45 @@ export const model = {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.2",
+      description:
+        "Removed: capacity, cloudRouters, ipRangeReservations, ipRange, sacAttachment, excludeExportRanges, excludeImportRanges, includeExportRanges, includeImportRanges, siteToSiteDataTransfer, uris, vpcNetwork, excludeExportRanges, includeExportRanges, network, peering, producerNetwork, proposedExcludeExportRanges, proposedIncludeExportRanges, serviceConsumerVpcSpoke, excludeExportRanges, excludeImportRanges, includeExportRanges, includeImportRanges, instances, ipAddress, virtualMachine, siteToSiteDataTransfer, vpcNetwork, excludeExportRanges, includeExportRanges, producerVpcSpokes, proposedExcludeExportRanges, proposedIncludeExportRanges, uri, excludeExportRanges, excludeImportRanges, includeExportRanges, includeImportRanges, siteToSiteDataTransfer, uris, vpcNetwork",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          capacity: _capacity,
+          cloudRouters: _cloudRouters,
+          ipRangeReservations: _ipRangeReservations,
+          ipRange: _ipRange,
+          sacAttachment: _sacAttachment,
+          excludeExportRanges: _excludeExportRanges,
+          excludeImportRanges: _excludeImportRanges,
+          includeExportRanges: _includeExportRanges,
+          includeImportRanges: _includeImportRanges,
+          siteToSiteDataTransfer: _siteToSiteDataTransfer,
+          uris: _uris,
+          vpcNetwork: _vpcNetwork,
+          network: _network,
+          peering: _peering,
+          producerNetwork: _producerNetwork,
+          proposedExcludeExportRanges: _proposedExcludeExportRanges,
+          proposedIncludeExportRanges: _proposedIncludeExportRanges,
+          serviceConsumerVpcSpoke: _serviceConsumerVpcSpoke,
+          instances: _instances,
+          ipAddress: _ipAddress,
+          virtualMachine: _virtualMachine,
+          producerVpcSpokes: _producerVpcSpokes,
+          uri: _uri,
+          ...rest
+        } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -1181,8 +1220,10 @@ export const model = {
     },
     get_iam_policy: {
       description: "get iam policy",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        options_requestedPolicyVersion: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1203,6 +1244,11 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["resource"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["options_requestedPolicyVersion"] !== undefined) {
+          params["options.requestedPolicyVersion"] = String(
+            args["options_requestedPolicyVersion"],
+          );
+        }
         const result = await createResource(
           baseUrl,
           {

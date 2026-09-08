@@ -199,7 +199,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Display & Video 360 Advertisers.Invoices. Registered at `@swamp/gcp/displayvideo/advertisers-invoices`. */
 export const model = {
   type: "@swamp/gcp/displayvideo/advertisers-invoices",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -308,6 +308,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -488,8 +493,10 @@ export const model = {
     },
     lookup_invoice_currency: {
       description: "lookup invoice currency",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        invoiceMonth: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -498,6 +505,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["advertiserId"] !== undefined) {
           params["advertiserId"] = String(g["advertiserId"]);
+        }
+        if (args["invoiceMonth"] !== undefined) {
+          params["invoiceMonth"] = String(args["invoiceMonth"]);
         }
         const result = await createResource(
           baseUrl,

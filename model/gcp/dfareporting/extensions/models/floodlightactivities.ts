@@ -953,7 +953,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Campaign Manager 360 FloodlightActivities. Registered at `@swamp/gcp/dfareporting/floodlightactivities`. */
 export const model = {
   type: "@swamp/gcp/dfareporting/floodlightactivities",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1087,6 +1087,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.13.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1622,8 +1627,10 @@ export const model = {
     },
     generatetag: {
       description: "generatetag",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        floodlightActivityId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1632,6 +1639,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["profileId"] !== undefined) {
           params["profileId"] = String(g["profileId"]);
+        }
+        if (args["floodlightActivityId"] !== undefined) {
+          params["floodlightActivityId"] = String(args["floodlightActivityId"]);
         }
         const result = await createResource(
           baseUrl,

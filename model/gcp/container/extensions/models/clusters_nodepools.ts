@@ -3814,7 +3814,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Kubernetes Engine Clusters.NodePools. Registered at `@swamp/gcp/container/clusters-nodepools`. */
 export const model = {
   type: "@swamp/gcp/container/clusters-nodepools",
-  version: "2026.08.27.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -4013,6 +4013,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.27.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -4456,8 +4461,10 @@ export const model = {
     },
     fetch_node_pool_upgrade_info: {
       description: "fetch node pool upgrade info",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        version: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -4469,6 +4476,9 @@ export const model = {
             String(g["parent"]),
             String(g["name"]),
           );
+        }
+        if (args["version"] !== undefined) {
+          params["version"] = String(args["version"]);
         }
         const result = await createResource(
           baseUrl,

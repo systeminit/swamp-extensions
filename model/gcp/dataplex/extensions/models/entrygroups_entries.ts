@@ -268,6 +268,15 @@ const GlobalArgsSchema = z.object({
   entryId: z.string().describe(
     "Required. Entry identifier. It has to be unique within an Entry Group.Entries corresponding to Google Cloud resources use an Entry ID format based on full resource names (https://cloud.google.com/apis/design/resource_names#full_resource_name). The format is a full resource name of the resource without the prefix double slashes in the API service name part of the full resource name. This allows retrieval of entries using their associated resource name.For example, if the full resource name of a resource is //library.googleapis.com/shelves/shelf1/books/book2, then the suggested entry_id is library.googleapis.com/shelves/shelf1/books/book2.It is also suggested to follow the same convention for entries corresponding to resources from providers or systems other than Google Cloud.The maximum size of the field is 4000 characters.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true and the entry doesn't exist, the service will create it.",
+  ).optional(),
+  aspectKeys: z.string().describe(
+    "Optional. The map keys of the Aspects which the service should modify. It supports the following syntaxes: - matches an aspect of the given type and empty path. @path - matches an aspect of the given type and specified path. For example, to attach an aspect to a field that is specified by the schema aspect, the path should have the format Schema.. @* - matches aspects of the given type for all paths. *@path - matches aspects of all types on the given path.The service will not remove existing aspects matching the syntax unless delete_missing_aspects is set to true.If this field is left empty, the service treats it as specifying exactly those Aspects present in the request.",
+  ).optional(),
+  deleteMissingAspects: z.string().describe(
+    "Optional. If set to true and the aspect_keys specify aspect ranges, the service deletes any existing aspects from that range that weren't provided in the request.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -399,6 +408,15 @@ const InputsSchema = z.object({
   entryId: z.string().describe(
     "Required. Entry identifier. It has to be unique within an Entry Group.Entries corresponding to Google Cloud resources use an Entry ID format based on full resource names (https://cloud.google.com/apis/design/resource_names#full_resource_name). The format is a full resource name of the resource without the prefix double slashes in the API service name part of the full resource name. This allows retrieval of entries using their associated resource name.For example, if the full resource name of a resource is //library.googleapis.com/shelves/shelf1/books/book2, then the suggested entry_id is library.googleapis.com/shelves/shelf1/books/book2.It is also suggested to follow the same convention for entries corresponding to resources from providers or systems other than Google Cloud.The maximum size of the field is 4000 characters.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "Optional. If set to true and the entry doesn't exist, the service will create it.",
+  ).optional(),
+  aspectKeys: z.string().describe(
+    "Optional. The map keys of the Aspects which the service should modify. It supports the following syntaxes: - matches an aspect of the given type and empty path. @path - matches an aspect of the given type and specified path. For example, to attach an aspect to a field that is specified by the schema aspect, the path should have the format Schema.. @* - matches aspects of the given type for all paths. *@path - matches aspects of all types on the given path.The service will not remove existing aspects matching the syntax unless delete_missing_aspects is set to true.If this field is left empty, the service treats it as specifying exactly those Aspects present in the request.",
+  ).optional(),
+  deleteMissingAspects: z.string().describe(
+    "Optional. If set to true and the aspect_keys specify aspect ranges, the service deletes any existing aspects from that range that weren't provided in the request.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -433,7 +451,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Dataplex EntryGroups.Entries. Registered at `@swamp/gcp/dataplex/entrygroups-entries`. */
 export const model = {
   type: "@swamp/gcp/dataplex/entrygroups-entries",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -563,6 +581,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing, aspectKeys, deleteMissingAspects",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -719,6 +742,23 @@ export const model = {
         }
         if (g["fullyQualifiedName"] !== undefined) {
           body["fullyQualifiedName"] = g["fullyQualifiedName"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
+        if (g["aspectKeys"] !== undefined) {
+          params["aspectKeys"] = String(g["aspectKeys"]);
+        } else if (existing["aspectKeys"] !== undefined) {
+          params["aspectKeys"] = String(existing["aspectKeys"]);
+        }
+        if (g["deleteMissingAspects"] !== undefined) {
+          params["deleteMissingAspects"] = String(g["deleteMissingAspects"]);
+        } else if (existing["deleteMissingAspects"] !== undefined) {
+          params["deleteMissingAspects"] = String(
+            existing["deleteMissingAspects"],
+          );
         }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {

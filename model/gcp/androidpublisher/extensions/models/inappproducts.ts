@@ -378,6 +378,12 @@ const GlobalArgsSchema = z.object({
   autoConvertMissingPrices: z.string().describe(
     "If true the prices for all regions targeted by the parent app that don't have a price specified for this in-app product will be auto converted to the target currency based on the default price. Defaults to false.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the in-app product with the given package_name and sku doesn't exist, the in-app product will be created.",
+  ).optional(),
+  latencyTolerance: z.string().describe(
+    "Optional. The latency tolerance for the propagation of this product update. Defaults to latency-sensitive.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -618,6 +624,12 @@ const InputsSchema = z.object({
   autoConvertMissingPrices: z.string().describe(
     "If true the prices for all regions targeted by the parent app that don't have a price specified for this in-app product will be auto converted to the target currency based on the default price. Defaults to false.",
   ).optional(),
+  allowMissing: z.string().describe(
+    "If set to true, and the in-app product with the given package_name and sku doesn't exist, the in-app product will be created.",
+  ).optional(),
+  latencyTolerance: z.string().describe(
+    "Optional. The latency tolerance for the propagation of this product update. Defaults to latency-sensitive.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -646,7 +658,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Play Android Developer Inappproducts. Registered at `@swamp/gcp/androidpublisher/inappproducts`. */
 export const model = {
   type: "@swamp/gcp/androidpublisher/inappproducts",
-  version: "2026.08.13.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -766,6 +778,11 @@ export const model = {
     {
       toVersion: "2026.08.13.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: allowMissing, latencyTolerance",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -951,6 +968,16 @@ export const model = {
         }
         if (g["trialPeriod"] !== undefined) {
           body["trialPeriod"] = g["trialPeriod"];
+        }
+        if (g["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(g["allowMissing"]);
+        } else if (existing["allowMissing"] !== undefined) {
+          params["allowMissing"] = String(existing["allowMissing"]);
+        }
+        if (g["latencyTolerance"] !== undefined) {
+          params["latencyTolerance"] = String(g["latencyTolerance"]);
+        } else if (existing["latencyTolerance"] !== undefined) {
+          params["latencyTolerance"] = String(existing["latencyTolerance"]);
         }
         for (const key of Object.keys(existing)) {
           if (
@@ -1168,8 +1195,10 @@ export const model = {
     },
     batch_get: {
       description: "batch get",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        sku: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -1179,6 +1208,7 @@ export const model = {
         if (g["packageName"] !== undefined) {
           params["packageName"] = String(g["packageName"]);
         }
+        if (args["sku"] !== undefined) params["sku"] = String(args["sku"]);
         const result = await createResource(
           baseUrl,
           {

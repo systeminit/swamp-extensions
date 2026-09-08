@@ -241,6 +241,9 @@ const GlobalArgsSchema = z.object({
   updateMask: z.string().describe(
     "Only applies to [`settings.datasources.patch`](https://developers.google.com/workspace/cloud-search/docs/reference/rest/v1/settings.datasources/patch). Update mask to control which fields to update. Example field paths: `name`, `displayName`. * If `update_mask` is non-empty, then only the fields specified in the `update_mask` are updated. * If you specify a field in the `update_mask`, but don't specify its value in the source, that field is cleared. * If the `update_mask` is not present or empty or has the value `*`, then all fields are updated.",
   ).optional(),
+  debugOptions_enableDebugging: z.string().describe(
+    "If you are asked by Google to help with debugging, set this field. Otherwise, ignore this field.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -354,6 +357,9 @@ const InputsSchema = z.object({
   updateMask: z.string().describe(
     "Only applies to [`settings.datasources.patch`](https://developers.google.com/workspace/cloud-search/docs/reference/rest/v1/settings.datasources/patch). Update mask to control which fields to update. Example field paths: `name`, `displayName`. * If `update_mask` is non-empty, then only the fields specified in the `update_mask` are updated. * If you specify a field in the `update_mask`, but don't specify its value in the source, that field is cleared. * If the `update_mask` is not present or empty or has the value `*`, then all fields are updated.",
   ).optional(),
+  debugOptions_enableDebugging: z.string().describe(
+    "If you are asked by Google to help with debugging, set this field. Otherwise, ignore this field.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -382,7 +388,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Search Settings.Datasources. Registered at `@swamp/gcp/cloudsearch/settings-datasources`. */
 export const model = {
   type: "@swamp/gcp/cloudsearch/settings-datasources",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -502,6 +508,11 @@ export const model = {
     {
       toVersion: "2026.08.12.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: debugOptions_enableDebugging",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -668,6 +679,10 @@ export const model = {
         }
         if (g["source"] !== undefined) body["source"] = g["source"];
         if (g["updateMask"] !== undefined) body["updateMask"] = g["updateMask"];
+        if (g["debugOptions_enableDebugging"] !== undefined) {
+          body["debugOptions_enableDebugging"] =
+            g["debugOptions_enableDebugging"];
+        }
         for (const key of Object.keys(existing)) {
           if (
             key === "fingerprint" || key === "labelFingerprint" ||

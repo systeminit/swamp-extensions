@@ -1230,3 +1230,115 @@ Deno.test("generateGcpExtensionModel - scopes global arg has collision guard", (
     "should NOT inject scopes global arg when domain has scopes property",
   );
 });
+
+// ---------------------------------------------------------------------------
+// Action methods with query-location parameters (#1990)
+// ---------------------------------------------------------------------------
+
+Deno.test("generateGcpExtensionModel - action method query params routed to params", () => {
+  const resource = makeResource({
+    resourcePath: ["spreadsheets", "values"],
+    typeName: "Google Sheets Spreadsheets Values",
+    description: "Spreadsheet values",
+    primaryIdentifier: ["spreadsheetId"],
+    domainProperties: {
+      spreadsheetId: { type: "string", description: "Spreadsheet ID" },
+      range: { type: "string", description: "A1 range" },
+    },
+    resourceValueProperties: {
+      spreadsheetId: { type: "string" },
+    },
+    insertProperties: new Set(["spreadsheetId"]),
+    updateProperties: new Set<string>(),
+    handlers: { create: false, read: true, update: false, delete: false },
+    methodConfigs: {
+      get: makeMethodConfig({
+        id: "sheets.spreadsheets.values.get",
+        path: "v4/spreadsheets/{spreadsheetId}/values/{range}",
+        httpMethod: "GET",
+        parameterOrder: ["spreadsheetId", "range"],
+        parameters: {
+          spreadsheetId: { location: "path", required: true },
+          range: { location: "path", required: true },
+        },
+      }),
+    },
+    actionMethods: [
+      {
+        name: "append",
+        description: "Append values",
+        config: {
+          id: "sheets.spreadsheets.values.append",
+          path: "v4/spreadsheets/{spreadsheetId}/values/{range}:append",
+          httpMethod: "POST",
+          parameterOrder: ["spreadsheetId", "range"],
+          parameters: {
+            spreadsheetId: { location: "path", required: true },
+            range: { location: "path", required: true },
+            valueInputOption: { location: "query" },
+            insertDataOption: { location: "query" },
+            includeValuesInResponse: { location: "query" },
+          },
+        },
+        requestProperties: {
+          majorDimension: { type: "string", description: "Major dimension" },
+          values: {
+            type: "array",
+            description: "Values",
+            items: { type: "string" },
+          },
+        },
+        requiredProperties: [],
+      },
+    ],
+  });
+
+  const output = generateGcpExtensionModel(makeInput({
+    resource,
+    modelType: "@swamp/gcp/sheets/spreadsheets-values",
+    zodResult: {
+      extractedSchemas: [],
+      inputSchemaBody:
+        `  spreadsheetId: z.string().describe("Spreadsheet ID"),\n  range: z.string().describe("A1 range"),`,
+      resourceSchemaBody: `  spreadsheetId: z.string().optional(),`,
+    },
+  }));
+
+  // Query params must appear in the arguments schema
+  assert(
+    output.includes("valueInputOption: z.any().optional()"),
+    "valueInputOption should be in append arguments",
+  );
+  assert(
+    output.includes("insertDataOption: z.any().optional()"),
+    "insertDataOption should be in append arguments",
+  );
+  assert(
+    output.includes("includeValuesInResponse: z.any().optional()"),
+    "includeValuesInResponse should be in append arguments",
+  );
+
+  // Query params must be routed to params, not body
+  assert(
+    output.includes(
+      'params["valueInputOption"] = String(args["valueInputOption"])',
+    ),
+    "valueInputOption should be routed to params",
+  );
+  assert(
+    output.includes(
+      'params["insertDataOption"] = String(args["insertDataOption"])',
+    ),
+    "insertDataOption should be routed to params",
+  );
+
+  // Body params from requestProperties must still go to body
+  assert(
+    output.includes('body["majorDimension"] = args["majorDimension"]'),
+    "majorDimension should be routed to body",
+  );
+  assert(
+    output.includes('body["values"] = args["values"]'),
+    "values should be routed to body",
+  );
+});

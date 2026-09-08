@@ -199,6 +199,27 @@ const GlobalArgsSchema = z.object({
     }).describe(
       "Optional. Configures the agent behavior for the user barge-in activities.",
     ).optional(),
+    customVoiceSamples: z.array(z.object({
+      consentAudioGcsUri: z.string().describe(
+        "Optional. Consent audio for voice cloning.",
+      ).optional(),
+      name: z.string().describe(
+        "Optional. The user-defined name for the custom voice sample.",
+      ).optional(),
+      previewAudioContent: z.string().describe(
+        "Output only. Synthesized preview audio for custom voice, formatted as canonical WAV (LINEAR16, 24kHz, 16-bit, mono).",
+      ).optional(),
+      previewText: z.string().describe(
+        "Optional. Text for synthesizing preview audio for custom voice.",
+      ).optional(),
+      voiceInstruction: z.string().describe(
+        "Optional. Natural language instructions for voice style, tone, pacing, or pronunciation.",
+      ).optional(),
+      voiceSampleGcsUri: z.string().describe(
+        "Optional. The Cloud Storage URI to the audio sample for voice cloning. The audio sample should be a mono-channel, 24kHz WAV file.",
+      ).optional(),
+    })).describe("Optional. Configures custom voice samples for voice cloning.")
+      .optional(),
     inactivityTimeout: z.string().describe(
       "Optional. The duration of user inactivity (no speech or interaction) before the agent prompts the user for reengagement. If not set, the agent will not prompt the user for reengagement.",
     ).optional(),
@@ -691,6 +712,14 @@ const StateSchema = z.object({
       bargeInAwareness: z.boolean(),
       disableBargeIn: z.boolean(),
     }),
+    customVoiceSamples: z.array(z.object({
+      consentAudioGcsUri: z.string(),
+      name: z.string(),
+      previewAudioContent: z.string(),
+      previewText: z.string(),
+      voiceInstruction: z.string(),
+      voiceSampleGcsUri: z.string(),
+    })),
     inactivityTimeout: z.string(),
     synthesizeSpeechConfigs: z.record(z.string(), z.unknown()),
   }).optional(),
@@ -934,6 +963,27 @@ const InputsSchema = z.object({
     }).describe(
       "Optional. Configures the agent behavior for the user barge-in activities.",
     ).optional(),
+    customVoiceSamples: z.array(z.object({
+      consentAudioGcsUri: z.string().describe(
+        "Optional. Consent audio for voice cloning.",
+      ).optional(),
+      name: z.string().describe(
+        "Optional. The user-defined name for the custom voice sample.",
+      ).optional(),
+      previewAudioContent: z.string().describe(
+        "Output only. Synthesized preview audio for custom voice, formatted as canonical WAV (LINEAR16, 24kHz, 16-bit, mono).",
+      ).optional(),
+      previewText: z.string().describe(
+        "Optional. Text for synthesizing preview audio for custom voice.",
+      ).optional(),
+      voiceInstruction: z.string().describe(
+        "Optional. Natural language instructions for voice style, tone, pacing, or pronunciation.",
+      ).optional(),
+      voiceSampleGcsUri: z.string().describe(
+        "Optional. The Cloud Storage URI to the audio sample for voice cloning. The audio sample should be a mono-channel, 24kHz WAV file.",
+      ).optional(),
+    })).describe("Optional. Configures custom voice samples for voice cloning.")
+      .optional(),
     inactivityTimeout: z.string().describe(
       "Optional. The duration of user inactivity (no speech or interaction) before the agent prompts the user for reengagement. If not set, the agent will not prompt the user for reengagement.",
     ).optional(),
@@ -1440,7 +1490,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Gemini Enterprise for Customer Experience Apps. Registered at `@swamp/gcp/ces/apps`. */
 export const model = {
   type: "@swamp/gcp/ces/apps",
-  version: "2026.08.28.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1610,6 +1660,11 @@ export const model = {
     {
       toVersion: "2026.08.28.1",
       description: "Added: dashboardSettings",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

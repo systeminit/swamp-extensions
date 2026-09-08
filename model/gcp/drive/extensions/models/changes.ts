@@ -549,7 +549,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Drive Changes. Registered at `@swamp/gcp/drive/changes`. */
 export const model = {
   type: "@swamp/gcp/drive/changes",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -713,6 +713,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -941,14 +946,31 @@ export const model = {
     },
     get_start_page_token: {
       description: "get start page token",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        driveId: z.any().optional(),
+        supportsAllDrives: z.any().optional(),
+        supportsTeamDrives: z.any().optional(),
+        teamDriveId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["driveId"] !== undefined) {
+          params["driveId"] = String(args["driveId"]);
+        }
+        if (args["supportsAllDrives"] !== undefined) {
+          params["supportsAllDrives"] = String(args["supportsAllDrives"]);
+        }
+        if (args["supportsTeamDrives"] !== undefined) {
+          params["supportsTeamDrives"] = String(args["supportsTeamDrives"]);
+        }
+        if (args["teamDriveId"] !== undefined) {
+          params["teamDriveId"] = String(args["teamDriveId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -986,6 +1008,19 @@ export const model = {
         resourceUri: z.any().optional(),
         token: z.any().optional(),
         type: z.any().optional(),
+        driveId: z.any().optional(),
+        includeCorpusRemovals: z.any().optional(),
+        includeItemsFromAllDrives: z.any().optional(),
+        includeLabels: z.any().optional(),
+        includePermissionsForView: z.any().optional(),
+        includeRemoved: z.any().optional(),
+        includeTeamDriveItems: z.any().optional(),
+        pageSize: z.any().optional(),
+        restrictToMyDrive: z.any().optional(),
+        spaces: z.any().optional(),
+        supportsAllDrives: z.any().optional(),
+        supportsTeamDrives: z.any().optional(),
+        teamDriveId: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -996,6 +1031,53 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["pageToken"] !== undefined) {
           params["pageToken"] = String(g["pageToken"]);
+        }
+        if (args["driveId"] !== undefined) {
+          params["driveId"] = String(args["driveId"]);
+        }
+        if (args["includeCorpusRemovals"] !== undefined) {
+          params["includeCorpusRemovals"] = String(
+            args["includeCorpusRemovals"],
+          );
+        }
+        if (args["includeItemsFromAllDrives"] !== undefined) {
+          params["includeItemsFromAllDrives"] = String(
+            args["includeItemsFromAllDrives"],
+          );
+        }
+        if (args["includeLabels"] !== undefined) {
+          params["includeLabels"] = String(args["includeLabels"]);
+        }
+        if (args["includePermissionsForView"] !== undefined) {
+          params["includePermissionsForView"] = String(
+            args["includePermissionsForView"],
+          );
+        }
+        if (args["includeRemoved"] !== undefined) {
+          params["includeRemoved"] = String(args["includeRemoved"]);
+        }
+        if (args["includeTeamDriveItems"] !== undefined) {
+          params["includeTeamDriveItems"] = String(
+            args["includeTeamDriveItems"],
+          );
+        }
+        if (args["pageSize"] !== undefined) {
+          params["pageSize"] = String(args["pageSize"]);
+        }
+        if (args["restrictToMyDrive"] !== undefined) {
+          params["restrictToMyDrive"] = String(args["restrictToMyDrive"]);
+        }
+        if (args["spaces"] !== undefined) {
+          params["spaces"] = String(args["spaces"]);
+        }
+        if (args["supportsAllDrives"] !== undefined) {
+          params["supportsAllDrives"] = String(args["supportsAllDrives"]);
+        }
+        if (args["supportsTeamDrives"] !== undefined) {
+          params["supportsTeamDrives"] = String(args["supportsTeamDrives"]);
+        }
+        if (args["teamDriveId"] !== undefined) {
+          params["teamDriveId"] = String(args["teamDriveId"]);
         }
         const body: Record<string, unknown> = {};
         if (args["address"] !== undefined) body["address"] = args["address"];

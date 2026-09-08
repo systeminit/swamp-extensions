@@ -774,6 +774,9 @@ const GlobalArgsSchema = z.object({
   updateTime: z.string().describe(
     "Output only. The timestamp when the asset was last updated.",
   ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -1741,6 +1744,9 @@ const InputsSchema = z.object({
   updateTime: z.string().describe(
     "Output only. The timestamp when the asset was last updated.",
   ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
   ).optional(),
@@ -1772,7 +1778,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Migration Center Assets. Registered at `@swamp/gcp/migrationcenter/assets`. */
 export const model = {
   type: "@swamp/gcp/migrationcenter/assets",
-  version: "2026.08.12.2",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1909,6 +1915,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: requestId",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -2024,6 +2035,11 @@ export const model = {
         if (g["sources"] !== undefined) body["sources"] = g["sources"];
         if (g["title"] !== undefined) body["title"] = g["title"];
         if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
+        if (g["requestId"] !== undefined) {
+          params["requestId"] = String(g["requestId"]);
+        } else if (existing["requestId"] !== undefined) {
+          params["requestId"] = String(existing["requestId"]);
+        }
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -2355,6 +2371,7 @@ export const model = {
       description: "report asset frames",
       arguments: z.object({
         framesData: z.any().optional(),
+        source: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2366,6 +2383,9 @@ export const model = {
         params["parent"] = `projects/${projectId}/locations/${
           String(g["location"] ?? "")
         }`;
+        if (args["source"] !== undefined) {
+          params["source"] = String(args["source"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["framesData"] !== undefined) {
           body["framesData"] = args["framesData"];

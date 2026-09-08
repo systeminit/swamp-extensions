@@ -514,6 +514,12 @@ const GlobalArgsSchema = z.object({
   useContentAsIndexableText: z.string().describe(
     "Whether to use the uploaded content as indexable text.",
   ).optional(),
+  addParents: z.string().describe(
+    "A comma-separated list of parent IDs to add.",
+  ).optional(),
+  removeParents: z.string().describe(
+    "A comma-separated list of parent IDs to remove.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -1026,6 +1032,12 @@ const InputsSchema = z.object({
   useContentAsIndexableText: z.string().describe(
     "Whether to use the uploaded content as indexable text.",
   ).optional(),
+  addParents: z.string().describe(
+    "A comma-separated list of parent IDs to add.",
+  ).optional(),
+  removeParents: z.string().describe(
+    "A comma-separated list of parent IDs to remove.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -1054,7 +1066,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Drive Files. Registered at `@swamp/gcp/drive/files`. */
 export const model = {
   type: "@swamp/gcp/drive/files",
-  version: "2026.09.04.1",
+  version: "2026.09.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1217,6 +1229,11 @@ export const model = {
     {
       toVersion: "2026.09.04.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.07.1",
+      description: "Added: addParents, removeParents",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1491,6 +1508,16 @@ export const model = {
         }
         if (g["writersCanShare"] !== undefined) {
           body["writersCanShare"] = g["writersCanShare"];
+        }
+        if (g["addParents"] !== undefined) {
+          params["addParents"] = String(g["addParents"]);
+        } else if (existing["addParents"] !== undefined) {
+          params["addParents"] = String(existing["addParents"]);
+        }
+        if (g["removeParents"] !== undefined) {
+          params["removeParents"] = String(g["removeParents"]);
+        } else if (existing["removeParents"] !== undefined) {
+          params["removeParents"] = String(existing["removeParents"]);
         }
         for (const key of Object.keys(existing)) {
           if (
@@ -1779,6 +1806,15 @@ export const model = {
         webContentLink: z.any().optional(),
         webViewLink: z.any().optional(),
         writersCanShare: z.any().optional(),
+        copyComments: z.any().optional(),
+        enforceSingleParent: z.any().optional(),
+        ignoreDefaultVisibility: z.any().optional(),
+        includeLabels: z.any().optional(),
+        includePermissionsForView: z.any().optional(),
+        keepRevisionForever: z.any().optional(),
+        ocrLanguage: z.any().optional(),
+        supportsAllDrives: z.any().optional(),
+        supportsTeamDrives: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -1801,6 +1837,37 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["fileId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["copyComments"] !== undefined) {
+          params["copyComments"] = String(args["copyComments"]);
+        }
+        if (args["enforceSingleParent"] !== undefined) {
+          params["enforceSingleParent"] = String(args["enforceSingleParent"]);
+        }
+        if (args["ignoreDefaultVisibility"] !== undefined) {
+          params["ignoreDefaultVisibility"] = String(
+            args["ignoreDefaultVisibility"],
+          );
+        }
+        if (args["includeLabels"] !== undefined) {
+          params["includeLabels"] = String(args["includeLabels"]);
+        }
+        if (args["includePermissionsForView"] !== undefined) {
+          params["includePermissionsForView"] = String(
+            args["includePermissionsForView"],
+          );
+        }
+        if (args["keepRevisionForever"] !== undefined) {
+          params["keepRevisionForever"] = String(args["keepRevisionForever"]);
+        }
+        if (args["ocrLanguage"] !== undefined) {
+          params["ocrLanguage"] = String(args["ocrLanguage"]);
+        }
+        if (args["supportsAllDrives"] !== undefined) {
+          params["supportsAllDrives"] = String(args["supportsAllDrives"]);
+        }
+        if (args["supportsTeamDrives"] !== undefined) {
+          params["supportsTeamDrives"] = String(args["supportsTeamDrives"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["appProperties"] !== undefined) {
           body["appProperties"] = args["appProperties"];
@@ -2003,8 +2070,11 @@ export const model = {
     },
     download: {
       description: "download",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        mimeType: z.any().optional(),
+        revisionId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2025,6 +2095,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["fileId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["mimeType"] !== undefined) {
+          params["mimeType"] = String(args["mimeType"]);
+        }
+        if (args["revisionId"] !== undefined) {
+          params["revisionId"] = String(args["revisionId"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2050,14 +2126,23 @@ export const model = {
     },
     empty_trash: {
       description: "empty trash",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        driveId: z.any().optional(),
+        enforceSingleParent: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["driveId"] !== undefined) {
+          params["driveId"] = String(args["driveId"]);
+        }
+        if (args["enforceSingleParent"] !== undefined) {
+          params["enforceSingleParent"] = String(args["enforceSingleParent"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2131,14 +2216,23 @@ export const model = {
     },
     generate_cse_token: {
       description: "generate cse token",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        fileId: z.any().optional(),
+        parent: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["fileId"] !== undefined) {
+          params["fileId"] = String(args["fileId"]);
+        }
+        if (args["parent"] !== undefined) {
+          params["parent"] = String(args["parent"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2163,14 +2257,25 @@ export const model = {
     },
     generate_ids: {
       description: "generate ids",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        count: z.any().optional(),
+        space: z.any().optional(),
+        type: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
         const credentials = _buildGcpCredentials(g);
         const projectId = await getProjectId(credentials);
         const params: Record<string, string> = { project: projectId };
+        if (args["count"] !== undefined) {
+          params["count"] = String(args["count"]);
+        }
+        if (args["space"] !== undefined) {
+          params["space"] = String(args["space"]);
+        }
+        if (args["type"] !== undefined) params["type"] = String(args["type"]);
         const result = await createResource(
           baseUrl,
           {
@@ -2196,8 +2301,11 @@ export const model = {
     },
     list_labels: {
       description: "list labels",
-      arguments: z.object({}),
-      execute: async (_args: Record<string, unknown>, context: any) => {
+      arguments: z.object({
+        maxResults: z.any().optional(),
+        pageToken: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
         const baseUrl = g["apiEndpoint"]?.toString() ??
           Deno.env.get("GCP_API_ENDPOINT")?.trim() ?? BASE_URL;
@@ -2218,6 +2326,12 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["fileId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["maxResults"] !== undefined) {
+          params["maxResults"] = String(args["maxResults"]);
+        }
+        if (args["pageToken"] !== undefined) {
+          params["pageToken"] = String(args["pageToken"]);
+        }
         const result = await createResource(
           baseUrl,
           {
@@ -2307,6 +2421,11 @@ export const model = {
         resourceUri: z.any().optional(),
         token: z.any().optional(),
         type: z.any().optional(),
+        acknowledgeAbuse: z.any().optional(),
+        includeLabels: z.any().optional(),
+        includePermissionsForView: z.any().optional(),
+        supportsAllDrives: z.any().optional(),
+        supportsTeamDrives: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
         const g = context.globalArgs;
@@ -2329,6 +2448,23 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         params["fileId"] = existing["name"]?.toString() ??
           g["name"]?.toString() ?? "";
+        if (args["acknowledgeAbuse"] !== undefined) {
+          params["acknowledgeAbuse"] = String(args["acknowledgeAbuse"]);
+        }
+        if (args["includeLabels"] !== undefined) {
+          params["includeLabels"] = String(args["includeLabels"]);
+        }
+        if (args["includePermissionsForView"] !== undefined) {
+          params["includePermissionsForView"] = String(
+            args["includePermissionsForView"],
+          );
+        }
+        if (args["supportsAllDrives"] !== undefined) {
+          params["supportsAllDrives"] = String(args["supportsAllDrives"]);
+        }
+        if (args["supportsTeamDrives"] !== undefined) {
+          params["supportsTeamDrives"] = String(args["supportsTeamDrives"]);
+        }
         const body: Record<string, unknown> = {};
         if (args["address"] !== undefined) body["address"] = args["address"];
         if (args["expiration"] !== undefined) {
