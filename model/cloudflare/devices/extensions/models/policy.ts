@@ -130,6 +130,9 @@ const GlobalArgsSchema = z.object({
   tunnel_protocol: z.string().describe(
     "Determines which tunnel protocol to use.",
   ).optional(),
+  uninstall_protection: z.boolean().describe(
+    "Determines whether uninstalling the WARP client requires an override code. (Windows only).",
+  ).optional(),
   virtual_networks: z.object({
     allowed: z.array(z.string()),
     default: z.string(),
@@ -201,6 +204,7 @@ const ResourceSchema = z.object({
     name: z.string().optional(),
   })).optional(),
   tunnel_protocol: z.string().optional(),
+  uninstall_protection: z.boolean().optional(),
   virtual_networks: z.object({
     allowed: z.array(z.string()).optional(),
     default: z.string().optional(),
@@ -255,6 +259,7 @@ const InputsSchema = z.object({
   support_url: z.string().optional(),
   switch_locked: z.boolean().optional(),
   tunnel_protocol: z.string().optional(),
+  uninstall_protection: z.boolean().optional(),
   virtual_networks: z.object({
     allowed: z.array(z.string()),
     default: z.string(),
@@ -267,7 +272,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Cloudflare Policy. Registered at `@swamp/cloudflare/devices/policy`. */
 export const model = {
   type: "@swamp/cloudflare/devices/policy",
-  version: "2026.08.25.2",
+  version: "2026.09.08.1",
   upgrades: [
     {
       toVersion: "2026.05.29.1",
@@ -302,6 +307,11 @@ export const model = {
     {
       toVersion: "2026.08.25.2",
       description: "Added: global_acceleration",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.08.1",
+      description: "Added: uninstall_protection",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -373,6 +383,9 @@ export const model = {
         if (g.switch_locked !== undefined) body.switch_locked = g.switch_locked;
         if (g.tunnel_protocol !== undefined) {
           body.tunnel_protocol = g.tunnel_protocol;
+        }
+        if (g.uninstall_protection !== undefined) {
+          body.uninstall_protection = g.uninstall_protection;
         }
         if (g.virtual_networks !== undefined) {
           body.virtual_networks = g.virtual_networks;
@@ -489,6 +502,12 @@ export const model = {
         }
         if (g.tunnel_protocol !== undefined) {
           filters.push(["tunnel_protocol", String(g.tunnel_protocol)]);
+        }
+        if (g.uninstall_protection !== undefined) {
+          filters.push([
+            "uninstall_protection",
+            String(g.uninstall_protection),
+          ]);
         }
         if (filters.length === 0) {
           throw new Error(
@@ -637,6 +656,9 @@ export const model = {
         if (g.switch_locked !== undefined) body.switch_locked = g.switch_locked;
         if (g.tunnel_protocol !== undefined) {
           body.tunnel_protocol = g.tunnel_protocol;
+        }
+        if (g.uninstall_protection !== undefined) {
+          body.uninstall_protection = g.uninstall_protection;
         }
         if (g.virtual_networks !== undefined) {
           body.virtual_networks = g.virtual_networks;

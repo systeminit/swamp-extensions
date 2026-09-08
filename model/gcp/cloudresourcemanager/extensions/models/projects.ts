@@ -383,7 +383,6 @@ const StateSchema = z.object({
   deleteTime: z.string().optional(),
   displayName: z.string().optional(),
   etag: z.string().optional(),
-  isManagementProject: z.boolean().optional(),
   labels: z.record(z.string(), z.unknown()).optional(),
   name: z.string(),
   parent: z.string().optional(),
@@ -446,7 +445,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Resource Manager Projects. Registered at `@swamp/gcp/cloudresourcemanager/projects`. */
 export const model = {
   type: "@swamp/gcp/cloudresourcemanager/projects",
-  version: "2026.09.07.1",
+  version: "2026.09.08.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -600,6 +599,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.08.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
