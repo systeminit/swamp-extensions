@@ -193,6 +193,8 @@ const ResourceSchema = z.object({
     health_status: z.array(z.object({
       listen_port: z.number().optional(),
       status: z.string().optional(),
+      detail: z.string().optional(),
+      http_status_code: z.number().optional(),
     })).optional(),
     use_private_ip: z.boolean().optional(),
   })).optional(),
@@ -258,7 +260,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud load balancer. Registered at `@swamp/hetzner-cloud/load-balancers`. */
 export const model = {
   type: "@swamp/hetzner-cloud/load-balancers",
-  version: "2026.07.18.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.03.1",
@@ -322,6 +324,11 @@ export const model = {
     },
     {
       toVersion: "2026.07.18.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

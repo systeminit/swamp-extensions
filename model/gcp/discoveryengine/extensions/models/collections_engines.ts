@@ -369,6 +369,23 @@ const GlobalArgsSchema = z.object({
   }).describe(
     "Configurations for the Search Engine. Only applicable if solution_type is SOLUTION_TYPE_SEARCH.",
   ).optional(),
+  sessionConfig: z.object({
+    sessionManagementPolicy: z.enum([
+      "SESSION_MANAGEMENT_POLICY_UNSPECIFIED",
+      "NOT_MANAGED",
+      "VERTEX_AI_MANAGED",
+    ]).describe(
+      "Optional. Session management policy that defines who will manage the session.",
+    ).optional(),
+    sessionTtl: z.object({
+      days: z.number().int().describe(
+        "Defines the number of days for session TTL.",
+      ).optional(),
+    }).describe(
+      "Optional. The TTL for the session. If unset, the default value is 60 days.",
+    ).optional(),
+  }).describe("Optional. Non-empty default. Session config for the engine.")
+    .optional(),
   solutionType: z.enum([
     "SOLUTION_TYPE_UNSPECIFIED",
     "SOLUTION_TYPE_RECOMMENDATION",
@@ -473,6 +490,12 @@ const StateSchema = z.object({
     requiredSubscriptionTier: z.string(),
     searchAddOns: z.array(z.string()),
     searchTier: z.string(),
+  }).optional(),
+  sessionConfig: z.object({
+    sessionManagementPolicy: z.string(),
+    sessionTtl: z.object({
+      days: z.number(),
+    }),
   }).optional(),
   solutionType: z.string().optional(),
   updateTime: z.string().optional(),
@@ -695,6 +718,23 @@ const InputsSchema = z.object({
   }).describe(
     "Configurations for the Search Engine. Only applicable if solution_type is SOLUTION_TYPE_SEARCH.",
   ).optional(),
+  sessionConfig: z.object({
+    sessionManagementPolicy: z.enum([
+      "SESSION_MANAGEMENT_POLICY_UNSPECIFIED",
+      "NOT_MANAGED",
+      "VERTEX_AI_MANAGED",
+    ]).describe(
+      "Optional. Session management policy that defines who will manage the session.",
+    ).optional(),
+    sessionTtl: z.object({
+      days: z.number().int().describe(
+        "Defines the number of days for session TTL.",
+      ).optional(),
+    }).describe(
+      "Optional. The TTL for the session. If unset, the default value is 60 days.",
+    ).optional(),
+  }).describe("Optional. Non-empty default. Session config for the engine.")
+    .optional(),
   solutionType: z.enum([
     "SOLUTION_TYPE_UNSPECIFIED",
     "SOLUTION_TYPE_RECOMMENDATION",
@@ -740,7 +780,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Discovery Engine Collections.Engines. Registered at `@swamp/gcp/discoveryengine/collections-engines`. */
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-engines",
-  version: "2026.09.07.2",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1019,6 +1059,11 @@ export const model = {
         return rest;
       },
     },
+    {
+      toVersion: "2026.09.09.1",
+      description: "Added: sessionConfig",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1096,6 +1141,9 @@ export const model = {
         }
         if (g["searchEngineConfig"] !== undefined) {
           body["searchEngineConfig"] = g["searchEngineConfig"];
+        }
+        if (g["sessionConfig"] !== undefined) {
+          body["sessionConfig"] = g["sessionConfig"];
         }
         if (g["solutionType"] !== undefined) {
           body["solutionType"] = g["solutionType"];
@@ -1261,6 +1309,9 @@ export const model = {
         }
         if (g["searchEngineConfig"] !== undefined) {
           body["searchEngineConfig"] = g["searchEngineConfig"];
+        }
+        if (g["sessionConfig"] !== undefined) {
+          body["sessionConfig"] = g["sessionConfig"];
         }
         if (g["solutionType"] !== undefined) {
           body["solutionType"] = g["solutionType"];

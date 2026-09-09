@@ -43,7 +43,7 @@ import {
 } from "./_lib/hetzner.ts";
 
 const GlobalArgsSchema = z.object({
-  name: z.string().describe(
+  name: z.string().min(1).max(255).describe(
     "Name of the Resource. Must be unique per Project.",
   ),
   labels: z.record(z.string(), z.unknown()).describe(
@@ -102,7 +102,7 @@ const ResourceSchema = z.object({
 type ResourceData = z.infer<typeof ResourceSchema>;
 
 const InputsSchema = z.object({
-  name: z.string().optional(),
+  name: z.string().min(1).max(255).optional(),
   labels: z.record(z.string(), z.unknown()).optional(),
   auto_delete: z.boolean().optional(),
   type: z.enum(["ipv4", "ipv6"]).optional(),
@@ -115,7 +115,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud primary ip. Registered at `@swamp/hetzner-cloud/primary-ips`. */
 export const model = {
   type: "@swamp/hetzner-cloud/primary-ips",
-  version: "2026.07.18.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.03.1",
@@ -182,6 +182,11 @@ export const model = {
     },
     {
       toVersion: "2026.07.18.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

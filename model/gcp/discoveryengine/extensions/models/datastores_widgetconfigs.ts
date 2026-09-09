@@ -604,6 +604,9 @@ const GlobalArgsSchema = z.object({
         icon: z.string().describe(
           "Output only. GM3-compatible icon token associated with the model (e.g. `rocket_launch`, `bolt`, `graph_5`).",
         ).optional(),
+        iconUrl: z.string().describe(
+          "Output only. Absolute URL of a brand mark to render instead of `icon`, for models whose vendor logo is not a GM3 glyph. `icon` stays populated as the fallback, so a client that does not render images, or that fails to fetch this one, shows the glyph instead of nothing.",
+        ).optional(),
         isPreview: z.boolean().describe(
           'Output only. Whether the model is currently in preview. Clients should surface this via a "Preview" badge in the selector UI.',
         ).optional(),
@@ -859,6 +862,7 @@ const StateSchema = z.object({
         description: z.string(),
         displayName: z.string(),
         icon: z.string(),
+        iconUrl: z.string(),
         isPreview: z.boolean(),
         label: z.string(),
         modelId: z.string(),
@@ -1383,6 +1387,9 @@ const InputsSchema = z.object({
         icon: z.string().describe(
           "Output only. GM3-compatible icon token associated with the model (e.g. `rocket_launch`, `bolt`, `graph_5`).",
         ).optional(),
+        iconUrl: z.string().describe(
+          "Output only. Absolute URL of a brand mark to render instead of `icon`, for models whose vendor logo is not a GM3 glyph. `icon` stays populated as the fallback, so a client that does not render images, or that fails to fetch this one, shows the glyph instead of nothing.",
+        ).optional(),
         isPreview: z.boolean().describe(
           'Output only. Whether the model is currently in preview. Clients should surface this via a "Preview" badge in the selector UI.',
         ).optional(),
@@ -1467,7 +1474,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Discovery Engine DataStores.WidgetConfigs. Registered at `@swamp/gcp/discoveryengine/datastores-widgetconfigs`. */
 export const model = {
   type: "@swamp/gcp/discoveryengine/datastores-widgetconfigs",
-  version: "2026.09.01.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1706,6 +1713,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

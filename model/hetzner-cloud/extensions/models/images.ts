@@ -64,6 +64,7 @@ const ResourceSchema = z.object({
     delete: z.boolean().optional(),
   }).optional(),
   deprecated: z.unknown().optional(),
+  deprecation: z.unknown().optional(),
   deleted: z.unknown().optional(),
   labels: z.record(z.string(), z.unknown()).optional(),
   architecture: z.string().optional(),
@@ -81,7 +82,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud image. Registered at `@swamp/hetzner-cloud/images`. */
 export const model = {
   type: "@swamp/hetzner-cloud/images",
-  version: "2026.07.18.2",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.06.10.2",
@@ -100,6 +101,11 @@ export const model = {
     },
     {
       toVersion: "2026.07.18.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

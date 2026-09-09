@@ -39,7 +39,9 @@ const GlobalArgsSchema = z.object({
   slug: z.string().optional().describe(
     "Vercel team slug (alternative to teamId)",
   ),
-  projectId: z.string(),
+  projectId: z.string().describe(
+    "Project ID. Missing or empty values return HTTP 400.",
+  ),
   name: z.string().max(255).regex(
     new RegExp("^[a-z0-9]+(?:(?:\\\\.|_|__|-+)[a-z0-9]+)*$"),
   ).describe("Single Docker repository name component."),
@@ -85,7 +87,7 @@ function unwrapResponse(
 /** Swamp extension model for Vercel Repository. Registered at `@swamp/vercel/vcr/repository`. */
 export const model = {
   type: "@swamp/vercel/vcr/repository",
-  version: "2026.08.04.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.08.02.2",
@@ -114,6 +116,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

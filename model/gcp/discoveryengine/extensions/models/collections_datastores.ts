@@ -199,6 +199,17 @@ const GlobalArgsSchema = z.object({
   ]).describe(
     "Immutable. The content config of the data store. If this field is unset, the server behavior defaults to ContentConfig.NO_CONTENT.",
   ).optional(),
+  dataProtectionPolicy: z.object({
+    sensitiveDataProtectionPolicy: z.object({
+      policy: z.string().describe(
+        "Optional. Specifies the resource name of the Sensitive Data Protection content policy.",
+      ).optional(),
+    }).describe(
+      "Optional. Specifies the sensitive data protection policy for the connector source.",
+    ).optional(),
+  }).describe(
+    "Optional. Specifies the data protection policy for the data store.",
+  ).optional(),
   displayName: z.string().describe(
     "Required. The data store display name. This field must be a UTF-8 encoded string with a length limit of 128 characters. Otherwise, an INVALID_ARGUMENT error is returned.",
   ).optional(),
@@ -508,6 +519,11 @@ const StateSchema = z.object({
   configurableBillingApproachUpdateTime: z.string().optional(),
   contentConfig: z.string().optional(),
   createTime: z.string().optional(),
+  dataProtectionPolicy: z.object({
+    sensitiveDataProtectionPolicy: z.object({
+      policy: z.string(),
+    }),
+  }).optional(),
   defaultSchemaId: z.string().optional(),
   displayName: z.string().optional(),
   documentProcessingConfig: z.object({
@@ -624,6 +640,17 @@ const InputsSchema = z.object({
     "GOOGLE_WORKSPACE",
   ]).describe(
     "Immutable. The content config of the data store. If this field is unset, the server behavior defaults to ContentConfig.NO_CONTENT.",
+  ).optional(),
+  dataProtectionPolicy: z.object({
+    sensitiveDataProtectionPolicy: z.object({
+      policy: z.string().describe(
+        "Optional. Specifies the resource name of the Sensitive Data Protection content policy.",
+      ).optional(),
+    }).describe(
+      "Optional. Specifies the sensitive data protection policy for the connector source.",
+    ).optional(),
+  }).describe(
+    "Optional. Specifies the data protection policy for the data store.",
   ).optional(),
   displayName: z.string().describe(
     "Required. The data store display name. This field must be a UTF-8 encoded string with a length limit of 128 characters. Otherwise, an INVALID_ARGUMENT error is returned.",
@@ -930,7 +957,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Discovery Engine Collections.DataStores. Registered at `@swamp/gcp/discoveryengine/collections-datastores`. */
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-datastores",
-  version: "2026.09.07.2",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1169,6 +1196,11 @@ export const model = {
         return rest;
       },
     },
+    {
+      toVersion: "2026.09.09.1",
+      description: "Added: dataProtectionPolicy",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1204,6 +1236,9 @@ export const model = {
         }
         if (g["contentConfig"] !== undefined) {
           body["contentConfig"] = g["contentConfig"];
+        }
+        if (g["dataProtectionPolicy"] !== undefined) {
+          body["dataProtectionPolicy"] = g["dataProtectionPolicy"];
         }
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];
@@ -1377,6 +1412,9 @@ export const model = {
         if (g["configurableBillingApproach"] !== undefined) {
           body["configurableBillingApproach"] =
             g["configurableBillingApproach"];
+        }
+        if (g["dataProtectionPolicy"] !== undefined) {
+          body["dataProtectionPolicy"] = g["dataProtectionPolicy"];
         }
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];

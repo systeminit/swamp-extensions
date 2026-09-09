@@ -312,6 +312,7 @@ const GlobalArgsSchema = z.object({
     guestOsFeatures: z.array(z.object({
       type: z.enum([
         "BARE_METAL_LINUX_COMPATIBLE",
+        "BMSAI_CAPABLE",
         "CCA_CAPABLE",
         "FEATURE_TYPE_UNSPECIFIED",
         "GVNIC",
@@ -797,6 +798,9 @@ const GlobalArgsSchema = z.object({
     availabilityDomain: z.number().int().describe(
       "Specifies the availability domain to place the instance in. The value must be a number between 1 and the number of availability domains specified in the spread placement policy attached to the instance.",
     ).optional(),
+    exposeHostTopology: z.boolean().describe(
+      "This optional flag exposes the hashed physical host ID in the ResourceStatus resource of the VM.",
+    ).optional(),
     gracefulShutdown: z.object({
       enabled: z.boolean().describe("Opts-in for graceful shutdown.")
         .optional(),
@@ -1233,6 +1237,7 @@ const StateSchema = z.object({
   scheduling: z.object({
     automaticRestart: z.boolean(),
     availabilityDomain: z.number(),
+    exposeHostTopology: z.boolean(),
     gracefulShutdown: z.object({
       enabled: z.boolean(),
       maxDuration: z.object({
@@ -1403,6 +1408,7 @@ const InputsSchema = z.object({
     guestOsFeatures: z.array(z.object({
       type: z.enum([
         "BARE_METAL_LINUX_COMPATIBLE",
+        "BMSAI_CAPABLE",
         "CCA_CAPABLE",
         "FEATURE_TYPE_UNSPECIFIED",
         "GVNIC",
@@ -1888,6 +1894,9 @@ const InputsSchema = z.object({
     availabilityDomain: z.number().int().describe(
       "Specifies the availability domain to place the instance in. The value must be a number between 1 and the number of availability domains specified in the spread placement policy attached to the instance.",
     ).optional(),
+    exposeHostTopology: z.boolean().describe(
+      "This optional flag exposes the hashed physical host ID in the ResourceStatus resource of the VM.",
+    ).optional(),
     gracefulShutdown: z.object({
       enabled: z.boolean().describe("Opts-in for graceful shutdown.")
         .optional(),
@@ -2093,7 +2102,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Compute Engine Instances. Registered at `@swamp/gcp/compute/instances`. */
 export const model = {
   type: "@swamp/gcp/compute/instances",
-  version: "2026.09.08.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -2336,6 +2345,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.08.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -4637,6 +4651,7 @@ export const model = {
       arguments: z.object({
         automaticRestart: z.any().optional(),
         availabilityDomain: z.any().optional(),
+        exposeHostTopology: z.any().optional(),
         gracefulShutdown: z.any().optional(),
         hostErrorTimeoutSeconds: z.any().optional(),
         instanceTerminationAction: z.any().optional(),
@@ -4685,6 +4700,9 @@ export const model = {
         }
         if (args["availabilityDomain"] !== undefined) {
           body["availabilityDomain"] = args["availabilityDomain"];
+        }
+        if (args["exposeHostTopology"] !== undefined) {
+          body["exposeHostTopology"] = args["exposeHostTopology"];
         }
         if (args["gracefulShutdown"] !== undefined) {
           body["gracefulShutdown"] = args["gracefulShutdown"];

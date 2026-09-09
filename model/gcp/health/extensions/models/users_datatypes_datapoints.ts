@@ -2248,6 +2248,14 @@ const GlobalArgsSchema = z.object({
     "Optional. Data for points in the `heart-rate` sample data type collection.",
   ).optional(),
   heartRateVariability: z.object({
+    metadata: z.object({
+      highFrequencyPower: z.number().describe(
+        "Optional. The power in interbeat interval fluctuations within the high frequency band (0.15 Hz - 0.4 Hz).",
+      ).optional(),
+      lowFrequencyPower: z.number().describe(
+        "Optional. The power in interbeat interval fluctuations within the low frequency band (0.04 Hz - 0.15 Hz).",
+      ).optional(),
+    }).describe("Optional. Metadata used in 1P surfaces.").optional(),
     rootMeanSquareOfSuccessiveDifferencesMilliseconds: z.number().describe(
       "Optional. The root mean square of successive differences between normal heartbeats. This is a measure of heart rate variability used by Google Health.",
     ).optional(),
@@ -4804,6 +4812,10 @@ const StateSchema = z.object({
     }),
   }).optional(),
   heartRateVariability: z.object({
+    metadata: z.object({
+      highFrequencyPower: z.number(),
+      lowFrequencyPower: z.number(),
+    }),
     rootMeanSquareOfSuccessiveDifferencesMilliseconds: z.number(),
     sampleTime: z.object({
       civilTime: z.object({
@@ -7586,6 +7598,14 @@ const InputsSchema = z.object({
     "Optional. Data for points in the `heart-rate` sample data type collection.",
   ).optional(),
   heartRateVariability: z.object({
+    metadata: z.object({
+      highFrequencyPower: z.number().describe(
+        "Optional. The power in interbeat interval fluctuations within the high frequency band (0.15 Hz - 0.4 Hz).",
+      ).optional(),
+      lowFrequencyPower: z.number().describe(
+        "Optional. The power in interbeat interval fluctuations within the low frequency band (0.04 Hz - 0.15 Hz).",
+      ).optional(),
+    }).describe("Optional. Metadata used in 1P surfaces.").optional(),
     rootMeanSquareOfSuccessiveDifferencesMilliseconds: z.number().describe(
       "Optional. The root mean square of successive differences between normal heartbeats. This is a measure of heart rate variability used by Google Health.",
     ).optional(),
@@ -9459,7 +9479,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Google Health Users.DataTypes.DataPoints. Registered at `@swamp/gcp/health/users-datatypes-datapoints`. */
 export const model = {
   type: "@swamp/gcp/health/users-datatypes-datapoints",
-  version: "2026.09.07.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -9646,6 +9666,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

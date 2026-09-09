@@ -430,6 +430,9 @@ const GlobalArgsSchema = z.object({
   sourceProject: z.string().describe(
     "Optional. The project to which the deployment belongs. For Google Cloud gateways, this will refer to the project identifier. For others like Edge/OPDK, this will refer to the org identifier.",
   ).optional(),
+  sourceRevision: z.string().describe(
+    "Optional. A revision identifier for the underlying gateway configuration that this deployment serves. For Apigee gateway variants, this is typically the proxy revision number populated automatically when the deployment is discovered.",
+  ).optional(),
   sourceUri: z.object({
     attribute: z.string().describe(
       "Output only. The name of the attribute. Format: projects/{project}/locations/{location}/attributes/{attribute}",
@@ -487,6 +490,7 @@ const GlobalArgsSchema = z.object({
 });
 
 const StateSchema = z.object({
+  apiOperations: z.array(z.string()).optional(),
   apiVersions: z.array(z.string()).optional(),
   attributes: z.record(z.string(), z.unknown()).optional(),
   createTime: z.string().optional(),
@@ -590,6 +594,7 @@ const StateSchema = z.object({
     sourceType: z.string(),
   })).optional(),
   sourceProject: z.string().optional(),
+  sourceRevision: z.string().optional(),
   sourceUri: z.object({
     attribute: z.string(),
     enumValues: z.object({
@@ -610,6 +615,7 @@ const StateSchema = z.object({
       values: z.array(z.string()),
     }),
   }).optional(),
+  specs: z.array(z.string()).optional(),
   updateTime: z.string().optional(),
 }).passthrough();
 
@@ -891,6 +897,9 @@ const InputsSchema = z.object({
   sourceProject: z.string().describe(
     "Optional. The project to which the deployment belongs. For Google Cloud gateways, this will refer to the project identifier. For others like Edge/OPDK, this will refer to the org identifier.",
   ).optional(),
+  sourceRevision: z.string().describe(
+    "Optional. A revision identifier for the underlying gateway configuration that this deployment serves. For Apigee gateway variants, this is typically the proxy revision number populated automatically when the deployment is discovered.",
+  ).optional(),
   sourceUri: z.object({
     attribute: z.string().describe(
       "Output only. The name of the attribute. Format: projects/{project}/locations/{location}/attributes/{attribute}",
@@ -973,7 +982,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud API hub Deployments. Registered at `@swamp/gcp/apihub/deployments`. */
 export const model = {
   type: "@swamp/gcp/apihub/deployments",
-  version: "2026.08.12.2",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1110,6 +1119,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.09.1",
+      description: "Added: sourceRevision",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1167,6 +1181,9 @@ export const model = {
         }
         if (g["sourceProject"] !== undefined) {
           body["sourceProject"] = g["sourceProject"];
+        }
+        if (g["sourceRevision"] !== undefined) {
+          body["sourceRevision"] = g["sourceRevision"];
         }
         if (g["sourceUri"] !== undefined) body["sourceUri"] = g["sourceUri"];
         if (g["deploymentId"] !== undefined) {
@@ -1311,6 +1328,9 @@ export const model = {
         }
         if (g["sourceProject"] !== undefined) {
           body["sourceProject"] = g["sourceProject"];
+        }
+        if (g["sourceRevision"] !== undefined) {
+          body["sourceRevision"] = g["sourceRevision"];
         }
         if (g["sourceUri"] !== undefined) body["sourceUri"] = g["sourceUri"];
         const updateMaskKeys = Object.keys(body);

@@ -56,6 +56,9 @@ const GlobalArgsSchema = z.object({
   filter: z.string().describe(
     "The filters to select the events to include and/or remove from your logs. For more information, refer to [Filters](https://developers.cloudflare.com/logs/reference/filters/).",
   ).optional(),
+  filter_attack_traffic: z.boolean().describe(
+    "When true, excludes DDoS attack traffic from logs. This option is supported for the `http_requests`, `firewall_events`, and `network_analytics_logs` datasets.",
+  ).optional(),
   frequency: z.enum(["high", "low"]).describe(
     "This field is deprecated. Please use `max_upload_*` parameters instead. . The frequency at which Cloudflare sends batches of logs to your destination. Setting frequency to high sends your logs in larger quantities of smaller files. Setting frequency to low sends logs in smaller quantities of larger files.",
   ).optional(),
@@ -155,6 +158,7 @@ const ResourceSchema = z.object({
   destination_conf: z.string().optional(),
   enabled: z.boolean().optional(),
   error_message: z.string().optional(),
+  filter_attack_traffic: z.boolean().optional(),
   frequency: z.string().optional(),
   id: z.number(),
   kind: z.string().optional(),
@@ -190,6 +194,7 @@ const InputsSchema = z.object({
   destination_conf: z.string().max(4096).optional(),
   enabled: z.boolean().optional(),
   filter: z.string().optional(),
+  filter_attack_traffic: z.boolean().optional(),
   frequency: z.enum(["high", "low"]).optional(),
   kind: z.enum(["", "edge"]).optional(),
   logpull_options: z.string().max(4096).optional(),
@@ -268,7 +273,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Cloudflare Jobs. Registered at `@swamp/cloudflare/logpush/jobs`. */
 export const model = {
   type: "@swamp/cloudflare/logpush/jobs",
-  version: "2026.08.26.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.05.29.1",
@@ -320,6 +325,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.09.1",
+      description: "Added: filter_attack_traffic",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -353,6 +363,9 @@ export const model = {
         }
         if (g.enabled !== undefined) body.enabled = g.enabled;
         if (g.filter !== undefined) body.filter = g.filter;
+        if (g.filter_attack_traffic !== undefined) {
+          body.filter_attack_traffic = g.filter_attack_traffic;
+        }
         if (g.frequency !== undefined) body.frequency = g.frequency;
         if (g.kind !== undefined) body.kind = g.kind;
         if (g.logpull_options !== undefined) {
@@ -445,6 +458,12 @@ export const model = {
           filters.push(["enabled", String(g.enabled)]);
         }
         if (g.filter !== undefined) filters.push(["filter", String(g.filter)]);
+        if (g.filter_attack_traffic !== undefined) {
+          filters.push([
+            "filter_attack_traffic",
+            String(g.filter_attack_traffic),
+          ]);
+        }
         if (g.frequency !== undefined) {
           filters.push(["frequency", String(g.frequency)]);
         }
@@ -589,6 +608,9 @@ export const model = {
         }
         if (g.enabled !== undefined) body.enabled = g.enabled;
         if (g.filter !== undefined) body.filter = g.filter;
+        if (g.filter_attack_traffic !== undefined) {
+          body.filter_attack_traffic = g.filter_attack_traffic;
+        }
         if (g.frequency !== undefined) body.frequency = g.frequency;
         if (g.kind !== undefined) body.kind = g.kind;
         if (g.logpull_options !== undefined) {

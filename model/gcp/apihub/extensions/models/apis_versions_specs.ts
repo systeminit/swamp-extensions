@@ -220,6 +220,9 @@ const GlobalArgsSchema = z.object({
     ).optional(),
   }).describe("Optional. Input only. The contents of the uploaded spec.")
     .optional(),
+  deployments: z.array(z.string()).describe(
+    "Optional. The deployments linked directly to this spec. Format is `projects/{project}/locations/{location}/deployments/{deployment}`",
+  ).optional(),
   displayName: z.string().describe(
     "Required. The display name of the spec. This can contain the file name of the spec.",
   ).optional(),
@@ -384,6 +387,7 @@ const StateSchema = z.object({
     mimeType: z.string(),
   }).optional(),
   createTime: z.string().optional(),
+  deployments: z.array(z.string()).optional(),
   details: z.object({
     description: z.string(),
     openApiSpecDetails: z.object({
@@ -529,6 +533,9 @@ const InputsSchema = z.object({
     ).optional(),
   }).describe("Optional. Input only. The contents of the uploaded spec.")
     .optional(),
+  deployments: z.array(z.string()).describe(
+    "Optional. The deployments linked directly to this spec. Format is `projects/{project}/locations/{location}/deployments/{deployment}`",
+  ).optional(),
   displayName: z.string().describe(
     "Required. The display name of the spec. This can contain the file name of the spec.",
   ).optional(),
@@ -702,7 +709,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud API hub Apis.Versions.Specs. Registered at `@swamp/gcp/apihub/apis-versions-specs`. */
 export const model = {
   type: "@swamp/gcp/apihub/apis-versions-specs",
-  version: "2026.09.07.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -847,6 +854,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.09.1",
+      description: "Added: deployments",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -874,6 +886,9 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["attributes"] !== undefined) body["attributes"] = g["attributes"];
         if (g["contents"] !== undefined) body["contents"] = g["contents"];
+        if (g["deployments"] !== undefined) {
+          body["deployments"] = g["deployments"];
+        }
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];
         }
@@ -1000,6 +1015,9 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["attributes"] !== undefined) body["attributes"] = g["attributes"];
         if (g["contents"] !== undefined) body["contents"] = g["contents"];
+        if (g["deployments"] !== undefined) {
+          body["deployments"] = g["deployments"];
+        }
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];
         }

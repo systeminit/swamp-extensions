@@ -176,6 +176,17 @@ const GlobalArgsSchema = z.object({
         "Required. The raw string content to be banned.",
       ).optional(),
     })).describe("Optional. List of banned phrases.").optional(),
+    dataProtectionPolicy: z.object({
+      sensitiveDataProtectionPolicy: z.object({
+        policy: z.string().describe(
+          "Optional. Specifies the resource name of the Sensitive Data Protection content policy.",
+        ).optional(),
+      }).describe(
+        "Optional. Specifies the sensitive data protection policy for the connector source.",
+      ).optional(),
+    }).describe(
+      "Optional. Data protection policy to be used for sanitizing file uploads.",
+    ).optional(),
     modelArmorConfig: z.object({
       failureMode: z.enum([
         "FAILURE_MODE_UNSPECIFIED",
@@ -266,6 +277,11 @@ const StateSchema = z.object({
       matchType: z.string(),
       phrase: z.string(),
     })),
+    dataProtectionPolicy: z.object({
+      sensitiveDataProtectionPolicy: z.object({
+        policy: z.string(),
+      }),
+    }),
     modelArmorConfig: z.object({
       failureMode: z.string(),
       responseTemplate: z.string(),
@@ -312,6 +328,17 @@ const InputsSchema = z.object({
         "Required. The raw string content to be banned.",
       ).optional(),
     })).describe("Optional. List of banned phrases.").optional(),
+    dataProtectionPolicy: z.object({
+      sensitiveDataProtectionPolicy: z.object({
+        policy: z.string().describe(
+          "Optional. Specifies the resource name of the Sensitive Data Protection content policy.",
+        ).optional(),
+      }).describe(
+        "Optional. Specifies the sensitive data protection policy for the connector source.",
+      ).optional(),
+    }).describe(
+      "Optional. Data protection policy to be used for sanitizing file uploads.",
+    ).optional(),
     modelArmorConfig: z.object({
       failureMode: z.enum([
         "FAILURE_MODE_UNSPECIFIED",
@@ -420,7 +447,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Discovery Engine Collections.Engines.Assistants. Registered at `@swamp/gcp/discoveryengine/collections-engines-assistants`. */
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-engines-assistants",
-  version: "2026.08.25.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -584,6 +611,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.25.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

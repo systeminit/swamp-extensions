@@ -44,8 +44,9 @@ import {
 
 const GlobalArgsSchema = z.object({
   description: z.unknown().describe("Description of the Resource.").optional(),
-  name: z.string().describe("Name of the Resource. Must be unique per Project.")
-    .optional(),
+  name: z.string().min(1).max(255).describe(
+    "Name of the Resource. Must be unique per Project.\n\nA name will be generated if none is given.\n",
+  ).optional(),
   labels: z.record(z.string(), z.unknown()).describe(
     'User-defined labels (`key/value` pairs) for the Resource.\nFor more information, see "[Labels](#description/labels)".\n',
   ).optional(),
@@ -94,7 +95,7 @@ type ResourceData = z.infer<typeof ResourceSchema>;
 
 const InputsSchema = z.object({
   description: z.unknown().optional(),
-  name: z.string().optional(),
+  name: z.string().min(1).max(255).optional(),
   labels: z.record(z.string(), z.unknown()).optional(),
   type: z.enum(["ipv4", "ipv6"]).optional(),
   server: z.unknown().optional(),
@@ -105,7 +106,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for Hetzner Cloud floating ip. Registered at `@swamp/hetzner-cloud/floating-ips`. */
 export const model = {
   type: "@swamp/hetzner-cloud/floating-ips",
-  version: "2026.07.18.1",
+  version: "2026.09.09.1",
   upgrades: [
     {
       toVersion: "2026.04.03.1",
@@ -164,6 +165,11 @@ export const model = {
     },
     {
       toVersion: "2026.07.18.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
