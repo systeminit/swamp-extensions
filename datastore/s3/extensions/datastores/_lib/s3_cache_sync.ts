@@ -1830,6 +1830,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
           const indexStart = Date.now();
           const models = options?.context?.models;
           let indexETag: string | null;
+          let v2CommitSeq: number | null = null;
 
           if (models && models.length > 0) {
             // Scoped pull: try partition files first, fall back to monolithic.
@@ -1868,6 +1869,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
                 JSON.stringify(this.index, null, 2),
               );
               indexETag = null;
+              v2CommitSeq = assembled.commitSeq;
             } else {
               indexETag = await this.pullIndex({ forceRemote: true, signal });
             }
@@ -1954,6 +1956,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
           const downloadStart = Date.now();
           let pulled = 0;
           const failures: Array<{ file: string; error: unknown }> = [];
+          const pull404PartitionKeys = new Set<string>();
           for (let i = 0; i < toPull.length; i += this.pullConcurrency) {
             throwIfAborted(signal);
             const batch = toPull.slice(i, i + this.pullConcurrency);
@@ -1986,6 +1989,10 @@ export class S3CacheSyncService implements DatastoreSyncService {
                   (err.name === "NotFound" || err.name === "NoSuchKey") &&
                   this.index
                 ) {
+                  const partKey = S3CacheSyncService.partitionKeyFromPath(
+                    batch[j],
+                  );
+                  if (partKey) pull404PartitionKeys.add(partKey);
                   delete this.index.entries[batch[j]];
                   this.indexMutated = true;
                 } else {
@@ -2053,6 +2060,69 @@ export class S3CacheSyncService implements DatastoreSyncService {
               // permissions / unmount must not turn a successful sync into
               // a failure — the sidecar is a fast-path optimization, and a
               // missed update only costs one slow-path sync next time.
+            }
+          } else if (
+            v2CommitSeq !== null && this.indexMutated &&
+            pull404PartitionKeys.size > 0 && this.index
+          ) {
+            // Shard-first path: 404 cleanup removed stale entries from
+            // the in-memory index. Write back only the affected shards so
+            // the stale entries don't reappear on the next boot
+            // (swamp-club #2063).
+            try {
+              const allPartitions = S3CacheSyncService.groupEntriesByPartition(
+                this.index.entries,
+              );
+              const currentMeta = await this.readPartitionMeta(signal);
+              const survivingPartitions = currentMeta?.version === 2
+                ? new Set(
+                  (currentMeta as PartitionMetaV2).partitions,
+                )
+                : new Set(allPartitions.keys());
+
+              for (const partKey of pull404PartitionKeys) {
+                const entries = allPartitions.get(partKey);
+                if (entries && Object.keys(entries).length > 0) {
+                  await this.writeShard(partKey, entries, signal);
+                  survivingPartitions.add(partKey);
+                } else {
+                  try {
+                    await retryWithBackoff(
+                      () =>
+                        this.s3.deleteObject(
+                          this.shardKey(partKey),
+                          signal,
+                        ),
+                      { signal },
+                    );
+                  } catch {
+                    // Non-fatal: shard may not exist
+                  }
+                  survivingPartitions.delete(partKey);
+                }
+              }
+
+              const newMeta: PartitionMetaV2 = {
+                version: 2,
+                partitions: [...survivingPartitions].sort(),
+                commitSeq: v2CommitSeq + 1,
+              };
+              await this.writePartitionMeta(newMeta, signal);
+
+              await atomicWriteTextFile(
+                this.indexPath,
+                JSON.stringify(this.index, null, 2),
+              );
+              this.indexMutated = false;
+
+              const sidecar = this.buildV2State({ localDirty: false });
+              sidecar.commitSeq = newMeta.commitSeq;
+              sidecar.remoteIndexETag = "";
+              await this.writeSyncState(sidecar);
+            } catch {
+              // Non-fatal: shard writeback is opportunistic. A missed
+              // cleanup only costs repeated 404s on the next boot —
+              // the same behavior as before this fix.
             }
           }
 

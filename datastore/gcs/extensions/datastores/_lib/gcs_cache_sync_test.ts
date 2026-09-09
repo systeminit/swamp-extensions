@@ -7563,3 +7563,91 @@ Deno.test("pullChanged + pushChanged: stale latest pointer is corrected, not pus
     await Deno.remove(cachePath, { recursive: true });
   }
 });
+
+// -- swamp-club#2063: stale shard entries cleaned on pullChanged 404 --------
+
+Deno.test("swamp-club#2063: pullChanged with shard-first path removes stale entries from shards on 404", async () => {
+  const cachePath = await Deno.makeTempDir({ prefix: "gcssync-2063-" });
+  try {
+    const mock = createMockGcsClient();
+
+    // Set up a v2 shard index with one valid entry and one stale entry.
+    const validEntry = {
+      key: "config/settings.yaml",
+      size: 10,
+      lastModified: new Date().toISOString(),
+    };
+    const staleEntry = {
+      key: "config/models/_instances/gone.yaml",
+      size: 20,
+      lastModified: new Date().toISOString(),
+    };
+
+    const shardEntries = {
+      "config/settings.yaml": validEntry,
+      "config/models/_instances/gone.yaml": staleEntry,
+    };
+    const shardBody = new TextEncoder().encode(
+      JSON.stringify({ version: 1, entries: shardEntries }),
+    );
+    mock.storage.set("_index/config.json", shardBody);
+
+    const metaBody = new TextEncoder().encode(
+      JSON.stringify({ version: 2, partitions: ["config"], commitSeq: 5 }),
+    );
+    mock.storage.set("_index/_meta.json", metaBody);
+
+    // Seed the valid file in the remote (so pullFile succeeds for it).
+    mock.storage.set(
+      "config/settings.yaml",
+      new TextEncoder().encode("valid: yes"),
+    );
+    // Do NOT seed "config/models/_instances/gone.yaml" — it will 404.
+
+    const service = new GcsCacheSyncService(mock, cachePath);
+    const pulled = await service.pullChanged();
+
+    // Only the valid file should have been pulled.
+    assertEquals(pulled, 1, "only the valid file should be pulled");
+
+    // Verify the shard was rewritten without the stale entry.
+    const updatedShard = mock.storage.get("_index/config.json");
+    assertExists(updatedShard, "config shard must be rewritten");
+    const parsedShard = JSON.parse(new TextDecoder().decode(updatedShard));
+    assertEquals(
+      parsedShard.entries["config/settings.yaml"] !== undefined,
+      true,
+      "valid entry must survive in shard",
+    );
+    assertEquals(
+      parsedShard.entries["config/models/_instances/gone.yaml"],
+      undefined,
+      "stale entry must be removed from shard",
+    );
+
+    // Verify commitSeq was bumped.
+    const updatedMeta = mock.storage.get("_index/_meta.json");
+    assertExists(updatedMeta, "_meta.json must be rewritten");
+    const parsedMeta = JSON.parse(new TextDecoder().decode(updatedMeta));
+    assertEquals(
+      parsedMeta.commitSeq,
+      6,
+      "commitSeq must be bumped from 5 to 6",
+    );
+
+    // Second pullChanged must NOT re-request the stale key.
+    mock.gets.length = 0;
+    const pulled2 = await service.pullChanged();
+    assertEquals(pulled2, 0, "second pull should have nothing to do");
+    const staleGets = mock.gets.filter((k: string) =>
+      k.includes("_instances/gone.yaml")
+    );
+    assertEquals(
+      staleGets.length,
+      0,
+      "stale key must not be re-requested on second pull",
+    );
+  } finally {
+    await Deno.remove(cachePath, { recursive: true });
+  }
+});
