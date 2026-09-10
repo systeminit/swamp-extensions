@@ -59,6 +59,18 @@ Deno.test("createProvider throws on invalid config", () => {
   );
 });
 
+Deno.test("configSchema rejects unknown keys", () => {
+  assertThrows(
+    () =>
+      vault.configSchema.parse({
+        vault_url: "https://myvault.vault.azure.net/",
+        tenant_id: "some-tenant",
+      }),
+    Error,
+    "Unrecognized key",
+  );
+});
+
 Deno.test({
   name: "createProvider returns a provider with delete and annotation methods",
   // Azure SDK connection pool leaks resources in Deno

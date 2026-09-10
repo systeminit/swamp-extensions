@@ -794,7 +794,7 @@ export const vault = {
     api_endpoint: z.string().optional().describe(
       "Custom API endpoint for emulators (e.g. http://localhost:4588 for floci-gcp)",
     ),
-  }),
+  }).strict(),
   createProvider(
     name: string,
     config: Record<string, unknown>,

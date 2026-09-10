@@ -55,6 +55,18 @@ Deno.test("createProvider throws on invalid config", () => {
   );
 });
 
+Deno.test("configSchema rejects unknown keys", () => {
+  assertThrows(
+    () =>
+      vault.configSchema.parse({
+        op_vault: "Engineering",
+        service_account: "sa-token",
+      }),
+    Error,
+    "Unrecognized key",
+  );
+});
+
 // --- Behavioral tests using withMockedCommand ---
 
 interface MockItemData {

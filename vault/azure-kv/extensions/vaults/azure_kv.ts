@@ -628,7 +628,7 @@ export const vault = {
     vault_url: z.string().url("Azure Key Vault URL is required").describe("Full URL of the Azure Key Vault e.g. https://my-vault.vault.azure.net"),
     // deno-fmt-ignore
     secret_prefix: z.string().optional().describe("Optional prefix to namespace secrets within the vault e.g. swamp- to scope all reads and writes"),
-  }),
+  }).strict(),
   createProvider(
     name: string,
     config: Record<string, unknown>,

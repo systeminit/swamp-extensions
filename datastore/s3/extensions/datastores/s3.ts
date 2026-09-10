@@ -100,7 +100,7 @@ const s3ConfigSchema = z.object({
       "Per-request timeout in milliseconds. Default: 30000. " +
         "Override with SWAMP_S3_REQUEST_TIMEOUT_MS env var.",
     ),
-});
+}).strict();
 
 // ---------------------------------------------------------------------------
 // S3 Datastore Provider

@@ -56,6 +56,18 @@ Deno.test("createProvider throws on invalid config", () => {
   );
 });
 
+Deno.test("configSchema rejects unknown keys", () => {
+  assertThrows(
+    () =>
+      vault.configSchema.parse({
+        project_id: "my-project",
+        credentials_file: "/path/to/creds.json",
+      }),
+    Error,
+    "Unrecognized key",
+  );
+});
+
 // --- Mock GCP Secret Manager REST Server ---
 
 interface SecretState {

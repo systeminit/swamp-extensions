@@ -725,7 +725,7 @@ export const vault = {
   configSchema: z.object({
     // deno-fmt-ignore
     region: z.string().min(1).describe("AWS region where the Secrets Manager secrets are stored e.g. us-east-1"),
-  }),
+  }).strict(),
   createProvider(
     name: string,
     config: Record<string, unknown>,

@@ -108,7 +108,7 @@ const gcsConfigSchema = z.object({
       "Per-request timeout in milliseconds. Default: 30000. " +
         "Override with SWAMP_GCS_REQUEST_TIMEOUT_MS env var.",
     ),
-});
+}).strict();
 
 // ---------------------------------------------------------------------------
 // GCS Datastore Provider

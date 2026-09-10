@@ -1076,7 +1076,7 @@ export const vault = {
   configSchema: z.object({
     op_vault: z.string().min(1).describe("The 1Password vault to use"),
     op_account: z.string().optional().describe("Account shorthand or UUID"),
-  }),
+  }).strict(),
   createProvider(
     name: string,
     config: Record<string, unknown>,
