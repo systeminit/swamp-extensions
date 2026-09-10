@@ -253,6 +253,9 @@ const GlobalArgsSchema = z.object({
         text: z.unknown().describe(
           "A raw string or markdown displaying textual content.",
         ).optional(),
+        timeRange: z.unknown().describe(
+          "Optional. Represents a time range for the widget. When set, this time range will override the dashboard time range. Supported for line, stacked area and stacked bar widgets only.",
+        ).optional(),
         timeSeriesTable: z.unknown().describe(
           "A widget that displays time series data in a tabular format.",
         ).optional(),
@@ -681,6 +684,23 @@ const GlobalArgsSchema = z.object({
         }).describe("How the text is styled").optional(),
       }).describe("A raw string or markdown displaying textual content.")
         .optional(),
+      timeRange: z.object({
+        absoluteWindow: z.object({
+          endTime: z.unknown().describe(
+            "Optional. Exclusive end of the interval.If specified, a Timestamp matching this interval will have to be before the end.",
+          ).optional(),
+          startTime: z.unknown().describe(
+            "Optional. Inclusive start of the interval.If specified, a Timestamp matching this interval will have to be the same or after the start.",
+          ).optional(),
+        }).describe(
+          "Optional. Represents a time range with absolute start and end times. The start time is inclusive, and the end time is exclusive.",
+        ).optional(),
+        relativeDuration: z.string().describe(
+          "Optional. Specifies the duration used to shift the data relative to current time as the end time. The duration must be positive.",
+        ).optional(),
+      }).describe(
+        "Optional. Represents a time range for the widget. When set, this time range will override the dashboard time range. Supported for line, stacked area and stacked bar widgets only.",
+      ).optional(),
       timeSeriesTable: z.object({
         columnSettings: z.array(z.unknown()).describe(
           "Optional. The list of the persistent column settings for the table.",
@@ -889,6 +909,16 @@ const GlobalArgsSchema = z.object({
           style: z.unknown().describe("How the text is styled").optional(),
         }).describe("A raw string or markdown displaying textual content.")
           .optional(),
+        timeRange: z.object({
+          absoluteWindow: z.unknown().describe(
+            "Optional. Represents a time range with absolute start and end times. The start time is inclusive, and the end time is exclusive.",
+          ).optional(),
+          relativeDuration: z.unknown().describe(
+            "Optional. Specifies the duration used to shift the data relative to current time as the end time. The duration must be positive.",
+          ).optional(),
+        }).describe(
+          "Optional. Represents a time range for the widget. When set, this time range will override the dashboard time range. Supported for line, stacked area and stacked bar widgets only.",
+        ).optional(),
         timeSeriesTable: z.object({
           columnSettings: z.unknown().describe(
             "Optional. The list of the persistent column settings for the table.",
@@ -997,6 +1027,9 @@ const GlobalArgsSchema = z.object({
         text: z.unknown().describe(
           "A raw string or markdown displaying textual content.",
         ).optional(),
+        timeRange: z.unknown().describe(
+          "Optional. Represents a time range for the widget. When set, this time range will override the dashboard time range. Supported for line, stacked area and stacked bar widgets only.",
+        ).optional(),
         timeSeriesTable: z.unknown().describe(
           "A widget that displays time series data in a tabular format.",
         ).optional(),
@@ -1049,6 +1082,7 @@ const StateSchema = z.object({
         sectionHeader: z.unknown(),
         singleViewGroup: z.unknown(),
         text: z.unknown(),
+        timeRange: z.unknown(),
         timeSeriesTable: z.unknown(),
         title: z.unknown(),
         treemap: z.unknown(),
@@ -1226,6 +1260,13 @@ const StateSchema = z.object({
           verticalAlignment: z.unknown(),
         }),
       }),
+      timeRange: z.object({
+        absoluteWindow: z.object({
+          endTime: z.unknown(),
+          startTime: z.unknown(),
+        }),
+        relativeDuration: z.string(),
+      }),
       timeSeriesTable: z.object({
         columnSettings: z.array(z.unknown()),
         dataSets: z.array(z.unknown()),
@@ -1323,6 +1364,10 @@ const StateSchema = z.object({
           format: z.unknown(),
           style: z.unknown(),
         }),
+        timeRange: z.object({
+          absoluteWindow: z.unknown(),
+          relativeDuration: z.unknown(),
+        }),
         timeSeriesTable: z.object({
           columnSettings: z.unknown(),
           dataSets: z.unknown(),
@@ -1369,6 +1414,7 @@ const StateSchema = z.object({
         sectionHeader: z.unknown(),
         singleViewGroup: z.unknown(),
         text: z.unknown(),
+        timeRange: z.unknown(),
         timeSeriesTable: z.unknown(),
         title: z.unknown(),
         treemap: z.unknown(),
@@ -1482,6 +1528,9 @@ const InputsSchema = z.object({
         ).optional(),
         text: z.unknown().describe(
           "A raw string or markdown displaying textual content.",
+        ).optional(),
+        timeRange: z.unknown().describe(
+          "Optional. Represents a time range for the widget. When set, this time range will override the dashboard time range. Supported for line, stacked area and stacked bar widgets only.",
         ).optional(),
         timeSeriesTable: z.unknown().describe(
           "A widget that displays time series data in a tabular format.",
@@ -1911,6 +1960,23 @@ const InputsSchema = z.object({
         }).describe("How the text is styled").optional(),
       }).describe("A raw string or markdown displaying textual content.")
         .optional(),
+      timeRange: z.object({
+        absoluteWindow: z.object({
+          endTime: z.unknown().describe(
+            "Optional. Exclusive end of the interval.If specified, a Timestamp matching this interval will have to be before the end.",
+          ).optional(),
+          startTime: z.unknown().describe(
+            "Optional. Inclusive start of the interval.If specified, a Timestamp matching this interval will have to be the same or after the start.",
+          ).optional(),
+        }).describe(
+          "Optional. Represents a time range with absolute start and end times. The start time is inclusive, and the end time is exclusive.",
+        ).optional(),
+        relativeDuration: z.string().describe(
+          "Optional. Specifies the duration used to shift the data relative to current time as the end time. The duration must be positive.",
+        ).optional(),
+      }).describe(
+        "Optional. Represents a time range for the widget. When set, this time range will override the dashboard time range. Supported for line, stacked area and stacked bar widgets only.",
+      ).optional(),
       timeSeriesTable: z.object({
         columnSettings: z.array(z.unknown()).describe(
           "Optional. The list of the persistent column settings for the table.",
@@ -2119,6 +2185,16 @@ const InputsSchema = z.object({
           style: z.unknown().describe("How the text is styled").optional(),
         }).describe("A raw string or markdown displaying textual content.")
           .optional(),
+        timeRange: z.object({
+          absoluteWindow: z.unknown().describe(
+            "Optional. Represents a time range with absolute start and end times. The start time is inclusive, and the end time is exclusive.",
+          ).optional(),
+          relativeDuration: z.unknown().describe(
+            "Optional. Specifies the duration used to shift the data relative to current time as the end time. The duration must be positive.",
+          ).optional(),
+        }).describe(
+          "Optional. Represents a time range for the widget. When set, this time range will override the dashboard time range. Supported for line, stacked area and stacked bar widgets only.",
+        ).optional(),
         timeSeriesTable: z.object({
           columnSettings: z.unknown().describe(
             "Optional. The list of the persistent column settings for the table.",
@@ -2227,6 +2303,9 @@ const InputsSchema = z.object({
         text: z.unknown().describe(
           "A raw string or markdown displaying textual content.",
         ).optional(),
+        timeRange: z.unknown().describe(
+          "Optional. Represents a time range for the widget. When set, this time range will override the dashboard time range. Supported for line, stacked area and stacked bar widgets only.",
+        ).optional(),
         timeSeriesTable: z.unknown().describe(
           "A widget that displays time series data in a tabular format.",
         ).optional(),
@@ -2277,7 +2356,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Monitoring Dashboards. Registered at `@swamp/gcp/monitoring/dashboards`. */
 export const model = {
   type: "@swamp/gcp/monitoring/dashboards",
-  version: "2026.08.12.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.07.29.1",
@@ -2286,6 +2365,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

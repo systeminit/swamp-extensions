@@ -191,7 +191,7 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
 /** Swamp extension model for NetworkManager ConnectAttachment. Registered at `@swamp/aws/networkmanager/connect-attachment`. */
 export const model = {
   type: "@swamp/aws/networkmanager/connect-attachment",
-  version: "2026.08.17.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -240,6 +240,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.17.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -350,13 +355,7 @@ export const model = {
           identifier,
           currentState,
           desiredState,
-          [
-            "CoreNetworkId",
-            "EdgeLocation",
-            "TransportAttachmentId",
-            "Options",
-            "RoutingPolicyLabel",
-          ],
+          ["CoreNetworkId", "EdgeLocation", "TransportAttachmentId", "Options"],
           credentials,
         );
         const handle = await context.writeResource(

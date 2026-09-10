@@ -17,13 +17,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
-// Auto-generated extension model for @swamp/aws/networkmanager/vpc-attachment
+// Auto-generated extension model for @swamp/aws/config/delivery-channel
 // Do not edit manually. Re-generate with: deno task generate:aws
 
 // deno-lint-ignore-file no-explicit-any
 
 /**
- * Swamp extension model for NetworkManager VpcAttachment (AWS::NetworkManager::VpcAttachment).
+ * Swamp extension model for Config DeliveryChannel (AWS::Config::DeliveryChannel).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
  * get, update, delete, sync, and list can be driven through `swamp model`.
@@ -42,19 +42,7 @@ import {
 } from "./_lib/aws.ts";
 import type { AwsCredentials } from "./_lib/aws.ts";
 
-const TagSchema = z.object({
-  Key: z.string().describe(
-    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
-  ),
-  Value: z.string().describe(
-    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
-  ),
-});
-
 const GlobalArgsSchema = z.object({
-  name: z.string().describe(
-    "Instance name for this resource (used as the unique identifier in the factory pattern)",
-  ),
   accessKeyId: z.string().meta({ sensitive: true }).describe(
     "AWS access key ID; overrides AWS_ACCESS_KEY_ID environment variable. Wire with a vault.get(...) expression to source it from a vault.",
   ).optional(),
@@ -67,119 +55,82 @@ const GlobalArgsSchema = z.object({
   region: z.string().describe(
     "AWS region; overrides AWS_REGION / AWS_DEFAULT_REGION environment variables and ~/.aws/config profile region. Defaults to us-east-1.",
   ).optional(),
-  CoreNetworkId: z.string().describe(
-    "The ID of a core network for the VPC attachment.",
-  ),
-  VpcArn: z.string().describe("The ARN of the VPC."),
-  ProposedSegmentChange: z.object({
-    Tags: z.array(TagSchema).describe(
-      "The key-value tags that changed for the segment.",
-    ).optional(),
-  }).describe("The attachment to move from one segment to another.").optional(),
-  ProposedNetworkFunctionGroupChange: z.object({
-    Tags: z.array(TagSchema).describe(
-      "The key-value tags that changed for the network function group.",
+  Name: z.string().describe(
+    'The name of the delivery channel. By default, AWS Config assigns the name "default" when creating the delivery channel. To change the delivery channel name, you must use the DeleteDeliveryChannel action to delete your current delivery channel, and then you must use the PutDeliveryChannel command to create a delivery channel that has the desired name.',
+  ).optional(),
+  S3KeyPrefix: z.string().describe(
+    "The prefix for the specified Amazon S3 bucket.",
+  ).optional(),
+  ConfigSnapshotDeliveryProperties: z.object({
+    DeliveryFrequency: z.enum([
+      "One_Hour",
+      "Three_Hours",
+      "Six_Hours",
+      "Twelve_Hours",
+      "TwentyFour_Hours",
+    ]).describe(
+      "The frequency with which AWS Config delivers configuration snapshots.",
     ).optional(),
   }).describe(
-    "The attachment to move from one network function group to another.",
+    "The options for how often AWS Config delivers configuration snapshots to the Amazon S3 bucket.",
   ).optional(),
-  RoutingPolicyLabel: z.string().describe("Routing policy label").optional(),
-  Tags: z.array(TagSchema).describe("Tags for the attachment.").optional(),
-  SubnetArns: z.array(z.string()).describe("Subnet Arn list"),
-  Options: z.object({
-    Ipv6Support: z.boolean().describe(
-      "Indicates whether to enable Ipv6 Support for Vpc Attachment. Valid Values: enable | disable",
-    ).optional(),
-    ApplianceModeSupport: z.boolean().describe(
-      "Indicates whether to enable ApplianceModeSupport Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-    DnsSupport: z.boolean().describe(
-      "Indicates whether to enable private DNS Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-    SecurityGroupReferencingSupport: z.boolean().describe(
-      "Indicates whether to enable Security Group Referencing Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-  }).describe("Vpc options of the attachment.").optional(),
+  S3BucketName: z.string().describe(
+    "The name of the Amazon S3 bucket to which AWS Config delivers configuration snapshots and configuration history files.",
+  ),
+  SnsTopicARN: z.string().describe(
+    "The Amazon Resource Name (ARN) of the Amazon SNS topic to which AWS Config sends notifications about configuration changes.",
+  ).optional(),
+  S3KmsKeyArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) AWS KMS key (KMS key) used to encrypt objects delivered by AWS Config. Must belong to the same Region as the destination S3 bucket.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
-  CoreNetworkId: z.string().optional(),
-  CoreNetworkArn: z.string().optional(),
-  AttachmentId: z.string(),
-  OwnerAccountId: z.string().optional(),
-  AttachmentType: z.string().optional(),
-  State: z.string().optional(),
-  EdgeLocation: z.string().optional(),
-  VpcArn: z.string().optional(),
-  ResourceArn: z.string().optional(),
-  AttachmentPolicyRuleNumber: z.number().optional(),
-  SegmentName: z.string().optional(),
-  ProposedSegmentChange: z.object({
-    Tags: z.array(TagSchema),
-    AttachmentPolicyRuleNumber: z.number(),
-    SegmentName: z.string(),
+  Name: z.string(),
+  S3KeyPrefix: z.string().optional(),
+  ConfigSnapshotDeliveryProperties: z.object({
+    DeliveryFrequency: z.string(),
   }).optional(),
-  NetworkFunctionGroupName: z.string().optional(),
-  ProposedNetworkFunctionGroupChange: z.object({
-    Tags: z.array(TagSchema),
-    AttachmentPolicyRuleNumber: z.number(),
-    NetworkFunctionGroupName: z.string(),
-  }).optional(),
-  RoutingPolicyLabel: z.string().optional(),
-  Tags: z.array(TagSchema).optional(),
-  CreatedAt: z.string().optional(),
-  UpdatedAt: z.string().optional(),
-  SubnetArns: z.array(z.string()).optional(),
-  Options: z.object({
-    Ipv6Support: z.boolean(),
-    ApplianceModeSupport: z.boolean(),
-    DnsSupport: z.boolean(),
-    SecurityGroupReferencingSupport: z.boolean(),
-  }).optional(),
-  LastModificationErrors: z.array(z.string()).optional(),
+  S3BucketName: z.string().optional(),
+  SnsTopicARN: z.string().optional(),
+  S3KmsKeyArn: z.string().optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
-  name: z.string().optional(),
   accessKeyId: z.string().meta({ sensitive: true }).optional(),
   secretAccessKey: z.string().meta({ sensitive: true }).optional(),
   sessionToken: z.string().meta({ sensitive: true }).optional(),
   region: z.string().optional(),
-  CoreNetworkId: z.string().describe(
-    "The ID of a core network for the VPC attachment.",
+  Name: z.string().describe(
+    'The name of the delivery channel. By default, AWS Config assigns the name "default" when creating the delivery channel. To change the delivery channel name, you must use the DeleteDeliveryChannel action to delete your current delivery channel, and then you must use the PutDeliveryChannel command to create a delivery channel that has the desired name.',
   ).optional(),
-  VpcArn: z.string().describe("The ARN of the VPC.").optional(),
-  ProposedSegmentChange: z.object({
-    Tags: z.array(TagSchema).describe(
-      "The key-value tags that changed for the segment.",
-    ).optional(),
-  }).describe("The attachment to move from one segment to another.").optional(),
-  ProposedNetworkFunctionGroupChange: z.object({
-    Tags: z.array(TagSchema).describe(
-      "The key-value tags that changed for the network function group.",
+  S3KeyPrefix: z.string().describe(
+    "The prefix for the specified Amazon S3 bucket.",
+  ).optional(),
+  ConfigSnapshotDeliveryProperties: z.object({
+    DeliveryFrequency: z.enum([
+      "One_Hour",
+      "Three_Hours",
+      "Six_Hours",
+      "Twelve_Hours",
+      "TwentyFour_Hours",
+    ]).describe(
+      "The frequency with which AWS Config delivers configuration snapshots.",
     ).optional(),
   }).describe(
-    "The attachment to move from one network function group to another.",
+    "The options for how often AWS Config delivers configuration snapshots to the Amazon S3 bucket.",
   ).optional(),
-  RoutingPolicyLabel: z.string().describe("Routing policy label").optional(),
-  Tags: z.array(TagSchema).describe("Tags for the attachment.").optional(),
-  SubnetArns: z.array(z.string()).describe("Subnet Arn list").optional(),
-  Options: z.object({
-    Ipv6Support: z.boolean().describe(
-      "Indicates whether to enable Ipv6 Support for Vpc Attachment. Valid Values: enable | disable",
-    ).optional(),
-    ApplianceModeSupport: z.boolean().describe(
-      "Indicates whether to enable ApplianceModeSupport Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-    DnsSupport: z.boolean().describe(
-      "Indicates whether to enable private DNS Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-    SecurityGroupReferencingSupport: z.boolean().describe(
-      "Indicates whether to enable Security Group Referencing Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-  }).describe("Vpc options of the attachment.").optional(),
+  S3BucketName: z.string().describe(
+    "The name of the Amazon S3 bucket to which AWS Config delivers configuration snapshots and configuration history files.",
+  ).optional(),
+  SnsTopicARN: z.string().describe(
+    "The Amazon Resource Name (ARN) of the Amazon SNS topic to which AWS Config sends notifications about configuration changes.",
+  ).optional(),
+  S3KmsKeyArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) AWS KMS key (KMS key) used to encrypt objects delivered by AWS Config. Must belong to the same Region as the destination S3 bucket.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -198,72 +149,15 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
   };
 }
 
-/** Swamp extension model for NetworkManager VpcAttachment. Registered at `@swamp/aws/networkmanager/vpc-attachment`. */
+/** Swamp extension model for Config DeliveryChannel. Registered at `@swamp/aws/config/delivery-channel`. */
 export const model = {
-  type: "@swamp/aws/networkmanager/vpc-attachment",
+  type: "@swamp/aws/config/delivery-channel",
   version: "2026.09.10.1",
-  upgrades: [
-    {
-      toVersion: "2026.04.01.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.23.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.23.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.06.06.1",
-      description: "Added: accessKeyId, secretAccessKey, sessionToken, region",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.06.08.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.06.15.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.08.17.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.08.17.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.09.10.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
-      description: "NetworkManager VpcAttachment resource state",
+      description: "Config DeliveryChannel resource state",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -271,26 +165,23 @@ export const model = {
   },
   methods: {
     create: {
-      description: "Create a NetworkManager VpcAttachment",
+      description: "Create a Config DeliveryChannel",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const credentials = _buildCredentials(g);
         const desiredState: Record<string, unknown> = {};
         for (const [key, value] of Object.entries(g)) {
-          if (key === "name") continue;
           if (_credentialKeys.has(key)) continue;
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await createResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::Config::DeliveryChannel",
           desiredState,
           credentials,
         ) as StateData;
-        const instanceName = (g.name?.toString() ?? "current").replace(
-          /[\/\\]/g,
-          "_",
-        ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const instanceName = ((result.Name ?? g.Name)?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -300,24 +191,23 @@ export const model = {
       },
     },
     get: {
-      description: "Get a NetworkManager VpcAttachment",
+      description: "Get a Config DeliveryChannel",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the NetworkManager VpcAttachment",
+          "The primary identifier of the Config DeliveryChannel",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const credentials = _buildCredentials(context.globalArgs);
         const result = await readResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::Config::DeliveryChannel",
           args.identifier,
           credentials,
         ) as StateData;
         const instanceName =
-          (context.globalArgs.name?.toString() ?? args.identifier).replace(
-            /[\/\\]/g,
-            "_",
-          ).replace(/\.\./g, "_").replace(/\0/g, "");
+          ((result.Name ?? context.globalArgs.Name)?.toString() ??
+            args.identifier).replace(/[\/\\]/g, "_").replace(/\.\./g, "_")
+            .replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -327,12 +217,12 @@ export const model = {
       },
     },
     update: {
-      description: "Update a NetworkManager VpcAttachment",
+      description: "Update a Config DeliveryChannel",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const credentials = _buildCredentials(g);
-        const instanceName = (g.name?.toString() ?? "current").replace(
+        const instanceName = (g.Name?.toString() ?? "current").replace(
           /[\/\\]/g,
           "_",
         ).replace(/\.\./g, "_").replace(/\0/g, "");
@@ -345,27 +235,26 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.AttachmentId?.toString();
+        const identifier = existing.Name?.toString();
         if (!identifier) {
           throw new Error("No identifier found in existing state");
         }
         const currentState = await readResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::Config::DeliveryChannel",
           identifier,
           credentials,
         ) as StateData;
         const desiredState: Record<string, unknown> = { ...currentState };
         for (const [key, value] of Object.entries(g)) {
-          if (key === "name") continue;
           if (_credentialKeys.has(key)) continue;
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await updateResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::Config::DeliveryChannel",
           identifier,
           currentState,
           desiredState,
-          ["CoreNetworkId", "VpcArn"],
+          ["Name"],
           credentials,
         );
         const handle = await context.writeResource(
@@ -377,21 +266,21 @@ export const model = {
       },
     },
     delete: {
-      description: "Delete a NetworkManager VpcAttachment",
+      description: "Delete a Config DeliveryChannel",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the NetworkManager VpcAttachment",
+          "The primary identifier of the Config DeliveryChannel",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const credentials = _buildCredentials(context.globalArgs);
         const { existed } = await deleteResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::Config::DeliveryChannel",
           args.identifier,
           credentials,
         );
         const instanceName =
-          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+          (context.globalArgs.Name?.toString() ?? args.identifier).replace(
             /[\/\\]/g,
             "_",
           ).replace(/\.\./g, "_").replace(/\0/g, "");
@@ -405,12 +294,12 @@ export const model = {
       },
     },
     sync: {
-      description: "Sync NetworkManager VpcAttachment state from AWS",
+      description: "Sync Config DeliveryChannel state from AWS",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const credentials = _buildCredentials(g);
-        const instanceName = (g.name?.toString() ?? "current").replace(
+        const instanceName = (g.Name?.toString() ?? "current").replace(
           /[\/\\]/g,
           "_",
         ).replace(/\.\./g, "_").replace(/\0/g, "");
@@ -423,13 +312,13 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.AttachmentId?.toString();
+        const identifier = existing.Name?.toString();
         if (!identifier) {
           throw new Error("No identifier found in existing state");
         }
         try {
           const result = await readResource(
-            "AWS::NetworkManager::VpcAttachment",
+            "AWS::Config::DeliveryChannel",
             identifier,
             credentials,
           ) as StateData;
@@ -453,7 +342,7 @@ export const model = {
       },
     },
     list: {
-      description: "List NetworkManager VpcAttachment resources",
+      description: "List Config DeliveryChannel resources",
       arguments: z.object({
         maxPages: z.number().describe(
           "Maximum number of pages to fetch (default: 10)",
@@ -468,7 +357,7 @@ export const model = {
       ) => {
         const credentials = _buildCredentials(context.globalArgs);
         const { items, nextToken } = await listResources(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::Config::DeliveryChannel",
           {
             resourceModel: args.resourceModel,
             maxPages: args.maxPages,
@@ -479,8 +368,10 @@ export const model = {
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
           const instanceName =
-            (item.properties?.AttachmentId?.toString() ?? item.identifier)
-              .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
+            (item.properties?.Name?.toString() ?? item.identifier).replace(
+              /[\/\\]/g,
+              "_",
+            ).replace(/\.\./g, "_").replace(/\0/g, "");
           const handle = await context.writeResource("state", instanceName, {
             ...item.properties,
             _identifier: item.identifier,

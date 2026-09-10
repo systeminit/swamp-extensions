@@ -38,6 +38,7 @@ import {
   isResourceNotFoundError,
   listResources,
   readResource,
+  updateResource,
 } from "./_lib/aws.ts";
 import type { AwsCredentials } from "./_lib/aws.ts";
 
@@ -71,11 +72,15 @@ const GlobalArgsSchema = z.object({
   ).describe(
     "ARN identifier of the Managed Notification. Example: arn:aws:notifications::381491923782:managed-notification-configuration/category/AWS-Health/sub-category/Billing",
   ),
+  IsSensitiveEventsSubscribed: z.boolean().describe(
+    "Whether the channel association is subscribed to sensitive events. Access to sensitive events is gated by the SubscribeSensitiveEvents virtual IAM action.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
   ChannelArn: z.string(),
   ManagedNotificationConfigurationArn: z.string(),
+  IsSensitiveEventsSubscribed: z.boolean().optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -100,6 +105,9 @@ const InputsSchema = z.object({
   ).describe(
     "ARN identifier of the Managed Notification. Example: arn:aws:notifications::381491923782:managed-notification-configuration/category/AWS-Health/sub-category/Billing",
   ).optional(),
+  IsSensitiveEventsSubscribed: z.boolean().describe(
+    "Whether the channel association is subscribed to sensitive events. Access to sensitive events is gated by the SubscribeSensitiveEvents virtual IAM action.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -122,7 +130,7 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
 export const model = {
   type:
     "@swamp/aws/notifications/managed-notification-additional-channel-association",
-  version: "2026.08.17.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -172,6 +180,11 @@ export const model = {
     {
       toVersion: "2026.08.17.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
+      description: "Added: IsSensitiveEventsSubscribed",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -237,6 +250,63 @@ export const model = {
             /[\/\\]/g,
             "_",
           ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description:
+        "Update a Notifications ManagedNotificationAdditionalChannelAssociation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const credentials = _buildCredentials(g);
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.ChannelArn?.toString(),
+          existing.ManagedNotificationConfigurationArn?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::Notifications::ManagedNotificationAdditionalChannelAssociation",
+          identifier,
+          credentials,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (_credentialKeys.has(key)) continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Notifications::ManagedNotificationAdditionalChannelAssociation",
+          identifier,
+          currentState,
+          desiredState,
+          ["ChannelArn", "ManagedNotificationConfigurationArn"],
+          credentials,
+        );
         const handle = await context.writeResource(
           "state",
           instanceName,

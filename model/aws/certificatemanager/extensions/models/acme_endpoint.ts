@@ -154,7 +154,7 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
 /** Swamp extension model for CertificateManager AcmeEndpoint. Registered at `@swamp/aws/certificatemanager/acme-endpoint`. */
 export const model = {
   type: "@swamp/aws/certificatemanager/acme-endpoint",
-  version: "2026.08.17.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.08.17.1",
@@ -163,6 +163,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.17.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -273,7 +278,7 @@ export const model = {
           identifier,
           currentState,
           desiredState,
-          ["CertificateTags"],
+          ["AuthorizationBehavior", "CertificateTags"],
           credentials,
         );
         const handle = await context.writeResource(

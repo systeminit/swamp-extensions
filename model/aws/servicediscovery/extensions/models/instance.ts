@@ -17,13 +17,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
-// Auto-generated extension model for @swamp/aws/networkmanager/vpc-attachment
+// Auto-generated extension model for @swamp/aws/servicediscovery/instance
 // Do not edit manually. Re-generate with: deno task generate:aws
 
 // deno-lint-ignore-file no-explicit-any
 
 /**
- * Swamp extension model for NetworkManager VpcAttachment (AWS::NetworkManager::VpcAttachment).
+ * Swamp extension model for ServiceDiscovery Instance (AWS::ServiceDiscovery::Instance).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
  * get, update, delete, sync, and list can be driven through `swamp model`.
@@ -42,15 +42,6 @@ import {
 } from "./_lib/aws.ts";
 import type { AwsCredentials } from "./_lib/aws.ts";
 
-const TagSchema = z.object({
-  Key: z.string().describe(
-    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
-  ),
-  Value: z.string().describe(
-    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
-  ),
-});
-
 const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
@@ -67,76 +58,21 @@ const GlobalArgsSchema = z.object({
   region: z.string().describe(
     "AWS region; overrides AWS_REGION / AWS_DEFAULT_REGION environment variables and ~/.aws/config profile region. Defaults to us-east-1.",
   ).optional(),
-  CoreNetworkId: z.string().describe(
-    "The ID of a core network for the VPC attachment.",
+  InstanceAttributes: z.record(z.string(), z.unknown()).describe(
+    "A string map that contains information for the service that is specified in ServiceId.",
   ),
-  VpcArn: z.string().describe("The ARN of the VPC."),
-  ProposedSegmentChange: z.object({
-    Tags: z.array(TagSchema).describe(
-      "The key-value tags that changed for the segment.",
-    ).optional(),
-  }).describe("The attachment to move from one segment to another.").optional(),
-  ProposedNetworkFunctionGroupChange: z.object({
-    Tags: z.array(TagSchema).describe(
-      "The key-value tags that changed for the network function group.",
-    ).optional(),
-  }).describe(
-    "The attachment to move from one network function group to another.",
+  InstanceId: z.string().min(1).max(64).describe(
+    "An identifier that you want to associate with the instance.",
   ).optional(),
-  RoutingPolicyLabel: z.string().describe("Routing policy label").optional(),
-  Tags: z.array(TagSchema).describe("Tags for the attachment.").optional(),
-  SubnetArns: z.array(z.string()).describe("Subnet Arn list"),
-  Options: z.object({
-    Ipv6Support: z.boolean().describe(
-      "Indicates whether to enable Ipv6 Support for Vpc Attachment. Valid Values: enable | disable",
-    ).optional(),
-    ApplianceModeSupport: z.boolean().describe(
-      "Indicates whether to enable ApplianceModeSupport Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-    DnsSupport: z.boolean().describe(
-      "Indicates whether to enable private DNS Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-    SecurityGroupReferencingSupport: z.boolean().describe(
-      "Indicates whether to enable Security Group Referencing Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-  }).describe("Vpc options of the attachment.").optional(),
+  ServiceId: z.string().min(1).max(255).describe(
+    "The ID or Amazon Resource Name (ARN) of the service that you want to use for settings for the instance.",
+  ),
 });
 
 const StateSchema = z.object({
-  CoreNetworkId: z.string().optional(),
-  CoreNetworkArn: z.string().optional(),
-  AttachmentId: z.string(),
-  OwnerAccountId: z.string().optional(),
-  AttachmentType: z.string().optional(),
-  State: z.string().optional(),
-  EdgeLocation: z.string().optional(),
-  VpcArn: z.string().optional(),
-  ResourceArn: z.string().optional(),
-  AttachmentPolicyRuleNumber: z.number().optional(),
-  SegmentName: z.string().optional(),
-  ProposedSegmentChange: z.object({
-    Tags: z.array(TagSchema),
-    AttachmentPolicyRuleNumber: z.number(),
-    SegmentName: z.string(),
-  }).optional(),
-  NetworkFunctionGroupName: z.string().optional(),
-  ProposedNetworkFunctionGroupChange: z.object({
-    Tags: z.array(TagSchema),
-    AttachmentPolicyRuleNumber: z.number(),
-    NetworkFunctionGroupName: z.string(),
-  }).optional(),
-  RoutingPolicyLabel: z.string().optional(),
-  Tags: z.array(TagSchema).optional(),
-  CreatedAt: z.string().optional(),
-  UpdatedAt: z.string().optional(),
-  SubnetArns: z.array(z.string()).optional(),
-  Options: z.object({
-    Ipv6Support: z.boolean(),
-    ApplianceModeSupport: z.boolean(),
-    DnsSupport: z.boolean(),
-    SecurityGroupReferencingSupport: z.boolean(),
-  }).optional(),
-  LastModificationErrors: z.array(z.string()).optional(),
+  InstanceAttributes: z.record(z.string(), z.unknown()).optional(),
+  InstanceId: z.string(),
+  ServiceId: z.string(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -147,39 +83,15 @@ const InputsSchema = z.object({
   secretAccessKey: z.string().meta({ sensitive: true }).optional(),
   sessionToken: z.string().meta({ sensitive: true }).optional(),
   region: z.string().optional(),
-  CoreNetworkId: z.string().describe(
-    "The ID of a core network for the VPC attachment.",
+  InstanceAttributes: z.record(z.string(), z.unknown()).describe(
+    "A string map that contains information for the service that is specified in ServiceId.",
   ).optional(),
-  VpcArn: z.string().describe("The ARN of the VPC.").optional(),
-  ProposedSegmentChange: z.object({
-    Tags: z.array(TagSchema).describe(
-      "The key-value tags that changed for the segment.",
-    ).optional(),
-  }).describe("The attachment to move from one segment to another.").optional(),
-  ProposedNetworkFunctionGroupChange: z.object({
-    Tags: z.array(TagSchema).describe(
-      "The key-value tags that changed for the network function group.",
-    ).optional(),
-  }).describe(
-    "The attachment to move from one network function group to another.",
+  InstanceId: z.string().min(1).max(64).describe(
+    "An identifier that you want to associate with the instance.",
   ).optional(),
-  RoutingPolicyLabel: z.string().describe("Routing policy label").optional(),
-  Tags: z.array(TagSchema).describe("Tags for the attachment.").optional(),
-  SubnetArns: z.array(z.string()).describe("Subnet Arn list").optional(),
-  Options: z.object({
-    Ipv6Support: z.boolean().describe(
-      "Indicates whether to enable Ipv6 Support for Vpc Attachment. Valid Values: enable | disable",
-    ).optional(),
-    ApplianceModeSupport: z.boolean().describe(
-      "Indicates whether to enable ApplianceModeSupport Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-    DnsSupport: z.boolean().describe(
-      "Indicates whether to enable private DNS Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-    SecurityGroupReferencingSupport: z.boolean().describe(
-      "Indicates whether to enable Security Group Referencing Support for Vpc Attachment. Valid Values: true | false",
-    ).optional(),
-  }).describe("Vpc options of the attachment.").optional(),
+  ServiceId: z.string().min(1).max(255).describe(
+    "The ID or Amazon Resource Name (ARN) of the service that you want to use for settings for the instance.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -198,72 +110,15 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
   };
 }
 
-/** Swamp extension model for NetworkManager VpcAttachment. Registered at `@swamp/aws/networkmanager/vpc-attachment`. */
+/** Swamp extension model for ServiceDiscovery Instance. Registered at `@swamp/aws/servicediscovery/instance`. */
 export const model = {
-  type: "@swamp/aws/networkmanager/vpc-attachment",
+  type: "@swamp/aws/servicediscovery/instance",
   version: "2026.09.10.1",
-  upgrades: [
-    {
-      toVersion: "2026.04.01.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.23.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.23.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.06.06.1",
-      description: "Added: accessKeyId, secretAccessKey, sessionToken, region",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.06.08.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.06.15.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.08.17.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.08.17.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.09.10.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
-      description: "NetworkManager VpcAttachment resource state",
+      description: "ServiceDiscovery Instance resource state",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -271,7 +126,7 @@ export const model = {
   },
   methods: {
     create: {
-      description: "Create a NetworkManager VpcAttachment",
+      description: "Create a ServiceDiscovery Instance",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -283,7 +138,7 @@ export const model = {
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await createResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::ServiceDiscovery::Instance",
           desiredState,
           credentials,
         ) as StateData;
@@ -300,16 +155,16 @@ export const model = {
       },
     },
     get: {
-      description: "Get a NetworkManager VpcAttachment",
+      description: "Get a ServiceDiscovery Instance",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the NetworkManager VpcAttachment",
+          "The primary identifier of the ServiceDiscovery Instance",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const credentials = _buildCredentials(context.globalArgs);
         const result = await readResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::ServiceDiscovery::Instance",
           args.identifier,
           credentials,
         ) as StateData;
@@ -327,7 +182,7 @@ export const model = {
       },
     },
     update: {
-      description: "Update a NetworkManager VpcAttachment",
+      description: "Update a ServiceDiscovery Instance",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -345,12 +200,18 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.AttachmentId?.toString();
-        if (!identifier) {
-          throw new Error("No identifier found in existing state");
+        const idParts = [
+          existing.ServiceId?.toString(),
+          existing.InstanceId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
         }
+        const identifier = idParts.join("|");
         const currentState = await readResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::ServiceDiscovery::Instance",
           identifier,
           credentials,
         ) as StateData;
@@ -361,11 +222,11 @@ export const model = {
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await updateResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::ServiceDiscovery::Instance",
           identifier,
           currentState,
           desiredState,
-          ["CoreNetworkId", "VpcArn"],
+          ["InstanceId", "ServiceId"],
           credentials,
         );
         const handle = await context.writeResource(
@@ -377,16 +238,16 @@ export const model = {
       },
     },
     delete: {
-      description: "Delete a NetworkManager VpcAttachment",
+      description: "Delete a ServiceDiscovery Instance",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the NetworkManager VpcAttachment",
+          "The primary identifier of the ServiceDiscovery Instance",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const credentials = _buildCredentials(context.globalArgs);
         const { existed } = await deleteResource(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::ServiceDiscovery::Instance",
           args.identifier,
           credentials,
         );
@@ -405,7 +266,7 @@ export const model = {
       },
     },
     sync: {
-      description: "Sync NetworkManager VpcAttachment state from AWS",
+      description: "Sync ServiceDiscovery Instance state from AWS",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -423,13 +284,19 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.AttachmentId?.toString();
-        if (!identifier) {
-          throw new Error("No identifier found in existing state");
+        const idParts = [
+          existing.ServiceId?.toString(),
+          existing.InstanceId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
         }
+        const identifier = idParts.join("|");
         try {
           const result = await readResource(
-            "AWS::NetworkManager::VpcAttachment",
+            "AWS::ServiceDiscovery::Instance",
             identifier,
             credentials,
           ) as StateData;
@@ -453,7 +320,7 @@ export const model = {
       },
     },
     list: {
-      description: "List NetworkManager VpcAttachment resources",
+      description: "List ServiceDiscovery Instance resources",
       arguments: z.object({
         maxPages: z.number().describe(
           "Maximum number of pages to fetch (default: 10)",
@@ -468,7 +335,7 @@ export const model = {
       ) => {
         const credentials = _buildCredentials(context.globalArgs);
         const { items, nextToken } = await listResources(
-          "AWS::NetworkManager::VpcAttachment",
+          "AWS::ServiceDiscovery::Instance",
           {
             resourceModel: args.resourceModel,
             maxPages: args.maxPages,
@@ -478,9 +345,10 @@ export const model = {
         const dataHandles = [];
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
-          const instanceName =
-            (item.properties?.AttachmentId?.toString() ?? item.identifier)
-              .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
+          const instanceName = item.identifier.replace(/[\/\\]/g, "_").replace(
+            /\.\./g,
+            "_",
+          ).replace(/\0/g, "");
           const handle = await context.writeResource("state", instanceName, {
             ...item.properties,
             _identifier: item.identifier,

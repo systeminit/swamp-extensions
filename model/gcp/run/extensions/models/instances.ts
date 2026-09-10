@@ -495,6 +495,9 @@ const GlobalArgsSchema = z.object({
     "NEVER",
   ]).describe("Optional. Restart policy for the Instance.").optional(),
   serviceAccount: z.string().optional(),
+  sshEnabled: z.boolean().describe(
+    "Optional. Enables SSH access to the Instance.",
+  ).optional(),
   volumes: z.array(z.object({
     cloudSqlInstance: z.object({
       instances: z.array(z.string()).describe(
@@ -744,6 +747,7 @@ const StateSchema = z.object({
   restartPolicy: z.string().optional(),
   satisfiesPzs: z.boolean().optional(),
   serviceAccount: z.string().optional(),
+  sshEnabled: z.boolean().optional(),
   terminalCondition: z.object({
     executionReason: z.string(),
     instanceReason: z.string(),
@@ -1126,6 +1130,9 @@ const InputsSchema = z.object({
     "NEVER",
   ]).describe("Optional. Restart policy for the Instance.").optional(),
   serviceAccount: z.string().optional(),
+  sshEnabled: z.boolean().describe(
+    "Optional. Enables SSH access to the Instance.",
+  ).optional(),
   volumes: z.array(z.object({
     cloudSqlInstance: z.object({
       instances: z.array(z.string()).describe(
@@ -1250,7 +1257,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Run Admin Instances. Registered at `@swamp/gcp/run/instances`. */
 export const model = {
   type: "@swamp/gcp/run/instances",
-  version: "2026.09.07.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1534,6 +1541,11 @@ export const model = {
         return rest;
       },
     },
+    {
+      toVersion: "2026.09.10.1",
+      description: "Added: sshEnabled",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1611,6 +1623,7 @@ export const model = {
         if (g["serviceAccount"] !== undefined) {
           body["serviceAccount"] = g["serviceAccount"];
         }
+        if (g["sshEnabled"] !== undefined) body["sshEnabled"] = g["sshEnabled"];
         if (g["volumes"] !== undefined) body["volumes"] = g["volumes"];
         if (g["vpcAccess"] !== undefined) body["vpcAccess"] = g["vpcAccess"];
         if (g["instanceId"] !== undefined) {
@@ -1775,6 +1788,7 @@ export const model = {
         if (g["serviceAccount"] !== undefined) {
           body["serviceAccount"] = g["serviceAccount"];
         }
+        if (g["sshEnabled"] !== undefined) body["sshEnabled"] = g["sshEnabled"];
         if (g["volumes"] !== undefined) body["volumes"] = g["volumes"];
         if (g["vpcAccess"] !== undefined) body["vpcAccess"] = g["vpcAccess"];
         if (g["allowMissing"] !== undefined) {

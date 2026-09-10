@@ -71,11 +71,15 @@ const GlobalArgsSchema = z.object({
     "ACCOUNT_ALTERNATE_OPERATIONS",
     "ACCOUNT_ALTERNATE_BILLING",
   ]).describe("This unique identifier for Contact"),
+  IsSensitiveEventsSubscribed: z.boolean().describe(
+    "Whether the account contact association is subscribed to sensitive events. Access to sensitive events is gated by the SubscribeSensitiveEvents virtual IAM action.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
   ManagedNotificationConfigurationArn: z.string(),
   ContactIdentifier: z.string(),
+  IsSensitiveEventsSubscribed: z.boolean().optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -99,6 +103,9 @@ const InputsSchema = z.object({
     "ACCOUNT_ALTERNATE_OPERATIONS",
     "ACCOUNT_ALTERNATE_BILLING",
   ]).describe("This unique identifier for Contact").optional(),
+  IsSensitiveEventsSubscribed: z.boolean().describe(
+    "Whether the account contact association is subscribed to sensitive events. Access to sensitive events is gated by the SubscribeSensitiveEvents virtual IAM action.",
+  ).optional(),
 });
 
 const _credentialKeys = new Set([
@@ -121,7 +128,7 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
 export const model = {
   type:
     "@swamp/aws/notifications/managed-notification-account-contact-association",
-  version: "2026.08.17.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -171,6 +178,11 @@ export const model = {
     {
       toVersion: "2026.08.17.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
+      description: "Added: IsSensitiveEventsSubscribed",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

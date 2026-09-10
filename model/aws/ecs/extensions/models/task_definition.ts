@@ -381,7 +381,7 @@ const PortMappingSchema = z.object({
     "The port number on the container that's bound to the user-specified or automatically assigned host port. If you use containers in a task with the awsvpc or host network mode, specify the exposed ports using containerPort. If you use containers in a task with the bridge network mode and you specify a container port and not a host port, your container automatically receives a host port in the ephemeral port range. For more information, see hostPort. Port mappings that are automatically assigned in this way do not count toward the 100 reserved ports limit of a container instance.",
   ).optional(),
   Protocol: z.string().describe(
-    "The protocol used for the port mapping. Valid values are tcp and udp. The default is tcp. protocol is immutable in a Service Connect service. Updating this field requires a service deletion and redeployment.",
+    "The protocol that's used for the port mapping. Valid values are tcp and udp (case-sensitive). The default is tcp. Amazon ECS treats any other specified value as tcp. protocol is immutable in a Service Connect service. To update this field, you must delete and redeploy the service.",
   ).optional(),
   Name: z.string().describe(
     "The name that's used for the port mapping. This parameter is the name that you use in the serviceConnectConfiguration and the vpcLatticeConfigurations of a service. The name can include up to 64 characters. The characters can include lowercase letters, numbers, underscores (_), and hyphens (-). The name can't start with a hyphen.",
@@ -749,7 +749,7 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
 /** Swamp extension model for ECS TaskDefinition. Registered at `@swamp/aws/ecs/task-definition`. */
 export const model = {
   type: "@swamp/aws/ecs/task-definition",
-  version: "2026.08.17.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -808,6 +808,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.17.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

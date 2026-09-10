@@ -17,13 +17,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
-// Auto-generated extension model for @swamp/aws/codebuild/report-group
+// Auto-generated extension model for @swamp/aws/chime/voice-connector
 // Do not edit manually. Re-generate with: deno task generate:aws
 
 // deno-lint-ignore-file no-explicit-any
 
 /**
- * Swamp extension model for CodeBuild ReportGroup (AWS::CodeBuild::ReportGroup).
+ * Swamp extension model for Chime VoiceConnector (AWS::Chime::VoiceConnector).
  *
  * Wraps the CloudFormation resource type as a swamp model so create,
  * get, update, delete, sync, and list can be driven through `swamp model`.
@@ -42,18 +42,9 @@ import {
 } from "./_lib/aws.ts";
 import type { AwsCredentials } from "./_lib/aws.ts";
 
-const S3ReportExportConfigSchema = z.object({
-  Path: z.string().optional(),
-  Bucket: z.string(),
-  Packaging: z.enum(["NONE", "ZIP"]).optional(),
-  EncryptionKey: z.string().optional(),
-  BucketOwner: z.string().optional(),
-  EncryptionDisabled: z.boolean().optional(),
-});
-
 const TagSchema = z.object({
-  Value: z.string(),
-  Key: z.string(),
+  Key: z.string().min(1).max(128).describe("The tag key."),
+  Value: z.string().min(0).max(256).describe("The tag value."),
 });
 
 const GlobalArgsSchema = z.object({
@@ -72,26 +63,42 @@ const GlobalArgsSchema = z.object({
   region: z.string().describe(
     "AWS region; overrides AWS_REGION / AWS_DEFAULT_REGION environment variables and ~/.aws/config profile region. Defaults to us-east-1.",
   ).optional(),
-  Type: z.enum(["TEST", "CODE_COVERAGE"]),
-  ExportConfig: z.object({
-    S3Destination: S3ReportExportConfigSchema.optional(),
-    ExportConfigType: z.enum(["S3", "NO_EXPORT"]),
-  }),
-  DeleteReports: z.boolean().optional(),
-  Tags: z.array(TagSchema).optional(),
-  Name: z.string().optional(),
+  Name: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9 _.-]+$"))
+    .describe("The name of the Voice Connector."),
+  RequireEncryption: z.boolean().describe(
+    "Enables or disables encryption for the Voice Connector.",
+  ),
+  AwsRegion: z.enum([
+    "us-east-1",
+    "us-west-2",
+    "ca-central-1",
+    "eu-central-1",
+    "eu-west-1",
+    "eu-west-2",
+    "ap-northeast-2",
+    "ap-northeast-1",
+    "ap-southeast-1",
+    "ap-southeast-2",
+  ]).describe("The AWS Region in which the Voice Connector is created.")
+    .optional(),
+  NetworkType: z.enum(["IPV4_ONLY", "DUAL_STACK"]).describe(
+    "The type of network for the Voice Connector.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("The tags assigned to the Voice Connector.")
+    .optional(),
 });
 
 const StateSchema = z.object({
-  Type: z.string().optional(),
-  ExportConfig: z.object({
-    S3Destination: S3ReportExportConfigSchema,
-    ExportConfigType: z.string(),
-  }).optional(),
-  Arn: z.string(),
-  DeleteReports: z.boolean().optional(),
-  Tags: z.array(TagSchema).optional(),
+  VoiceConnectorArn: z.string(),
+  VoiceConnectorId: z.string().optional(),
   Name: z.string().optional(),
+  RequireEncryption: z.boolean().optional(),
+  AwsRegion: z.string().optional(),
+  OutboundHostName: z.string().optional(),
+  CreatedTimestamp: z.string().optional(),
+  UpdatedTimestamp: z.string().optional(),
+  NetworkType: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -102,14 +109,29 @@ const InputsSchema = z.object({
   secretAccessKey: z.string().meta({ sensitive: true }).optional(),
   sessionToken: z.string().meta({ sensitive: true }).optional(),
   region: z.string().optional(),
-  Type: z.enum(["TEST", "CODE_COVERAGE"]).optional(),
-  ExportConfig: z.object({
-    S3Destination: S3ReportExportConfigSchema.optional(),
-    ExportConfigType: z.enum(["S3", "NO_EXPORT"]).optional(),
-  }).optional(),
-  DeleteReports: z.boolean().optional(),
-  Tags: z.array(TagSchema).optional(),
-  Name: z.string().optional(),
+  Name: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9 _.-]+$"))
+    .describe("The name of the Voice Connector.").optional(),
+  RequireEncryption: z.boolean().describe(
+    "Enables or disables encryption for the Voice Connector.",
+  ).optional(),
+  AwsRegion: z.enum([
+    "us-east-1",
+    "us-west-2",
+    "ca-central-1",
+    "eu-central-1",
+    "eu-west-1",
+    "eu-west-2",
+    "ap-northeast-2",
+    "ap-northeast-1",
+    "ap-southeast-1",
+    "ap-southeast-2",
+  ]).describe("The AWS Region in which the Voice Connector is created.")
+    .optional(),
+  NetworkType: z.enum(["IPV4_ONLY", "DUAL_STACK"]).describe(
+    "The type of network for the Voice Connector.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("The tags assigned to the Voice Connector.")
+    .optional(),
 });
 
 const _credentialKeys = new Set([
@@ -128,15 +150,15 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
   };
 }
 
-/** Swamp extension model for CodeBuild ReportGroup. Registered at `@swamp/aws/codebuild/report-group`. */
+/** Swamp extension model for Chime VoiceConnector. Registered at `@swamp/aws/chime/voice-connector`. */
 export const model = {
-  type: "@swamp/aws/codebuild/report-group",
-  version: "2026.09.01.1",
+  type: "@swamp/aws/chime/voice-connector",
+  version: "2026.09.10.1",
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
-      description: "CodeBuild ReportGroup resource state",
+      description: "Chime VoiceConnector resource state",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -144,7 +166,7 @@ export const model = {
   },
   methods: {
     create: {
-      description: "Create a CodeBuild ReportGroup",
+      description: "Create a Chime VoiceConnector",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -156,7 +178,7 @@ export const model = {
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await createResource(
-          "AWS::CodeBuild::ReportGroup",
+          "AWS::Chime::VoiceConnector",
           desiredState,
           credentials,
         ) as StateData;
@@ -173,16 +195,16 @@ export const model = {
       },
     },
     get: {
-      description: "Get a CodeBuild ReportGroup",
+      description: "Get a Chime VoiceConnector",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the CodeBuild ReportGroup",
+          "The primary identifier of the Chime VoiceConnector",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const credentials = _buildCredentials(context.globalArgs);
         const result = await readResource(
-          "AWS::CodeBuild::ReportGroup",
+          "AWS::Chime::VoiceConnector",
           args.identifier,
           credentials,
         ) as StateData;
@@ -200,7 +222,7 @@ export const model = {
       },
     },
     update: {
-      description: "Update a CodeBuild ReportGroup",
+      description: "Update a Chime VoiceConnector",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -218,12 +240,12 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.Arn?.toString();
+        const identifier = existing.VoiceConnectorArn?.toString();
         if (!identifier) {
           throw new Error("No identifier found in existing state");
         }
         const currentState = await readResource(
-          "AWS::CodeBuild::ReportGroup",
+          "AWS::Chime::VoiceConnector",
           identifier,
           credentials,
         ) as StateData;
@@ -234,11 +256,11 @@ export const model = {
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await updateResource(
-          "AWS::CodeBuild::ReportGroup",
+          "AWS::Chime::VoiceConnector",
           identifier,
           currentState,
           desiredState,
-          ["Name", "Type"],
+          ["AwsRegion", "NetworkType"],
           credentials,
         );
         const handle = await context.writeResource(
@@ -250,16 +272,16 @@ export const model = {
       },
     },
     delete: {
-      description: "Delete a CodeBuild ReportGroup",
+      description: "Delete a Chime VoiceConnector",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the CodeBuild ReportGroup",
+          "The primary identifier of the Chime VoiceConnector",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const credentials = _buildCredentials(context.globalArgs);
         const { existed } = await deleteResource(
-          "AWS::CodeBuild::ReportGroup",
+          "AWS::Chime::VoiceConnector",
           args.identifier,
           credentials,
         );
@@ -278,7 +300,7 @@ export const model = {
       },
     },
     sync: {
-      description: "Sync CodeBuild ReportGroup state from AWS",
+      description: "Sync Chime VoiceConnector state from AWS",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -296,13 +318,13 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.Arn?.toString();
+        const identifier = existing.VoiceConnectorArn?.toString();
         if (!identifier) {
           throw new Error("No identifier found in existing state");
         }
         try {
           const result = await readResource(
-            "AWS::CodeBuild::ReportGroup",
+            "AWS::Chime::VoiceConnector",
             identifier,
             credentials,
           ) as StateData;
@@ -326,7 +348,7 @@ export const model = {
       },
     },
     list: {
-      description: "List CodeBuild ReportGroup resources",
+      description: "List Chime VoiceConnector resources",
       arguments: z.object({
         maxPages: z.number().describe(
           "Maximum number of pages to fetch (default: 10)",
@@ -341,7 +363,7 @@ export const model = {
       ) => {
         const credentials = _buildCredentials(context.globalArgs);
         const { items, nextToken } = await listResources(
-          "AWS::CodeBuild::ReportGroup",
+          "AWS::Chime::VoiceConnector",
           {
             resourceModel: args.resourceModel,
             maxPages: args.maxPages,
@@ -352,10 +374,8 @@ export const model = {
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
           const instanceName =
-            (item.properties?.Arn?.toString() ?? item.identifier).replace(
-              /[\/\\]/g,
-              "_",
-            ).replace(/\.\./g, "_").replace(/\0/g, "");
+            (item.properties?.VoiceConnectorArn?.toString() ?? item.identifier)
+              .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
           const handle = await context.writeResource("state", instanceName, {
             ...item.properties,
             _identifier: item.identifier,

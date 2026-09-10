@@ -192,6 +192,11 @@ const GlobalArgsSchema = z.object({
   clientVersion: z.string().describe(
     "Arbitrary version identifier for the API client.",
   ).optional(),
+  functionalType: z.enum([
+    "FUNCTIONAL_TYPE_UNSPECIFIED",
+    "FUNCTIONAL_TYPE_AGENT",
+    "FUNCTIONAL_TYPE_MCP_SERVER",
+  ]).describe("Optional. The functional type of the Job.").optional(),
   labels: z.record(z.string(), z.string()).describe(
     "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https://cloud.google.com/resource-manager/docs/creating-managing-labels or https://cloud.google.com/run/docs/configuring/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.",
   ).optional(),
@@ -490,6 +495,20 @@ const GlobalArgsSchema = z.object({
       }).describe(
         "Optional. VPC Access configuration to use for this Task. For more information, visit https://cloud.google.com/run/docs/configuring/connecting-vpc.",
       ).optional(),
+      workloadIdentityConfig: z.object({
+        identity: z.string().describe(
+          "Optional. The Revision's SPIFFE workload identity. Enables provisioning of SPIFFE workload certificates.",
+        ).optional(),
+        identityCertificateEnabled: z.boolean().describe(
+          "Optional. Controls whether an instance receives a MWLID certificate. Corresponds to the intention of the original --[no-]identity-certificate flag.",
+        ).optional(),
+        identityType: z.enum([
+          "IDENTITY_TYPE_UNSPECIFIED",
+          "IDENTITY_TYPE_SERVICE_ACCOUNT",
+          "IDENTITY_TYPE_AGENT_IDENTITY",
+        ]).describe("Optional. The type of identity to use.").optional(),
+      }).describe("Optional. The Task's workload identity settings.")
+        .optional(),
     }).describe(
       "Required. Describes the task(s) that will be created when executing an execution.",
     ).optional(),
@@ -532,6 +551,7 @@ const StateSchema = z.object({
   etag: z.string().optional(),
   executionCount: z.number().optional(),
   expireTime: z.string().optional(),
+  functionalType: z.string().optional(),
   generation: z.string().optional(),
   labels: z.record(z.string(), z.unknown()).optional(),
   lastModifier: z.string().optional(),
@@ -654,6 +674,11 @@ const StateSchema = z.object({
           tags: z.unknown(),
         })),
       }),
+      workloadIdentityConfig: z.object({
+        identity: z.string(),
+        identityCertificateEnabled: z.boolean(),
+        identityType: z.string(),
+      }),
     }),
   }).optional(),
   terminalCondition: z.object({
@@ -699,6 +724,11 @@ const InputsSchema = z.object({
   clientVersion: z.string().describe(
     "Arbitrary version identifier for the API client.",
   ).optional(),
+  functionalType: z.enum([
+    "FUNCTIONAL_TYPE_UNSPECIFIED",
+    "FUNCTIONAL_TYPE_AGENT",
+    "FUNCTIONAL_TYPE_MCP_SERVER",
+  ]).describe("Optional. The functional type of the Job.").optional(),
   labels: z.record(z.string(), z.string()).describe(
     "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https://cloud.google.com/resource-manager/docs/creating-managing-labels or https://cloud.google.com/run/docs/configuring/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 Job.",
   ).optional(),
@@ -997,6 +1027,20 @@ const InputsSchema = z.object({
       }).describe(
         "Optional. VPC Access configuration to use for this Task. For more information, visit https://cloud.google.com/run/docs/configuring/connecting-vpc.",
       ).optional(),
+      workloadIdentityConfig: z.object({
+        identity: z.string().describe(
+          "Optional. The Revision's SPIFFE workload identity. Enables provisioning of SPIFFE workload certificates.",
+        ).optional(),
+        identityCertificateEnabled: z.boolean().describe(
+          "Optional. Controls whether an instance receives a MWLID certificate. Corresponds to the intention of the original --[no-]identity-certificate flag.",
+        ).optional(),
+        identityType: z.enum([
+          "IDENTITY_TYPE_UNSPECIFIED",
+          "IDENTITY_TYPE_SERVICE_ACCOUNT",
+          "IDENTITY_TYPE_AGENT_IDENTITY",
+        ]).describe("Optional. The type of identity to use.").optional(),
+      }).describe("Optional. The Task's workload identity settings.")
+        .optional(),
     }).describe(
       "Required. Describes the task(s) that will be created when executing an execution.",
     ).optional(),
@@ -1039,7 +1083,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Run Admin Jobs. Registered at `@swamp/gcp/run/jobs`. */
 export const model = {
   type: "@swamp/gcp/run/jobs",
-  version: "2026.09.07.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1297,6 +1341,11 @@ export const model = {
         return rest;
       },
     },
+    {
+      toVersion: "2026.09.10.1",
+      description: "Added: functionalType",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1333,6 +1382,9 @@ export const model = {
         if (g["client"] !== undefined) body["client"] = g["client"];
         if (g["clientVersion"] !== undefined) {
           body["clientVersion"] = g["clientVersion"];
+        }
+        if (g["functionalType"] !== undefined) {
+          body["functionalType"] = g["functionalType"];
         }
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["launchStage"] !== undefined) {
@@ -1466,6 +1518,9 @@ export const model = {
         if (g["client"] !== undefined) body["client"] = g["client"];
         if (g["clientVersion"] !== undefined) {
           body["clientVersion"] = g["clientVersion"];
+        }
+        if (g["functionalType"] !== undefined) {
+          body["functionalType"] = g["functionalType"];
         }
         if (g["labels"] !== undefined) body["labels"] = g["labels"];
         if (g["launchStage"] !== undefined) {

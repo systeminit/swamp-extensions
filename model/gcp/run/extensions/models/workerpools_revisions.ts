@@ -332,6 +332,11 @@ const StateSchema = z.object({
       tags: z.array(z.string()),
     })),
   }).optional(),
+  workloadIdentityConfig: z.object({
+    identity: z.string(),
+    identityCertificateEnabled: z.boolean(),
+    identityType: z.string(),
+  }).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -378,7 +383,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Run Admin WorkerPools.Revisions. Registered at `@swamp/gcp/run/workerpools-revisions`. */
 export const model = {
   type: "@swamp/gcp/run/workerpools-revisions",
-  version: "2026.08.12.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -527,6 +532,11 @@ export const model = {
     },
     {
       toVersion: "2026.08.12.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

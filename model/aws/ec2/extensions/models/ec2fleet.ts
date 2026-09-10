@@ -128,11 +128,23 @@ const InstanceMetadataOptionsRequestSchema = z.object({
   HttpEndpoint: z.enum(["disabled", "enabled"]).optional(),
 });
 
+const StandbyAvailabilityZoneSchema = z.object({
+  AvailabilityZoneId: z.string().optional(),
+  AvailabilityZone: z.string().optional(),
+});
+
+const MultiAvailabilityZoneConfigurationSchema = z.object({
+  ConfigurationType: z.string().optional(),
+  StandbyAvailabilityZones: z.array(StandbyAvailabilityZoneSchema).optional(),
+});
+
 const EbsBlockDeviceSchema = z.object({
   SnapshotId: z.string().optional(),
   VolumeType: z.string().optional(),
   KmsKeyId: z.string().optional(),
   Encrypted: z.boolean().optional(),
+  MultiAvailabilityZoneConfiguration: MultiAvailabilityZoneConfigurationSchema
+    .optional(),
   Iops: z.number().int().optional(),
   VolumeSize: z.number().int().optional(),
   DeleteOnTermination: z.boolean().optional(),
@@ -565,7 +577,7 @@ function _buildCredentials(g: Record<string, unknown>): AwsCredentials {
 /** Swamp extension model for EC2 EC2Fleet. Registered at `@swamp/aws/ec2/ec2fleet`. */
 export const model = {
   type: "@swamp/aws/ec2/ec2fleet",
-  version: "2026.09.01.1",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -634,6 +646,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

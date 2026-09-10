@@ -25,7 +25,7 @@
 /**
  * Swamp extension model for Google Cloud Data Manager AccountTypes.Accounts.UserLists.
  *
- * A user list resource.
+ * GCP datamanager AccountTypes.Accounts.UserLists resource
  *
  * Wraps the GCP resource as a swamp model so create, get, update,
  * delete, and sync can be driven through `swamp model`.
@@ -172,18 +172,23 @@ const GlobalArgsSchema = z.object({
   apiEndpoint: z.string().describe(
     "Custom API endpoint for emulators; overrides GCP_API_ENDPOINT environment variable. Defaults to the service's production URL.",
   ).optional(),
+  accessReason: z.enum([
+    "ACCESS_REASON_UNSPECIFIED",
+    "OWNED",
+    "SHARED",
+    "LICENSED",
+    "SUBSCRIBED",
+    "AFFILIATED",
+  ]).optional(),
   accountAccessStatus: z.enum([
     "ACCESS_STATUS_UNSPECIFIED",
     "ENABLED",
     "DISABLED",
-  ]).describe(
-    "Optional. Indicates if this share is still enabled. When a user list is shared with the account this field is set to `ENABLED`. Later the user list owner can decide to revoke the share and make it `DISABLED`.",
-  ).optional(),
-  description: z.string().describe("Optional. A description of the user list.")
-    .optional(),
-  displayName: z.string().describe(
-    "Required. The display name of the user list.",
-  ).optional(),
+  ]).optional(),
+  closingReason: z.enum(["CLOSING_REASON_UNSPECIFIED", "UNUSED"]).optional(),
+  description: z.string().optional(),
+  displayName: z.string().optional(),
+  id: z.string().optional(),
   ingestedUserListInfo: z.object({
     contactIdInfo: z.object({
       dataSourceType: z.enum([
@@ -192,76 +197,45 @@ const GlobalArgsSchema = z.object({
         "DATA_SOURCE_TYPE_THIRD_PARTY_CREDIT_BUREAU",
         "DATA_SOURCE_TYPE_THIRD_PARTY_VOTER_FILE",
         "DATA_SOURCE_TYPE_THIRD_PARTY_PARTNER_DATA",
-      ]).describe("Optional. Immutable. Source of the upload data").optional(),
-      matchRatePercentage: z.number().int().describe(
-        "Output only. Match rate for customer match user lists.",
-      ).optional(),
-    }).describe(
-      "Optional. Additional information when `CONTACT_ID` is one of the `upload_key_types`.",
-    ).optional(),
+      ]).optional(),
+      matchRatePercentage: z.number().int().optional(),
+    }).optional(),
     mobileIdInfo: z.object({
-      appId: z.string().describe(
-        "Required. Immutable. A string that uniquely identifies a mobile application from which the data was collected.",
-      ).optional(),
+      appId: z.string().optional(),
       dataSourceType: z.enum([
         "DATA_SOURCE_TYPE_UNSPECIFIED",
         "DATA_SOURCE_TYPE_FIRST_PARTY",
         "DATA_SOURCE_TYPE_THIRD_PARTY_CREDIT_BUREAU",
         "DATA_SOURCE_TYPE_THIRD_PARTY_VOTER_FILE",
         "DATA_SOURCE_TYPE_THIRD_PARTY_PARTNER_DATA",
-      ]).describe("Optional. Immutable. Source of the upload data.").optional(),
-      keySpace: z.enum(["KEY_SPACE_UNSPECIFIED", "IOS", "ANDROID"]).describe(
-        "Required. Immutable. The key space of mobile IDs.",
-      ).optional(),
-    }).describe(
-      "Optional. Additional information when `MOBILE_ID` is one of the `upload_key_types`.",
-    ).optional(),
+      ]).optional(),
+      keySpace: z.enum(["KEY_SPACE_UNSPECIFIED", "IOS", "ANDROID"]).optional(),
+    }).optional(),
     pairIdInfo: z.object({
-      advertiserIdentifierCount: z.string().describe(
-        "Optional. The count of the advertiser's first party data records that have been uploaded to a clean room provider. This does not signify the size of a PAIR user list.",
-      ).optional(),
-      cleanRoomIdentifier: z.string().describe(
-        "Required. Immutable. Identifies a unique advertiser to publisher relationship with one clean room provider or across multiple clean room providers.",
-      ).optional(),
-      matchRatePercentage: z.number().int().describe(
-        "Required. This field denotes the percentage of membership match of this user list with the corresponding publisher's first party data. Must be between 0 and 100 inclusive.",
-      ).optional(),
-      publisherId: z.string().describe(
-        "Required. Immutable. Identifies the publisher that the Publisher Advertiser Identity Reconciliation user list is reconciled with. This field is provided by the cleanroom provider and is only unique in the scope of that cleanroom. This cannot be used as a global identifier across multiple cleanrooms.",
-      ).optional(),
-      publisherName: z.string().describe(
-        "Required. Descriptive name of the publisher to be displayed in the UI for a better targeting experience.",
-      ).optional(),
-    }).describe(
-      "Optional. Additional information when `PAIR_ID` is one of the `upload_key_types`. This feature is only available to data partners.",
-    ).optional(),
+      advertiserIdentifierCount: z.string().optional(),
+      cleanRoomIdentifier: z.string().optional(),
+      matchRatePercentage: z.number().int().optional(),
+      publisherId: z.string().optional(),
+      publisherName: z.string().optional(),
+    }).optional(),
     partnerAudienceInfo: z.object({
-      commercePartner: z.string().describe(
-        "Optional. The commerce partner name. Only allowed if `partner_audience_source` is `COMMERCE_AUDIENCE`.",
-      ).optional(),
+      commercePartner: z.string().optional(),
       partnerAudienceSource: z.enum([
         "PARTNER_AUDIENCE_SOURCE_UNSPECIFIED",
         "COMMERCE_AUDIENCE",
         "LINEAR_TV_AUDIENCE",
         "AGENCY_PROVIDER_AUDIENCE",
-      ]).describe("Required. Immutable. The source of the partner audience.")
-        .optional(),
-    }).describe(
-      "Optional. Additional information for partner audiences. This feature is only available to data partners.",
-    ).optional(),
+      ]).optional(),
+    }).optional(),
     pseudonymousIdInfo: z.object({
-      billableRecordCount: z.string().describe(
-        "Optional. Immutable. The number of billable records (e.g. uploaded or matched).",
-      ).optional(),
+      billableRecordCount: z.string().optional(),
       syncStatus: z.enum([
         "SYNC_STATUS_UNSPECIFIED",
         "CREATED",
         "READY_FOR_USE",
         "FAILED",
-      ]).describe("Output only. Sync status of the user list.").optional(),
-    }).describe(
-      "Optional. Additional information for `PSEUDONYMOUS_ID` is one of the `upload_key_types`.",
-    ).optional(),
+      ]).optional(),
+    }).optional(),
     uploadKeyTypes: z.array(
       z.enum([
         "UPLOAD_KEY_TYPE_UNSPECIFIED",
@@ -271,8 +245,7 @@ const GlobalArgsSchema = z.object({
         "PAIR_ID",
         "PSEUDONYMOUS_ID",
       ]),
-    ).describe("Required. Immutable. Upload key types of this user list.")
-      .optional(),
+    ).optional(),
     userIdInfo: z.object({
       dataSourceType: z.enum([
         "DATA_SOURCE_TYPE_UNSPECIFIED",
@@ -280,34 +253,25 @@ const GlobalArgsSchema = z.object({
         "DATA_SOURCE_TYPE_THIRD_PARTY_CREDIT_BUREAU",
         "DATA_SOURCE_TYPE_THIRD_PARTY_VOTER_FILE",
         "DATA_SOURCE_TYPE_THIRD_PARTY_PARTNER_DATA",
-      ]).describe("Optional. Immutable. Source of the upload data.").optional(),
-    }).describe(
-      "Optional. Additional information when `USER_ID` is one of the `upload_key_types`.",
-    ).optional(),
-  }).describe(
-    "Optional. Represents a user list that is populated by user ingested data.",
-  ).optional(),
-  integrationCode: z.string().describe(
-    "Optional. An ID from external system. It is used by user list sellers to correlate IDs on their systems.",
-  ).optional(),
-  membershipDuration: z.string().describe(
-    "Optional. The duration a user remains in the user list. Valid durations are exact multiples of 24 hours (86400 seconds). Providing a value that is not an exact multiple of 24 hours will result in an INVALID_ARGUMENT error.",
-  ).optional(),
+      ]).optional(),
+    }).optional(),
+  }).optional(),
+  integrationCode: z.string().optional(),
+  membershipDuration: z.string().optional(),
   membershipStatus: z.enum(["MEMBERSHIP_STATUS_UNSPECIFIED", "OPEN", "CLOSED"])
-    .describe("Optional. Membership status of this user list.").optional(),
-  name: z.string().describe(
-    "Identifier. The resource name of the user list. Format: accountTypes/{account_type}/accounts/{account}/userLists/{user_list}",
-  ).optional(),
+    .optional(),
+  name: z.string().optional(),
+  readOnly: z.boolean().optional(),
+  sizeInfo: z.object({
+    displayNetworkMembersCount: z.string().optional(),
+    gmailMembersCount: z.string().optional(),
+    searchNetworkMembersCount: z.string().optional(),
+    youtubeMembersCount: z.string().optional(),
+  }).optional(),
   targetNetworkInfo: z.object({
-    eligibleForDisplay: z.boolean().describe(
-      "Output only. Indicates this user list is eligible for Google Display Network.",
-    ).optional(),
-    eligibleForSearch: z.boolean().describe(
-      "Optional. Indicates if this user list is eligible for Google Search Network.",
-    ).optional(),
-  }).describe(
-    "Optional. Eligibility information for different target networks.",
-  ).optional(),
+    eligibleForDisplay: z.boolean().optional(),
+    eligibleForSearch: z.boolean().optional(),
+  }).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -376,18 +340,23 @@ const InputsSchema = z.object({
   scopes: z.string().optional(),
   quotaProject: z.string().optional(),
   apiEndpoint: z.string().optional(),
+  accessReason: z.enum([
+    "ACCESS_REASON_UNSPECIFIED",
+    "OWNED",
+    "SHARED",
+    "LICENSED",
+    "SUBSCRIBED",
+    "AFFILIATED",
+  ]).optional(),
   accountAccessStatus: z.enum([
     "ACCESS_STATUS_UNSPECIFIED",
     "ENABLED",
     "DISABLED",
-  ]).describe(
-    "Optional. Indicates if this share is still enabled. When a user list is shared with the account this field is set to `ENABLED`. Later the user list owner can decide to revoke the share and make it `DISABLED`.",
-  ).optional(),
-  description: z.string().describe("Optional. A description of the user list.")
-    .optional(),
-  displayName: z.string().describe(
-    "Required. The display name of the user list.",
-  ).optional(),
+  ]).optional(),
+  closingReason: z.enum(["CLOSING_REASON_UNSPECIFIED", "UNUSED"]).optional(),
+  description: z.string().optional(),
+  displayName: z.string().optional(),
+  id: z.string().optional(),
   ingestedUserListInfo: z.object({
     contactIdInfo: z.object({
       dataSourceType: z.enum([
@@ -396,76 +365,45 @@ const InputsSchema = z.object({
         "DATA_SOURCE_TYPE_THIRD_PARTY_CREDIT_BUREAU",
         "DATA_SOURCE_TYPE_THIRD_PARTY_VOTER_FILE",
         "DATA_SOURCE_TYPE_THIRD_PARTY_PARTNER_DATA",
-      ]).describe("Optional. Immutable. Source of the upload data").optional(),
-      matchRatePercentage: z.number().int().describe(
-        "Output only. Match rate for customer match user lists.",
-      ).optional(),
-    }).describe(
-      "Optional. Additional information when `CONTACT_ID` is one of the `upload_key_types`.",
-    ).optional(),
+      ]).optional(),
+      matchRatePercentage: z.number().int().optional(),
+    }).optional(),
     mobileIdInfo: z.object({
-      appId: z.string().describe(
-        "Required. Immutable. A string that uniquely identifies a mobile application from which the data was collected.",
-      ).optional(),
+      appId: z.string().optional(),
       dataSourceType: z.enum([
         "DATA_SOURCE_TYPE_UNSPECIFIED",
         "DATA_SOURCE_TYPE_FIRST_PARTY",
         "DATA_SOURCE_TYPE_THIRD_PARTY_CREDIT_BUREAU",
         "DATA_SOURCE_TYPE_THIRD_PARTY_VOTER_FILE",
         "DATA_SOURCE_TYPE_THIRD_PARTY_PARTNER_DATA",
-      ]).describe("Optional. Immutable. Source of the upload data.").optional(),
-      keySpace: z.enum(["KEY_SPACE_UNSPECIFIED", "IOS", "ANDROID"]).describe(
-        "Required. Immutable. The key space of mobile IDs.",
-      ).optional(),
-    }).describe(
-      "Optional. Additional information when `MOBILE_ID` is one of the `upload_key_types`.",
-    ).optional(),
+      ]).optional(),
+      keySpace: z.enum(["KEY_SPACE_UNSPECIFIED", "IOS", "ANDROID"]).optional(),
+    }).optional(),
     pairIdInfo: z.object({
-      advertiserIdentifierCount: z.string().describe(
-        "Optional. The count of the advertiser's first party data records that have been uploaded to a clean room provider. This does not signify the size of a PAIR user list.",
-      ).optional(),
-      cleanRoomIdentifier: z.string().describe(
-        "Required. Immutable. Identifies a unique advertiser to publisher relationship with one clean room provider or across multiple clean room providers.",
-      ).optional(),
-      matchRatePercentage: z.number().int().describe(
-        "Required. This field denotes the percentage of membership match of this user list with the corresponding publisher's first party data. Must be between 0 and 100 inclusive.",
-      ).optional(),
-      publisherId: z.string().describe(
-        "Required. Immutable. Identifies the publisher that the Publisher Advertiser Identity Reconciliation user list is reconciled with. This field is provided by the cleanroom provider and is only unique in the scope of that cleanroom. This cannot be used as a global identifier across multiple cleanrooms.",
-      ).optional(),
-      publisherName: z.string().describe(
-        "Required. Descriptive name of the publisher to be displayed in the UI for a better targeting experience.",
-      ).optional(),
-    }).describe(
-      "Optional. Additional information when `PAIR_ID` is one of the `upload_key_types`. This feature is only available to data partners.",
-    ).optional(),
+      advertiserIdentifierCount: z.string().optional(),
+      cleanRoomIdentifier: z.string().optional(),
+      matchRatePercentage: z.number().int().optional(),
+      publisherId: z.string().optional(),
+      publisherName: z.string().optional(),
+    }).optional(),
     partnerAudienceInfo: z.object({
-      commercePartner: z.string().describe(
-        "Optional. The commerce partner name. Only allowed if `partner_audience_source` is `COMMERCE_AUDIENCE`.",
-      ).optional(),
+      commercePartner: z.string().optional(),
       partnerAudienceSource: z.enum([
         "PARTNER_AUDIENCE_SOURCE_UNSPECIFIED",
         "COMMERCE_AUDIENCE",
         "LINEAR_TV_AUDIENCE",
         "AGENCY_PROVIDER_AUDIENCE",
-      ]).describe("Required. Immutable. The source of the partner audience.")
-        .optional(),
-    }).describe(
-      "Optional. Additional information for partner audiences. This feature is only available to data partners.",
-    ).optional(),
+      ]).optional(),
+    }).optional(),
     pseudonymousIdInfo: z.object({
-      billableRecordCount: z.string().describe(
-        "Optional. Immutable. The number of billable records (e.g. uploaded or matched).",
-      ).optional(),
+      billableRecordCount: z.string().optional(),
       syncStatus: z.enum([
         "SYNC_STATUS_UNSPECIFIED",
         "CREATED",
         "READY_FOR_USE",
         "FAILED",
-      ]).describe("Output only. Sync status of the user list.").optional(),
-    }).describe(
-      "Optional. Additional information for `PSEUDONYMOUS_ID` is one of the `upload_key_types`.",
-    ).optional(),
+      ]).optional(),
+    }).optional(),
     uploadKeyTypes: z.array(
       z.enum([
         "UPLOAD_KEY_TYPE_UNSPECIFIED",
@@ -475,8 +413,7 @@ const InputsSchema = z.object({
         "PAIR_ID",
         "PSEUDONYMOUS_ID",
       ]),
-    ).describe("Required. Immutable. Upload key types of this user list.")
-      .optional(),
+    ).optional(),
     userIdInfo: z.object({
       dataSourceType: z.enum([
         "DATA_SOURCE_TYPE_UNSPECIFIED",
@@ -484,34 +421,25 @@ const InputsSchema = z.object({
         "DATA_SOURCE_TYPE_THIRD_PARTY_CREDIT_BUREAU",
         "DATA_SOURCE_TYPE_THIRD_PARTY_VOTER_FILE",
         "DATA_SOURCE_TYPE_THIRD_PARTY_PARTNER_DATA",
-      ]).describe("Optional. Immutable. Source of the upload data.").optional(),
-    }).describe(
-      "Optional. Additional information when `USER_ID` is one of the `upload_key_types`.",
-    ).optional(),
-  }).describe(
-    "Optional. Represents a user list that is populated by user ingested data.",
-  ).optional(),
-  integrationCode: z.string().describe(
-    "Optional. An ID from external system. It is used by user list sellers to correlate IDs on their systems.",
-  ).optional(),
-  membershipDuration: z.string().describe(
-    "Optional. The duration a user remains in the user list. Valid durations are exact multiples of 24 hours (86400 seconds). Providing a value that is not an exact multiple of 24 hours will result in an INVALID_ARGUMENT error.",
-  ).optional(),
+      ]).optional(),
+    }).optional(),
+  }).optional(),
+  integrationCode: z.string().optional(),
+  membershipDuration: z.string().optional(),
   membershipStatus: z.enum(["MEMBERSHIP_STATUS_UNSPECIFIED", "OPEN", "CLOSED"])
-    .describe("Optional. Membership status of this user list.").optional(),
-  name: z.string().describe(
-    "Identifier. The resource name of the user list. Format: accountTypes/{account_type}/accounts/{account}/userLists/{user_list}",
-  ).optional(),
+    .optional(),
+  name: z.string().optional(),
+  readOnly: z.boolean().optional(),
+  sizeInfo: z.object({
+    displayNetworkMembersCount: z.string().optional(),
+    gmailMembersCount: z.string().optional(),
+    searchNetworkMembersCount: z.string().optional(),
+    youtubeMembersCount: z.string().optional(),
+  }).optional(),
   targetNetworkInfo: z.object({
-    eligibleForDisplay: z.boolean().describe(
-      "Output only. Indicates this user list is eligible for Google Display Network.",
-    ).optional(),
-    eligibleForSearch: z.boolean().describe(
-      "Optional. Indicates if this user list is eligible for Google Search Network.",
-    ).optional(),
-  }).describe(
-    "Optional. Eligibility information for different target networks.",
-  ).optional(),
+    eligibleForDisplay: z.boolean().optional(),
+    eligibleForSearch: z.boolean().optional(),
+  }).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -543,7 +471,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Data Manager AccountTypes.Accounts.UserLists. Registered at `@swamp/gcp/datamanager/accounttypes-accounts-userlists`. */
 export const model = {
   type: "@swamp/gcp/datamanager/accounttypes-accounts-userlists",
-  version: "2026.08.12.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -708,12 +636,17 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.10.1",
+      description: "Added: accessReason, closingReason, id, readOnly, sizeInfo",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
-      description: "A user list resource.",
+      description: "GCP datamanager AccountTypes.Accounts.UserLists resource",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -732,8 +665,14 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
         const body: Record<string, unknown> = {};
+        if (g["accessReason"] !== undefined) {
+          body["accessReason"] = g["accessReason"];
+        }
         if (g["accountAccessStatus"] !== undefined) {
           body["accountAccessStatus"] = g["accountAccessStatus"];
+        }
+        if (g["closingReason"] !== undefined) {
+          body["closingReason"] = g["closingReason"];
         }
         if (g["description"] !== undefined) {
           body["description"] = g["description"];
@@ -741,6 +680,7 @@ export const model = {
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];
         }
+        if (g["id"] !== undefined) body["id"] = g["id"];
         if (g["ingestedUserListInfo"] !== undefined) {
           body["ingestedUserListInfo"] = g["ingestedUserListInfo"];
         }
@@ -754,6 +694,8 @@ export const model = {
           body["membershipStatus"] = g["membershipStatus"];
         }
         if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["readOnly"] !== undefined) body["readOnly"] = g["readOnly"];
+        if (g["sizeInfo"] !== undefined) body["sizeInfo"] = g["sizeInfo"];
         if (g["targetNetworkInfo"] !== undefined) {
           body["targetNetworkInfo"] = g["targetNetworkInfo"];
         }
@@ -865,8 +807,14 @@ export const model = {
           );
         }
         const body: Record<string, unknown> = {};
+        if (g["accessReason"] !== undefined) {
+          body["accessReason"] = g["accessReason"];
+        }
         if (g["accountAccessStatus"] !== undefined) {
           body["accountAccessStatus"] = g["accountAccessStatus"];
+        }
+        if (g["closingReason"] !== undefined) {
+          body["closingReason"] = g["closingReason"];
         }
         if (g["description"] !== undefined) {
           body["description"] = g["description"];
@@ -874,6 +822,7 @@ export const model = {
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];
         }
+        if (g["id"] !== undefined) body["id"] = g["id"];
         if (g["ingestedUserListInfo"] !== undefined) {
           body["ingestedUserListInfo"] = g["ingestedUserListInfo"];
         }
@@ -886,6 +835,8 @@ export const model = {
         if (g["membershipStatus"] !== undefined) {
           body["membershipStatus"] = g["membershipStatus"];
         }
+        if (g["readOnly"] !== undefined) body["readOnly"] = g["readOnly"];
+        if (g["sizeInfo"] !== undefined) body["sizeInfo"] = g["sizeInfo"];
         if (g["targetNetworkInfo"] !== undefined) {
           body["targetNetworkInfo"] = g["targetNetworkInfo"];
         }
@@ -1022,12 +973,8 @@ export const model = {
     list: {
       description: "List userLists resources",
       arguments: z.object({
-        filter: z.string().describe(
-          'Optional. A [filter string](https://google.aip.dev/160). All fields need to be on the left hand side of each condition (for example: `display_name = "list 1"`). Fields must be specified using either all [camel case](https://en.wikipedia.org/wiki/Camel_case) or all [snake case](https://en.wikipedia.org/wiki/Snake_case). Don\'t use a combination of camel case and snake case. Supported operations: - `AND` - `=` - `!=` - `>` - `>=` - `<` - `<=` - `:` (has) **Supported Functions:** - `IN(field, value1, value2, ...)`: returns true if the field matches any of the values. Example: `IN(display_name, "name1", "name2")` Supported fields: - `id` - `display_name` - `description` - `membership_status` - `integration_code` - `access_reason` - `ingested_user_list_info.upload_key_types`',
-        ).optional(),
-        pageSize: z.number().describe(
-          "Optional. The maximum number of user lists to return. The service may return fewer than this value. If unspecified, at most 50 user lists will be returned. The maximum value is 1000; values above 1000 will be coerced to 1000.",
-        ).optional(),
+        filter: z.string().optional(),
+        pageSize: z.number().optional(),
         maxPages: z.number().describe(
           "Maximum number of pages to fetch (default: 10)",
         ).optional(),

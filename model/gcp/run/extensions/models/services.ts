@@ -238,6 +238,11 @@ const GlobalArgsSchema = z.object({
   description: z.string().describe(
     "User-provided description of the Service. This field currently has a 512-character limit.",
   ).optional(),
+  functionalType: z.enum([
+    "FUNCTIONAL_TYPE_UNSPECIFIED",
+    "FUNCTIONAL_TYPE_AGENT",
+    "FUNCTIONAL_TYPE_MCP_SERVER",
+  ]).describe("Optional. The functional type of the Service.").optional(),
   iapEnabled: z.boolean().describe("Optional. IAP settings on the Service.")
     .optional(),
   ingress: z.enum([
@@ -691,6 +696,20 @@ const GlobalArgsSchema = z.object({
     }).describe(
       "Optional. VPC Access configuration to use for this Revision. For more information, visit https://cloud.google.com/run/docs/configuring/connecting-vpc.",
     ).optional(),
+    workloadIdentityConfig: z.object({
+      identity: z.string().describe(
+        "Optional. The Revision's SPIFFE workload identity. Enables provisioning of SPIFFE workload certificates.",
+      ).optional(),
+      identityCertificateEnabled: z.boolean().describe(
+        "Optional. Controls whether an instance receives a MWLID certificate. Corresponds to the intention of the original --[no-]identity-certificate flag.",
+      ).optional(),
+      identityType: z.enum([
+        "IDENTITY_TYPE_UNSPECIFIED",
+        "IDENTITY_TYPE_SERVICE_ACCOUNT",
+        "IDENTITY_TYPE_AGENT_IDENTITY",
+      ]).describe("Optional. The type of identity to use.").optional(),
+    }).describe("Optional. The Revision's workload identity settings.")
+      .optional(),
   }).describe(
     "Required. The template used to create revisions for this Service.",
   ).optional(),
@@ -765,6 +784,7 @@ const StateSchema = z.object({
   description: z.string().optional(),
   etag: z.string().optional(),
   expireTime: z.string().optional(),
+  functionalType: z.string().optional(),
   generation: z.string().optional(),
   iapEnabled: z.boolean().optional(),
   ingress: z.string().optional(),
@@ -948,6 +968,11 @@ const StateSchema = z.object({
         tags: z.array(z.unknown()),
       })),
     }),
+    workloadIdentityConfig: z.object({
+      identity: z.string(),
+      identityCertificateEnabled: z.boolean(),
+      identityType: z.string(),
+    }),
   }).optional(),
   terminalCondition: z.object({
     executionReason: z.string(),
@@ -1048,6 +1073,11 @@ const InputsSchema = z.object({
   description: z.string().describe(
     "User-provided description of the Service. This field currently has a 512-character limit.",
   ).optional(),
+  functionalType: z.enum([
+    "FUNCTIONAL_TYPE_UNSPECIFIED",
+    "FUNCTIONAL_TYPE_AGENT",
+    "FUNCTIONAL_TYPE_MCP_SERVER",
+  ]).describe("Optional. The functional type of the Service.").optional(),
   iapEnabled: z.boolean().describe("Optional. IAP settings on the Service.")
     .optional(),
   ingress: z.enum([
@@ -1501,6 +1531,20 @@ const InputsSchema = z.object({
     }).describe(
       "Optional. VPC Access configuration to use for this Revision. For more information, visit https://cloud.google.com/run/docs/configuring/connecting-vpc.",
     ).optional(),
+    workloadIdentityConfig: z.object({
+      identity: z.string().describe(
+        "Optional. The Revision's SPIFFE workload identity. Enables provisioning of SPIFFE workload certificates.",
+      ).optional(),
+      identityCertificateEnabled: z.boolean().describe(
+        "Optional. Controls whether an instance receives a MWLID certificate. Corresponds to the intention of the original --[no-]identity-certificate flag.",
+      ).optional(),
+      identityType: z.enum([
+        "IDENTITY_TYPE_UNSPECIFIED",
+        "IDENTITY_TYPE_SERVICE_ACCOUNT",
+        "IDENTITY_TYPE_AGENT_IDENTITY",
+      ]).describe("Optional. The type of identity to use.").optional(),
+    }).describe("Optional. The Revision's workload identity settings.")
+      .optional(),
   }).describe(
     "Required. The template used to create revisions for this Service.",
   ).optional(),
@@ -1562,7 +1606,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Run Admin Services. Registered at `@swamp/gcp/run/services`. */
 export const model = {
   type: "@swamp/gcp/run/services",
-  version: "2026.09.07.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1870,6 +1914,11 @@ export const model = {
         return rest;
       },
     },
+    {
+      toVersion: "2026.09.10.1",
+      description: "Added: functionalType",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -1918,6 +1967,9 @@ export const model = {
         }
         if (g["description"] !== undefined) {
           body["description"] = g["description"];
+        }
+        if (g["functionalType"] !== undefined) {
+          body["functionalType"] = g["functionalType"];
         }
         if (g["iapEnabled"] !== undefined) body["iapEnabled"] = g["iapEnabled"];
         if (g["ingress"] !== undefined) body["ingress"] = g["ingress"];
@@ -2070,6 +2122,9 @@ export const model = {
         }
         if (g["description"] !== undefined) {
           body["description"] = g["description"];
+        }
+        if (g["functionalType"] !== undefined) {
+          body["functionalType"] = g["functionalType"];
         }
         if (g["iapEnabled"] !== undefined) body["iapEnabled"] = g["iapEnabled"];
         if (g["ingress"] !== undefined) body["ingress"] = g["ingress"];

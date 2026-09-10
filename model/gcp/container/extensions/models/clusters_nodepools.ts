@@ -542,6 +542,22 @@ const GlobalArgsSchema = z.object({
         podPidsLimit: z.string().describe(
           "Set the Pod PID limits. See https://kubernetes.io/docs/concepts/policy/pid-limiting/#pod-pid-limits Controls the maximum number of processes allowed to run in a pod. The value must be greater than or equal to 1024 and less than 4194304.",
         ).optional(),
+        reservedResourcesConfig: z.object({
+          cpuReservedMillicore: z.string().describe(
+            "Optional. The amount of CPU to reserve for system daemons. This is a user-specified value. If unspecified, GKE decides the default based on node version using different formula.",
+          ).optional(),
+          effectiveCpuReservedMillicore: z.string().describe(
+            "Output only. The effective amount of CPU reserved for system daemons. If `cpu_reserved_millicore` is specified, user-specified value is used. Otherwise the GKE default is applied.",
+          ).optional(),
+          effectiveMemoryReservedMib: z.string().describe(
+            "Output only. The effective amount of memory reserved for system daemons. If `memory_reserved_mib` is specified, the user-specified value is used. Otherwise the GKE default is applied.",
+          ).optional(),
+          memoryReservedMib: z.string().describe(
+            "Optional. The amount of memory to reserve for system daemons (in MiB). This is a user-specified value. If unspecified, GKE decides the default based on node version using different formula.",
+          ).optional(),
+        }).describe(
+          "Optional. Controls the reserved resources on the node. Only included if any fields are specified.",
+        ).optional(),
         shutdownGracePeriodCriticalPodsSeconds: z.number().int().describe(
           "Optional. shutdown_grace_period_critical_pods_seconds is the maximum allowed grace period (in seconds) used to terminate critical pods during a node shutdown. This value should be <= shutdown_grace_period_seconds, and is only valid if shutdown_grace_period_seconds is set. https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/ Range: [0, 120].",
         ).optional(),
@@ -1411,6 +1427,22 @@ const GlobalArgsSchema = z.object({
     podPidsLimit: z.string().describe(
       "Set the Pod PID limits. See https://kubernetes.io/docs/concepts/policy/pid-limiting/#pod-pid-limits Controls the maximum number of processes allowed to run in a pod. The value must be greater than or equal to 1024 and less than 4194304.",
     ).optional(),
+    reservedResourcesConfig: z.object({
+      cpuReservedMillicore: z.string().describe(
+        "Optional. The amount of CPU to reserve for system daemons. This is a user-specified value. If unspecified, GKE decides the default based on node version using different formula.",
+      ).optional(),
+      effectiveCpuReservedMillicore: z.string().describe(
+        "Output only. The effective amount of CPU reserved for system daemons. If `cpu_reserved_millicore` is specified, user-specified value is used. Otherwise the GKE default is applied.",
+      ).optional(),
+      effectiveMemoryReservedMib: z.string().describe(
+        "Output only. The effective amount of memory reserved for system daemons. If `memory_reserved_mib` is specified, the user-specified value is used. Otherwise the GKE default is applied.",
+      ).optional(),
+      memoryReservedMib: z.string().describe(
+        "Optional. The amount of memory to reserve for system daemons (in MiB). This is a user-specified value. If unspecified, GKE decides the default based on node version using different formula.",
+      ).optional(),
+    }).describe(
+      "Optional. Controls the reserved resources on the node. Only included if any fields are specified.",
+    ).optional(),
     shutdownGracePeriodCriticalPodsSeconds: z.number().int().describe(
       "Optional. shutdown_grace_period_critical_pods_seconds is the maximum allowed grace period (in seconds) used to terminate critical pods during a node shutdown. This value should be <= shutdown_grace_period_seconds, and is only valid if shutdown_grace_period_seconds is set. https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/ Range: [0, 120].",
     ).optional(),
@@ -1932,6 +1964,12 @@ const StateSchema = z.object({
         policy: z.string(),
       }),
       podPidsLimit: z.string(),
+      reservedResourcesConfig: z.object({
+        cpuReservedMillicore: z.string(),
+        effectiveCpuReservedMillicore: z.string(),
+        effectiveMemoryReservedMib: z.string(),
+        memoryReservedMib: z.string(),
+      }),
       shutdownGracePeriodCriticalPodsSeconds: z.number(),
       shutdownGracePeriodSeconds: z.number(),
       singleProcessOomKill: z.boolean(),
@@ -2533,6 +2571,22 @@ const InputsSchema = z.object({
         podPidsLimit: z.string().describe(
           "Set the Pod PID limits. See https://kubernetes.io/docs/concepts/policy/pid-limiting/#pod-pid-limits Controls the maximum number of processes allowed to run in a pod. The value must be greater than or equal to 1024 and less than 4194304.",
         ).optional(),
+        reservedResourcesConfig: z.object({
+          cpuReservedMillicore: z.string().describe(
+            "Optional. The amount of CPU to reserve for system daemons. This is a user-specified value. If unspecified, GKE decides the default based on node version using different formula.",
+          ).optional(),
+          effectiveCpuReservedMillicore: z.string().describe(
+            "Output only. The effective amount of CPU reserved for system daemons. If `cpu_reserved_millicore` is specified, user-specified value is used. Otherwise the GKE default is applied.",
+          ).optional(),
+          effectiveMemoryReservedMib: z.string().describe(
+            "Output only. The effective amount of memory reserved for system daemons. If `memory_reserved_mib` is specified, the user-specified value is used. Otherwise the GKE default is applied.",
+          ).optional(),
+          memoryReservedMib: z.string().describe(
+            "Optional. The amount of memory to reserve for system daemons (in MiB). This is a user-specified value. If unspecified, GKE decides the default based on node version using different formula.",
+          ).optional(),
+        }).describe(
+          "Optional. Controls the reserved resources on the node. Only included if any fields are specified.",
+        ).optional(),
         shutdownGracePeriodCriticalPodsSeconds: z.number().int().describe(
           "Optional. shutdown_grace_period_critical_pods_seconds is the maximum allowed grace period (in seconds) used to terminate critical pods during a node shutdown. This value should be <= shutdown_grace_period_seconds, and is only valid if shutdown_grace_period_seconds is set. https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/ Range: [0, 120].",
         ).optional(),
@@ -3402,6 +3456,22 @@ const InputsSchema = z.object({
     podPidsLimit: z.string().describe(
       "Set the Pod PID limits. See https://kubernetes.io/docs/concepts/policy/pid-limiting/#pod-pid-limits Controls the maximum number of processes allowed to run in a pod. The value must be greater than or equal to 1024 and less than 4194304.",
     ).optional(),
+    reservedResourcesConfig: z.object({
+      cpuReservedMillicore: z.string().describe(
+        "Optional. The amount of CPU to reserve for system daemons. This is a user-specified value. If unspecified, GKE decides the default based on node version using different formula.",
+      ).optional(),
+      effectiveCpuReservedMillicore: z.string().describe(
+        "Output only. The effective amount of CPU reserved for system daemons. If `cpu_reserved_millicore` is specified, user-specified value is used. Otherwise the GKE default is applied.",
+      ).optional(),
+      effectiveMemoryReservedMib: z.string().describe(
+        "Output only. The effective amount of memory reserved for system daemons. If `memory_reserved_mib` is specified, the user-specified value is used. Otherwise the GKE default is applied.",
+      ).optional(),
+      memoryReservedMib: z.string().describe(
+        "Optional. The amount of memory to reserve for system daemons (in MiB). This is a user-specified value. If unspecified, GKE decides the default based on node version using different formula.",
+      ).optional(),
+    }).describe(
+      "Optional. Controls the reserved resources on the node. Only included if any fields are specified.",
+    ).optional(),
     shutdownGracePeriodCriticalPodsSeconds: z.number().int().describe(
       "Optional. shutdown_grace_period_critical_pods_seconds is the maximum allowed grace period (in seconds) used to terminate critical pods during a node shutdown. This value should be <= shutdown_grace_period_seconds, and is only valid if shutdown_grace_period_seconds is set. https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/ Range: [0, 120].",
     ).optional(),
@@ -3814,7 +3884,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Kubernetes Engine Clusters.NodePools. Registered at `@swamp/gcp/container/clusters-nodepools`. */
 export const model = {
   type: "@swamp/gcp/container/clusters-nodepools",
-  version: "2026.09.07.1",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -4018,6 +4088,11 @@ export const model = {
     },
     {
       toVersion: "2026.09.07.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.09.10.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

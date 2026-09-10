@@ -25,7 +25,7 @@
 /**
  * Swamp extension model for Google Cloud Data Manager AccountTypes.Accounts.UserListDirectLicenses.
  *
- * A user list direct license. This feature is only available to data partners.
+ * GCP datamanager AccountTypes.Accounts.UserListDirectLicenses resource
  *
  * Wraps the GCP resource as a swamp model so create, get, update,
  * delete, and sync can be driven through `swamp model`.
@@ -147,67 +147,72 @@ const GlobalArgsSchema = z.object({
   apiEndpoint: z.string().describe(
     "Custom API endpoint for emulators; overrides GCP_API_ENDPOINT environment variable. Defaults to the service's production URL.",
   ).optional(),
-  clientAccountId: z.string().describe(
-    "Immutable. ID of client customer which the user list is being licensed to.",
-  ).optional(),
+  clientAccountDisplayName: z.string().optional(),
+  clientAccountId: z.string().optional(),
   clientAccountType: z.enum([
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_UNKNOWN",
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_GOOGLE_ADS",
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_DISPLAY_VIDEO_PARTNER",
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_DISPLAY_VIDEO_ADVERTISER",
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_GOOGLE_AD_MANAGER_AUDIENCE_LINK",
-  ]).describe(
-    "Immutable. Account type of client customer which the user list is being licensed to.",
-  ).optional(),
-  name: z.string().describe(
-    "Identifier. The resource name of the user list direct license.",
-  ).optional(),
+  ]).optional(),
+  historicalPricings: z.array(z.object({
+    buyerApprovalState: z.enum([
+      "USER_LIST_PRICING_BUYER_APPROVAL_STATE_UNSPECIFIED",
+      "PENDING",
+      "APPROVED",
+      "REJECTED",
+    ]).optional(),
+    costMicros: z.string().optional(),
+    costType: z.enum([
+      "USER_LIST_PRICING_COST_TYPE_UNSPECIFIED",
+      "CPC",
+      "CPM",
+      "MEDIA_SHARE",
+    ]).optional(),
+    currencyCode: z.string().optional(),
+    endTime: z.string().optional(),
+    maxCostMicros: z.string().optional(),
+    pricingActive: z.boolean().optional(),
+    pricingId: z.string().optional(),
+    startTime: z.string().optional(),
+  })).optional(),
+  metrics: z.object({
+    clickCount: z.string().optional(),
+    endDate: z.string().optional(),
+    impressionCount: z.string().optional(),
+    revenueUsdMicros: z.string().optional(),
+    startDate: z.string().optional(),
+  }).optional(),
+  name: z.string().optional(),
   pricing: z.object({
     buyerApprovalState: z.enum([
       "USER_LIST_PRICING_BUYER_APPROVAL_STATE_UNSPECIFIED",
       "PENDING",
       "APPROVED",
       "REJECTED",
-    ]).describe(
-      "Output only. The buyer approval state of this pricing. This field is read-only.",
-    ).optional(),
-    costMicros: z.string().describe(
-      "Optional. The cost associated with the model, in micro units (10^-6), in the currency specified by the currency_code field. For example, 2000000 means $2 if `currency_code` is `USD`.",
-    ).optional(),
+    ]).optional(),
+    costMicros: z.string().optional(),
     costType: z.enum([
       "USER_LIST_PRICING_COST_TYPE_UNSPECIFIED",
       "CPC",
       "CPM",
       "MEDIA_SHARE",
-    ]).describe(
-      "Immutable. The cost type of this pricing. Can be set only in the `create` operation. Can't be updated for an existing license.",
-    ).optional(),
-    currencyCode: z.string().describe(
-      "Optional. The currency in which cost and max_cost is specified. Must be a three-letter currency code defined in ISO 4217.",
-    ).optional(),
-    endTime: z.string().describe("Optional. End time of the pricing.")
-      .optional(),
-    maxCostMicros: z.string().describe(
-      "Optional. The maximum CPM a commerce audience can be charged when the MEDIA_SHARE cost type is used. The value is in micro units (10^-6) and in the currency specified by the currency_code field. For example, 2000000 means $2 if `currency_code` is `USD`. This is only relevant when cost_type is MEDIA_SHARE. When cost_type is not MEDIA_SHARE, and this field is set, a MAX_COST_NOT_ALLOWED error will be returned. If not set or set to`0`, there is no cap.",
-    ).optional(),
-    pricingActive: z.boolean().describe(
-      "Output only. Whether this pricing is active.",
-    ).optional(),
-    pricingId: z.string().describe("Output only. The ID of this pricing.")
-      .optional(),
-    startTime: z.string().describe("Output only. Start time of the pricing.")
-      .optional(),
-  }).describe("Optional. UserListDirectLicense pricing.").optional(),
+    ]).optional(),
+    currencyCode: z.string().optional(),
+    endTime: z.string().optional(),
+    maxCostMicros: z.string().optional(),
+    pricingActive: z.boolean().optional(),
+    pricingId: z.string().optional(),
+    startTime: z.string().optional(),
+  }).optional(),
   status: z.enum([
     "USER_LIST_LICENSE_STATUS_UNSPECIFIED",
     "USER_LIST_LICENSE_STATUS_ENABLED",
     "USER_LIST_LICENSE_STATUS_DISABLED",
-  ]).describe(
-    "Optional. Status of UserListDirectLicense - ENABLED or DISABLED.",
-  ).optional(),
-  userListId: z.string().describe(
-    "Immutable. ID of the user list being licensed.",
-  ).optional(),
+  ]).optional(),
+  userListDisplayName: z.string().optional(),
+  userListId: z.string().optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -261,67 +266,72 @@ const InputsSchema = z.object({
   scopes: z.string().optional(),
   quotaProject: z.string().optional(),
   apiEndpoint: z.string().optional(),
-  clientAccountId: z.string().describe(
-    "Immutable. ID of client customer which the user list is being licensed to.",
-  ).optional(),
+  clientAccountDisplayName: z.string().optional(),
+  clientAccountId: z.string().optional(),
   clientAccountType: z.enum([
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_UNKNOWN",
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_GOOGLE_ADS",
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_DISPLAY_VIDEO_PARTNER",
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_DISPLAY_VIDEO_ADVERTISER",
     "USER_LIST_LICENSE_CLIENT_ACCOUNT_TYPE_GOOGLE_AD_MANAGER_AUDIENCE_LINK",
-  ]).describe(
-    "Immutable. Account type of client customer which the user list is being licensed to.",
-  ).optional(),
-  name: z.string().describe(
-    "Identifier. The resource name of the user list direct license.",
-  ).optional(),
+  ]).optional(),
+  historicalPricings: z.array(z.object({
+    buyerApprovalState: z.enum([
+      "USER_LIST_PRICING_BUYER_APPROVAL_STATE_UNSPECIFIED",
+      "PENDING",
+      "APPROVED",
+      "REJECTED",
+    ]).optional(),
+    costMicros: z.string().optional(),
+    costType: z.enum([
+      "USER_LIST_PRICING_COST_TYPE_UNSPECIFIED",
+      "CPC",
+      "CPM",
+      "MEDIA_SHARE",
+    ]).optional(),
+    currencyCode: z.string().optional(),
+    endTime: z.string().optional(),
+    maxCostMicros: z.string().optional(),
+    pricingActive: z.boolean().optional(),
+    pricingId: z.string().optional(),
+    startTime: z.string().optional(),
+  })).optional(),
+  metrics: z.object({
+    clickCount: z.string().optional(),
+    endDate: z.string().optional(),
+    impressionCount: z.string().optional(),
+    revenueUsdMicros: z.string().optional(),
+    startDate: z.string().optional(),
+  }).optional(),
+  name: z.string().optional(),
   pricing: z.object({
     buyerApprovalState: z.enum([
       "USER_LIST_PRICING_BUYER_APPROVAL_STATE_UNSPECIFIED",
       "PENDING",
       "APPROVED",
       "REJECTED",
-    ]).describe(
-      "Output only. The buyer approval state of this pricing. This field is read-only.",
-    ).optional(),
-    costMicros: z.string().describe(
-      "Optional. The cost associated with the model, in micro units (10^-6), in the currency specified by the currency_code field. For example, 2000000 means $2 if `currency_code` is `USD`.",
-    ).optional(),
+    ]).optional(),
+    costMicros: z.string().optional(),
     costType: z.enum([
       "USER_LIST_PRICING_COST_TYPE_UNSPECIFIED",
       "CPC",
       "CPM",
       "MEDIA_SHARE",
-    ]).describe(
-      "Immutable. The cost type of this pricing. Can be set only in the `create` operation. Can't be updated for an existing license.",
-    ).optional(),
-    currencyCode: z.string().describe(
-      "Optional. The currency in which cost and max_cost is specified. Must be a three-letter currency code defined in ISO 4217.",
-    ).optional(),
-    endTime: z.string().describe("Optional. End time of the pricing.")
-      .optional(),
-    maxCostMicros: z.string().describe(
-      "Optional. The maximum CPM a commerce audience can be charged when the MEDIA_SHARE cost type is used. The value is in micro units (10^-6) and in the currency specified by the currency_code field. For example, 2000000 means $2 if `currency_code` is `USD`. This is only relevant when cost_type is MEDIA_SHARE. When cost_type is not MEDIA_SHARE, and this field is set, a MAX_COST_NOT_ALLOWED error will be returned. If not set or set to`0`, there is no cap.",
-    ).optional(),
-    pricingActive: z.boolean().describe(
-      "Output only. Whether this pricing is active.",
-    ).optional(),
-    pricingId: z.string().describe("Output only. The ID of this pricing.")
-      .optional(),
-    startTime: z.string().describe("Output only. Start time of the pricing.")
-      .optional(),
-  }).describe("Optional. UserListDirectLicense pricing.").optional(),
+    ]).optional(),
+    currencyCode: z.string().optional(),
+    endTime: z.string().optional(),
+    maxCostMicros: z.string().optional(),
+    pricingActive: z.boolean().optional(),
+    pricingId: z.string().optional(),
+    startTime: z.string().optional(),
+  }).optional(),
   status: z.enum([
     "USER_LIST_LICENSE_STATUS_UNSPECIFIED",
     "USER_LIST_LICENSE_STATUS_ENABLED",
     "USER_LIST_LICENSE_STATUS_DISABLED",
-  ]).describe(
-    "Optional. Status of UserListDirectLicense - ENABLED or DISABLED.",
-  ).optional(),
-  userListId: z.string().describe(
-    "Immutable. ID of the user list being licensed.",
-  ).optional(),
+  ]).optional(),
+  userListDisplayName: z.string().optional(),
+  userListId: z.string().optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -353,7 +363,7 @@ function _buildGcpCredentials(
 /** Swamp extension model for Google Cloud Data Manager AccountTypes.Accounts.UserListDirectLicenses. Registered at `@swamp/gcp/datamanager/accounttypes-accounts-userlistdirectlicenses`. */
 export const model = {
   type: "@swamp/gcp/datamanager/accounttypes-accounts-userlistdirectlicenses",
-  version: "2026.08.12.2",
+  version: "2026.09.10.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -493,13 +503,19 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.09.10.1",
+      description:
+        "Added: clientAccountDisplayName, historicalPricings, metrics, userListDisplayName",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
       description:
-        "A user list direct license. This feature is only available to data partners.",
+        "GCP datamanager AccountTypes.Accounts.UserListDirectLicenses resource",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -518,15 +534,25 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
         const body: Record<string, unknown> = {};
+        if (g["clientAccountDisplayName"] !== undefined) {
+          body["clientAccountDisplayName"] = g["clientAccountDisplayName"];
+        }
         if (g["clientAccountId"] !== undefined) {
           body["clientAccountId"] = g["clientAccountId"];
         }
         if (g["clientAccountType"] !== undefined) {
           body["clientAccountType"] = g["clientAccountType"];
         }
+        if (g["historicalPricings"] !== undefined) {
+          body["historicalPricings"] = g["historicalPricings"];
+        }
+        if (g["metrics"] !== undefined) body["metrics"] = g["metrics"];
         if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["pricing"] !== undefined) body["pricing"] = g["pricing"];
         if (g["status"] !== undefined) body["status"] = g["status"];
+        if (g["userListDisplayName"] !== undefined) {
+          body["userListDisplayName"] = g["userListDisplayName"];
+        }
         if (g["userListId"] !== undefined) body["userListId"] = g["userListId"];
         if (g["parent"] !== undefined && g["name"] !== undefined) {
           params["name"] = buildResourceName(
@@ -638,8 +664,25 @@ export const model = {
           );
         }
         const body: Record<string, unknown> = {};
+        if (g["clientAccountDisplayName"] !== undefined) {
+          body["clientAccountDisplayName"] = g["clientAccountDisplayName"];
+        }
+        if (g["clientAccountId"] !== undefined) {
+          body["clientAccountId"] = g["clientAccountId"];
+        }
+        if (g["clientAccountType"] !== undefined) {
+          body["clientAccountType"] = g["clientAccountType"];
+        }
+        if (g["historicalPricings"] !== undefined) {
+          body["historicalPricings"] = g["historicalPricings"];
+        }
+        if (g["metrics"] !== undefined) body["metrics"] = g["metrics"];
         if (g["pricing"] !== undefined) body["pricing"] = g["pricing"];
         if (g["status"] !== undefined) body["status"] = g["status"];
+        if (g["userListDisplayName"] !== undefined) {
+          body["userListDisplayName"] = g["userListDisplayName"];
+        }
+        if (g["userListId"] !== undefined) body["userListId"] = g["userListId"];
         const updateMaskKeys = Object.keys(body);
         if (updateMaskKeys.length > 0) {
           params["updateMask"] = updateMaskKeys.join(",");
@@ -738,12 +781,8 @@ export const model = {
     list: {
       description: "List userListDirectLicenses resources",
       arguments: z.object({
-        filter: z.string().describe(
-          "Optional. A [filter string](https://google.aip.dev/160) to apply to the list request. All fields need to be on the left hand side of each condition (for example: `user_list_id = 123`). Fields must be specified using either all [camel case](https://en.wikipedia.org/wiki/Camel_case) or all [snake case](https://en.wikipedia.org/wiki/Snake_case). Don't use a combination of camel case and snake case. **Supported Operations:** - `AND` - `=` - `!=` - `>` - `>=` - `<` - `<=` **Supported Functions:** - `IN(field, value1, value2, ...)`: returns true if the field matches any of the values. Example: `IN(user_list_id, 123, 456)` **Unsupported Fields:** - `name` (use get method instead) - `historical_pricings` and all its subfields - `pricing.start_time` - `pricing.end_time`",
-        ).optional(),
-        pageSize: z.number().describe(
-          "Optional. The maximum number of licenses to return per page. The service may return fewer than this value. If unspecified, at most 50 licenses will be returned. The maximum value is 1000; values above 1000 will be coerced to 1000.",
-        ).optional(),
+        filter: z.string().optional(),
+        pageSize: z.number().optional(),
         maxPages: z.number().describe(
           "Maximum number of pages to fetch (default: 10)",
         ).optional(),
