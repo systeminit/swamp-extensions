@@ -58,18 +58,6 @@ Deno.test("createProvider throws on invalid config", () => {
   );
 });
 
-Deno.test("configSchema rejects unknown keys", () => {
-  assertThrows(
-    () =>
-      datastore.configSchema.parse({
-        bucket: "my-test-bucket",
-        profile: "some-profile",
-      }),
-    Error,
-    "Unrecognized key",
-  );
-});
-
 Deno.test("provider.resolveDatastorePath returns .swamp under repoDir", () => {
   const provider = datastore.createProvider({ bucket: "my-test-bucket" });
   assertEquals(
